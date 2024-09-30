@@ -1,4 +1,4 @@
-#into je tu: C:\_Moje_Dokumenty\VASKO_TechDesign\Projects\Time_Sheet_App
+#into je tu: D:\Time_Sheet_App
 from Libs.Sharepoint.Authentication import Init_authentication
 from openpyxl import load_workbook
 from pandas import DataFrame
