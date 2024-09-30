@@ -7,7 +7,7 @@
             "Sharepoint": {
                 "Link": "https://connectkonicaminolta.sharepoint.com/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC.xlsm",
                 "Auth": {
-                    "Email": "Jan.Vasko@konicaminolta.eu",
+                    "Email": "Jan.Vasko@konicaminolta.eua",
                     "Aut_parh": ".\\Libs\\Sharepoint\\"
                 }
             }
