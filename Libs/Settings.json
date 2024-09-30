@@ -1,0 +1,218 @@
+{
+    "General":{
+        "Downloader": {
+            "Outlook": {
+                "Calendar": "Jan.Vasko@konicaminolta.eu"
+            },
+            "Sharepoint": {
+                "Link": "https://connectkonicaminolta.sharepoint.com/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC.xlsm",
+                "Auth": {
+                    "Email": "Jan.Vasko@konicaminolta.eu",
+                    "Aut_parh": ".\\Libs\\Sharepoint\\"
+                }
+            }
+        },
+        "Formats": {
+            "Date": "%Y-%m-%d",
+            "Time": "%H:%M"
+        },
+        "Person": {
+            "Code": "CZ011845",
+            "Name": "Jan Vasko"
+        },
+        "Calendar": {
+            "Monday": {
+                "Working_Day": true,
+                "Work_Hours": {
+                    "Start_Time": "6:30",
+                    "End_Time": "18:00"
+                },
+                "Vacation": {
+                    "Start_Time": "8:00",
+                    "End_Time": "16:30"
+                }
+            },
+            "Tuesday": {
+                "Working_Day": true,
+                "Work_Hours": {
+                    "Start_Time": "6:30",
+                    "End_Time": "17:30"
+                },
+                "Vacation": {
+                    "Start_Time": "8:00",
+                    "End_Time": "16:30"
+                }
+            },
+            "Wednesday": {
+                "Working_Day": true,
+                "Work_Hours": {
+                    "Start_Time": "6:30",
+                    "End_Time": "15:30"
+                },
+                "Vacation": {
+                    "Start_Time": "8:00",
+                    "End_Time": "16:30"
+                }
+            },
+            "Thursday": {
+                "Working_Day": true,
+                "Work_Hours": {
+                    "Start_Time": "8:00",
+                    "End_Time": "15:30"
+                },
+                "Vacation": {
+                    "Start_Time": "8:00",
+                    "End_Time": "16:30"
+                }
+            },
+            "Friday": {
+                "Working_Day": true,
+                "Work_Hours": {
+                    "Start_Time": "8:00",
+                    "End_Time": "15:00"
+                },
+                "Vacation": {
+                    "Start_Time": "8:00",
+                    "End_Time": "14:00"
+                }
+            },
+            "Saturday": {
+                "Working_Day": false,
+                "Work_Hours": {
+                    "Start_Time": "",
+                    "End_Time": ""
+                },
+                "Vacation": {
+                    "Start_Time": "",
+                    "End_Time": ""
+                }
+            },
+            "Sunday": {
+                "Working_Day": false,
+                "Work_Hours": {
+                    "Start_Time": "",
+                    "End_Time": ""
+                },
+                "Vacation": {
+                    "Start_Time": "",
+                    "End_Time": ""
+                }
+            }
+        }
+    },
+    "Event_Handler": {
+        "Project": {
+            "Method": "Events",
+            "Fixed_List": 
+                [
+                ]
+        },
+        "Activity": {
+            "Method": "Events",
+            "Fixed_List": 
+                [
+                ]
+        },
+        "Location":  {
+            "Method": "Events",
+            "Default": "Office"
+        },
+        "Events":{
+            "Special_Events": {
+                "Vacation":{
+                    "Search_Text": "Dovolená",
+                    "All_Day": "Calendar",
+                    "Part_Day": "Event"
+                },
+                "HomeOffice":{
+                    "Search_Text": "Home Office",
+                    "All_Day": "Calendar",
+                    "Part_Day": "Event"
+                },
+                "Lunch":{
+                    "Search_Text": "Lunch",
+                    "All_Day": "",
+                    "Part_Day": ""
+                }
+            },
+            "Parralel_Events":{
+                "Divide_Method": "Divide",
+                "Start_Method": "Use_Shorter"
+            },
+            "Join_method": {
+                "Free": "Overwrite_Empty_Default",
+                "Tentative": "Overwrite_Empty_Default",
+                "Busy": "Keep",
+                "Out of Office": "Keep",
+                "Working elsewhere": "Keep"
+            },  
+            "Empty": {
+                "General": {
+                    "1": {
+                        "Project": "Other Internal activities - BPC Brno",
+                        "Activity": "Admin",
+                        "Description": "Administration and Emails",
+                        "Coverage_Percentage": 50
+                    },
+                    "2": {
+                        "Project": "Incident handling / support - BPC Brno",
+                        "Activity": "Consultancy",
+                        "Description": "Support of Support Team",
+                        "Coverage_Percentage": 15
+                    },
+                    "3": { 
+                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                        "Activity": "Testing",
+                        "Description": "General NUS Cloud Testing",
+                        "Coverage_Percentage": 35
+                    }
+                },
+                "Scheduled": {
+                    "1": {
+                        "Project": "Other Internal activities - BPC Brno",
+                        "Activity": "Admin",
+                        "Description": "Administration and Emails",
+                        "Day_of_Week_index": [1, 2, 3, 4, 5],
+                        "Start": "11:30",
+                        "End": "12:00" 
+                    }
+                }
+            },
+            "Start_End_Events": {
+                "Start": "Work - Start",
+                "End": "Work - End"
+            },
+            "Skip": [
+                "Lunch",
+                "Private",
+                "Teambulding",
+                "Teambuilding",
+                "Home Office",
+                "(Car Blocker)",
+                "Grilovačka",
+                "Deadline pro TimeSheet",
+                "KONTROLA DOCHÁZKY",
+                "Save the date ",
+                "On-Call Duty",
+                "TimeSheets - Upload"
+            ]
+        }
+    },
+    "Auto_Filler": {
+        "Template": ["Find Text within subject", "Set Project", "Set Activity", "Set Location"],
+        "Details": {
+            "1": ["NAV ERP Team Meeting:", "Other Internal activities - BPC Brno", "Admin", "Office"],
+            "2": ["TDO - Team Meeting", "Other Internal activities - BPC Brno", "Admin", "Office"],
+            "3": ["NUS Cloud - Testing", "NUS3 Technical Upgrade (NUS Cloud)", "Testing", "Office"],
+            "4": ["NUS Cloud - Sync call", "NUS3 Technical Upgrade (NUS Cloud)", "Project Management", "Office"],
+            "5": ["NUS Cloud - Integrations: Status", "NUS3 Technical Upgrade (NUS Cloud)", "Project Management", "Office"],
+            "6": ["BRO NUS Cloud - 2nd Migration Wave Daily Review", "BRO NUS Cloud Pilot", "Project Management", "Office"],
+            "7": ["BRO: ", "BRO NUS Cloud Pilot", "", ""],
+            "8": ["BBL: ", "NUS (CE) harm.&bus. Support", "", ""],
+            "9": ["Product Backlog Item", "", "Testing", ""],
+            "10": ["INC", "Incident handling / support - BPC Brno", "Consultancy", ""],
+            "11": ["Travel Time", "", "Travel Time (Project)", "Customer"],
+            "12": ["Dovolená", "Other Internal activities - BPC Brno", "Vacation", "Office"]
+        }
+    }
+}
