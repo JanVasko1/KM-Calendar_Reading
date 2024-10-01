@@ -1,4 +1,4 @@
-import Libs.Download.Downloader as Downloader
+import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Event_Handler.Fill_Empty_Place as Fill_Empty_Place
 import Libs.Event_Handler.Divide_Events as Divide_Events
 import Libs.Event_Handler.Location_Set as Location_Set
@@ -29,7 +29,7 @@ def Dataframe_sort(Dataframe: DataFrame) -> None:
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 while True:
     # Download Events
-    Events = Downloader.Download_Events()
+    Events = Outlook_Client.Download_Events()
     Dataframe_sort(Dataframe=Events) 
 
     # Process Events
