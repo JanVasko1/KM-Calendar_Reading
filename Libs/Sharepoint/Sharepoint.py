@@ -14,6 +14,7 @@ File.close()
 
 SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
 SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
+SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
 def Get_Table_Data(ws, data_boundary) -> DataFrame:
     data = ws[data_boundary]
@@ -26,11 +27,11 @@ def Get_Table_Data(ws, data_boundary) -> DataFrame:
 
 def Download_Excel(s_aut: sharepy) -> str:
     # Download
-    r = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=".\\Libs\\Sharepoint\\TimeSheets.xlsx")
+    r = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=SP_File_Name)
     return True
 
 def Get_WorkSheet(Sheet_Name: str):
-    WorkBook = load_workbook(filename=".\\Libs\\Sharepoint\\TimeSheets.xlsx")
+    WorkBook = load_workbook(filename=SP_File_Name)
     Sheet = WorkBook[Sheet_Name]
     return Sheet
 

@@ -28,11 +28,11 @@ def Download_Events() -> DataFrame:
         Auto_download = Auto_download.upper()
 
         if Auto_download == "Y":
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            Data_df_TQDM = tqdm(total=int(1),desc=f"{now}>> Getting Data from Sharepoint")
-
             # Authentication
             s_aut = Authentication.Authentication()
+
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            Data_df_TQDM = tqdm(total=int(1),desc=f"{now}>> Getting Data from Sharepoint")
 
             # Download
             Downloaded = Sharepoint.Download_Excel(s_aut=s_aut)
