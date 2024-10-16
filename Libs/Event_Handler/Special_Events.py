@@ -95,7 +95,7 @@ def Vacation(Events: DataFrame):
 
 # Home Office
 def HomeOffice(Events: DataFrame):
-    #! Dodělat --> možná ani nebude potřeba, pokud se nemá měnit lookace
+    # Možná ani nebude potřeba, pokud se nemá měnit lookace
     return Events
 
 # Lunch
