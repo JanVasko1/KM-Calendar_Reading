@@ -74,16 +74,15 @@ def Download_Events() -> DataFrame:
                         pass
                     else:
                         Input_Start_Date_dt = My_Last_Day_dt + timedelta(days=1)
-
-                print(f"Start Date: {Input_Start_Date_dt.strftime(Date_format)}")
-                print(f"End Date: {Input_End_Date_dt.strftime(Date_format)}")
-
             else:
                 #! Dodělat --> co udělat když se nepodaří stáhnout
                 pass
 
             Data_df_TQDM.update(1) 
             Data_df_TQDM.close()
+
+            print(f"Start Date: {Input_Start_Date_dt.strftime(Date_format)}")
+            print(f"End Date: {Input_End_Date_dt.strftime(Date_format)}")
 
         elif Auto_download == "N":
             # Manually select dates
