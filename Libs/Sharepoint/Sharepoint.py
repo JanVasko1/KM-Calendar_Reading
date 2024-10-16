@@ -1,5 +1,5 @@
 #into je tu: D:\Time_Sheet_App
-from Libs.Sharepoint.Authentication import Init_authentication
+import Libs.Sharepoint.Authentication as Authentication
 from openpyxl import load_workbook
 from pandas import DataFrame
 import pandas
@@ -13,10 +13,9 @@ Settings = json.load(fp=File)
 File.close()
 
 SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
-User_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
+SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 
-
-def data_Get(ws, data_boundary):
+def Get_Table_Data(ws, data_boundary) -> DataFrame:
     data = ws[data_boundary]
     content = [[str(cell.internal_value) for cell in ent] for ent in data]
     header = content[0]
@@ -24,6 +23,26 @@ def data_Get(ws, data_boundary):
     TimeSheets_df = pandas.DataFrame(data=data_rows, columns = header)
     TimeSheets_df = TimeSheets_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     return TimeSheets_df
+
+def Download_Excel(s_aut: sharepy) -> str:
+    # Download
+    r = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=".\\Libs\\Sharepoint\\TimeSheets.xlsx")
+    return True
+
+def Get_WorkSheet(Sheet_Name: str):
+    WorkBook = load_workbook(filename=".\\Libs\\Sharepoint\\TimeSheets.xlsx")
+    Sheet = WorkBook[Sheet_Name]
+    return Sheet
+
+def Get_Tables_on_Worksheet(Sheet) -> list:
+    Table_list = []
+    for key, value in Sheet.tables.items():
+        Table = []
+        Table.append(str(key))
+        Table.append(str(value))
+        Table_list.append(Table)
+    return Table_list
+    
 
 def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     # Reorder lines
@@ -76,47 +95,26 @@ def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     E_Cell = f"E{Excel_row_No}"
     return A_Cell, E_Cell
 
-# ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
+# ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
 def Upload(Events: DataFrame) -> None:
-    # Connect to Sharepoint and Authnetify
-    while True:
-        # Authorisation
-        try:
-            s_aut = sharepy.load(filename=f".\\Libs\\Sharepoint\\ssp-session.pkl")
-        except:
-            s_aut = Init_authentication()
-
-        # Check loop + check auth return value
-        if s_aut == "":
-            print("Not authenticated. Wrong password or try connect to Baracuda. ")
-            Break = input(f"Do you want to stop loop? [Y/N]?")
-            Break = Break.upper()
-            if Break == "Y":
-                break
-            else:
-                pass
-        else:
-            break
+    # Authentication
+    s_aut = Authentication.Authentication()
 
     # Download
-    r = s_aut.getfile(f"{SP_Link}", filename=".\\Libs\\Sharepoint\\TimeSheets.xlsx")
+    Downloaded = Download_Excel(s_aut=s_aut)
 
-    # Read downloaded data
-    wb = load_workbook(filename=".\\Libs\\Sharepoint\\TimeSheets.xlsx")
-    ws = wb["TimeSpent"]
+    if Downloaded == True:
+        # Get WorkSheet
+        TimeSpent_ws = Get_WorkSheet(s_aut=s_aut, Sheet_Name="TimeSpent")
 
-    Table_list = []
-    for key, value in ws.tables.items():
-        Table = []
-        Table.append(str(key))
-        Table.append(str(value))
-        Table_list.append(Table)
+        # Get Table List from Worksheet
+        Table_list = Get_Tables_on_Worksheet(Sheet=TimeSpent_ws)
 
-    # TimeSheets_df
-    data_boundary = Table_list[0][1]
-    data_boundary = data_boundary.replace("O", "J")
-    TimeSheets_df = data_Get(ws=ws, data_boundary=data_boundary)
-    A_Cell, E_Cell = Timesheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
-    print(f"First Cell: {A_Cell}, {E_Cell}")
-    #! Dodělat !!!
-    #! Stáhnout si i obsah toho co je už v excelu vloženo (mít ot v dataframe) a porovnat s tím co už mám vložený s tím co chci vkládat a za sebe vložit pouze rozdíl --> to způsobí to, že můžu nechat
+        # TimeSheets_df
+        data_boundary = Table_list[0][1]
+        data_boundary = data_boundary.replace("O", "J")
+        TimeSheets_df = Get_Table_Data(ws=TimeSpent_ws, data_boundary=data_boundary)
+        A_Cell, E_Cell = Timesheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
+        print(f"First Cell: {A_Cell}, {E_Cell}")
+        #! Dodělat
+

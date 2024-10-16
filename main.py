@@ -1,4 +1,5 @@
-import Libs.Download.Outlook_Client as Outlook_Client
+import Libs.Download.Downloader as Downloader
+
 import Libs.Event_Handler.Fill_Empty_Place as Fill_Empty_Place
 import Libs.Event_Handler.Divide_Events as Divide_Events
 import Libs.Event_Handler.Location_Set as Location_Set
@@ -7,7 +8,7 @@ import Libs.Event_Handler.Parralel_Events as Parralel_Events
 import Libs.Event_Handler.AutoFiller as AutoFiller
 import Libs.Event_Handler.Special_Events as Special_Events
 import Libs.Summary as Summary
-import Libs.Sharepoint.Uploader as Uploader
+import Libs.Sharepoint.Sharepoint as Sharepoint
 
 from pandas import DataFrame
 import json
@@ -29,7 +30,7 @@ def Dataframe_sort(Dataframe: DataFrame) -> None:
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 while True:
     # Download Events
-    Events = Outlook_Client.Download_Events()
+    Events = Downloader.Download_Events()
     Dataframe_sort(Dataframe=Events) 
 
     # Process Events
@@ -68,7 +69,7 @@ while True:
     Correct = Correct.upper()
     if Correct == "Y":
         # Uploader
-        Uploader.Upload(Events=Events)
+        Sharepoint.Upload(Events=Events)
         break
     else:
         print("Nothing be uploaded automaticaly.")

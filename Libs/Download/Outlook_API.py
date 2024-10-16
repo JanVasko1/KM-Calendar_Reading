@@ -1,5 +1,6 @@
 import requests
 import json
+#! Dodělat
 
 # Replace these with your actual values
 client_id = "19db86c3-b2b9-44cc-b339-36da233a3be2"
@@ -22,17 +23,19 @@ tokens = response.json()
 access_token = tokens["access_token"]
 
 # Get calendar events
+start_date = "2024-10-01"
+end_date = "2024-10-01"
+
 headers = {
     "Authorization": f"Bearer {access_token}",
     "Content-Type": "application/json"}
 
-query = {
-    "startDateTime": "2024-10-01T20:00:00-08:00",
-    "endDateTime": "2024-10-01T20:00:00-08:00"
+params = {
+    "$filter": f"start/dateTime ge {start_date} and end/dateTime le {end_date}"
 }
 
-events_url = "https://graph.microsoft.com/v1.0/me/events"
-events_response = requests.get(events_url, headers=headers, query=query)
+events_url = f"https://graph.microsoft.com/v1.0/me/events"
+events_response = requests.get(events_url, headers=headers, params=params)
 events = events_response.json()
 
 # Print events

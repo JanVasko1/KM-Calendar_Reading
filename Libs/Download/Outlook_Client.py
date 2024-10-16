@@ -109,57 +109,8 @@ def Crop_edge_days_Events(Events_downloaded: dict, Input_Start_Date_dt: datetime
     return Events_Process
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events():
-    # Date Selection
-    while True:
-        Input_Start_Date = input("""Set the Start Date in format "YYYY-MM-DD"/"t": """)
-        Input_End_Date = input("""Set the End Date in format "YYYY-MM-DD"/"t": """)
-        Input_Start_Date = Input_Start_Date.upper()
-        Input_End_Date = Input_End_Date.upper()
-
-        try:
-            # Today shortcut
-            if Input_Start_Date == "T":
-                Input_Start_Date_dt = datetime.now()
-                Input_Start_Date_dt = Input_Start_Date_dt.replace(hour=0, minute=0, second=0, microsecond=0)
-            else:
-                Input_Start_Date_dt = datetime.strptime(Input_Start_Date, Date_format)
-
-            if Input_End_Date == "T":
-                Input_End_Date_dt = datetime.now()
-                Input_End_Date_dt = Input_End_Date_dt.replace(hour=0, minute=0, second=0, microsecond=0)
-            else:
-                Input_End_Date_dt = datetime.strptime(Input_End_Date, Date_format)
-
-            # Check if Input_Start_Date <= Input_End_Date
-            if Input_Start_Date_dt <= Input_End_Date_dt:
-                pass
-            else:
-                print("Start Date is after End Date --> try again.")
-                raise ValueError
-
-            # Check if End_Dare is maximal Today
-            """Today = datetime.today()
-            Today = Today.replace(hour=0, minute=0, second=0, microsecond=0)
-            if Input_End_Date_dt > Today:
-                Input_End_Date_dt = Today
-                Input_End_Date = Input_End_Date_dt.strftime(Date_format)
-                print("End Date change to Today as you cannot insert into future.")
-            else:
-                pass"""
-
-            # add 1 day 
-            Filter_Start_Date_dt = Input_Start_Date_dt - timedelta(days=1)
-            Filter_End_Date_dt = Input_End_Date_dt + timedelta(days=1)
-            Filter_Start_Date = Filter_Start_Date_dt.strftime(Date_format)
-            Filter_End_Date = Filter_End_Date_dt.strftime(Date_format)
-            break
-        except:
-            print("Something went wrong, try again.")
-            pass
-
+def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
     # Access Outlook and get the events from the calendar
-
     Outlook = win32com.client.Dispatch("Outlook.Application")
     ns = Outlook.GetNamespace("MAPI")
     appts = ns.GetDefaultFolder(9).Items
