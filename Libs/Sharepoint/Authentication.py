@@ -14,7 +14,7 @@ Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Add
 def Init_authentication() -> sharepy:
     try:
         s_aut = sharepy.connect(site=Auth_Address, username=User_Name)
-        s_aut.save(filename=f"ssp-session.pkl")
+        s_aut.save(filename=f"Operational\\SP_Auth.pkl")
     except Exception as Error:
         print(Error)
         s_aut = ""
@@ -23,7 +23,7 @@ def Init_authentication() -> sharepy:
 
 def Delete_Authentication() -> None:
     try:
-        os.remove(filename=f"ssp-session.pkl")
+        os.remove(filename=f"Operational\\SP_Auth.pkl")
     except:
         print("File is already deleted.")
 
@@ -31,7 +31,7 @@ def Authentication() -> sharepy:
     while True:
         # Authentication
         try:
-            s_aut = sharepy.load(filename=f"ssp-session.pkl")
+            s_aut = sharepy.load(filename=f"Operational\\SP_Auth.pkl")
         except:
             s_aut = Init_authentication()
 

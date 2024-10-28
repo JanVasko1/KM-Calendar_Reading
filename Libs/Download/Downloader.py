@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 
 import Libs.Download.Outlook_Client as Outlook_Client
+import Libs.Download.Exchange as Exchange
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Sharepoint.Authentication as Authentication
 import Libs.Sharepoint.Sharepoint as Sharepoint
@@ -14,6 +15,7 @@ File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ign
 Settings = json.load(fp=File)
 File.close()
 
+Download_Source = Settings["General"]["Downloader"]["Source"]
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
 Personnel_number = Settings["General"]["Person"]["Code"]
@@ -71,7 +73,12 @@ def Download_Events() -> DataFrame:
                     My_Last_Day_dt = datetime.strptime(My_Last_Day[0], Date_format)
 
                     if My_Last_Day_dt >= Today:
-                        pass
+                        # Skip whole automatic because it should not load anythin
+                        Data_df_TQDM.update(1) 
+                        Data_df_TQDM.close()
+                        Auto_download = "N"
+                        print(f"Last Day Reported is: {My_Last_Day_dt} --> cannot perform automatic Download. Use Manual.")
+                        continue
                     else:
                         Input_Start_Date_dt = My_Last_Day_dt + timedelta(days=1)
             else:
@@ -129,5 +136,11 @@ def Download_Events() -> DataFrame:
             pass
 
     # Engine selection
-    Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
+    if Download_Source == "Outlook_clasic":
+        Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
+    elif Download_Source == "API_Exchange_server":
+        Events_Process_df = Exchange.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
+    else:
+        print(f"Download source is not supported (Outlook_clasic, API_Exchange_server), current is {Download_Source}, change it in SEttings.json.")
+        exit()
     return Events_Process_df

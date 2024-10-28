@@ -27,11 +27,11 @@ def Get_Table_Data(ws, data_boundary) -> DataFrame:
 
 def Download_Excel(s_aut: sharepy) -> str:
     # Download
-    r = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=SP_File_Name)
+    r = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\{SP_File_Name}")
     return True
 
 def Get_WorkSheet(Sheet_Name: str):
-    WorkBook = load_workbook(filename=SP_File_Name)
+    WorkBook = load_workbook(filename=f"Operational\\{SP_File_Name}")
     Sheet = WorkBook[Sheet_Name]
     return Sheet
 

@@ -20,7 +20,7 @@ File.close()
 
 Time_format = Settings["General"]["Formats"]["Time"]
 
-# ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
+# --------------------------------------------------------- Local Functions -------------------------------------------------------- #
 def Dataframe_sort(Dataframe: DataFrame) -> None:
     # Sort Dataframe and reindex 
     Dataframe.sort_values(by=["Start_Date", "Start_Time"], ascending=[True, True], axis=0, inplace = True)
