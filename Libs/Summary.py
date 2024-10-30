@@ -332,6 +332,6 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Dataframe_sort(Dataframe=Events) 
     pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
-    Events.to_csv(path_or_buf=f"Operational\\TimeSheets.csv", index=False, sep=";", header=True)
+    Events.to_csv(path_or_buf=f"Operational\\TimeSheets.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
     print(Events)
     return Events

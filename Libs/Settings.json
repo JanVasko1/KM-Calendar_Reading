@@ -214,7 +214,8 @@
             "9": ["Product Backlog Item", "", "Testing", ""],
             "10": ["INC", "Incident handling / support - BPC Brno", "Consultancy", ""],
             "11": ["Travel Time", "", "Travel Time (Project)", "Customer"],
-            "12": ["Dovolená", "Other Internal activities - BPC Brno", "Vacation", "Office"]
+            "12": ["Dovolená", "Other Internal activities - BPC Brno", "Vacation", "Office"],
+            "13": ["BRO NUS Cloud - Cut-off and Migration - Daily review", "BRO NUS Cloud Pilot", "Project Management", "Office"]
         }
     }
 }

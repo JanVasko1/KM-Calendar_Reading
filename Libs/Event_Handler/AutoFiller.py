@@ -55,6 +55,5 @@ def AutoFiller(Events: DataFrame):
         Data_df_TQDM.update(1) 
     Data_df_TQDM.close()
         
-
     return Events
 
