@@ -60,7 +60,8 @@ There must be special Events created for each day
 - This doest require any setup as it is programmed.
 - Videly used for multiday Vacation, travel-time
 
-![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/OverNight.png?raw=true
+> [!TIP]
+> ![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/OverNight.png?raw=true
  "Overnight Events")
 
 ## Fill Empty: General
@@ -68,7 +69,8 @@ There must be special Events created for each day
 - Works only between “Work - Start” and “Work - End” events (only at the time when I'm at work)
 - It select one from the list from Settings.json and use then coverage % to simulate real usage
 
-![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General.png?raw=true
+> [!TIP]
+> ![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General.png?raw=true
  "Fill Empty General")
 
 ## Fill Empty: Scheduled
@@ -84,7 +86,8 @@ There must be special Events created for each day
 - Also is used to split  parallel meeting which is planned over the launch (like whole day meetings)
 - Search text can be modified in Settings.json
 
-![Launch ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Launch.png?raw=true
+> [!TIP]
+> ![Launch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Launch.png?raw=true
  "Launch")
 
 ## Skip Events
@@ -98,13 +101,16 @@ There must be special Events created for each day
     - `Keep_Parralel` --> will keep both parallel events for TimeSheet
     - `Divide` --> will divide Parralle Events based on logic:
 
-![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
+> [!TIP]
+> ![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
  "Parralel 1")
 
- ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
+ > [!TIP]
+> ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
  "Parralel 2")
 
- ![Parralel 3](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel3.png?raw=true
+ > [!TIP]
+> ![Parralel 3](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel3.png?raw=true
  "Parralel 3")
 
 ## AutoFiller
