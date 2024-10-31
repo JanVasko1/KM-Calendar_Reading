@@ -179,3 +179,6 @@ There must be special Events created for each day
 # Uploader
 > [!CAUTION]
 > Under Developemnt
+
+# Export csv
+The processed result is automatically exported to the defined path and automatically opened by Windows
