@@ -84,11 +84,10 @@ There must be special Events created for each day
 
 ## Methods
 - `Outlook_classic` --> download data from Outlook (classic) application installed on Windows
-- `API_Exchange_server` --> download events directly from Exchange Server for defined 
+- `API_Exchange_server` --> download events directly from Exchange Server for defined User
 
-sUser
 > [!CAUTION]
-> Under Developemnt - API_Exchange_server
+> API_Exchange_server --> Under Developemnt
 
 # Events Handlers
 
@@ -159,11 +158,12 @@ sUser
 > ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
  "Parralel Keep")
 
-> [!CAUTION]
-> Under development 
 - has 2 methods for Events start at the same time:
     - `Use_Shorter` --> will consider the shortest event as first pick
     - `Use_Longer` --> will consider the shortest event as first pick
+
+> [!CAUTION]
+> Use_Longer --> Under development (now is defaulty used Use_Shorter)
 
 ## AutoFiller
 - This special function to help automatically fill: `Project`, `Activity`, `Location`
@@ -197,7 +197,7 @@ sUser
 
 # Uploader
 > [!CAUTION]
-> Under Developemnt
+> Under Developemnt as whole functionality
 
 # Export csv
 The processed result is automatically exported to the defined path and automatically opened by Windows
