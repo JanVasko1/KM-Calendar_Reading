@@ -111,10 +111,18 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > ![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General.png?raw=true
  "Fill Empty General")
 
+> [!TIP]
+> ![Empty General setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General_setup.png?raw=true
+ "Empty General setup")
+
 ### Fill Empty: Scheduled
-- This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00
+- This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00 of the week day
 - Agenda can have multiple setup (only one used on picture)
 - If in the period is another Event then this scheduled is not filled
+
+> [!TIP]
+> ![Empty Schedules setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_Schedules_setup.png?raw=true
+ "Empty Schedules setup")
 
 ### Location
 - Currently set for all events `Office`
