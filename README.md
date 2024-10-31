@@ -5,33 +5,36 @@ This program was developed to make TimeSheet administration easier and harmonize
 ## Installation
 Process:
 1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/)
-2. Run `Installation_libs.ps1` code
+2. Run `Installation_libs.ps1` code (reflect correct path to your python installation)
 3. Update `TimeSheets.bat` to reflect correct path to your python installation
     
-
 ## Callendar - Pre-Requisit
 There must be special Events created for each day
 - `Work Start` --> tells program when is particular working day starts
     - must be 0 minutes duration 
-    - Event Subject is defined in Settings.json
+    - Event Subject is defined in `Settings.json`: (`Event_Handler / Events / Start_End_Events / Start`)
 
 - `Work End` --> tells program when is particular working day ends
     - must be 0 minutes duration 
-    - Event Subject is defined in Settings.json
+    - Event Subject is defined in `Settings.json`: (`Event_Handler / Events / Start_End_Events / End`)
 
-- `Launch` --> tells program when is particular launch is 
-    - Event Subject is defined in Settings.json
+- `Lunch` --> tells program when is particular lunch is 
+    - Event Subject is defined in `Settings.json`: (`Event_Handler / Events/ Special_Events / Lunch / Search_Text`)
 
 - `Category` --> is considerate as “Project” from TimeSheets
-    - If event is marke by category, then whole program counts with it base on setup in Setup.json
+    - Must be manually updated when needed from TimeSheet from Shareponit
+    - If event is marke by category, then whole program counts with it base on setup in `Settings.json`: (`Event_Handler / Project / Method`)
 
 - `Templates` --> is considerate to contain “Activity” from Timesheets
-    - If event has line: “Activity: Activity”, then whole program counts with it base on setup in Settings.json
+    - If event has line: “Activity: Activity”, then whole program counts with it base on setup in `Settings.json`: (`Event_Handler / Activity / Method`)
 
-## Main Setup File Settings.json
+
+## Main Setup File `Settings.json`
 - `Calendar`
     - `Working Hours` - specify working hours for each day in week
+        `Settings.json`: (`General / Calendar / ... / Work_Hours`)
     - `Vacation Hours` - specify vacation hours for each day in week when all day Vacation is used
+        `Settings.json`: (`General / Calendar / ... / Vacation`)
 - `Personal Information` - contains your KM Code and full name
 
 # Downloader
@@ -69,37 +72,38 @@ There must be special Events created for each day
 ## Fill Empty: General
 - This is for filling empty space in the calendar between events
 - Works only between “Work - Start” and “Work - End” events (only at the time when I'm at work)
-- It select one from the list from Settings.json and use then coverage % to simulate real usage
+- It select one from the list from `Settings.json`: (`Event_Handler / Events / Empty / General / ...`) and use then coverage [%] to simulate real usage
 
 > [!TIP]
 > ![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General.png?raw=true
  "Fill Empty General")
 
 ## Fill Empty: Scheduled
-- This agenda is used for regular record planning like if I have Administration and Emails done after launch at 11:30 – 12:00
+- This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00
 - Agenda can have multiple setup (only one used on picture)
 - If in the period is another Event then this scheduled is not filled
 
 ## Location
 - Currently set for all events `Office`
 
-## Launch
-- Launch is special event which should be skipped from Timesheet
-- Also is used to split  parallel meeting which is planned over the launch (like whole day meetings)
-- Search text can be modified in Settings.json
+## lunch
+- lunch is special event which should be skipped from Timesheet
+- Also is used to split  parallel meeting which is planned over the lunch (like whole day meetings)
+- Search text can be modified in `Settings.json`: (`Event_Handler / Events / Special_Events / Lunch / ...`) 
 
 > [!TIP]
-> ![Launch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Launch.png?raw=true
- "Launch")
+> ![lunch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/lunch.png?raw=true
+ "lunch")
 
 ## Skip Events
 - This is the list of evens which should be skiped from registering them into TimeSheets
-- Can be extended in Settings.json 
-- Text from json is compared with Event subject and if a part of suvject contain text from .json then is recognized and event is not considerate for Time Sheets
+- Can be extended in `Settings.json`: (`Event_Handler / Events / Skip / ...`) 
+
+- Text from `Settings.json` is compared with Event subject and if a part of subject contain text from (`Event_Handler / Events / Skip / ...`) then is recognized and event is not considerate for Time Sheets
 
 ## Parralel Events
 - This handler helps to process Events which might be in parallelly set in Calendar
-- Has 2 modes (only one can be selected in Settings.json):
+- has 2 modes only one can be selected in `Settings.json`: (`Event_Handler / Events / Parralel_Events / Divide_Method`):
     - `Keep_Parralel` --> will keep both parallel events for TimeSheet
     - `Divide` --> will divide Parralle Events based on logic:
 
@@ -115,17 +119,24 @@ There must be special Events created for each day
 > ![Parralel 3](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel3.png?raw=true
  "Parralel 3")
 
+ - has 2 methods for Events start at the same time:
+    - `Use_Shorter` --> will consider the shortest event as first pick
+    - `Use_Longer` --> will consider the shortest event as first pick
+    > [!CAUTION]
+    > Under development 
+
 ## AutoFiller
 - This special function to help automatically fill: `Project`, `Activity`, `Location`
-- It can be enhanced in Settings.json 
+- It can be enhanced in `Settings.json`: (`Auto_Filler / Details / ...`)
 - If there is empty text --> then is not used
 - As `Skip Events` program is based on searching text in the Event Subject to apply mapping
 
 ## Vacation
 - Handler of Vacation to register correctly 
-    - `All Day` --> takes hours from .json and apply them into TimeSheet
+    - `All Day` --> takes hours from `Settings.json`:  and apply them into TimeSheet
     - `Half Day` --> uses only the time defined by Event
-- If the text appeared (defined by OKBase) in the event Subject
+- If the text appeared (defined by OKBase) in the event Subject `Settings.json`: (`Event_Handler / Events / Special_Events / Vacation / ...`) 
+
 - All Events within the Vacation period and Working hours are deleted
 
 ## Home Office
