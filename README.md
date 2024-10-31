@@ -120,26 +120,25 @@ There must be special Events created for each day
 
 > [!TIP]
 > ![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
- "Parralel 1")
+ "Divide")
 
 > [!TIP]
 > ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
- "Parralel 2")
+ "Divide and use shorter")
 
 > [!TIP]
 > ![Parralel 3](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel3.png?raw=true
- "Parralel 3")
+ "Divide")
 
- - has 2 methods for Events start at the same time:
-> [!CAUTION]
-> Under development 
-    - `Use_Shorter` --> will consider the shortest event as first pick
-    - `Use_Longer` --> will consider the shortest event as first pick
-
- > [!TIP]
+> [!TIP]
 > ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
  "Parralel Keep")
 
+> [!CAUTION]
+> Under development 
+- has 2 methods for Events start at the same time:
+    - `Use_Shorter` --> will consider the shortest event as first pick
+    - `Use_Longer` --> will consider the shortest event as first pick
 
 ## AutoFiller
 - This special function to help automatically fill: `Project`, `Activity`, `Location`
