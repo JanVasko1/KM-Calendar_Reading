@@ -4,7 +4,8 @@ This program was developed to make TimeSheet administration easier and harmonize
 
 # Settup
 ## Installation
-#! Dodělat
+Process:
+    
 
 ## Callendar - Pre-Requisit
 There must be special Events created for each day
@@ -58,11 +59,15 @@ There must be special Events created for each day
 - This handler splits Events if they go over night
 - This doest require any setup as it is programmed.
 - Videly used for multiday Vacation, travel-time
+![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/OverNight.png?raw=true
+ "Overnight Events")
 
 ## Fill Empty: General
 - This is for filling empty space in the calendar between events
 - Works only between “Work - Start” and “Work - End” events (only at the time when I'm at work)
 - It select one from the list from Settings.json and use then coverage % to simulate real usage
+![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General.png?raw=true
+ "Fill Empty General")
 
 ## Fill Empty: Scheduled
 - This agenda is used for regular record planning like if I have Administration and Emails done after launch at 11:30 – 12:00
@@ -76,6 +81,8 @@ There must be special Events created for each day
 - Launch is special event which should be skipped from Timesheet
 - Also is used to split  parallel meeting which is planned over the launch (like whole day meetings)
 - Search text can be modified in Settings.json
+![Launch ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Launch.png?raw=true
+ "Launch")
 
 ## Skip Events
 - This is the list of evens which should be skiped from registering them into TimeSheets
@@ -87,6 +94,15 @@ There must be special Events created for each day
 - Has 2 modes (only one can be selected in Settings.json):
     - `Keep_Parralel` --> will keep both parallel events for TimeSheet
     - `Divide` --> will divide Parralle Events based on logic:
+
+![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
+ "Parralel 1")
+
+ ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
+ "Parralel 2")
+
+ ![Parralel 3](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel3.png?raw=true
+ "Parralel 3")
 
 ## AutoFiller
 - This special function to help automatically fill: `Project`, `Activity`, `Location`
