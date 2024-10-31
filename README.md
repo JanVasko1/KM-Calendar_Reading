@@ -102,7 +102,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
  "Overnight Events")
 
 ### Fill Empty: General
-- This is for filling empty space in the calendar between events
+- This is for filling empty space in the calendar between events where it react on `coverave` palced by each record (sum must be equal to 100%)
 - Works only between “Work - Start” and “Work - End” events (only at the time when I'm at work)
 - It select one from the list from [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Events / Empty / General / ...`) and use then coverage [%] to simulate real usage
@@ -114,6 +114,9 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > [!TIP]
 > ![Empty General setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General_setup.png?raw=true
  "Empty General setup")
+
+> [!CAUTION]
+> Coverage split --> Under Developemnt
 
 ### Fill Empty: Scheduled
 - This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00 of the week day
