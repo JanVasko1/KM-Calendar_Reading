@@ -6,7 +6,14 @@ This program was developed to make TimeSheet administration easier and harmonize
 1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/)
 2. Run `Installation_libs.ps1` code (reflect correct path to your python installation)
 3. Update `TimeSheets.bat` to reflect correct path to your python installation
-    
+
+## Process
+![Process](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Process.png?raw=true
+ "Overal process")
+
+- red --> manual steps
+- green --> automatic steps
+
 ## Callendar - Pre-Requisit
 There must be special Events created for each day
 - `Work Start` --> tells program when is particular working day starts
