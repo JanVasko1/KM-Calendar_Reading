@@ -2,8 +2,8 @@
 This program was developed to make TimeSheet administration easier and harmonize it over all fo Konica Minolta employee.
 
 # Setup
-## Installation
-1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/)
+### Installation
+1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/) - recomended or higher
 2. Run `Installation_libs.ps1` code (reflect correct path to your python installation)
 3. Update `TimeSheets.bat` to reflect correct path to your python installation
 
@@ -63,7 +63,7 @@ There must be special Events created for each day and special behavior must be f
 - `Personal Information` - contains your KM Code and full name (Code is used as Personnel number in TimeSheets)
 
 # Downloader
-- This first part of program is used to download events from calendar
+This first part of program is used to download events from calendar
 
 ## Sharepoint
 - Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days
