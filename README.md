@@ -152,10 +152,6 @@ Here are steps which process the downloaded date into the shape suitable for Tim
  "Divide and use shorter")
 
 > [!TIP]
-> ![Parralel 3](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel3.png?raw=true
- "Divide")
-
-> [!TIP]
 > ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
  "Parralel Keep")
 
@@ -202,3 +198,6 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 
 # Export csv
 The processed result is automatically exported to the defined path and automatically opened by Windows
+
+# Footer
+The Settings.json is real file of Jan Vasko usage
