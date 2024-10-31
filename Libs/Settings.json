@@ -1,7 +1,7 @@
 {
     "General":{
         "Downloader": {
-            "Source": "Outlook_clasic",
+            "Source": "Outlook_classic",
             "Outlook": {
                 "Calendar": "Jan.Vasko@konicaminolta.eu"
             },
