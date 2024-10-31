@@ -1,10 +1,12 @@
 # TimeSheet Downlaoder
-## Aim
-This program was developed to make TimeSheet administration easier and harmonize it over all  
+This program was developed to make TimeSheet administration easier and harmonize it over all fo Konica Minolta employee.
 
 # Settup
 ## Installation
 Process:
+[^1]: Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/)
+[^2]: Run `Installation_libs.ps1` code
+[^3]: Update `TimeSheets.bat` to reflect correct path to your python installation
     
 
 ## Callendar - Pre-Requisit
@@ -138,3 +140,7 @@ There must be special Events created for each day
     - Week Statistics
 - Also print all lines before export to .csv
 - Open .csv in the format read to “Copy + Paste” to TimeSheet on Sharepoint
+
+# Uploader
+> [!CAUTION]
+> Under Developemnt
