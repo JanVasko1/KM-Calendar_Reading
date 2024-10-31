@@ -14,8 +14,8 @@ This program was developed to make TimeSheet administration easier and harmonize
 - red --> manual steps
 - green --> automatic steps
 
-## Callendar - Pre-Requisit
-There must be special Events created for each day
+## Outlook Callendar - Pre-Requisit
+There must be special Events created for each day and special behavior must be followed
 - `Work Start` --> tells program when is particular working day starts
     - must be 0 minutes duration 
     - Event Subject is defined in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
@@ -90,6 +90,7 @@ There must be special Events created for each day
 > API_Exchange_server --> Under Developemnt
 
 # Events Handlers
+Here are steps which process the downloaded date into the shape suitable for TimeSheets
 
 ## Overnights
 - This handler splits Events if they go over midnight
