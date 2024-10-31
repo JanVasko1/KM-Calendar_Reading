@@ -35,9 +35,21 @@ There must be special Events created for each day
     - If event is marke by category, then whole program counts with it base on setup in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Project / Method`)
 
+> [!TIP]
+> ![Category ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Category.png?raw=true
+ "Category")
+
 - `Templates` --> is considerate to contain “Activity” from Timesheets
     - If event has line: “Activity: Activity”, then whole program counts with it base on setup in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Activity / Method`)
+
+> [!TIP]
+> ![Tempaltes ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Templates.png?raw=true
+ "Tempaltes")
+
+> [!TIP]
+> ![Event body](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Activity.png?raw=true
+ "Event body")
 
 
 ## Main Setup File `Settings.json`
