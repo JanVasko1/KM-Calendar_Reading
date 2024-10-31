@@ -4,9 +4,9 @@ This program was developed to make TimeSheet administration easier and harmonize
 # Settup
 ## Installation
 Process:
-[^1]: Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/)
-[^2]: Run `Installation_libs.ps1` code
-[^3]: Update `TimeSheets.bat` to reflect correct path to your python installation
+1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/)
+2. Run `Installation_libs.ps1` code
+3. Update `TimeSheets.bat` to reflect correct path to your python installation
     
 
 ## Callendar - Pre-Requisit
