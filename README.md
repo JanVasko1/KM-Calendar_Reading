@@ -60,7 +60,7 @@ There must be special Events created for each day
     - `Vacation Hours` - specify vacation hours for each day in week when all day Vacation is used
         [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`General / Calendar / ... / Vacation`)
-- `Personal Information` - contains your KM Code and full name
+- `Personal Information` - contains your KM Code and full name (Code is used as Personnel number in TimeSheets)
 
 # Downloader
 - This first part of program is used to download events from calendar
@@ -69,9 +69,12 @@ There must be special Events created for each day
 - Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days
 
 - Setup data must be correctly maintained to have a correct link to proper TimeSheet Excel on Sharepoint 
-    - `Authentication` 
-        – first attempt is required to put password (hashed and stored)
+    - `Authentication`
+        - first attempt is required to put password (hashed and stored)
         - It is required to reenter it time to time
+
+    - `Link` 
+        - link to the TimeSheet Excel on the KM sharepoint site
 
 ## Manual Input
 - Manual input you have to select form and to dates
@@ -81,7 +84,11 @@ There must be special Events created for each day
 
 ## Methods
 - `Outlook_classic` --> download data from Outlook (classic) application installed on Windows
-- `API_Exchange_server` --> download events directly from Exchange Server for defined User
+- `API_Exchange_server` --> download events directly from Exchange Server for defined 
+
+sUser
+> [!CAUTION]
+> Under Developemnt - API_Exchange_server
 
 # Events Handlers
 
