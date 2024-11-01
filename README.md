@@ -161,12 +161,13 @@ Here are steps which process the downloaded date into the shape suitable for Tim
  "Divide")
 
 > [!TIP]
-> Use Shorter:
+> Divide and Use Shorter:
 >
 > ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
  "Divide and use shorter")
 
-> [!TIP]
+> [!TIP]:
+>
 > Keep parralel
 > ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
  "Parralel Keep")
