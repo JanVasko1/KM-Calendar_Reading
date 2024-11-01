@@ -200,21 +200,19 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - Currently is not maintaining anything as HomeOffice is not used as special Location of TimeSheets
 
 # Summary
-- Is defined to print statistic of selected period to provide better overview of Time spent:
+Is defined to print statistic and all records of selected period to provide better overview of Time spent:
     - Total Statistics
     - Project Statistics
     - Activity Statistics
     - WeekDay Statistics
     - Week Statistics
-- Also print all lines before export to .csv
-- Open .csv in the format read to “Copy + Paste” to TimeSheet on Sharepoint
 
 # Uploader
 > [!CAUTION]
 > Under Developemnt as whole functionality
 
 # Export csv
-The processed result is automatically exported to the defined path and automatically opened by Windows
+The processed result is automatically exported to the defined path and automatically opened by Windows in the format ready to “Copy + Paste” to TimeSheet on Sharepoint
 
 # Footer
 The Settings.json is real file of Jan Vasko usage
