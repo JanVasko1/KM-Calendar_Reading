@@ -1,4 +1,4 @@
-# TimeSheet Downlaoder
+# TimeSheet Downloader
 This program was developed to make TimeSheet administration easier and harmonize it over all fo Konica Minolta employee.
 
 # Setup
@@ -151,7 +151,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - This handler helps to process Events which might be in parallelly set in Calendar
 - has 2 modes only one can be selected in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Events / Parralel_Events / Divide_Method`):
-    - `Divide` --> will divide Parralle Events based on logic
+    - `Divide` --> will divide Parralle Events based on logic (eveerytime takes as separator the begining of Event)
     - `Keep_Parralel` --> will keep both parallel events for TimeSheet
     
 > [!TIP]
