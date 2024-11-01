@@ -151,18 +151,18 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - This handler helps to process Events which might be in parallelly set in Calendar
 - has 2 modes only one can be selected in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Events / Parralel_Events / Divide_Method`):
+    - `Divide` --> will divide Parralle Events based on logic
     - `Keep_Parralel` --> will keep both parallel events for TimeSheet
-    - `Divide` --> will divide Parralle Events based on logic:
-
-> [!TIP]
+    
+> [!TIP] - Divide
 > ![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
  "Divide")
 
-> [!TIP]
+> [!TIP] - Use Shorter
 > ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
  "Divide and use shorter")
 
-> [!TIP]
+> [!TIP] - Keep parralel
 > ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
  "Parralel Keep")
 
@@ -178,7 +178,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - It can be enhanced in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Auto_Filler / Details / ...`)
 - If there is empty text --> then is not used
-- As `Skip Events` program is based on searching text in the Event Subject to apply mapping
+- As [`Skip Events`](https://github.com/JanVasko1/KM-Calendar_Reading?tab=readme-ov-file#skip-events) program is based on searching text in the Event Subject to apply mapping
 
 ### <span style="color:blue;">Vacation</span>
 - Handler of Vacation to register correctly 
