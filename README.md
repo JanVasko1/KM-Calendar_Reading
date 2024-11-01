@@ -154,15 +154,18 @@ Here are steps which process the downloaded date into the shape suitable for Tim
     - `Divide` --> will divide Parralle Events based on logic
     - `Keep_Parralel` --> will keep both parallel events for TimeSheet
     
-> [!TIP] - Divide
+> [!TIP]
+> Divide:
 > ![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
  "Divide")
 
-> [!TIP] - Use Shorter
+> [!TIP]
+> Use Shorter:
 > ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
  "Divide and use shorter")
 
-> [!TIP] - Keep parralel
+> [!TIP]
+> Keep parralel:
 > ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
  "Parralel Keep")
 
