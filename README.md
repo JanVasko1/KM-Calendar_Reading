@@ -7,7 +7,7 @@ This program was developed to make TimeSheet administration easier and harmonize
 2. Run `Installation_libs.ps1` code (reflect correct path to your python installation)
 3. Update `TimeSheets.bat` to reflect correct path to your python installation
 
-### $${\color{blue}Process}
+### <span style="color:blue;">Process</span>
 ![Process](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Process.png?raw=true
  "Overal process")
 
