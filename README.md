@@ -2,19 +2,19 @@
 This program was developed to make TimeSheet administration easier and harmonize it over all fo Konica Minolta employee.
 
 # Setup
-### Installation
+### <span style="color:blue;">Installation</span>
 1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/) - recomended or higher
 2. Run `Installation_libs.ps1` code (reflect correct path to your python installation)
 3. Update `TimeSheets.bat` to reflect correct path to your python installation
 
-### <span style="color:blue;">Process</span>
+### <span style="color:blue;">Process</span></span>
 ![Process](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Process.png?raw=true
  "Overal process")
 
 - red --> manual steps
 - green --> automatic steps
 
-### Outlook Callendar - Pre-Requisit
+### <span style="color:blue;">Outlook Callendar - Pre-Requisit</span>
 There must be special Events created for each day and special behavior must be followed
 - `Work Start` --> tells program when is particular working day starts
     - must be 0 minutes duration 
@@ -52,7 +52,7 @@ There must be special Events created for each day and special behavior must be f
  "Event body")
 
 
-### Main Setup File `Settings.json`
+### <span style="color:blue;">Main Setup File `Settings.json`</span>
 - `Calendar`
     - `Working Hours` - specify working hours for each day in week
         [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
@@ -65,7 +65,7 @@ There must be special Events created for each day and special behavior must be f
 # Downloader
 This first part of program is used to download events from calendar
 
-### Sharepoint
+### <span style="color:blue;">Sharepoint</span>
 - Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days
 
 - Setup data must be correctly maintained to have a correct link to proper TimeSheet Excel on Sharepoint 
@@ -76,13 +76,13 @@ This first part of program is used to download events from calendar
     - `Link` 
         - link to the TimeSheet Excel on the KM sharepoint site
 
-### Manual Input
+### <span style="color:blue;">Manual Input</span>
 - Manual input you have to select form and to dates
 - `Format`: 
     YYYY-MM-DD
     Special sign: “t” = Today
 
-### Methods
+### <span style="color:blue;">Methods</span>
 - `Outlook_classic` --> download data from Outlook (classic) application installed on Windows
 - `API_Exchange_server` --> download events directly from Exchange Server for defined User
 
@@ -92,7 +92,7 @@ This first part of program is used to download events from calendar
 # Events Handlers
 Here are steps which process the downloaded date into the shape suitable for TimeSheets
 
-### Overnights
+### <span style="color:blue;">Overnights</span>
 - This handler splits Events if they go over midnight
 - This doesn´t require any setup as it is programmed.
 - Videly used for multiday Vacation, travel-time ...
@@ -101,7 +101,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > ![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/OverNight.png?raw=true
  "Overnight Events")
 
-### Fill Empty: General
+### <span style="color:blue;">Fill Empty: General</span>
 - This is for filling empty space in the calendar between events where it react on `coverave` palced by each record (sum must be equal to 100%)
 - Works only between “Work - Start” and “Work - End” events (only at the time when I'm at work)
 - It select one from the list from [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
@@ -118,7 +118,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > [!CAUTION]
 > Coverage split --> Under Developemnt
 
-### Fill Empty: Scheduled
+### <span style="color:blue;">Fill Empty: Scheduled</span>
 - This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00 of the week day
 - Agenda can have multiple setup (only one used on picture)
 - If in the period is another Event then this scheduled is not filled
@@ -127,10 +127,10 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > ![Empty Schedules setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_Schedules_setup.png?raw=true
  "Empty Schedules setup")
 
-### Location
+### <span style="color:blue;">Location</span>
 - Currently set for all events `Office`
 
-### Lunch
+### <span style="color:blue;">Lunch</span>
 - lunch is special event which should be skipped from Timesheet
 - Also is used to split  parallel meeting which is planned over the lunch (like whole day meetings)
 - Search text can be modified in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
@@ -140,14 +140,14 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > ![Lunch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Lunch.png?raw=true
  "!unch")
 
-### Skip Events
+### <span style="color:blue;">Skip Events</span>
 - This is the list of evens which should be skiped from registering them into TimeSheets
 - Can be extended in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Events / Skip / ...`) 
 
 - Text from `Settings.json` is compared with Event subject and if a part of subject contain text from (`Event_Handler / Events / Skip / ...`) then is recognized and event is not considerate for Time Sheets
 
-### Parralel Events
+### <span style="color:blue;">Parralel Events</span>
 - This handler helps to process Events which might be in parallelly set in Calendar
 - has 2 modes only one can be selected in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Events / Parralel_Events / Divide_Method`):
@@ -173,14 +173,14 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > [!CAUTION]
 > Use_Longer --> Under development (now is defaulty used Use_Shorter)
 
-### AutoFiller
+### <span style="color:blue;">AutoFiller</span>
 - This special function to help automatically fill: `Project`, `Activity`, `Location`
 - It can be enhanced in [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Auto_Filler / Details / ...`)
 - If there is empty text --> then is not used
 - As `Skip Events` program is based on searching text in the Event Subject to apply mapping
 
-### Vacation
+### <span style="color:blue;">Vacation</span>
 - Handler of Vacation to register correctly 
     - `All Day` --> takes hours from [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
   and apply them into TimeSheet
@@ -190,7 +190,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 
 - All Events within the Vacation period and Working hours are deleted
 
-### Home Office
+### <span style="color:blue;">Home Office</span>
 - Currently is not maintaining anything as HomeOffice is not used as special Location of TimeSheets
 
 # Summary
