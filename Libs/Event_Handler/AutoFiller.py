@@ -9,7 +9,7 @@ File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ign
 Settings = json.load(fp=File)
 File.close()
 
-Details_dict = Settings["Auto_Filler"]["Details"]
+Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Details"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Events: DataFrame):

@@ -4,11 +4,13 @@ This program was developed to make TimeSheet administration easier and harmonize
 # Setup
 ### <span style="color:blue;">Installation</span>
 1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/) - recomended or higher
+    - install it as "Run as Administrator"
+    - on pop-up page mark "Add Python 3.8 to PATH" and unmark "Instal launcher for all users" (if possible)
 2. Run `Installation_libs.ps1` code (reflect correct path to your python installation)
 3. Update `TimeSheets.bat` to reflect correct path to your python installation
 
 ### <span style="color:blue;">Process</span></span>
-![Process](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Process.png?raw=true
+![Process](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Process.png?raw=true
  "Overal process")
 
 - red --> manual steps
@@ -36,7 +38,7 @@ There must be special Events created for each day and special behavior must be f
  (`Event_Handler / Project / Method`)
 
 > [!TIP]
-> ![Category ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Category.png?raw=true
+> ![Category ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Category.png?raw=true
  "Category")
 
 - `Templates` --> is considerate to contain “Activity” from Timesheets
@@ -44,11 +46,11 @@ There must be special Events created for each day and special behavior must be f
  (`Event_Handler / Activity / Method`)
 
 > [!TIP]
-> ![Tempaltes ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Templates.png?raw=true
+> ![Tempaltes ](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Templates.png?raw=true
  "Tempaltes")
 
 > [!TIP]
-> ![Event body](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Activity.png?raw=true
+> ![Event body](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Activity.png?raw=true
  "Event body")
 
 
@@ -79,11 +81,11 @@ This first part of program is used to download events from calendar
 ### <span style="color:blue;">Manual Input</span>
 - Manual input you have to select form and to dates
 - `Format`: 
-    YYYY-MM-DD
-    Special sign: “t” = Today
+    - YYYY-MM-DD
+    - Special sign: “t” = Today
 
 ### <span style="color:blue;">Methods</span>
-- `Outlook_classic` --> download data from Outlook (classic) application installed on Windows
+- `Outlook_classic` --> download events from Outlook (classic) application installed on Windows, there is draback, must be only one account in Outlook client
 - `API_Exchange_server` --> download events directly from Exchange Server for defined User
 
 > [!CAUTION]
@@ -98,21 +100,21 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - Videly used for multiday Vacation, travel-time ...
 
 > [!TIP]
-> ![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/OverNight.png?raw=true
+> ![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/OverNight.png?raw=true
  "Overnight Events")
 
 ### <span style="color:blue;">Fill Empty: General</span>
-- This is for filling empty space in the calendar between events where it react on `coverave` palced by each record (sum must be equal to 100%)
+- This is for filling empty space in the calendar between events where it react on `coverage` palced by each record (sum must be equal to 100%)
 - Works only between “Work - Start” and “Work - End” events (only at the time when I'm at work)
 - It select one from the list from [`Settings.json`](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json):
  (`Event_Handler / Events / Empty / General / ...`) and use then coverage [%] to simulate real usage
 
 > [!TIP]
-> ![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General.png?raw=true
+> ![Fill Empty General](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_General.png?raw=true
  "Fill Empty General")
 
 > [!TIP]
-> ![Empty General setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_General_setup.png?raw=true
+> ![Empty General setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_General_setup.png?raw=true
  "Empty General setup")
 
 > [!CAUTION]
@@ -124,7 +126,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - If in the period is another Event then this scheduled is not filled
 
 > [!TIP]
-> ![Empty Schedules setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Empty_Schedules_setup.png?raw=true
+> ![Empty Schedules setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_Schedules_setup.png?raw=true
  "Empty Schedules setup")
 
 ### <span style="color:blue;">Location</span>
@@ -137,7 +139,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
  (`Event_Handler / Events / Special_Events / Lunch / ...`) 
 
 > [!TIP]
-> ![Lunch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Lunch.png?raw=true
+> ![Lunch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Lunch.png?raw=true
  "!unch")
 
 ### <span style="color:blue;">Skip Events</span>
@@ -157,19 +159,19 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > [!TIP]
 > Divide:
 >
-> ![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel1.png?raw=true
+> ![Parralel 1](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Parralel1.png?raw=true
  "Divide")
 
 > [!TIP]
 > Divide and Use Shorter:
 >
-> ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel2.png?raw=true
+> ![Parralel 2](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Parralel2.png?raw=true
  "Divide and use shorter")
 
 > [!TIP]
 > Keep parralel:
 >
-> ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/images/Parralel_keep.png?raw=true
+> ![Parralel Keep](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Parralel_keep.png?raw=true
  "Parralel Keep")
 
 - has 2 methods for Events start at the same time:
