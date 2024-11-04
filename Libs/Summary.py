@@ -261,9 +261,15 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Total_Days_wo = round(Events_WeekDays.loc["Monday":"Friday", "Days Count"].sum(), 0)
     Total_Events_wo = round(Events_WeekDays.loc["Monday":"Friday", "Total Events"].sum(), 0)
     TotalH_wo = round(Events_WeekDays.loc["Monday":"Friday", "Total[H]"].sum(), 2)
-    AverageH_wo = round(TotalH_wo / Used_Days_wo, 2)
-    My_Day_Utilization_wo = round((Events_WeekDays.loc["Monday":"Friday", "My Utilization[%]"].sum()) / Used_Days_wo, 2)
-    KM_Day_Utilization_wo = round((Events_WeekDays.loc["Monday":"Friday", "Utilization[%]"].sum()) / Used_Days_wo, 2)
+    if Used_Days_wo > 0:
+        AverageH_wo = round(TotalH_wo / Used_Days_wo, 2)
+        My_Day_Utilization_wo = round((Events_WeekDays.loc["Monday":"Friday", "My Utilization[%]"].sum()) / Used_Days_wo, 2)
+        KM_Day_Utilization_wo = round((Events_WeekDays.loc["Monday":"Friday", "Utilization[%]"].sum()) / Used_Days_wo, 2)
+    else:
+        AverageH_wo = 0
+        My_Day_Utilization_wo = 0
+        KM_Day_Utilization_wo = 0
+    
 
     Events_WeekDays.loc["Summary w weekend"] = [Total_Days_w, Total_Events_w, TotalH_w, AverageH_w, My_Day_Utilization_w, KM_Day_Utilization_w]
     Events_WeekDays.loc["Summary w/o weekend"] = [Total_Days_wo, Total_Events_wo, TotalH_wo, AverageH_wo, My_Day_Utilization_wo, KM_Day_Utilization_wo]
