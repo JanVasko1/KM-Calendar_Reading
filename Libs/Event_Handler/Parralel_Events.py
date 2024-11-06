@@ -112,43 +112,37 @@ def removing_elements(my_list: list, element) -> list:
    result = [i for i in my_list if i != element]
    return result
 
-def Event_End_Cut(Continue: bool, Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
+def Event_End_Cut(Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
     # Event End will be cut by SubEvent
     if (Event_Start_Time <= Sub_Event_Start_Time) and (Event_Start_Time < Sub_Event_End_Time) and (Event_End_Time > Sub_Event_Start_Time) and (Event_End_Time <= Sub_Event_End_Time):
         Event_End_Time = Sub_Event_Start_Time
         Conflict_df.at[Event_Index, "Start_Time"] = Event_Start_Time
         Conflict_df.at[Event_Index, "End_Time"] = Event_End_Time
-        
-        Continue = True
-        return Continue
+        return True
     else:
-        return Continue
+        return False
 
-def Event_Start_Cut(Continue: bool, Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
+def Event_Start_Cut(Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
     # Event Start will be cut by SubEvent
     if (Event_Start_Time == Sub_Event_Start_Time) and (Event_Start_Time < Sub_Event_End_Time) and (Event_End_Time > Sub_Event_Start_Time) and (Event_End_Time > Sub_Event_End_Time):
         Event_Start_Time = Sub_Event_End_Time
         Conflict_df.at[Event_Index, "Start_Time"] = Event_Start_Time
         Conflict_df.at[Event_Index, "End_Time"] = Event_End_Time
-        
-        Continue = True
-        return Continue
+        return True
     else:
-        return Continue
+        return False
     
-def Event_Start_Cut_Lunch(Continue: bool, Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
+def Event_Start_Cut_Lunch(Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
     # Event Start will be cut by SubEvent -->just for Lunch event nothing else
     if (Event_Start_Time >= Sub_Event_Start_Time) and (Event_Start_Time < Sub_Event_End_Time) and (Event_End_Time > Sub_Event_Start_Time) and (Event_End_Time >= Sub_Event_End_Time):
         Event_Start_Time = Sub_Event_End_Time
         Conflict_df.at[Event_Index, "Start_Time"] = Event_Start_Time
         Conflict_df.at[Event_Index, "End_Time"] = Event_End_Time
-        
-        Continue = True
-        return Continue
+        return True
     else:
-        return Continue
+        return False
 
-def Event_Half_Cut(Continue: bool, Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
+def Event_Half_Cut(Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
     # Event = SubEvent
     if (Event_Start_Time == Sub_Event_Start_Time) and (Event_Start_Time < Sub_Event_End_Time) and (Event_End_Time > Sub_Event_Start_Time) and (Event_End_Time == Sub_Event_End_Time):
         Duration = Event_End_Time - Event_Start_Time
@@ -156,13 +150,11 @@ def Event_Half_Cut(Continue: bool, Conflict_df: DataFrame, Event_Index: int, Eve
         Event_End_Time = Event_Start_Time + Duration
         Conflict_df.at[Event_Index, "Start_Time"] = Event_Start_Time
         Conflict_df.at[Event_Index, "End_Time"] = Event_End_Time
-        
-        Continue = True
-        return Continue
+        return True
     else:
-        return Continue
+        return False
 
-def Event_Middle_Cut(Continue: bool, Conflict_df: DataFrame, Event_Index: int, Data: Series, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
+def Event_Middle_Cut(Conflict_df: DataFrame, Event_Index: int, Data: Series, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
     # SubEvent is inside totaly of Event no borders
     if (Event_Start_Time < Sub_Event_Start_Time) and (Event_Start_Time < Sub_Event_End_Time) and (Event_End_Time > Sub_Event_Start_Time) and (Event_End_Time > Sub_Event_End_Time):
         # Event 1
@@ -176,45 +168,47 @@ def Event_Middle_Cut(Continue: bool, Conflict_df: DataFrame, Event_Index: int, D
         Conflict_df.at[Inser_Index, "End_Time"] = Event_End_Time
         
         Event_End_Time = Sub_Event_Start_Time
-        Continue = True
-        return Continue
+        return True
     else:
-        return Continue
-
+        return False
 
 def Parralel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
-    Continue = True
-    while Continue==True:
-        Dataframe_sort(Dataframe=Conflict_df, Sort=False) 
-        Continue = False
-        for row in Conflict_df.iterrows():
-            # Define current row as pandas Series
-            row_Series = pandas.Series(row[1])
-            Event_Index = row[0]
-            Event_Start_Time = row_Series["Start_Time"]
-            Event_End_Time = row_Series["End_Time"]
+    Dataframe_sort(Dataframe=Conflict_df, Sort=False) 
+    print(Conflict_df)
+    Rerutn = False
+    for row in Conflict_df.iterrows():
+        # Define current row as pandas Series
+        row_Series = pandas.Series(row[1])
+        Event_Index = row[0]
+        Event_Start_Time = row_Series["Start_Time"]
+        Event_End_Time = row_Series["End_Time"]
 
-            # Shorten current event if something is by subEvent
-            for Sub_row in Conflict_df.iterrows():
-                Sub_row_Series = pandas.Series(Sub_row[1])
-                Sub_Event_Index = Sub_row[0]
-                Sub_Event_Start_Time = Sub_row_Series["Start_Time"]
-                Sub_Event_End_Time = Sub_row_Series["End_Time"]
+        # Shorten current event if something is by subEvent
+        for Sub_row in Conflict_df.iterrows():
+            Sub_row_Series = pandas.Series(Sub_row[1])
+            Sub_Event_Index = Sub_row[0]
+            Sub_Event_Start_Time = Sub_row_Series["Start_Time"]
+            Sub_Event_End_Time = Sub_row_Series["End_Time"]
 
-                # Split larger event
-                if Event_Index != Sub_Event_Index:
-                    # Event End will be cut by SubEvent
-                    Continue = Event_End_Cut(Continue=Continue, Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
-                    
-                    # Event Start will be cut by SubEvent
-                    Continue = Event_Start_Cut(Continue=Continue, Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
-                    
-                    # Event = SubEvent
-                    Continue = Event_Half_Cut(Continue=Continue, Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+            # Split larger event
+            if Event_Index != Sub_Event_Index:
+                # Event End will be cut by SubEvent
+                Rerutn = Event_End_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
                 
-                    # SubEvent is inside totaly of Event no borders
-                    Continue = Event_Middle_Cut(Continue=Continue, Conflict_df=Conflict_df, Event_Index=Event_Index, Data=row_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                # Event Start will be cut by SubEvent
+                Rerutn = Event_Start_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                
+                # Event = SubEvent
+                Rerutn = Event_Half_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+            
+                # SubEvent is inside totaly of Event no borders
+                Rerutn = Event_Middle_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Data=row_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
 
+            if Rerutn == True:
+                # if one change is done then return to main Parralel handler to process again --> because it is better 
+                return Conflict_df
+            else:
+                pass
     return Conflict_df
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
@@ -314,23 +308,30 @@ def Parralel_Events(Events: DataFrame):
                 Conflict_df = Conflict_df.loc[mask1]
 
                 # ------------------------------ Parralel Events Handler ------------------------------ #
-                if Conflict_df.empty:
-                    pass
-                else:
-                    Conflict_df = Parralel_Events_Handler(Conflict_df=Conflict_df)
-                            
-                    # Duration change
-                    Dataframe_sort(Dataframe=Conflict_df, Sort=True) 
-                    for row in Conflict_df.iterrows():
-                        row_Series = pandas.Series(row[1])
-                        Event_Start_Time = row_Series["Start_Time"]
-                        Event_End_Time = row_Series["End_Time"]
-                        Conflict_df.at[row[0], "Duration"] = Duration_Couter(Time1=Event_Start_Time, Time2=Event_End_Time)
-                    
-                    # Add to Cumulated
-                    Conflict_df.drop(Conflict_df[Conflict_df["Duration"] == 0].index, inplace = True)
-                    Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Conflict_df], axis=0)
+                while True:
+                    if Conflict_df.empty:
+                        break
+                    else:
+                        Conflict_df = Parralel_Events_Handler(Conflict_df=Conflict_df)
+                                
+                        # Duration change
+                        Dataframe_sort(Dataframe=Conflict_df, Sort=True) 
+                        for row in Conflict_df.iterrows():
+                            row_Series = pandas.Series(row[1])
+                            Event_Start_Time = row_Series["Start_Time"]
+                            Event_End_Time = row_Series["End_Time"]
+                            Conflict_df.at[row[0], "Duration"] = Duration_Couter(Time1=Event_Start_Time, Time2=Event_End_Time)
 
+                        Conflict_df = Find_Conflit_in_DF(Check_DF=Conflict_df)
+
+                        mask1 = Conflict_df["Conflict"] == False
+                        Non_Conflict_df = Conflict_df.loc[mask1]
+                        Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
+
+                        # Update Conflict_df
+                        mask1 = Conflict_df["Conflict"] == True
+                        Conflict_df = Conflict_df.loc[mask1]
+                                    
             # Delete variables
             del Non_Conflict_df, Conflict_df, Day_Events_df
 
