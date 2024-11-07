@@ -174,7 +174,6 @@ def Event_Middle_Cut(Conflict_df: DataFrame, Event_Index: int, Data: Series, Eve
 
 def Parralel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
     Dataframe_sort(Dataframe=Conflict_df, Sort=False) 
-    print(Conflict_df)
     Rerutn = False
     for row in Conflict_df.iterrows():
         # Define current row as pandas Series
