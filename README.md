@@ -140,7 +140,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 
 > [!TIP]
 > ![Lunch Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Lunch.png?raw=true
- "!unch")
+ "Lunch")
 
 ### <span style="color:blue;">Skip Events</span>
 - This is the list of evens which should be skiped from registering them into TimeSheets
@@ -200,6 +200,17 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 
 ### <span style="color:blue;">Home Office</span>
 - Currently is not maintaining anything as HomeOffice is not used as special Location of TimeSheets
+
+### <span style="color:blue;">Join Events</span>
+- This part is to cumulate multiple meeting into one in the case that condition are met:
+    1. Date
+    2. Project
+    3. Activity
+    4. Activity Description
+
+> [!TIP]
+> ![Join Event](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Join_Event.png?raw=true
+ "Join Events")
 
 # Summary
 Is defined to print statistic and all records of selected period to provide better overview of Time spent:
