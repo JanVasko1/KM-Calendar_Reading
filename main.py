@@ -7,6 +7,7 @@ import Libs.Event_Handler.Skip_Events as Skip_Events
 import Libs.Event_Handler.Parralel_Events as Parralel_Events
 import Libs.Event_Handler.AutoFiller as AutoFiller
 import Libs.Event_Handler.Special_Events as Special_Events
+import Libs.Event_Handler.Join_Events as Join_Events
 import Libs.Summary as Summary
 import Libs.Sharepoint.Sharepoint as Sharepoint
 
@@ -59,6 +60,9 @@ while True:
     Dataframe_sort(Dataframe=Events) 
 
     Events = Special_Events.HomeOffice(Events=Events)
+    Dataframe_sort(Dataframe=Events) 
+
+    Events = Join_Events.Join_Events(Events=Events)
     Dataframe_sort(Dataframe=Events) 
 
     # Sumamry Dataframes
