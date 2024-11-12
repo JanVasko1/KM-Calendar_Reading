@@ -110,6 +110,7 @@ def Crop_edge_days_Events(Events_downloaded: dict, Input_Start_Date_dt: datetime
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
+    #! Dodělat --> co udělat když se nepodaří stáhnout zatím jsem tu nechal Outlook !!!!!
     # Access Outlook and get the events from the calendar
     Outlook = win32com.client.Dispatch("Outlook.Application")
     ns = Outlook.GetNamespace("MAPI")
@@ -145,7 +146,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         All_Day_Event = Event.AllDayEvent
         Body = Event.Body
 
-        # Project -> secure only one be used outlook can have 2: Use first one only
+        # Project --> secure only one be used outlook can have 2: Use first one only
         Multiple_Projects = Project.find("; ")
         if Multiple_Projects != -1:
             Project_list = Project.split("; ")
@@ -153,7 +154,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         else:
             pass
 
-        # Find Activity in the Body as predefined text
+        # Activity --> in the Body as predefined text
         Activity = ""
         Activity_occurence = Body.find("Activity: ")
 
@@ -163,7 +164,14 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
             Activity = Sub_body_split[0]
             Activity = Activity.rstrip(" ")
         else:
-            pass            
+            pass     
+
+        # Location --> Get only Meeting Room
+        if Location != "":
+            Location = Location.replace("Microsoft Teams Meeting; ", "")
+            Location = Location.replace(" (Brno (Holandská 4))", "")
+        else:
+            pass
 
         # Udpate End_Date for all Day Event and split them to every day event
         if (All_Day_Event == True) and (End_Time == "00:00"):
