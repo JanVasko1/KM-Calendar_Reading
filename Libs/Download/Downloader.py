@@ -82,8 +82,8 @@ def Download_Events() -> DataFrame:
                     else:
                         Input_Start_Date_dt = My_Last_Day_dt + timedelta(days=1)
             else:
-                #! Dodělat --> co udělat když se nepodaří stáhnout
-                pass
+                print(f"It was not possible to automatically dowload the master data from Sharepoint, please select Start Date and End Date manually.")
+                Auto_download = "N"
 
             Data_df_TQDM.update(1) 
             Data_df_TQDM.close()
