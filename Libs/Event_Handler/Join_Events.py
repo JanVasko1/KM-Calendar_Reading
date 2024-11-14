@@ -26,22 +26,26 @@ def Join_Events(Events: DataFrame) -> DataFrame:
         row_Series = pandas.Series(row[1])
 
         Current_Date = row_Series["Start_Date"]
+        Current_Subject = row_Series["Subject"]
         Current_Project = row_Series["Project"] 
         Current_Activity = row_Series["Activity"]
         Current_Event_Start_time = row_Series["Start_Time"]
         Current_Event_End_time = row_Series["End_Time"]
 
         if Current_Date == Pre_Date:
-            if Current_Project == Pre_Project:
-                if Current_Activity == Pre_Activity:
-                    if Pre_Event_End_time == Current_Event_Start_time:
-                        # Change End date of previously inserted 
-                        Cumulated_Events.iloc[Pre_Index]["End_Time"] = Current_Event_End_time
-                        
-                        # Change Duration
-                        Current_Duration = int(row_Series["Duration"])
-                        Pre_Duration = int(Cumulated_Events.iloc[Pre_Index]["Duration"])
-                        Cumulated_Events.iloc[Pre_Index]["Duration"] = Pre_Duration + Current_Duration
+            if Current_Subject == Pre_Subject:
+                if Current_Project == Pre_Project:
+                    if Current_Activity == Pre_Activity:
+                        if Pre_Event_End_time == Current_Event_Start_time:
+                            # Change End date of previously inserted 
+                            Cumulated_Events.iloc[Pre_Index]["End_Time"] = Current_Event_End_time
+                            
+                            # Change Duration
+                            Current_Duration = int(row_Series["Duration"])
+                            Pre_Duration = int(Cumulated_Events.iloc[Pre_Index]["Duration"])
+                            Cumulated_Events.iloc[Pre_Index]["Duration"] = Pre_Duration + Current_Duration
+                        else:
+                            Cumulated_Events.loc[len(Cumulated_Events.index)] = row_Series
                     else:
                         Cumulated_Events.loc[len(Cumulated_Events.index)] = row_Series
                 else:
@@ -56,6 +60,7 @@ def Join_Events(Events: DataFrame) -> DataFrame:
         Pre_Index = Cumulated_Events_Indexes.max()
 
         Pre_Date = Current_Date
+        Pre_Subject = Current_Subject
         Pre_Project = Current_Project
         Pre_Activity = Current_Activity
         Pre_Event_Start_time = Current_Event_Start_time

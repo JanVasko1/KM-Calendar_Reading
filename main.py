@@ -60,7 +60,6 @@ Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Sta
 
 Events = Join_Events.Join_Events(Events=Events)
 Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
-print(Events)
 
 # Sumamry Dataframes
 Events = Summary.Generate_Summary(Events=Events)
