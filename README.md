@@ -117,9 +117,6 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > ![Empty General setup](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_General_setup.png?raw=true
  "Empty General setup")
 
-> [!CAUTION]
-> Coverage split --> Under Developemnt
-
 ### <span style="color:blue;">Fill Empty: Scheduled</span>
 - This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00 of the week day
 - Agenda can have multiple setup (only one used on picture)

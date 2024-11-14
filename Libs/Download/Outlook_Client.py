@@ -32,6 +32,7 @@ def Add_to_Events_dict(Events_downloaded: dict, Counter: int, Subject: str, Star
         "Meeting_Room": Location,
         "All_Day_Event": All_Day_Event,
         "Event_Empty_Insert": False,
+        "Event_Empty_Method": "",
         "Within_Working_Hours": False,
         "Location": "Office"}
 

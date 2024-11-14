@@ -1,4 +1,5 @@
 import Libs.Event_Handler.Parralel_Events as Parralel_Events
+import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame
 import pandas
 from datetime import datetime
@@ -43,12 +44,6 @@ def Days_Handler(Events: DataFrame) -> list:
     Days_List = list(set(Days_List))
     Days_List.sort()
     return Days_List
-
-def Dataframe_sort(Dataframe: DataFrame, Sort: bool) -> None:
-    # Sort DAtaframe and reindex 
-    Dataframe.sort_values(by=["Start_Date", "Start_Time"], ascending=[Sort, Sort], axis=0, inplace = True)
-    Dataframe.reset_index(inplace=True)
-    Dataframe.drop(labels=["index"], inplace=True, axis=1)
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 # Vacation
@@ -111,7 +106,7 @@ def Lunch(Events: DataFrame):
     for Day in Days_List:
         mask1 = Events["Start_Date"] == Day
         Day_Events_df = Events.loc[mask1]
-        Dataframe_sort(Dataframe=Day_Events_df, Sort=True) 
+        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         
         # Get Lunch Conflict
         Day_Events_df = Parralel_Events.Find_Conflit_in_DF(Check_DF=Day_Events_df)
@@ -148,7 +143,7 @@ def Lunch(Events: DataFrame):
                 # SubEvent is inside totaly of Event no borders
                 Parralel_Events.Event_Middle_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Data=Event_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
 
-        Dataframe_sort(Dataframe=Day_Events_df, Sort=True) 
+        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         for row in Day_Events_df.iterrows():
             row_Series = pandas.Series(row[1])
             Event_Start_Time = row_Series["Start_Time"]

@@ -1,3 +1,4 @@
+import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame
 from datetime import datetime
 import pandas
@@ -13,12 +14,6 @@ Date_Format = Settings["General"]["Formats"]["Date"]
 Time_Format = Settings["General"]["Formats"]["Time"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Dataframe_sort(Dataframe: DataFrame) -> None:
-    # Sort Dataframe and reindex 
-    Dataframe.sort_values(by=["Date", "Start Time"], ascending=[True, True], axis=0, inplace = True)
-    Dataframe.reset_index(inplace=True)
-    Dataframe.drop(labels=["index"], inplace=True, axis=1)
-
 def DataFrame_WeekDay(row) -> str:
     x_dt = datetime.strptime(row, Date_Format)
     WeekDay = x_dt.strftime("%A")
@@ -335,7 +330,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]
 
-    Dataframe_sort(Dataframe=Events) 
+    Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
     pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
     Events.to_csv(path_or_buf=f"Operational\\TimeSheets.csv", index=False, sep=";", header=True, encoding="utf-8-sig")

@@ -10,6 +10,7 @@ import Libs.Event_Handler.Special_Events as Special_Events
 import Libs.Event_Handler.Join_Events as Join_Events
 import Libs.Summary as Summary
 import Libs.Sharepoint.Sharepoint as Sharepoint
+import Libs.Defaults_Lists as Defaults_Lists
 
 from pandas import DataFrame
 import json
@@ -21,61 +22,54 @@ File.close()
 
 Time_format = Settings["General"]["Formats"]["Time"]
 
-# --------------------------------------------------------- Local Functions -------------------------------------------------------- #
-def Dataframe_sort(Dataframe: DataFrame) -> None:
-    # Sort Dataframe and reindex 
-    Dataframe.sort_values(by=["Start_Date", "Start_Time"], ascending=[True, True], axis=0, inplace = True)
-    Dataframe.reset_index(inplace=True)
-    Dataframe.drop(labels=["index"], inplace=True, axis=1)
-
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-while True:
-    # Download Events
-    Events = Downloader.Download_Events()
-    Dataframe_sort(Dataframe=Events) 
+# Download Events
+Events = Downloader.Download_Events()
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    # Process Events
-    Events = Divide_Events.OverMidnight_Events(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+# Process Events
+Events = Divide_Events.OverMidnight_Events(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Fill_Empty_Place.Fill_Events(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Fill_Empty_Place.Fill_Events(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Location_Set.Location_Set(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Fill_Empty_Place.Fill_Events_Coverage(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Special_Events.Lunch(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Location_Set.Location_Set(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Skip_Events.Skip_Events(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Special_Events.Lunch(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Parralel_Events.Parralel_Events(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Skip_Events.Skip_Events(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = AutoFiller.AutoFiller(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
-  
-    Events = Special_Events.Vacation(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Parralel_Events.Parralel_Events(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Special_Events.HomeOffice(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = AutoFiller.AutoFiller(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    Events = Join_Events.Join_Events(Events=Events)
-    Dataframe_sort(Dataframe=Events) 
+Events = Special_Events.Vacation(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    # Sumamry Dataframes
-    Events = Summary.Generate_Summary(Events=Events)
+Events = Special_Events.HomeOffice(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-    # Las querstion
-    Correct = input(f"\n Do you want to auto upload to Sharepoit? [Y/N]?")
-    Correct = Correct.upper()
-    if Correct == "Y":
-        # Uploader
-        Sharepoint.Upload(Events=Events)
-        break
-    else:
-        print("Nothing be uploaded automaticaly.")
-        break
+Events = Join_Events.Join_Events(Events=Events)
+Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+print(Events)
 
+# Sumamry Dataframes
+Events = Summary.Generate_Summary(Events=Events)
+
+# Las querstion
+Correct = input(f"\n Do you want to auto upload to Sharepoit? [Y/N]?")
+Correct = Correct.upper()
+if Correct == "Y":
+    # Uploader
+    Sharepoint.Upload(Events=Events)
+else:
+    print("Nothing be uploaded automaticaly.")

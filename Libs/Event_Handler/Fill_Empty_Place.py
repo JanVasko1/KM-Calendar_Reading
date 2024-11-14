@@ -1,6 +1,8 @@
+import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame
 import pandas
 from datetime import datetime
+import operator
 import json
 import random
 import warnings
@@ -71,9 +73,9 @@ def Find_Close_Sub_Event(Day_Events_df: DataFrame, General_Empty_df: DataFrame, 
             Duration_Index = Differences_to_Start_list.index(Duration)
             DF_Index = Sub_event_DF_Index_list[Duration_Index]
             End_Time = General_Empty_df.iloc[DF_Index]["Start_Time"]
-            Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=True, Location="Office")
+            Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="General", Within_Working_Hours=True, Location="Office")
             # Must add  also to General_Emtpy because inserted line might be updated by diffferent line calculation and newly create line would miss and cause double insert
-            Dataframe_add_line(Dataframe=General_Empty_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=True, Location="Office")
+            Dataframe_add_line(Dataframe=General_Empty_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="General", Within_Working_Hours=True, Location="Office")
    
 def Defin_Event_within_Working_Hours(Dataframe: DataFrame, Day_Start_Time_dt: datetime, Day_End_Time_dt: datetime) -> None:
     # Marks row which are at least with some part of event within wotrking hours
@@ -101,15 +103,9 @@ def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
 
-def Dataframe_add_line(Dataframe: DataFrame, Subject: str, Start_Date: str|datetime, End_Date: str|datetime, Start_Time: str|datetime, End_Time: str|datetime, Duration: int, Project: str, Activity: str, Recurring: bool, Busy_Status: str, Meeting_Room: str, All_Day_Event: bool, Event_Empty_Insert: bool, Within_Working_Hours: bool, Location: str) -> None:
+def Dataframe_add_line(Dataframe: DataFrame, Subject: str, Start_Date: str|datetime, End_Date: str|datetime, Start_Time: str|datetime, End_Time: str|datetime, Duration: int, Project: str, Activity: str, Recurring: bool, Busy_Status: str, Meeting_Room: str, All_Day_Event: bool, Event_Empty_Insert: bool, Event_Empty_Method: str, Within_Working_Hours: bool, Location: str) -> None:
     # Add record to Dataframe
-    Dataframe.loc[Dataframe.shape[0]] = [Subject, Start_Date, End_Date, Start_Time, End_Time, Duration, Project, Activity, Recurring, Busy_Status, Meeting_Room, All_Day_Event, Event_Empty_Insert, Within_Working_Hours, Location] 
-
-def Dataframe_sort(Dataframe: DataFrame) -> None:
-    # Sort DAtaframe and reindex 
-    Dataframe.sort_values(by=["Start_Date", "Start_Time"], ascending=[True, True], axis=0, inplace = True)
-    Dataframe.reset_index(inplace=True)
-    Dataframe.drop(labels=["index"], inplace=True, axis=1)
+    Dataframe.loc[Dataframe.shape[0]] = [Subject, Start_Date, End_Date, Start_Time, End_Time, Duration, Project, Activity, Recurring, Busy_Status, Meeting_Room, All_Day_Event, Event_Empty_Insert, Event_Empty_Method, Within_Working_Hours, Location] 
 
 def Days_Handler(Events: DataFrame) -> list:
     Days_List = Events["Start_Date"].tolist()
@@ -144,7 +140,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
         Day_Events_df = Events.loc[mask1]
 
         # Sorting
-        Dataframe_sort(Dataframe=Day_Events_df) 
+        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         
         Day_Start_Time, Day_End_Time = Get_Day_Start_End_Time(Day_Events_df=Day_Events_df, Day=Day)
         if Day_Start_Time == None or Day_End_Time == None:
@@ -177,23 +173,23 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
                         # Check how Schedule meeting is within Working Hours for that day
                         if (Schedule_Event_Start_Time_dt >= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt <= Day_End_Time_dt):
                             Duration = Duration_Couter(Time1=Schedule_Event_Start_Time_dt, Time2=Schedule_Event_End_Time_dt)
-                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=item[1]["Start"], End_Time=item[1]["End"], Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=False, Location="Office")
+                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=item[1]["Start"], End_Time=item[1]["End"], Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         elif (Schedule_Event_Start_Time_dt >= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt >= Day_End_Time_dt):
                             Duration = Duration_Couter(Time1=Schedule_Event_Start_Time_dt, Time2=Day_End_Time_dt)
-                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=item[1]["Start"], End_Time=Day_End_Time, Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=False, Location="Office")
+                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=item[1]["Start"], End_Time=Day_End_Time, Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         elif (Schedule_Event_Start_Time_dt <= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt <= Day_End_Time_dt):
                             Duration = Duration_Couter(Time1=Day_Start_Time_dt, Time2=Schedule_Event_End_Time_dt)
-                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time, End_Time=item[1]["End"], Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=False, Location="Office")
+                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time, End_Time=item[1]["End"], Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         elif (Schedule_Event_Start_Time_dt <= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt >= Day_End_Time_dt):
                             Duration = Duration_Couter(Time1=Day_Start_Time_dt, Time2=Day_End_Time_dt)
-                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time, End_Time=Day_End_Time, Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=False, Location="Office")
+                            Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time, End_Time=Day_End_Time, Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         else:
                             pass
                 else:
                     pass
 
             # Sorting
-            Dataframe_sort(Dataframe=Day_Events_df) 
+            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             
             #! Insert General - only between Day_Start_Time, Day_End_Time
             Day_Events_df["Start_Time"] = pandas.to_datetime(Day_Events_df["Start_Time"], format=Time_format)
@@ -206,7 +202,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             General_Empty_df = Day_Events_df.loc[mask1 & mask2 & mask3 & mask4]
 
             # Fill between events
-            Dataframe_sort(Dataframe=General_Empty_df) 
+            General_Empty_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=General_Empty_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             for row in General_Empty_df.iterrows():
                 # Define current row as pandas Series
                 row_Series = pandas.Series(row[1])
@@ -237,11 +233,11 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
                 Convert_time_delta_to_int(Differences_list=Differences_to_Start_list)
                 Convert_time_delta_to_int(Differences_list=Differences_to_End_list)
                 Find_Close_Sub_Event(Day_Events_df=Day_Events_df, General_Empty_df=General_Empty_df, Day=Day, Start_Time=Event_End_time, Differences_to_Start_list=Differences_to_Start_list, Differences_to_End_list=Differences_to_End_list, Sub_event_DF_Index_list=Sub_event_DF_Index_list, General_Empty_Project=General_Empty_Project, General_Empty_Activity=General_Empty_Activity, General_Empty_Description=General_Empty_Description)
-                Dataframe_sort(Dataframe=Day_Events_df) 
+                Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             del General_Empty_df
 
             # Fill start of the day if needed
-            Dataframe_sort(Dataframe=Day_Events_df) 
+            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             mask1 = Day_Events_df["Subject"] != Day_Start_Subject
             mask2 = Day_Events_df["Subject"] != Day_End_Subject
             mask3 = Day_Events_df["Within_Working_Hours"] == True
@@ -274,7 +270,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
                 Min_Duration = min(Difference_to_Star)
                 Min_Duration_Index = Difference_to_Star.index(Min_Duration)
                 End_Time = Events_Start_Times_list[Min_Duration_Index]
-                Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time_dt, End_Time=End_Time, Duration=Min_Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=True, Location="Office")
+                Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time_dt, End_Time=End_Time, Duration=Min_Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="General", Within_Working_Hours=True, Location="Office")
             elif Event_Over == True:
                 pass
             else:
@@ -282,7 +278,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             del General_Empty_df
 
             # Fill end of the day if needed
-            Dataframe_sort(Dataframe=Day_Events_df) 
+            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             mask1 = Day_Events_df["Subject"] != Day_Start_Subject
             mask2 = Day_Events_df["Subject"] != Day_End_Subject
             mask3 = Day_Events_df["Within_Working_Hours"] == True
@@ -315,7 +311,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
                 Min_Duration = min(Difference_to_End)
                 Min_Duration_Index = Difference_to_End.index(Min_Duration)
                 Start_Time = Events_End_Times_list[Min_Duration_Index]
-                Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=Day_End_Time_dt, Duration=Min_Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Within_Working_Hours=True, Location="Office")
+                Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=Day_End_Time_dt, Duration=Min_Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="General", Within_Working_Hours=True, Location="Office")
             elif Event_Over == True:
                 pass
             else:
@@ -323,12 +319,120 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             del General_Empty_df
             
             # Add to cumulated Dataframe
-            Dataframe_sort(Dataframe=Day_Events_df) 
+            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             del Day_Events_df
 
         Data_df_TQDM.update(1) 
     Data_df_TQDM.close()
     
-    Dataframe_sort(Dataframe=Cumulated_Events) 
     return Cumulated_Events
+
+def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
+    # Get Coverage for setup event 2 list 
+    Fill_Event_desc_list = []
+    Fill_Event_project_list = []
+    Fill_Event_activity_list = []
+    Fill_Event_cover_list = []
+    Fill_Event_counted_duration_list = []
+    Fill_Event_actual_duration_list = []
+    Fill_Events_dict = Settings["Event_Handler"]["Events"]["Empty"]["General"]
+    Fill_Events_Keys = list(Fill_Events_dict.keys())
+
+    #! Dodělat --> zkontorlovat Coverage a pokud to nesedí napsat, že se Coverage nepoužije a a že to bude pure random
+
+    for key in Fill_Events_Keys:
+        Fill_Event_desc_list.append(Fill_Events_dict[key]["Description"])
+        Fill_Event_project_list.append(Fill_Events_dict[key]["Project"])
+        Fill_Event_activity_list.append(Fill_Events_dict[key]["Activity"])
+        Fill_Event_cover_list.append(Fill_Events_dict[key]["Coverage_Percentage"])
+
+    # Get only Fill Events --> Dataframe preparation
+    mask = Events["Event_Empty_Insert"] == True
+    Fill_Empty_Df = Events[mask]
+    Duration_Total = sum(Fill_Empty_Df["Duration"])
+
+    mask = Fill_Empty_Df["Event_Empty_Method"] == "Scheduled"
+    Scheduled_df = Fill_Empty_Df[mask]
+
+    mask = Fill_Empty_Df["Event_Empty_Method"] == "General"
+    General_df = Fill_Empty_Df[mask]
+    del Fill_Empty_Df
+
+    # Count Minutes per Coverage from Duration Total
+    for key in Fill_Events_Keys:
+        Key_List_index = Fill_Events_Keys.index(key)
+        Current_Coverage = Fill_Event_cover_list[Key_List_index]
+        Current_Coverage_Dur = int(round(Duration_Total * (Current_Coverage / 100), 0))
+        Fill_Event_counted_duration_list.append(Current_Coverage_Dur)
+        Fill_Event_actual_duration_list.append(0)
+    Fill_Event_duration_Total = sum(Fill_Event_counted_duration_list)
+    Difference = Duration_Total - Fill_Event_duration_Total
+    Fill_Event_Max_duration = max(Fill_Event_counted_duration_list)
+    Fill_Event_Max_duration_index = Fill_Event_counted_duration_list.index(Fill_Event_Max_duration)
+    Fill_Event_counted_duration_list[Fill_Event_Max_duration_index] = Fill_Event_Max_duration + Difference
+
+    # Schedules -- keep as planned
+    for row_schedule in Scheduled_df.iterrows():
+        Scheduled_Description = row_schedule[1]["Subject"]
+        Scheduled_Duration = row_schedule[1]["Duration"]
+
+        # Get index of Fill_Event_desc_list --> to be able put correctly to Fill_Event_actual_duration_list
+        Current_Fill_Index = Fill_Event_desc_list.index(Scheduled_Description)
+
+        # Add to proper actual Fill_Event_actual_duration_list
+        Fill_Event_actual_duration_list[Current_Fill_Index] = Fill_Event_actual_duration_list[Current_Fill_Index] + Scheduled_Duration
+
+    # General -- recalculate according to coverage
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    Data_df_TQDM = tqdm(total=int(General_df.shape[0]),desc=f"{now}>> Fill Empty - Recalculate accoring coverage")
+    while True:
+        # Check if any data available
+        if General_df.empty:
+            break
+        else:
+            pass
+
+        # Find maximal Duration in the DF + list of index containing this maximal duration
+        Max_General_Duration = max(General_df["Duration"])
+        mask = General_df["Duration"] == Max_General_Duration
+        General_Sub_df = General_df[mask]
+
+        # Random choice from list of index
+        while True:
+            # Check if any data available
+            if General_Sub_df.empty:
+                break
+            else:
+                pass
+
+            # Random select index
+            General_Sub_Index_list = list(General_Sub_df.index.values)
+            Change_Row_Index = random.choice(General_Sub_Index_list)
+
+            # Find the Fill Event with maximal differenc between "Fill_Event_counted_duration_list" and "Fill_Event_actual_duration_list" --> where the number is positive (not to overshoot)
+            Fill_Event_difference_duration_list = list(map(operator.sub, Fill_Event_counted_duration_list, Fill_Event_actual_duration_list))
+            for i in range(len(Fill_Event_difference_duration_list)):
+                if Fill_Event_difference_duration_list[i] < 0:
+                    Fill_Event_difference_duration_list[i] = 0
+                else:
+                    pass
+            Max_Diff_Duration = max(Fill_Event_difference_duration_list)
+            Current_Fill_Index = Fill_Event_difference_duration_list.index(Max_Diff_Duration)
+
+            # Events change
+            Events.at[Change_Row_Index, "Subject"] = Fill_Event_desc_list[Current_Fill_Index]
+            Events.at[Change_Row_Index, "Project"] = Fill_Event_project_list[Current_Fill_Index]
+            Events.at[Change_Row_Index, "Activity"] = Fill_Event_activity_list[Current_Fill_Index]
+
+            # Delete from DFs
+            General_df = General_df.drop(Change_Row_Index)
+            General_Sub_df = General_Sub_df.drop(Change_Row_Index)
+
+            # Add to proper actual Fill_Event_actual_duration_list
+            Fill_Event_actual_duration_list[Current_Fill_Index] = Fill_Event_actual_duration_list[Current_Fill_Index] + Max_General_Duration
+
+            Data_df_TQDM.update(1) 
+    Data_df_TQDM.close()
+
+    return Events

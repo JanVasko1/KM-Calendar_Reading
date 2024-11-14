@@ -1,3 +1,4 @@
+import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame, Series
 import pandas
 import json
@@ -21,12 +22,6 @@ def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
     Duration_dt = Time2 - Time1
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
-
-def Dataframe_sort(Dataframe: DataFrame, Sort: bool) -> None:
-    # Sort DAtaframe and reindex 
-    Dataframe.sort_values(by=["Start_Date", "Start_Time"], ascending=[Sort, Sort], axis=0, inplace = True)
-    Dataframe.reset_index(inplace=True)
-    Dataframe.drop(labels=["index"], inplace=True, axis=1)
 
 def Days_Handler(Events: DataFrame) -> list:
     Days_List = Events["Start_Date"].tolist()
@@ -105,7 +100,7 @@ def Find_Conflit_in_DF(Check_DF: DataFrame) -> DataFrame:
         Check_DF.at[Event_Index, "Conflict_indexes"] = Event_Conflict_indexes
         Check_DF.at[Event_Index, "Start_with_Event"] = Event_Start_with_indexes
         
-    Dataframe_sort(Dataframe=Check_DF, Sort=True) 
+    Check_DF = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Check_DF, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
     return Check_DF
 
 def removing_elements(my_list: list, element) -> list:
@@ -173,7 +168,7 @@ def Event_Middle_Cut(Conflict_df: DataFrame, Event_Index: int, Data: Series, Eve
         return False
 
 def Parralel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
-    Dataframe_sort(Dataframe=Conflict_df, Sort=False) 
+    Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[False, False]) 
     Rerutn = False
     for row in Conflict_df.iterrows():
         # Define current row as pandas Series
@@ -314,7 +309,7 @@ def Parralel_Events(Events: DataFrame):
                         Conflict_df = Parralel_Events_Handler(Conflict_df=Conflict_df)
                                 
                         # Duration change
-                        Dataframe_sort(Dataframe=Conflict_df, Sort=True) 
+                        Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
                         for row in Conflict_df.iterrows():
                             row_Series = pandas.Series(row[1])
                             Event_Start_Time = row_Series["Start_Time"]
