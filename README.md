@@ -173,7 +173,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 
 - has 2 methods for Events start at the same time:
     - `Use_Shorter` --> will consider the shortest event as first pick
-    - `Use_Longer` --> will consider the shortest event as first pick
+    - `Use_Longer` --> will consider the longest event as first pick
 
 > [!CAUTION]
 > Use_Longer --> Under development (now is defaulty used Use_Shorter)
