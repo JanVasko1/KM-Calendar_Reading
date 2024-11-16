@@ -131,14 +131,14 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     
     # ------------------------------ Statistics ------------------------------ #
     #! Total Statistics
-    print("\n----------- Totals -----------")
+    print("\n---------------------------------------------------------------------------------- Totals ----------------------------------------------------------------------------------")
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
     print(f" Total: {Total_Duration_hours} hours")
     print(f" Average: {Mean_Duration_hours} hours per Event")
 
     #! Project Statistics
-    print("\n--------------------------- Projects ----------------------------")
+    print("\n---------------------------------------------------------------------------------- Projects ----------------------------------------------------------------------------------")
     Events_Project_GR = Events.loc[:, ["Project", "Duration_H"]]
     Events_Project_Sum = Events_Project_GR.groupby(["Project"]).sum()
     Events_Project_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
@@ -158,7 +158,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     print(Events_Project_Concanet)
 
     #! Activity Statistics
-    print("\n----------------- Activity -----------------")
+    print("\n---------------------------------------------------------------------------------- Activity ----------------------------------------------------------------------------------")
     Events_Activity_GR = Events.loc[:, ["Activity", "Duration_H"]]
     Events_Activity_Sum = Events_Activity_GR.groupby(["Activity"]).sum()
     Events_Activity_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
@@ -178,7 +178,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     print(Events_Activity_Concanet)
 
     #! WeekDays Statistics
-    print("\n--------------------------------------------- Weekday --------------------------------------------")
+    print("\n---------------------------------------------------------------------------------- Weekday ----------------------------------------------------------------------------------")
     WeekDays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     Events_WeekDays = pandas.DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
     Events_WeekDays_GR = Events.loc[:, ["Start_Date", "Project", "Activity", "Duration_H"]]
@@ -273,7 +273,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     print(Events_WeekDays)
 
     #! Week Statistics
-    print("\n-------------------------------------- Weeks --------------------------------------")
+    print("\n---------------------------------------------------------------------------------- Weeks ----------------------------------------------------------------------------------")
     Events_Weeks_GR = Events.loc[:, ["Start_Date", "Project", "Duration_H"]]
     Events_Weeks_GR["Week"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_Week)
     Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_WeekDay)
@@ -325,7 +325,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     print(Events_Weeks)
     
     #! TimeSheet Details
-    print("\n------------------------------------------------------------------------------ TimeSheet ------------------------------------------------------------------------------")
+    print("\n---------------------------------------------------------------------------------- TimeSheet ----------------------------------------------------------------------------------")
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]
