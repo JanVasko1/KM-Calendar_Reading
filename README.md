@@ -68,7 +68,7 @@ There must be special Events created for each day and special behavior must be f
 This first part of program is used to download events from calendar
 
 ### <span style="color:blue;">Sharepoint</span>
-- Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days
+- Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days (when working from home, you have to be on KM VPN) 
 
 - Setup data must be correctly maintained to have a correct link to proper TimeSheet Excel on Sharepoint 
     - `Authentication`
