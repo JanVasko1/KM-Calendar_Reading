@@ -13,6 +13,8 @@ File.close()
 
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
+Activity_Method = Settings["Event_Handler"]["Activity"]["Method"]
+Project_Method = Settings["Event_Handler"]["Project"]["Method"]
 
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
@@ -148,24 +150,29 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         Body = Event.Body
 
         # Project --> secure only one be used outlook can have 2: Use first one only
-        Multiple_Projects = Project.find("; ")
-        if Multiple_Projects != -1:
-            Project_list = Project.split("; ")
-            Project = Project_list[0]
+        if Project_Method == "Events":
+            Multiple_Projects = Project.find("; ")
+            if Multiple_Projects != -1:
+                Project_list = Project.split("; ")
+                Project = Project_list[0]
+            else:
+                Project = ""
         else:
-            pass
+            Project = ""
 
         # Activity --> in the Body as predefined text
-        Activity = ""
-        Activity_occurence = Body.find("Activity: ")
+        if Activity_Method == "Events":    
+            Activity_occurence = Body.find("Activity: ")
 
-        if Activity_occurence != -1:
-            body_split = Body.split("Activity: ")
-            Sub_body_split = str(body_split[1]).split("\r\n")
-            Activity = Sub_body_split[0]
-            Activity = Activity.rstrip(" ")
+            if Activity_occurence != -1:
+                body_split = Body.split("Activity: ")
+                Sub_body_split = str(body_split[1]).split("\r\n")
+                Activity = Sub_body_split[0]
+                Activity = Activity.rstrip(" ")
+            else:
+                Activity = ""
         else:
-            pass     
+            Activity = ""
 
         # Location --> Get only Meeting Room
         if Location != "":
