@@ -156,7 +156,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
                 Project_list = Project.split("; ")
                 Project = Project_list[0]
             else:
-                Project = ""
+                pass
         else:
             Project = ""
 
