@@ -136,9 +136,9 @@ def Download_Events() -> DataFrame:
             pass
 
     # Engine selection
-    if Download_Source == "Outlook_classic":
+    if Download_Source == "Outlook_Client":
         Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
-    elif Download_Source == "API_Exchange_server":
+    elif Download_Source == "Exchange":
         Events_Process_df = Exchange.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
     else:
         print(f"Download source is not supported (Outlook_clasic, API_Exchange_server), current is {Download_Source}, change it in SEttings.json.")
