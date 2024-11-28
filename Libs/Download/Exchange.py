@@ -21,7 +21,7 @@ BusyStatus_List = Defaults_Lists.Busy_Status_List()
 def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
 
     # Replace with your actual email and password
-    credentials = Credentials("Jan.Vasko@konicaminolta.eu", "1x810fklL...")
+    credentials = Credentials("Jan.Vasko@konicaminolta.eu", "password")
     account = Account("Jan.Vasko@konicaminolta.eu", credentials=credentials, autodiscover=True)
     appts = account.inbox.all().order_by('-datetime_received')[:10]      # Fiktivní promněná pro testování pouze 
 
