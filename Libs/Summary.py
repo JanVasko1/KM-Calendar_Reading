@@ -279,7 +279,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_WeekDay)
     Weeks_list = list(set(Events_Weeks_GR["Week"]))
     Weeks_list.sort()
-    Events_Weeks = pandas.DataFrame(index=Weeks_list, columns=["Days", "Days w/o weekend", "Total Events", "Total[H]", "Average[H]", "40H Utilization[%]"])
+    Events_Weeks = pandas.DataFrame(index=Weeks_list, columns=["Days", "Days w/o weekend", "Total Events", "Total[H]", "Average[H]", "Week Utilization[%]", "Active Days Utilization[%]"])
 
     for Week in Weeks_list:
         Week_days_count = 0
@@ -304,11 +304,13 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
             Filtered_Df_wo = Events_Weeks_GR[mask1 & mask2 & mask3]
             Week_days_list_wo = list(set(Filtered_Df_wo["Start_Date"]))
             Week_days_count_wo = len(Week_days_list_wo)
+            Active_days_Hours = Week_days_count * 8
 
             Total_Count = round(Filtered_Df["Project"].count(), 0)
             Total_Hours = round(Filtered_Df["Duration_H"].sum(), 2)
             Average_Hours = round(Total_Hours / Week_days_count_wo, 2)
             Week_Utilization = round(Total_Hours / 40 * 100, 2)
+            Active_Days_Utilization = round(Total_Hours / Active_days_Hours * 100, 2)
 
         # Update
         Events_Weeks.at[Week, "Days"] = Week_days_count
@@ -316,7 +318,8 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
         Events_Weeks.at[Week, "Total Events"] = Total_Count
         Events_Weeks.at[Week, "Total[H]"] = Total_Hours
         Events_Weeks.at[Week, "Average[H]"] = Average_Hours
-        Events_Weeks.at[Week, "40H Utilization[%]"] = Week_Utilization
+        Events_Weeks.at[Week, "Week Utilization[%]"] = Week_Utilization
+        Events_Weeks.at[Week, "Active Days Utilization[%]"] = Active_Days_Utilization
 
         del Filtered_Df
 
