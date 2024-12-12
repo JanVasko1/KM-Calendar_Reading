@@ -26,10 +26,11 @@ BusyStatus_List = Defaults_Lists.Busy_Status_List()
 def Download_Events() -> DataFrame:
     # Date Selection
     while True:
-        Auto_download = input(f"\n Do you want to auto downlaod missing days from Sharepoit? [Y/N]?")
+        Auto_download = input(f" Do you want to auto downlaod missing days from Sharepoit? [Y/N]?")
         Auto_download = Auto_download.upper()
 
         if Auto_download == "Y":
+            print(f"\n---------- Sharepoint ----------")
             # Authentication
             s_aut = Authentication.Authentication()
 
@@ -93,9 +94,9 @@ def Download_Events() -> DataFrame:
 
         elif Auto_download == "N":
             # Manually select dates
-            print("\n Manually select dates:")
-            Input_Start_Date = input("""Set the Start Date in format "YYYY-MM-DD"/"t": """)
-            Input_End_Date = input("""Set the End Date in format "YYYY-MM-DD"/"t": """)
+            print(" Manually select dates:")
+            Input_Start_Date = input("""  Set the Start Date in format "YYYY-MM-DD"/"t": """)
+            Input_End_Date = input("""  Set the End Date in format "YYYY-MM-DD"/"t": """)
 
             # Prepare dates for download
             Input_Start_Date = Input_Start_Date.upper()

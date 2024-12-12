@@ -117,5 +117,5 @@ def Upload(Events: DataFrame) -> None:
         TimeSheets_df = Get_Table_Data(ws=TimeSpent_ws, data_boundary=data_boundary)
         A_Cell, E_Cell = Timesheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
         print(f"First Cell: {A_Cell}, {E_Cell}")
-        #! Dodělat
+        #! Dodělat --> automatically upload to Sharepoint only to new lines "Paste as text only"
 

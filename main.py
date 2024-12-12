@@ -23,10 +23,12 @@ Time_format = Settings["General"]["Formats"]["Time"]
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 # Download Events
+print(f"\n---------- Downloader ----------")
 Events = Downloader.Download_Events()
 Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
 # Process Events
+print(f"\n---------- Process Events ----------")
 Events = Divide_Events.OverMidnight_Events(Events=Events)
 Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
