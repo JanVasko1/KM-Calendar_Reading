@@ -86,10 +86,7 @@ This first part of program is used to download events from calendar
 
 ### <span style="color:blue;">Methods</span>
 - `Outlook_classic` --> download events from Outlook (classic) application installed on Windows, there is draback, must be only one account in Outlook client
-- `API_Exchange_server` --> download events directly from Exchange Server for defined User
-
-> [!CAUTION]
-> API_Exchange_server --> Under Developemnt
+- `Exchange` --> download events directly from Exchange Server for defined User
 
 # Events Handlers
 Here are steps which process the downloaded date into the shape suitable for TimeSheets

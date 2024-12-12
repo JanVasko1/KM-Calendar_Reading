@@ -12,7 +12,6 @@ import Libs.Summary as Summary
 import Libs.Sharepoint.Sharepoint as Sharepoint
 import Libs.Defaults_Lists as Defaults_Lists
 
-from pandas import DataFrame
 import json
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #

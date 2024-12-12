@@ -1,7 +1,7 @@
 {
     "General":{
         "Downloader": {
-            "Source": "Outlook_Client",
+            "Source": "Exchange",
             "Outlook": {
                 "Calendar": "Jan.Vasko@konicaminolta.eu"
             },
@@ -16,7 +16,8 @@
         },
         "Formats": {
             "Date": "%Y-%m-%d",
-            "Time": "%H:%M"
+            "Time": "%H:%M",
+            "Exchange_DateTime": "%Y-%m-%dT%H:%M:%S"
         },
         "Person": {
             "Code": "CZ011845",

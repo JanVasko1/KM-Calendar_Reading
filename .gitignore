@@ -3,3 +3,4 @@
 Operational/*
 __pycache__
 Test*
+Exchange.env

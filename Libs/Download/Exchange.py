@@ -1,11 +1,14 @@
 # Import Libraries
 import json
 from pandas import DataFrame as DataFrame
+from dotenv import load_dotenv
+import os
+import requests
 from datetime import datetime
 from tqdm import tqdm
+import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
-from exchangelib import Credentials, Account
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
@@ -14,42 +17,47 @@ File.close()
 
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
+Exchange_DateTime_format = Settings["General"]["Formats"]["Exchange_DateTime"]
+Exchange_Busy_Status_List = Defaults_Lists.Exchange_Busy_Status_List()
+Busy_Status_List = Defaults_Lists.Busy_Status_List()
 
-BusyStatus_List = Defaults_Lists.Busy_Status_List()
+# ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
+def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
+    # Count duration between 2 datetime in minues
+    Duration_dt = Time2 - Time1
+    Duration = int(Duration_dt.total_seconds() // 60)
+    return Duration
 
-# ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
-
-    # Replace with your actual email and password
-    credentials = Credentials("Jan.Vasko@konicaminolta.eu", "password")
-    account = Account("Jan.Vasko@konicaminolta.eu", credentials=credentials, autodiscover=True)
-    appts = account.inbox.all().order_by('-datetime_received')[:10]      # Fiktivní promněná pro testování pouze 
-
-    for item in appts:
-        print(item.subject, item.sender, item.datetime_received)
-
-    # Access Outlook and get the events from the calendar
-
-    Events_downloaded = {}
-    Counter = 0
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(len(appts)),desc=f"{now}>> Downloader")
-    for indx, Event in enumerate(appts):
-        Subject = str(Event.Subject)
-        Start_Date_dt = datetime(year=Event.Start.year, month=Event.Start.month, day=Event.Start.day, hour=Event.Start.hour, minute=Event.Start.minute)
+def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -> None:
+    for Event in Events["value"]:
+        Subject = str(Event["subject"])
+        Start_Date_correction = str(Event["start"]["dateTime"])
+        Start_Date_correction = Start_Date_correction.split(sep=".")
+        Start_Date_dt = datetime.strptime(Start_Date_correction[0], Exchange_DateTime_format)
         Start_Date = Start_Date_dt.strftime(Date_format)
         Start_Time = Start_Date_dt.strftime(Time_format)
-        End_Date_dt = datetime(year=Event.End.year, month=Event.End.month, day=Event.End.day, hour=Event.End.hour, minute=Event.End.minute)
+        End_Date_correction = str(Event["end"]["dateTime"])
+        End_Date_correction = End_Date_correction.split(sep=".")
+        End_Date_dt = datetime.strptime(End_Date_correction[0], Exchange_DateTime_format)
         End_Date = End_Date_dt.strftime(Date_format)
         End_Time = End_Date_dt.strftime(Time_format)
-        Duration = int(Event.duration)
-        Project = str(Event.Categories)
-        Recurring = Event.IsRecurring
-        Busyindex = int(Event.BusyStatus)
-        Busy_Status = BusyStatus_List[Busyindex]
-        Location = str(Event.Location)
-        All_Day_Event = Event.AllDayEvent
-        Body = Event.Body
+        Duration = Duration_Couter(Time1=Start_Date_dt, Time2=End_Date_dt)
+        Project_list = Event["categories"]
+        if len(Project_list) == 0:
+            Project = ""
+        else:
+            Project = "; ".join(Project_list)
+        Recurring = Event["recurrence"]
+        if not Recurring:
+            Recurring = False
+        else:
+            Recurring = True
+        Busy_Status = Event["showAs"]
+        Busyindex = Exchange_Busy_Status_List.index(Busy_Status)
+        Busy_Status = Busy_Status_List[Busyindex]
+        Location = Event["location"]["displayName"]
+        All_Day_Event = Event["isAllDay"]
+        Body = Event["bodyPreview"]
 
         # Project --> secure only one be used outlook can have 2: Use first one only
         Project = Downloader_Helpers.Project_handler(Project=Project)
@@ -61,10 +69,79 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         Location = Downloader_Helpers.Location_handler(Location=Location)
 
         # Udpate End_Date for all Day Event and split them to every day event
-        Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
+        Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
 
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
+    return Counter
+
+# ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
+def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
+    import getpass
+    # Laod OAuth2 info
+    load_dotenv(dotenv_path=f"Libs\\Download\\Exchange.env")
+    client_id = os.getenv("client_id")
+    client_secret = os.getenv("client_secret")
+    tenant_id = os.getenv("tenant_id")
+    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    password = getpass.getpass(f"Write your {username} password:")
+
+    if not client_id:
+        raise ValueError("No client_id found. Check your .env file.")
+    if not client_secret:
+        raise ValueError("No client_secret found. Check your .env file.")
+    if not tenant_id:
+        raise ValueError("No tenant_id found. Check your .env file.")
+
+    # OAuth2 authentification at KM Azure
+    url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+    payload = {
+        "grant_type": "client_credentials",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "scope": "https://graph.microsoft.com/.default",
+        "username": username,
+        "password": password}
+    response = requests.post(url=url, data=payload)
+    tokens = response.json()
+    access_token = tokens["access_token"]
+
+    # Update filters
+    Filter_Start_Date = Filter_Start_Date + "T00:00:00Z"
+    Filter_End_Date = Filter_End_Date + "T23:59:59Z"
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "Prefer": 'outlook.timezone="Europe/Paris"'}
+
+    params = {
+        "startDateTime": Filter_Start_Date,
+        "endDateTime": Filter_End_Date,
+        "$orderby": f"start/dateTime desc",
+        "$top": 1000,
+        "$count": "true",
+        "$select": "subject, start, end, categories, recurrence, showAs, location, isAllDay, bodyPreview"}
+
+    Events_downloaded = {}
+    events_url = f"https://graph.microsoft.com/v1.0/users/{username}/calendar/calendarView"
+    events_response = requests.get(url=events_url, headers=headers, params=params)
+
+    Counter = 0 
+    if response.status_code == 200:
+        # Init page 
+        Events = events_response.json()
+        Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter) 
+
+        # Check if there are more pages of results 
+        while '@odata.nextLink' in Events:
+            next_link = Events['@odata.nextLink']
+            response = requests.get(next_link, headers=headers) 
+            if response.status_code == 200: 
+                Events = response.json()
+                Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
+    else:
+        print(f"Not possible to download from Excange (Response Code: {response.status_code}), will try to download from Outlook Clasic Client.")
+        Events_downloaded = {}
+        Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 
     # Crop edge dates as they were added in previous step
     Events_Process = Downloader_Helpers.Crop_edge_days_Events(Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Date_format=Date_format)
