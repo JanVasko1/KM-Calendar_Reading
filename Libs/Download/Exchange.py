@@ -82,7 +82,9 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     client_secret = os.getenv("client_secret")
     tenant_id = os.getenv("tenant_id")
     username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-    password = getpass.getpass(f"Write your {username} password:")
+    print(f"\n---------- Exchange server ----------")
+    print(f" Account: {username}")
+    password = getpass.getpass(f" Password:")
 
     if not client_id:
         raise ValueError("No client_id found. Check your .env file.")
