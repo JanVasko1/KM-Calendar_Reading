@@ -565,7 +565,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     Subject_Text.pack(side="top", padx=10, pady=10)
 
     # Add Button
-    Button_Download = Elements.Get_Button_Small(Frame=Frame_Button_Area)
+    Button_Download = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
     Button_Download.configure(text="Add", command = lambda:Add_Skip_Event())
     Button_Download.pack(side="top", padx=10, pady=10)
 
@@ -626,7 +626,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Coverage_Text.pack(side="top", padx=10, pady=10)
 
     # Add Button
-    Button_Download = Elements.Get_Button_Small(Frame=Frame_Imput_Area)
+    Button_Download = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Download.configure(text="Add", command = lambda:Add_Empty_Event())
     Button_Download.pack(side="top", padx=10, pady=10)
 
@@ -745,7 +745,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Sunday_Check_Frame.pack(side="left", padx=5, pady=5)
 
     # Add Button
-    Button_Download = Elements.Get_Button_Small(Frame=Frame_Imput_Area)
+    Button_Download = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Download.configure(text="Add", command = lambda:Add_Schedule_Event())
     Button_Download.pack(side="top", padx=10, pady=10)
 
@@ -807,7 +807,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Activity_Option.pack(side="top", padx=10, pady=10)
 
     # Add Button
-    Button_Add_AutoFill = Elements.Get_Button_Small(Frame=Frame_Imput_Area)
+    Button_Add_AutoFill = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Add_AutoFill.configure(text="Add", command = lambda:Add_AutoFill_Event())
     Button_Add_AutoFill.pack(side="top", padx=10, pady=10)
 

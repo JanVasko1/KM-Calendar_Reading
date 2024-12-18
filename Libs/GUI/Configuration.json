@@ -733,7 +733,28 @@
 
         },
         "Triple_size": {
-
+            "width": 1500,
+            "height": 500,
+            "colors": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "border_width": 1,
+            "border_color": [
+                "#2C2C2C",
+                "#111219"
+            ],
+            "color_phase": "horizontal",
+            "orientation": "horizontal",
+            "header_color": "#00a9ff",
+            "corner_radius": 15,
+            "hover_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "wraplength": 180,
+            "justify": "center",
+            "anchor": "c"
         }
     },
     "ProgressBar": {

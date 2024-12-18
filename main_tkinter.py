@@ -1,8 +1,10 @@
 # Import Libraries
+import time
 import customtkinter
 from customtkinter import CTk, CTkFrame, IntVar, StringVar, CTkProgressBar
 
 import Libs.GUI.Widgets as Widgets
+import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -28,29 +30,34 @@ def Theme_Change():
 
 #? ----------------------------------------------------- Buttong ----------------------------------------------------- #
 # -------------------------------------------- Page Listing -------------------------------------------- #
-def Clear_Pages(Pre_Working_Frame:CTk|CTkFrame) -> None:
+def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
     # Find
     for widget in Pre_Working_Frame.winfo_children():
         widget.destroy()
 
 def Show_Download_Page() -> None:
-    Clear_Pages(Pre_Working_Frame=Frame_Work_Area_Detail)
+    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+    time.sleep(0.1)
     Page_Download(Frame=Frame_Work_Area_Detail)
 
 def Show_Dashboard_Page() -> None:
-    Clear_Pages(Pre_Working_Frame=Frame_Work_Area_Detail)
+    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+    time.sleep(0.1)
     Page_Dashboard(Frame=Frame_Work_Area_Detail)
 
 def Show_Data_Page() -> None:
-    Clear_Pages(Pre_Working_Frame=Frame_Work_Area_Detail)
+    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+    time.sleep(0.1)
     Page_Data(Frame=Frame_Work_Area_Detail)
 
 def Show_Information_Page() -> None:
-    Clear_Pages(Pre_Working_Frame=Frame_Work_Area_Detail)
+    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+    time.sleep(0.1)
     Page_Information(Frame=Frame_Work_Area_Detail)
 
 def Show_Settings_Page() -> None:
-    Clear_Pages(Pre_Working_Frame=Frame_Work_Area_Detail)
+    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+    time.sleep(0.1)
     Page_Settings(Frame=Frame_Work_Area_Detail)
     
 # -------------------------------------------- Functionss -------------------------------------------- #
@@ -70,6 +77,17 @@ def Download_Project_Activities():
     #! Doděalt --> spstit bakcendový process stažení Projektů a Aktivit, aktualizovat promněný a uložit do Settings.json
     print("Download_Project_Activities")
     pass
+
+def Data_Upload():
+    #! Doděalt --> Automaticky spustit Uplod na Sharepoint Backendový process
+    print("Data_Upload")
+    pass
+
+def Data_Excel():
+    #! Doděalt --> otevřít excel na kopírování
+    print("Data_Excel")
+    pass
+
 
 
 #? ----------------------------------------------------- Pages ----------------------------------------------------- #
@@ -130,7 +148,7 @@ def Get_Icon(Frame: CTk|CTkFrame, Icon: str) -> CTkFrame:
     Frame_Icon = Elements.Get_Button_Picture_SideBar(Frame=Frame)
     Image_Settings = Elements.Get_Image(light_image=f"Libs\\GUI\\Icons\\{Icon}_Light.png", dark_image=f"Libs\\GUI\\Icons\\{Icon}_Dark.png", size= (30, 30))
     Frame_Icon.configure(image=Image_Settings, text="")
-    Frame_Icon.pack(padx=5, pady=10)
+    Frame_Icon.pack(padx=5, pady=10, expand=True)
     return Frame_Icon
 
 def Get_Side_Bar(Frame: CTk|CTkFrame) -> CTkFrame:
@@ -176,7 +194,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Progress_Bar.grid(row=0, column=1, padx=5, pady=0, sticky="e")
 
     # Download Button
-    Button_Download = Elements.Get_Button_Normal(Frame=Frame_Download_State_Area)
+    Button_Download = Elements.Get_Button(Frame=Frame_Download_State_Area, Button_Size="Normal")
     Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar))
     Button_Download.grid(row=0, column=0, padx=5, pady=0, sticky="e")
 
@@ -208,11 +226,46 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     pass    
 
 # -------------------------------------------- Data Page -------------------------------------------- #
-def Page_Data():
-    pass
+def Page_Data(Frame: CTk|CTkFrame):
+    # Divide Working Page into 2 parts
+    Frame_Data_Button_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+
+    Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Download_Work_Detail_Area.grid_propagate(False)
+    Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+
+    # ------------------------- State Area -------------------------#
+    # Download Button
+    Button_Upload = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
+    Button_Upload.configure(text="Upload", command = lambda:Data_Upload())
+    Button_Upload.grid(row=0, column=0, padx=5, pady=0, sticky="e")
+
+    # Download Button
+    Button_Excel = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
+    Button_Excel.configure(text="Excel", command = lambda:Data_Excel())
+    Button_Excel.grid(row=0, column=1, padx=5, pady=0, sticky="e")
+
+    # ------------------------- Work Area -------------------------#
+    Data_Text = Elements.Get_Text_H1(Frame=Frame_Download_Work_Detail_Area)
+    Data_Text.configure(text="Data")
+    Data_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+
+    Frame_Data = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Data", Additional_Text="", Widget_size="Triple_size")
+    Frame_Body = Frame_Data.children["!ctkframe2"]
+    Frame_Data.pack(side="top", padx=15, pady=15)
+
+    # Data table
+    #! Dodělat --> mám Issue na Stuck overFlow https://github.com/Akascape/CTkTable/issues/116
+    """Rows = 1
+    Values = []
+    Data_Table = Elements.Get_Table(Frame=Frame_Download_Work_Detail_Area, Table_size="Triple_size")
+    Data_Table.configure(columns=8, rows=Rows, values=Values)
+    Data_Table.pack(side="top", expand=True, fill="both", padx=10, pady=10)"""
+
 
 # -------------------------------------------- Information Page -------------------------------------------- #
-def Page_Information():
+def Page_Information(Frame: CTk|CTkFrame):
     pass
 
 # -------------------------------------------- Settings Page -------------------------------------------- #
@@ -227,12 +280,12 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     # ------------------------- State Area -------------------------#
     # Add Button - Downlaod New Project and Activities
-    Button_Download_Pro_Act = Elements.Get_Button_Normal(Frame=Frame_Settings_State_Area)
+    Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Proejct/Activity", command = lambda:Download_Project_Activities())
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=0, sticky="e")
 
     # Add Button - Save Settings
-    Button_Save_Settings = Elements.Get_Button_Normal(Frame=Frame_Settings_State_Area)
+    Button_Save_Settings = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Save_Settings.configure(text="Save", command = lambda:Save_Settings())
     Button_Save_Settings.grid(row=0, column=1, padx=5, pady=0, sticky="e")
 
@@ -311,7 +364,7 @@ window.minsize(width=1800, height=1000)
 """
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
 customtkinter.set_appearance_mode("system")  # default
-#pywinstyles.apply_style(window=window, style="acrylic")
+pywinstyles.apply_style(window=window, style="acrylic")
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames

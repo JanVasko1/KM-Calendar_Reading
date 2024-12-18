@@ -47,13 +47,13 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Value.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
     if Field_Type == "Input_Normal":
-        Field_Normal = Elements.Get_Field_Normal(Frame=Frame_Value)
+        Field_Normal = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal")
         Field_Normal.pack(side="left", fill="none")
     elif Field_Type == "Password_Normal":
         Field_Normal = Elements.Get_Password_Normal(Frame=Frame_Value)
         Field_Normal.pack(side="left", fill="none")
     elif Field_Type == "Input_Small":
-        Field_Small = Elements.Get_Field_Small(Frame=Frame_Value)
+        Field_Small = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal")
         Frame_Area.configure(width=300)
         Field_Small.pack(side="left", fill="none")
     elif Field_Type == "Input_RadioButton":
@@ -92,7 +92,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Value1.pack_propagate(False)
     Frame_Value1.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
-    Field_Small1 = Elements.Get_Field_Small(Frame=Frame_Value1)
+    Field_Small1 = Elements.Get_Entry_Field(Frame=Frame_Value1, Field_Size="Small")
     Field_Small1.pack(side="right", fill="none")
 
     # Frame Space between Label and Value
@@ -108,7 +108,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Value2.pack_propagate(False)
     Frame_Value2.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
-    Field_Small2 = Elements.Get_Field_Small(Frame=Frame_Value2)
+    Field_Small2 = Elements.Get_Entry_Field(Frame=Frame_Value2, Field_Size="Small")
     Field_Small2.pack(side="left", fill="none")
 
     return Frame_Area

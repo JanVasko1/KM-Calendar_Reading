@@ -8,8 +8,8 @@ Configuration = json.load(fp=File)
 File.close()
 
 # ---------------------------------------------- Font ----------------------------------------------# 
-def Get_Font_Text_Main() -> CTkFont:
-    Configuration_Font_Text_Main = Configuration["Font"]["Main"]
+def Get_Font(Font_Size: str) -> CTkFont:
+    Configuration_Font_Text_Main = Configuration["Font"][f"{Font_Size}"]
     Font_Text_Main = CTkFont(
         family = Configuration_Font_Text_Main["family"],
         size = Configuration_Font_Text_Main["size"],
@@ -19,56 +19,25 @@ def Get_Font_Text_Main() -> CTkFont:
         overstrike = Configuration_Font_Text_Main["overstrike"])
     return Font_Text_Main
 
-def Get_Font_Text_H1() -> CTkFont:
-    Configuration_Font_Text_H1 = Configuration["Font"]["H1"]
-    Font_Text_H1 = CTkFont(
-        family = Configuration_Font_Text_H1["family"],
-        size = Configuration_Font_Text_H1["size"],
-        weight = Configuration_Font_Text_H1["weight"],
-        slant = Configuration_Font_Text_H1["slant"],
-        underline = Configuration_Font_Text_H1["underline"],
-        overstrike = Configuration_Font_Text_H1["overstrike"])
-    return Font_Text_H1
-
-def Get_Font_Column_Header() -> CTkFont:
-    Configuration_Font_Column_Header = Configuration["Font"]["Column_Header"]
-    Font_Column_Header = CTkFont(
-        family = Configuration_Font_Column_Header["family"],
-        size = Configuration_Font_Column_Header["size"],
-        weight = Configuration_Font_Column_Header["weight"],
-        slant = Configuration_Font_Column_Header["slant"],
-        underline = Configuration_Font_Column_Header["underline"],
-        overstrike = Configuration_Font_Column_Header["overstrike"])
-    return Font_Column_Header
-
-def Get_Font_Column_Header_Additional() -> CTkFont:
-    Configuration_Font_Column_Header_Additional = Configuration["Font"]["Column_Header_Additional"]
-    Font_Column_Header_Additional = CTkFont(
-        family = Configuration_Font_Column_Header_Additional["family"],
-        size = Configuration_Font_Column_Header_Additional["size"],
-        weight = Configuration_Font_Column_Header_Additional["weight"],
-        slant = Configuration_Font_Column_Header_Additional["slant"],
-        underline = Configuration_Font_Column_Header_Additional["underline"],
-        overstrike = Configuration_Font_Column_Header_Additional["overstrike"])
-    return Font_Column_Header_Additional
-
-def Get_Font_Text_Field() -> CTkFont:
-    Configuration_Font_Field_Label = Configuration["Font"]["Field_Label"]
-    Font_Text_Field_Label = CTkFont(
-        family = Configuration_Font_Field_Label["family"],
-        size = Configuration_Font_Field_Label["size"],
-        weight = Configuration_Font_Field_Label["weight"],
-        slant = Configuration_Font_Field_Label["slant"],
-        underline = Configuration_Font_Field_Label["underline"],
-        overstrike = Configuration_Font_Field_Label["overstrike"])
-    return Font_Text_Field_Label
-
 # ---------------------------------------------- Text ----------------------------------------------# 
+def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
+    Configuration_Text_Main = Configuration["Texts"][f"{Label_Size}"]
+    Text_Main = CTkLabel(
+        master = Frame,
+        font = Get_Font(Font_Size=Font_Size),
+        height = Configuration_Text_Main["height"],
+        fg_color = Configuration_Text_Main["fg_color"],
+        text_color = tuple(Configuration_Text_Main["text_color"]),
+        anchor = Configuration_Text_Main["anchor"],
+        padx = Configuration_Text_Main["padx"],
+        pady = Configuration_Text_Main["pady"])
+    return Text_Main
+
 def Get_Text_Main(Frame: CTk|CTkFrame) -> CTkLabel:
     Configuration_Text_Main = Configuration["Texts"]["Main"]
     Text_Main = CTkLabel(
         master = Frame,
-        font = Get_Font_Text_Main(),
+        font = Get_Font(Font_Size="Main"),
         height = Configuration_Text_Main["height"],
         fg_color = Configuration_Text_Main["fg_color"],
         text_color = tuple(Configuration_Text_Main["text_color"]),
@@ -81,7 +50,7 @@ def Get_Text_H1(Frame: CTk|CTkFrame) -> CTkLabel:
     Configuration_Text_H1 = Configuration["Texts"]["H1"]
     Text_H1 = CTkLabel(
         master = Frame,
-        font = Get_Font_Text_H1(),
+        font = Get_Font(Font_Size="H1"),
         height = Configuration_Text_H1["height"],
         fg_color = Configuration_Text_H1["fg_color"],
         text_color = tuple(Configuration_Text_H1["text_color"]),
@@ -94,7 +63,7 @@ def Get_Text_Column_Header(Frame: CTk|CTkFrame) -> CTkLabel:
     Configuration_Text_Column_Header = Configuration["Texts"]["Column_Header"]
     Text_Column_Header = CTkLabel(
         master = Frame,
-        font = Get_Font_Column_Header(),
+        font = Get_Font(Font_Size="Column_Header"),
         height = Configuration_Text_Column_Header["height"],
         fg_color = Configuration_Text_Column_Header["fg_color"],
         text_color = tuple(Configuration_Text_Column_Header["text_color"]),
@@ -107,7 +76,7 @@ def Get_Text_Column_Header_additional(Frame: CTk|CTkFrame) -> CTkLabel:
     Configuration_Text_Column_Header_Additional = Configuration["Texts"]["Column_Header_Additional"]
     Text_Column_Header = CTkLabel(
         master = Frame,
-        font = Get_Font_Column_Header_Additional(),
+        font = Get_Font(Font_Size="Column_Header_Additional"),
         height = Configuration_Text_Column_Header_Additional["height"],
         fg_color = Configuration_Text_Column_Header_Additional["fg_color"],
         text_color = tuple(Configuration_Text_Column_Header_Additional["text_color"]),
@@ -120,7 +89,7 @@ def Get_Text_Field(Frame: CTk|CTkFrame) -> CTkLabel:
     Configuration_Text_Field_Label = Configuration["Texts"]["Field_Label"]
     Text_Field_Label = CTkLabel(
         master = Frame,
-        font = Get_Font_Text_Field(),
+        font = Get_Font(Font_Size="Field_Label"),
         height = Configuration_Text_Field_Label["height"],
         fg_color = Configuration_Text_Field_Label["fg_color"],
         text_color = tuple(Configuration_Text_Field_Label["text_color"]),
@@ -130,11 +99,11 @@ def Get_Text_Field(Frame: CTk|CTkFrame) -> CTkLabel:
     return Text_Field_Label
 
 # ---------------------------------------------- Buttons ----------------------------------------------# 
-def Get_Button_Normal(Frame: CTk|CTkFrame) -> CTkButton:
-    Configuration_Button_Normal = Configuration["Buttons"]["Normal"]
+def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
+    Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
     Button_Normal = CTkButton(
         master = Frame,
-        font = Get_Font_Text_Field(),
+        font = Get_Font(Font_Size="Field_Label"),
         width = Configuration_Button_Normal["width"],
         height = Configuration_Button_Normal["height"],
         corner_radius = Configuration_Button_Normal["corner_radius"],
@@ -146,23 +115,6 @@ def Get_Button_Normal(Frame: CTk|CTkFrame) -> CTkButton:
         hover_color = tuple(Configuration_Button_Normal["hover_color"]),
         anchor = Configuration_Button_Normal["anchor"])
     return Button_Normal
-
-def Get_Button_Small(Frame: CTk|CTkFrame) -> CTkButton:
-    Configuration_Button_Small = Configuration["Buttons"]["Small"]
-    Button_Small = CTkButton(
-        master = Frame,
-        font = Get_Font_Text_Field(),
-        width = Configuration_Button_Small["width"],
-        height = Configuration_Button_Small["height"],
-        corner_radius = Configuration_Button_Small["corner_radius"],
-        border_width = Configuration_Button_Small["border_width"],
-        border_color = tuple(Configuration_Button_Small["border_color"]),
-        bg_color = Configuration_Button_Small["bg_color"],
-        fg_color = tuple(Configuration_Button_Small["fg_color"]),
-        hover = Configuration_Button_Small["hover"],
-        hover_color = tuple(Configuration_Button_Small["hover_color"]),
-        anchor = Configuration_Button_Small["anchor"])
-    return Button_Small
 
 def Get_Button_Picture_SideBar(Frame: CTk|CTkFrame) -> CTkButton:
     Configuration_Button_Picture_SideBar = Configuration["Buttons"]["Picture_SideBar"]
@@ -210,27 +162,27 @@ def Get_Button_Picture_Theme(Frame: CTk|CTkFrame) -> CTkButton:
     return Button_Picture_Theme
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
-def Get_Field_Normal(Frame: CTk|CTkFrame) -> CTkEntry:
-    Configuration_Field_Normal = Configuration["Fields"]["Entry"]["Normal"]
-    Field_Normal = CTkEntry(
+def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str) -> CTkEntry:
+    Configuration_Field = Configuration["Fields"]["Entry"][f"{Field_Size}"]
+    Field = CTkEntry(
         master = Frame,
-        font = Get_Font_Text_Field(),
-        width = Configuration_Field_Normal["width"],
-        height = Configuration_Field_Normal["height"],
-        corner_radius = Configuration_Field_Normal["corner_radius"],
-        border_width = Configuration_Field_Normal["border_width"],
-        border_color = Configuration_Field_Normal["border_color"],
-        bg_color = Configuration_Field_Normal["bg_color"],
-        fg_color = tuple(Configuration_Field_Normal["fg_color"]),
-        text_color = tuple(Configuration_Field_Normal["text_color"]),
-        placeholder_text_color = tuple(Configuration_Field_Normal["placeholder_text_color"]))
-    return Field_Normal
+        font = Get_Font(Font_Size="Field_Label"),
+        width = Configuration_Field["width"],
+        height = Configuration_Field["height"],
+        corner_radius = Configuration_Field["corner_radius"],
+        border_width = Configuration_Field["border_width"],
+        border_color = Configuration_Field["border_color"],
+        bg_color = Configuration_Field["bg_color"],
+        fg_color = tuple(Configuration_Field["fg_color"]),
+        text_color = tuple(Configuration_Field["text_color"]),
+        placeholder_text_color = tuple(Configuration_Field["placeholder_text_color"]))
+    return Field
 
 def Get_Password_Normal(Frame: CTk|CTkFrame) -> CTkEntry:
     Configuration_Password_Normal = Configuration["Fields"]["Entry"]["Normal"]
     Password_Normal = CTkEntry(
         master = Frame,
-        font = Get_Font_Text_Field(),
+        font = Get_Font(Font_Size="Field_Label"),
         width = Configuration_Password_Normal["width"],
         height = Configuration_Password_Normal["height"],
         corner_radius = Configuration_Password_Normal["corner_radius"],
@@ -242,22 +194,6 @@ def Get_Password_Normal(Frame: CTk|CTkFrame) -> CTkEntry:
         placeholder_text_color = tuple(Configuration_Password_Normal["placeholder_text_color"]),
         show="*")
     return Password_Normal
-
-def Get_Field_Small(Frame: CTk|CTkFrame) -> CTkEntry:
-    Configuration_Field_Small = Configuration["Fields"]["Entry"]["Small"]
-    Field_Small = CTkEntry(
-        master = Frame,
-        font = Get_Font_Text_Field(),
-        width = Configuration_Field_Small["width"],
-        height = Configuration_Field_Small["height"],
-        corner_radius = Configuration_Field_Small["corner_radius"],
-        border_width = Configuration_Field_Small["border_width"],
-        border_color = Configuration_Field_Small["border_color"],
-        bg_color = Configuration_Field_Small["bg_color"],
-        fg_color = tuple(Configuration_Field_Small["fg_color"]),
-        text_color = tuple(Configuration_Field_Small["text_color"]),
-        placeholder_text_color = tuple(Configuration_Field_Small["placeholder_text_color"]))
-    return Field_Small
 
 def Get_RadioButton_Normal(Frame: CTk|CTkFrame) -> CTkRadioButton:
     Configuration_RadioButton_Normal = Configuration["Fields"]["RadioButton"]["Normal"]
@@ -280,7 +216,7 @@ def Get_Option_Menu(Frame: CTk|CTkFrame) -> CTkOptionMenu:
     Configuration_Option_Menu = Configuration["Fields"]["OptionMenu"]["Normal"]
     Option_Menu = CTkOptionMenu(
         master = Frame,
-        font = Get_Font_Text_Field(),
+        font = Get_Font(Font_Size="Field_Label"),
         width = Configuration_Option_Menu["width"],
         height = Configuration_Option_Menu["height"],
         corner_radius = Configuration_Option_Menu["corner_radius"],
@@ -302,7 +238,7 @@ def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
     Configuration_Check_Box = Configuration["Fields"]["CheckBox"]["Normal"]
     Check_Box = CTkCheckBox(
         master = Frame,
-        font = Get_Font_Text_Field(),
+        font = Get_Font(Font_Size="Field_Label"),
         width = Configuration_Check_Box["width"],
         height = Configuration_Check_Box["height"],
         checkbox_width = Configuration_Check_Box["checkbox_width"],
@@ -452,7 +388,7 @@ def Get_Table(Frame: CTk|CTkFrame, Table_size: str) -> CTkTable:
     Configuration_Table_Single = Configuration["Tables"][f"{Table_size}"]
     Table_Single = CTkTable(
         master = Frame,
-        font = Get_Font_Text_Field(),
+        font = Get_Font(Font_Size="Field_Label"),
         width = Configuration_Table_Single["width"],
         height = Configuration_Table_Single["height"],
         colors = Configuration_Table_Single["colors"],
