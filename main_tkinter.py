@@ -76,7 +76,7 @@ def Save_Settings():
     pass
 
 def Download_Project_Activities():
-    dialog = CTkInputDialog(text="Write your password", title="Sharepoint Login")
+    dialog = Elements.Get_DialogWindow(text="Write your password", title="Sharepoint Login", Dialog_Type="Password")
     SP_Password = dialog.get_input()
 
     import Libs.Sharepoint.Sharepoint as Sharepoint
