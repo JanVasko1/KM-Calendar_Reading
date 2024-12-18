@@ -1,7 +1,8 @@
 from customtkinter import CTk, CTkFrame
 import Libs.GUI.Elements as Elements
+from CTkToolTip import CTkToolTip
 
-def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str) -> CTkFrame:
+def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str) -> CTkFrame:
     # Build base Frame for Widget
     Frame_Single_Body = Elements.Get_Widget_Frame_Body(Frame=Frame, Widget_size=Widget_size)
     Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
@@ -12,6 +13,10 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
     Header_text = Elements.Get_Text_Column_Header(Frame=Frame_Single_Header)
     Header_text.configure(text=f"{Name}")
     Header_text.pack(side="left", fill="x")
+
+    Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon="Question", Icon_Size=(15, 15), Picture_size="Question")
+    Icon_Label_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
+    CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
 
     Header_text_Additional = Elements.Get_Text_Column_Header_additional(Frame=Frame_Single_Header)
     Header_text_Additional.configure(text=f"{Additional_Text}")

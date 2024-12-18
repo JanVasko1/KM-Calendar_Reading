@@ -184,6 +184,20 @@
                 "#00a9ff"
             ],
             "anchor": "center"
+        },
+        "Question": {
+            "width": 20,
+            "height": 20,
+            "corner_radius": 0,
+            "border_width": 0,
+            "bg_color": "transparent",
+            "fg_color": "transparent",
+            "hover": false,
+            "hover_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "anchor": "center"
         }
     },
     "Fields": {
@@ -665,7 +679,7 @@
     "TabView": {
         "Normal": {
             "width": 1670,
-            "height": 880,
+            "height": 10,
             "corner_radius": 15,
             "border_width": 1, 
             "border_color": [
@@ -784,6 +798,43 @@
         },
         "Vertical": {
 
+        }
+    },
+    "InputDialog": {
+        "Password": {
+            "fg_color": [
+                "#f7f9f9",
+                "#2C2C2C"
+            ],
+            "text_color": [
+                "#FF9797",
+                "#FF9797"
+            ],
+            "button_fg_color": [
+                "#0088CC",
+                "#0088CC"
+            ],
+            "button_hover_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "button_text_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "entry_fg_color": [
+                "#0088CC",
+                "#0088CC"
+            ],
+            "entry_border_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "entry_text_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "password": true
         }
     }
 }

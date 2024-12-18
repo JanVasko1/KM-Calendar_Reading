@@ -1,4 +1,4 @@
-from customtkinter import CTkButton, CTk, CTkFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkTextbox, CTkOptionMenu, CTkCheckBox, CTkProgressBar
+from customtkinter import CTkButton, CTk, CTkFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkTextbox, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkToplevel
 from CTkTable import CTkTable
 import json
 from PIL import Image
@@ -115,51 +115,6 @@ def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
         hover_color = tuple(Configuration_Button_Normal["hover_color"]),
         anchor = Configuration_Button_Normal["anchor"])
     return Button_Normal
-
-def Get_Button_Picture_SideBar(Frame: CTk|CTkFrame) -> CTkButton:
-    Configuration_Button_Picture_SideBar = Configuration["Buttons"]["Picture_SideBar"]
-    Button_Picture_SideBar = CTkButton(
-        master = Frame,
-        width = Configuration_Button_Picture_SideBar["width"],
-        height = Configuration_Button_Picture_SideBar["height"],
-        corner_radius = Configuration_Button_Picture_SideBar["corner_radius"],
-        border_width = Configuration_Button_Picture_SideBar["border_width"],
-        bg_color = Configuration_Button_Picture_SideBar["bg_color"],
-        fg_color = Configuration_Button_Picture_SideBar["fg_color"],
-        hover = Configuration_Button_Picture_SideBar["hover"],
-        hover_color = tuple(Configuration_Button_Picture_SideBar["hover_color"]),
-        anchor = Configuration_Button_Picture_SideBar["anchor"])
-    return Button_Picture_SideBar
-
-def Get_Button_Picture_Logo(Frame: CTk|CTkFrame) -> CTkButton:
-    Configuration_Picture_Logo = Configuration["Buttons"]["Picture_Logo"]
-    Button_Picture_SideBar = CTkButton(
-        master = Frame,
-        width = Configuration_Picture_Logo["width"],
-        height = Configuration_Picture_Logo["height"],
-        corner_radius = Configuration_Picture_Logo["corner_radius"],
-        border_width = Configuration_Picture_Logo["border_width"],
-        bg_color = Configuration_Picture_Logo["bg_color"],
-        fg_color = Configuration_Picture_Logo["fg_color"],
-        hover = Configuration_Picture_Logo["hover"],
-        hover_color = tuple(Configuration_Picture_Logo["hover_color"]),
-        anchor = Configuration_Picture_Logo["anchor"])
-    return Button_Picture_SideBar
-
-def Get_Button_Picture_Theme(Frame: CTk|CTkFrame) -> CTkButton:
-    Configuration_Button_Picture_Theme = Configuration["Buttons"]["Picture_Theme"]
-    Button_Picture_Theme = CTkButton(
-        master = Frame,
-        width = Configuration_Button_Picture_Theme["width"],
-        height = Configuration_Button_Picture_Theme["height"],
-        corner_radius = Configuration_Button_Picture_Theme["corner_radius"],
-        border_width = Configuration_Button_Picture_Theme["border_width"],
-        bg_color = Configuration_Button_Picture_Theme["bg_color"],
-        fg_color = Configuration_Button_Picture_Theme["fg_color"],
-        hover = Configuration_Button_Picture_Theme["hover"],
-        hover_color = tuple(Configuration_Button_Picture_Theme["hover_color"]),
-        anchor = Configuration_Button_Picture_Theme["anchor"])
-    return Button_Picture_Theme
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
 def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str) -> CTkEntry:
@@ -405,12 +360,33 @@ def Get_Table(Frame: CTk|CTkFrame, Table_size: str) -> CTkTable:
     return Table_Single
 
 # ---------------------------------------------- Images ----------------------------------------------# 
+def Get_Icon(Frame: CTk|CTkFrame, Icon: str, Icon_Size: tuple, Picture_size: str) -> CTkFrame:
+    Frame_Icon = Get_Icon_Button(Frame=Frame, Picture_size=Picture_size)
+    Image_Settings = Get_Image(light_image=f"Libs\\GUI\\Icons\\{Icon}_Light.png", dark_image=f"Libs\\GUI\\Icons\\{Icon}_Dark.png", size=Icon_Size)
+    Frame_Icon.configure(image=Image_Settings, text="")
+    return Frame_Icon
+
 def Get_Image(light_image: str, dark_image: str, size: tuple) -> CTkImage:
     Picture = CTkImage(
         light_image = Image.open(f"{light_image}"),
         dark_image = Image.open(f"{dark_image}"),
         size = size)
     return Picture
+
+def Get_Icon_Button(Frame: CTk|CTkFrame, Picture_size: str) -> CTkButton:
+    Configuration_Button_Picture_SideBar = Configuration["Buttons"][f"{Picture_size}"]
+    Button_Picture_SideBar = CTkButton(
+        master = Frame,
+        width = Configuration_Button_Picture_SideBar["width"],
+        height = Configuration_Button_Picture_SideBar["height"],
+        corner_radius = Configuration_Button_Picture_SideBar["corner_radius"],
+        border_width = Configuration_Button_Picture_SideBar["border_width"],
+        bg_color = Configuration_Button_Picture_SideBar["bg_color"],
+        fg_color = Configuration_Button_Picture_SideBar["fg_color"],
+        hover = Configuration_Button_Picture_SideBar["hover"],
+        hover_color = tuple(Configuration_Button_Picture_SideBar["hover_color"]),
+        anchor = Configuration_Button_Picture_SideBar["anchor"])
+    return Button_Picture_SideBar
 
 # ---------------------------------------------- Progress Bar ----------------------------------------------# 
 def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -> CTkProgressBar:
@@ -429,3 +405,22 @@ def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -
         determinate_speed = Configuration_ProgressBar["determinate_speed"],
         indeterminate_speed = Configuration_ProgressBar["indeterminate_speed"])
     return Progress_Bar
+
+
+# ---------------------------------------------- InputDialog ----------------------------------------------# 
+def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
+    Configuration_Dialog = Configuration["InputDialog"][f"{Dialog_Type}"]
+    Dialog = CTkInputDialog(
+        text=text,
+        title=title,
+        font = Get_Font(Font_Size="Field_Label"),
+        fg_color = tuple(Configuration_Dialog["fg_color"]),
+        text_color = tuple(Configuration_Dialog["text_color"]),
+        button_fg_color = tuple(Configuration_Dialog["button_fg_color"]),
+        button_hover_color = tuple(Configuration_Dialog["button_hover_color"]),
+        button_text_color = tuple(Configuration_Dialog["button_text_color"]),
+        entry_fg_color = tuple(Configuration_Dialog["entry_fg_color"]),
+        entry_border_color = tuple(Configuration_Dialog["entry_border_color"]),
+        entry_text_color = tuple(Configuration_Dialog["entry_text_color"]),
+        password = Configuration_Dialog["password"])
+    return Dialog

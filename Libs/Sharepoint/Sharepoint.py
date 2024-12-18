@@ -134,9 +134,9 @@ def Upload(Events: DataFrame) -> None:
         print(f"First Cell: {A_Cell}, {E_Cell}")
         #! Dodělat --> automatically upload to Sharepoint only to new lines "Paste as text only"
 
-def Get_Project_and_Activity() -> None:
+def Get_Project_and_Activity(Input_Password: str|None) -> None:
     # Authentication
-    s_aut = Authentication.Authentication()
+    s_aut = Authentication.Authentication(Input_Password=Input_Password)
 
     # Download
     Downloaded = Download_Excel(s_aut=s_aut)

@@ -159,17 +159,29 @@
                 "Vacation": {
                     "Search_Text": "Dovolená",
                     "All_Day": "Calendar",
-                    "Part_Day": "Event"
+                    "Part_Day": "Event",
+                    "Vacation_Option_List": [
+                        "Event",
+                        "Calendar"
+                    ]
                 },
                 "HomeOffice": {
                     "Search_Text": "Home Office",
                     "All_Day": "Calendar",
-                    "Part_Day": "Event"
+                    "Part_Day": "Event",
+                    "HomeOffice_Option_List": [
+                        "Event",
+                        "Calendar"
+                    ]
                 },
                 "Lunch": {
                     "Search_Text": "Lunch",
                     "All_Day": "",
-                    "Part_Day": ""
+                    "Part_Day": "",
+                    "Lunch_Option_List": [
+                        "Event",
+                        "Calendar"
+                    ]
                 }
             },
             "Parralel_Events": {

@@ -4,6 +4,7 @@ import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 from customtkinter import CTk, CTkFrame, IntVar, StringVar
 from CTkTable import CTkTable
+from CTkToolTip import CTkToolTip
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -23,20 +24,23 @@ Format_Date = Settings["General"]["Formats"]["Date"]
 Format_Time = Settings["General"]["Formats"]["Time"]
 Format_SP_DateTime = Settings["General"]["Formats"]["Exchange_DateTime"]
 
-# Lunch
-Lunch_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
-Lunch_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["All_Day"]
-Lunch_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
-
 # Vacation
 Vacation_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Search_Text"]
 Vacation_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["All_Day"]
 Vacation_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Part_Day"]
+Vacation_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Vacation_Option_List"]
 
 # HomeOffice
 HomeOffice_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Search_Text"]
 HomeOffice_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["All_Day"]
 HomeOffice_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Part_Day"]
+HomeOffice_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["HomeOffice_Option_List"]
+
+# Lunch
+Lunch_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
+Lunch_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["All_Day"]
+Lunch_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
+Lunch_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Lunch_Option_List"]
 
 # Events Skip
 Skip_Events_list = Settings["Event_Handler"]["Events"]["Skip"]
@@ -80,8 +84,10 @@ Start_Event_json = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Star
 End_Event_json = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
 
 # Projects and Activities
-Project_List = Settings["Event_Handler"]["Project"]["Project_List"]
-Activity_List = Settings["Event_Handler"]["Activity"]["Activity_List"]
+Project_List = list(Settings["Event_Handler"]["Project"]["Project_List"])
+Project_List.insert(0, "")
+Activity_List = list(Settings["Event_Handler"]["Activity"]["Activity_List"])
+Activity_List.insert(0, "")
 Location_List = Settings["Event_Handler"]["Location"]["Location_List"]
 
 # Parralle Events
@@ -116,7 +122,7 @@ def Add_AutoFill_Event() -> None:
 # ---------------------------------------------------------- Download Page Widgets ---------------------------------------------------------- #
 def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Timesheets for donwload process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -148,7 +154,7 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFram
 
 def Download_Manual(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for downlaod process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -174,7 +180,7 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
 
 def Download_Exchange(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Exchange Server", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Exchange Server", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Konica Minolta Exchange server directly.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -199,7 +205,7 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
 
 def Download_Outlook(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook Classic Client", Additional_Text="Must be updated befor download", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook Classic Client", Additional_Text="Must be updated befor download", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Windows installtion of Outlook Classic client.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -228,7 +234,7 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
 # ------------- General -------------#
 def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -254,7 +260,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Formats", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Formats", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Dates formats used in program - non-changable.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -287,7 +293,7 @@ def Settings_Parralel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Start_Method_Variable = StringVar(master=Frame, value=Start_Method)
     
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Parralel Events Handler", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Parralel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Envents when program found that they are parrallel.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -312,7 +318,7 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------- Calendar -------------#
 def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Working Hours", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Working Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -376,7 +382,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Vacation Hours", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Vacation Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -440,7 +446,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Workday - Start / End Events", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Workday - Start / End Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Events Subject which defines Start and End time of each day in Calendar.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -461,86 +467,95 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------- Events - General -------------#
 def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
+    Lunch_All_Variable = StringVar(master=Frame, value=Lunch_All_Day)
+    Lunch_Part_Variable = StringVar(master=Frame, value=Lunch_Part_Day)
+
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     # Field - Seach Text
-    Search_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_Text_Var = Search_Text.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Text_Var.configure(placeholder_text=Lunch_Search_Text)
-    Search_Text.pack(side="top", padx=10, pady=10)
+    Search_Text_Lunch = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_Lunch_Var = Search_Text_Lunch.children["!ctkframe3"].children["!ctkentry"]
+    Search_Text_Lunch_Var.configure(placeholder_text=Lunch_Search_Text)
+    Search_Text_Lunch.pack(side="top", padx=10, pady=10)
 
     # Field - All Day
-    All_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_Normal") 
-    All_Day_Text_Var = All_Day.children["!ctkframe3"].children["!ctkentry"]
-    All_Day_Text_Var.configure(placeholder_text=Lunch_All_Day)
-    All_Day.pack(side="top", padx=10, pady=10)
+    All_Day_Lunch = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_Lunch_Var = All_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
+    All_Day_Lunch_Var.configure(values=Lunch_Day_Option_List, variable=Lunch_All_Variable)
+    All_Day_Lunch.pack(side="top", padx=10, pady=10)
 
-    # Field - All Day
-    Part_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_Normal") 
-    Part_Day_Text_Var = Part_Day.children["!ctkframe3"].children["!ctkentry"]
-    Part_Day_Text_Var.configure(placeholder_text=Lunch_Part_Day)
-    Part_Day.pack(side="top", padx=10, pady=10)
+    # Field - Part Day
+    Part_Day_Lunch = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day_Lunch_Var = Part_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Part_Day_Lunch_Var.configure(values=Lunch_Day_Option_List, variable=Lunch_Part_Variable)
+    Part_Day_Lunch.pack(side="top", padx=10, pady=10)
 
     return Frame_Main
 
 def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
+    Vacation_All_Variable = StringVar(master=Frame, value=Vacation_All_Day)
+    Vacation_Part_Variable = StringVar(master=Frame, value=Vacation_Part_Day)
+
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Vacation")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     # Field - Seach Text
-    Search_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_Text_Var = Search_Text.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Text_Var.configure(placeholder_text=Vacation_Search_Text)
-    Search_Text.pack(side="top", padx=10, pady=10)
+    Search_Text_Vacation = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_Vacation_Var = Search_Text_Vacation.children["!ctkframe3"].children["!ctkentry"]
+    Search_Text_Vacation_Var.configure(placeholder_text=Vacation_Search_Text)
+    Search_Text_Vacation.pack(side="top", padx=10, pady=10)
 
     # Field - All Day
-    All_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_Normal") 
-    All_Day_Text_Var = All_Day.children["!ctkframe3"].children["!ctkentry"]
-    All_Day_Text_Var.configure(placeholder_text=Vacation_All_Day)
-    All_Day.pack(side="top", padx=10, pady=10)
+    All_Day_Vacation = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_Vacation_Var = All_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
+    All_Day_Vacation_Var.configure(values=Vacation_Day_Option_List, variable=Vacation_All_Variable)
+    All_Day_Vacation.pack(side="top", padx=10, pady=10)
 
     # Field - Part Day
-    Part_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_Normal") 
-    Part_Day_Text_Var = Part_Day.children["!ctkframe3"].children["!ctkentry"]
-    Part_Day_Text_Var.configure(placeholder_text=Vacation_Part_Day)
-    Part_Day.pack(side="top", padx=10, pady=10)
+    Part_Day_Vacation = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day_Vacation_Var = Part_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Part_Day_Vacation_Var.configure(values=Vacation_Day_Option_List, variable=Vacation_Part_Variable)
+    Part_Day_Vacation.pack(side="top", padx=10, pady=10)
 
     return Frame_Main
 
 def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
+    HomeOffice_All_Variable = StringVar(master=Frame, value=HomeOffice_All_Day)
+    HomeOffice_Part_Variable = StringVar(master=Frame, value=HomeOffice_Part_Day)
+
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - HomeOffice", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - HomeOffice", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of HomeOffice")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     # Field - Seach Text
-    Search_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_Text_Var = Search_Text.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Text_Var.configure(placeholder_text=HomeOffice_Search_Text)
-    Search_Text.pack(side="top", padx=10, pady=10)
+    Search_Text_HomeOffice = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_HomeOffice_Var = Search_Text_HomeOffice.children["!ctkframe3"].children["!ctkentry"]
+    Search_Text_HomeOffice_Var.configure(placeholder_text=HomeOffice_Search_Text)
+    Search_Text_HomeOffice.pack(side="top", padx=10, pady=10)
 
     # Field - All Day
-    All_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_Normal") 
-    All_Day_Text_Var = All_Day.children["!ctkframe3"].children["!ctkentry"]
-    All_Day_Text_Var.configure(placeholder_text=HomeOffice_All_Day)
-    All_Day.pack(side="top", padx=10, pady=10)
+    All_Day_HomeOffice = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_HomeOffice_Var = All_Day_HomeOffice.children["!ctkframe3"].children["!ctkoptionmenu"]
+    All_Day_HomeOffice_Var.configure(values=HomeOffice_Day_Option_List, variable=HomeOffice_All_Variable)
+    All_Day_HomeOffice.pack(side="top", padx=10, pady=10)
 
     # Field - Part Day
-    Part_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_Normal") 
-    Part_Day_Text_Var = Part_Day.children["!ctkframe3"].children["!ctkentry"]
-    Part_Day_Text_Var.configure(placeholder_text=HomeOffice_Part_Day)
+    Part_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day_HomeOffice_Var = Part_Day.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Part_Day_HomeOffice_Var.configure(values=HomeOffice_Day_Option_List, variable=HomeOffice_Part_Variable)
     Part_Day.pack(side="top", padx=10, pady=10)
 
     return Frame_Main
 
 def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="List of text be skipped as TimeSheet Entry in the case that part of text is found in Event Subject.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -565,9 +580,10 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     Subject_Text.pack(side="top", padx=10, pady=10)
 
     # Add Button
-    Button_Download = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
-    Button_Download.configure(text="Add", command = lambda:Add_Skip_Event())
-    Button_Download.pack(side="top", padx=10, pady=10)
+    Button_Skip_Add = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
+    Button_Skip_Add.configure(text="Add", command = lambda:Add_Skip_Event())
+    Button_Skip_Add.pack(side="top", padx=10, pady=10)
+    CTkToolTip(widget=Button_Skip_Add, message="Add selected subejct to skip list")
 
     # Skip Events Table
     #! Dodělat --> mám Issue na Stuck overFlow https://github.com/Akascape/CTkTable/issues/116
@@ -586,7 +602,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Action_Variable = StringVar(master=Frame, value=Activity_List[0])
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="These evets will be user according to coverage", Widget_size="Triple_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="These evets will be used according to coverage", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space program use fill them by this setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -626,9 +642,10 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Coverage_Text.pack(side="top", padx=10, pady=10)
 
     # Add Button
-    Button_Download = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Download.configure(text="Add", command = lambda:Add_Empty_Event())
-    Button_Download.pack(side="top", padx=10, pady=10)
+    Button_Empty_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
+    Button_Empty_Add.configure(text="Add", command = lambda:Add_Empty_Event())
+    Button_Empty_Add.pack(side="top", padx=10, pady=10)
+    CTkToolTip(widget=Button_Empty_Add, message="Add selected combination into the list")
 
     # Empty Events table
     #! Dodělat --> mám Issue na Stuck overFlow https://github.com/Akascape/CTkTable/issues/116
@@ -654,7 +671,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Sun_Var = IntVar(master=Frame, value=0)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="Shedule Periodical Events", Widget_size="Triple_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="Shedule Periodical Events", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -707,7 +724,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
 
     Week_Days_Frame = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column")
     Week_Days_Frame.configure(width=300)
-    Week_Days_Frame.pack(side="top", fill="both", expand=False, padx=0, pady=0)
+    Week_Days_Frame.pack(side="top", fill="none", expand=False, padx=0, pady=0)
 
     Monday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Mon") 
     Monday_Check_Frame_Var = Monday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
@@ -745,9 +762,10 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Sunday_Check_Frame.pack(side="left", padx=5, pady=5)
 
     # Add Button
-    Button_Download = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Download.configure(text="Add", command = lambda:Add_Schedule_Event())
-    Button_Download.pack(side="top", padx=10, pady=10)
+    Button_Schedule_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
+    Button_Schedule_Add.configure(text="Add", command = lambda:Add_Schedule_Event())
+    Button_Schedule_Add.pack(side="top", padx=10, pady=10)
+    CTkToolTip(widget=Button_Schedule_Add, message="Add selected combination into the list")
 
     # Scheduled Events table
     #! Dodělat --> mám Issue na Stuck overFlow https://github.com/Akascape/CTkTable/issues/116
@@ -767,7 +785,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Location_Variable = StringVar(master=Frame, value=Location_List[0])
     
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="AutoFilling Rules - Seach text in Subject", Widget_size="Triple_size")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="AutoFilling Rules - Seach text in Subject", Widget_size="Triple_size", Widget_Label_Tooltip="Simple ruless applied on TimeSheet Entry if part/whole Search Text is found in Subject. If empty then do not fill it or overwrite it.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
     Frame_Main.pack(side="top", padx=15, pady=15)
 
@@ -810,6 +828,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Add_AutoFill = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Add_AutoFill.configure(text="Add", command = lambda:Add_AutoFill_Event())
     Button_Add_AutoFill.pack(side="top", padx=10, pady=10)
+    CTkToolTip(widget=Button_Add_AutoFill, message="Add selected combination into the list")
 
     # AutoFilling Table
     #! Dodělat --> mám Issue na Stuck overFlow https://github.com/Akascape/CTkTable/issues/116
