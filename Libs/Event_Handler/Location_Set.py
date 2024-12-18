@@ -1,14 +1,12 @@
+# Import Libraries
 from pandas import DataFrame
 import pandas
-import json
 from tqdm import tqdm
 from datetime import datetime
+import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Default_Location = Settings["Event_Handler"]["Location"]["Default"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #

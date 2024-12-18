@@ -1,3 +1,4 @@
+# Import Libraries
 import Libs.Download.Downloader as Downloader
 
 import Libs.Event_Handler.Fill_Empty_Place as Fill_Empty_Place
@@ -12,13 +13,8 @@ import Libs.Summary as Summary
 import Libs.Sharepoint.Sharepoint as Sharepoint
 import Libs.Defaults_Lists as Defaults_Lists
 
-import json
-
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Time_format = Settings["General"]["Formats"]["Time"]
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #

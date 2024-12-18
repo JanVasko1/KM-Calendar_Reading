@@ -2,13 +2,9 @@ import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame
 from datetime import datetime
 import pandas
-import json
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Personnel_number = Settings["General"]["Person"]["Code"]
 Date_Format = Settings["General"]["Formats"]["Date"]
 Time_Format = Settings["General"]["Formats"]["Time"]
@@ -134,8 +130,11 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     print("\n---------------------------------------------------------------------------------- Totals ----------------------------------------------------------------------------------")
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
+    Event_counts = Events.shape[0]
     print(f" Total: {Total_Duration_hours} hours")
     print(f" Average: {Mean_Duration_hours} hours per Event")
+    print(f" Event Count: {Event_counts}")
+    print(f" Total Coverage: {Mean_Duration_hours} %")  #! Dodělat --> spočítat coverage (někde už to spočítany je)
 
     #! Project Statistics
     print("\n---------------------------------------------------------------------------------- Projects ----------------------------------------------------------------------------------")

@@ -1,5 +1,4 @@
 # Import Libraries
-import json
 from pandas import DataFrame as DataFrame
 from dotenv import load_dotenv
 import os
@@ -11,10 +10,7 @@ import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
 Exchange_DateTime_format = Settings["General"]["Formats"]["Exchange_DateTime"]

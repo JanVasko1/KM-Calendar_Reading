@@ -1,21 +1,20 @@
-#into je tu: D:\Time_Sheet_App
+# Import Libraries
 import Libs.Sharepoint.Authentication as Authentication
+import Libs.Defaults_Lists as Defaults_Lists
 from openpyxl import load_workbook
 from pandas import DataFrame
 import pandas
 import sharepy
 import json
-from tqdm import tqdm
+
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
 SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
+# ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_Table_Data(ws, data_boundary) -> DataFrame:
     data = ws[data_boundary]
     content = [[str(cell.internal_value) for cell in ent] for ent in data]
@@ -96,6 +95,22 @@ def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     E_Cell = f"E{Excel_row_No}"
     return A_Cell, E_Cell
 
+def Information_Update(Area: str, Field: str, Information: int|str|list) -> None:
+    try:
+        # Load Settings.json
+        Settings = Defaults_Lists.Load_Settings()
+
+        # Update Last date in data dictionary
+        Settings["Event_Handler"][f"{Area}"][Field] = Information
+
+        # Save in Settings.json
+        with open(f"Libs\\Settings.json", mode="wt", encoding="UTF-8", errors="ignore") as file:
+            json.dump(obj=Settings, fp=file, indent=4, default=str, ensure_ascii=False)
+        file.close()
+
+    except Exception as Error:
+        pass
+
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
 def Upload(Events: DataFrame) -> None:
     # Authentication
@@ -106,7 +121,7 @@ def Upload(Events: DataFrame) -> None:
 
     if Downloaded == True:
         # Get WorkSheet
-        TimeSpent_ws = Get_WorkSheet(s_aut=s_aut, Sheet_Name="TimeSpent")
+        TimeSpent_ws = Get_WorkSheet(Sheet_Name="TimeSpent")
 
         # Get Table List from Worksheet
         Table_list = Get_Tables_on_Worksheet(Sheet=TimeSpent_ws)
@@ -119,3 +134,29 @@ def Upload(Events: DataFrame) -> None:
         print(f"First Cell: {A_Cell}, {E_Cell}")
         #! Dodělat --> automatically upload to Sharepoint only to new lines "Paste as text only"
 
+def Get_Project_and_Activity() -> None:
+    # Authentication
+    s_aut = Authentication.Authentication()
+
+    # Download
+    Downloaded = Download_Excel(s_aut=s_aut)
+    
+    if Downloaded == True:
+        Get_Project()
+        Get_Activity()
+        
+def Get_Project() -> None:
+    Projects = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Projects", usecols="A", skiprows=1, nrows=100, header=None)
+    Projects_list = Projects[0].to_list()
+
+    # Save to Settings.json
+    Information_Update(Area="Project", Field="Project_List",  Information=Projects_list)
+    
+def Get_Activity() -> None:
+    Activities = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A", skiprows=1, nrows=100, header=None)
+    Activities_list = Activities[0].to_list()
+    Empty_line_index = Activities_list.index("Activity Relations")
+    Activities_list = Activities_list[:Empty_line_index - 1]
+   
+    # Save to Settings.json
+    Information_Update(Area="Activity", Field="Activity_List",  Information=Activities_list)

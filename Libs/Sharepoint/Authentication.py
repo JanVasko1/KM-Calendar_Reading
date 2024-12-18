@@ -1,12 +1,10 @@
+# Import Libraries
 import sharepy
-import json
 import os
+import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 User_Name = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
 Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 

@@ -1,4 +1,6 @@
+# Import Libraries
 from pandas import DataFrame
+import json
 
 def Busy_Status_List() -> list[str]:
     Busy_Stuses = ["Free", "Tentative", "Busy", "Out of Office", "Working elsewhere"]
@@ -19,3 +21,9 @@ def Dataframe_sort(Sort_Dataframe: DataFrame, Columns_list: list, Accenting_list
     Sort_Dataframe.reset_index(inplace=True)
     Sort_Dataframe.drop(labels=["index"], inplace=True, axis=1)
     return Sort_Dataframe
+
+def Load_Settings() -> dict:
+    File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
+    Settings = json.load(fp=File)
+    File.close()
+    return Settings

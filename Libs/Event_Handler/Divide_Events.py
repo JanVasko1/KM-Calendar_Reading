@@ -1,14 +1,12 @@
+# Import Libraries
 from pandas import DataFrame
 import pandas
-import json
 from datetime import datetime, timedelta
 from tqdm import tqdm
+import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
 

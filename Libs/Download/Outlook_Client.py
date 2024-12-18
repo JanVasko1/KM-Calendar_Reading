@@ -1,5 +1,4 @@
 # Import Libraries
-import json
 from pandas import DataFrame as DataFrame
 from datetime import datetime
 from tqdm import tqdm
@@ -8,12 +7,10 @@ import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
+Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
@@ -22,16 +19,27 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     # Access Outlook and get the events from the calendar
     Outlook = win32com.client.Dispatch("Outlook.Application")
     ns = Outlook.GetNamespace("MAPI")
+
+    # get only mentioned Account
+    account_name = Email
+    account = None
+    for acc in ns.Folders:
+        if acc.Name == account_name:
+            account = acc
+            break
+
+    #! Dodělat --> připojit se pouze k jednomu Account
+
     appts = ns.GetDefaultFolder(9).Items
     appts.Sort("[Start]")
     appts.IncludeRecurrences = True
 
     # download Events within interval or thoes which thin day + Event which are bigger than interval, Event which starts before and finish in interval, and Events which Start within interval, but finish after interval
     appts = appts.Restrict(f"""
-                           ([Start] >= '{Filter_Start_Date}' AND [END] <= '{Filter_End_Date}') OR 
-                           ([Start] < '{Filter_Start_Date}' AND [END] > '{Filter_End_Date}') OR
-                           ([Start] < '{Filter_Start_Date}' AND [Start] < '{Filter_End_Date}' AND [END] >= '{Filter_Start_Date}' AND [END] <= '{Filter_End_Date}') OR
-                           ([Start] >= '{Filter_Start_Date}' AND [Start] <= '{Filter_End_Date}' AND [END] > '{Filter_Start_Date}' AND [END] > '{Filter_End_Date}')""")
+        ([Start] >= '{Filter_Start_Date}' AND [END] <= '{Filter_End_Date}') OR 
+        ([Start] < '{Filter_Start_Date}' AND [END] > '{Filter_End_Date}') OR
+        ([Start] < '{Filter_Start_Date}' AND [Start] < '{Filter_End_Date}' AND [END] >= '{Filter_Start_Date}' AND [END] <= '{Filter_End_Date}') OR
+        ([Start] >= '{Filter_Start_Date}' AND [Start] <= '{Filter_End_Date}' AND [END] > '{Filter_Start_Date}' AND [END] > '{Filter_End_Date}')""")
 
     Events_downloaded = {}
     Counter = 0

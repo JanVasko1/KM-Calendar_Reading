@@ -1,5 +1,4 @@
 # Import Libraries
-import json
 from pandas import DataFrame as DataFrame
 from datetime import datetime, timedelta
 from tqdm import tqdm
@@ -11,10 +10,7 @@ import Libs.Sharepoint.Authentication as Authentication
 import Libs.Sharepoint.Sharepoint as Sharepoint
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-Settings = json.load(fp=File)
-File.close()
-
+Settings = Defaults_Lists.Load_Settings()
 Download_Source = Settings["General"]["Downloader"]["Source"]
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
@@ -41,6 +37,10 @@ def Download_Events() -> DataFrame:
             Downloaded = Sharepoint.Download_Excel(s_aut=s_aut)
 
             if Downloaded == True:
+                # Update Project and Activity list in Settings.json
+                Sharepoint.Get_Project()
+                Sharepoint.Get_Activity()
+
                 # Start/End Date
                 Utilization_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="Utilization")
                 Input_Start_Date_dt = Utilization_Sheet["G2"].value
