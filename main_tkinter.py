@@ -372,7 +372,7 @@ window.minsize(width=1800, height=1000)
 """
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
 customtkinter.set_appearance_mode("system")  # default
-#pywinstyles.apply_style(window=window, style="acrylic")
+#pywinstyles.apply_style(window=window, style="acrylic")     #! Dodělat v knihovně je poznámka, že se má background color natřít na černo aby to fungovalo
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames
