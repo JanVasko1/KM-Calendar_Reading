@@ -221,5 +221,10 @@ Is defined to print statistic and all records of selected period to provide bett
 # Export csv
 The processed result is automatically exported to the defined path and automatically opened by Windows in the format ready to “Copy + Paste” to TimeSheet on Sharepoint
 
+# FrontEnd
+> [!CAUTION]
+> Under Developemnt as whole functionality
+
+
 # Footer
 The Settings.json is real file of Jan Vasko usage
