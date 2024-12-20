@@ -2,7 +2,6 @@
 from pandas import DataFrame
 import pandas
 from datetime import datetime
-from tqdm import tqdm
 import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
@@ -32,8 +31,6 @@ Columns = ["Subject",
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Skip_Events(Events: DataFrame):
     Cumulated_Events = pandas.DataFrame(columns=Columns)
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(Events.shape[0]),desc=f"{now}>> Skip Events")
     for row in Events.iterrows():
         # Define current row as pandas Series
         row_Series = pandas.Series(row[1])
@@ -51,7 +48,5 @@ def Skip_Events(Events: DataFrame):
             Cumulated_Events.loc[Cumulated_Events.shape[0]] = row_Series
         else:
             pass
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
 
     return Cumulated_Events

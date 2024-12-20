@@ -7,8 +7,9 @@ import operator
 import json
 import random
 import warnings
-from tqdm import tqdm
 warnings.filterwarnings('ignore')
+
+from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -131,8 +132,6 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
     # Get Days details from Events
     Days_List = Days_Handler(Events)
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(len(Days_List)),desc=f"{now}>> Fill Empty")
     for Day in Days_List:
         mask1 = Events["Start_Date"] == Day
         Day_Events_df = Events.loc[mask1]
@@ -146,7 +145,6 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             Day_Events_df["Start_Time"] = pandas.to_datetime(Day_Events_df["Start_Time"], format=Time_format)
             Day_Events_df["End_Time"] = pandas.to_datetime(Day_Events_df["End_Time"], format=Time_format)
             Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
-            Data_df_TQDM.update(1)
             continue
         else:
             Day_Start_Time_dt = datetime.strptime(Day_Start_Time, Time_format)
@@ -321,9 +319,6 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             del Day_Events_df
 
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
-    
     return Cumulated_Events
 
 def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
@@ -382,8 +377,6 @@ def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
             Fill_Event_actual_duration_list[Current_Fill_Index] = Fill_Event_actual_duration_list[Current_Fill_Index] + Scheduled_Duration
 
         # General -- recalculate according to coverage
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        Data_df_TQDM = tqdm(total=int(General_df.shape[0]),desc=f"{now}>> Fill Empty - Recalculate accoring coverage")
         while True:
             # Check if any data available
             if General_df.empty:
@@ -430,10 +423,7 @@ def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
                 # Add to proper actual Fill_Event_actual_duration_list
                 Fill_Event_actual_duration_list[Current_Fill_Index] = Fill_Event_actual_duration_list[Current_Fill_Index] + Max_General_Duration
 
-                Data_df_TQDM.update(1) 
-        Data_df_TQDM.close()
-
         return Events
     else:
-        print(f"Sum of all Coverage is not 100%, please re-setup them in .json file.")
+        CTkMessagebox(title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1)
         return Events

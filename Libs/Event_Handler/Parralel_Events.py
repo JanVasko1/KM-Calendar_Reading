@@ -3,7 +3,6 @@ import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame, Series
 import pandas
 from datetime import datetime
-from tqdm import tqdm
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -209,8 +208,6 @@ def Parralel_Events(Events: DataFrame):
         #Get Days details from Events
         Days_List = Days_Handler(Events)
 
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        Data_df_TQDM = tqdm(total=int(len(Days_List)),desc=f"{now}>> Parralel Meetings")
         for Day in Days_List:
             mask1 = Events["Start_Date"] == Day
             Day_Events_df = Events.loc[mask1]
@@ -325,9 +322,6 @@ def Parralel_Events(Events: DataFrame):
                                     
             # Delete variables
             del Non_Conflict_df, Conflict_df, Day_Events_df
-
-            Data_df_TQDM.update(1) 
-        Data_df_TQDM.close()
 
         # Delete helper columns
         Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)

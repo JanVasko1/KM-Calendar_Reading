@@ -126,18 +126,13 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events["Duration_H"] = Events["Duration"].map(lambda x: round(x/60, 2))
     
     # ------------------------------ Statistics ------------------------------ #
-    #! Total Statistics
-    print("\n---------------------------------------------------------------------------------- Totals ----------------------------------------------------------------------------------")
+    # ---------------------------------------------------------------------------------- Totals ----------------------------------------------------------------------------------
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
     Event_counts = Events.shape[0]
-    print(f" Total: {Total_Duration_hours} hours")
-    print(f" Average: {Mean_Duration_hours} hours per Event")
-    print(f" Event Count: {Event_counts}")
-    print(f" Total Coverage: {Mean_Duration_hours} %")  #! Dodělat --> spočítat coverage (někde už to spočítany je)
+    #! Dodělat --> spočítat coverage (někde už to spočítany je) spočítat i ostatní main statistiky!!! a vrátit je zpátky do hlavního programu
 
-    #! Project Statistics
-    print("\n---------------------------------------------------------------------------------- Projects ----------------------------------------------------------------------------------")
+    # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
     Events_Project_GR = Events.loc[:, ["Project", "Duration_H"]]
     Events_Project_Sum = Events_Project_GR.groupby(["Project"]).sum()
     Events_Project_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
@@ -154,10 +149,8 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Project_AverageH_Sumary = round(Project_TotalH_Sumary / Project_Count_Sumary, 2)
     Events_Project_Concanet.loc["Summary"] = [Project_Count_Sumary, Project_TotalH_Sumary, Project_AverageH_Sumary]
     Events_Project_Concanet["Count"] = Events_Project_Concanet["Count"].astype(int)
-    print(Events_Project_Concanet)
 
-    #! Activity Statistics
-    print("\n---------------------------------------------------------------------------------- Activity ----------------------------------------------------------------------------------")
+    # ---------------------------------------------------------------------------------- Activity ---------------------------------------------------------------------------------- #
     Events_Activity_GR = Events.loc[:, ["Activity", "Duration_H"]]
     Events_Activity_Sum = Events_Activity_GR.groupby(["Activity"]).sum()
     Events_Activity_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
@@ -174,10 +167,9 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Activity_AverageH_Sumary = round(Activity_TotalH_Sumary / Activity_Count_Sumary, 2)
     Events_Activity_Concanet.loc["Summary"] = [Activity_Count_Sumary, Activity_TotalH_Sumary, Activity_AverageH_Sumary]
     Events_Activity_Concanet["Count"] = Events_Activity_Concanet["Count"].astype(int)
-    print(Events_Activity_Concanet)
 
-    #! WeekDays Statistics
-    print("\n---------------------------------------------------------------------------------- Weekday ----------------------------------------------------------------------------------")
+
+    # ---------------------------------------------------------------------------------- Weekday ---------------------------------------------------------------------------------- #
     WeekDays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     Events_WeekDays = pandas.DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
     Events_WeekDays_GR = Events.loc[:, ["Start_Date", "Project", "Activity", "Duration_H"]]
@@ -269,10 +261,8 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_WeekDays.loc["Summary w/o weekend"] = [Total_Days_wo, Total_Events_wo, TotalH_wo, AverageH_wo, My_Day_Utilization_wo, KM_Day_Utilization_wo]
     Events_WeekDays["Days Count"] = Events_WeekDays["Days Count"].astype(int)
     Events_WeekDays["Total Events"] = Events_WeekDays["Total Events"].astype(int)
-    print(Events_WeekDays)
 
-    #! Week Statistics
-    print("\n---------------------------------------------------------------------------------- Weeks ----------------------------------------------------------------------------------")
+    # ---------------------------------------------------------------------------------- Weeks ---------------------------------------------------------------------------------- #
     Events_Weeks_GR = Events.loc[:, ["Start_Date", "Project", "Duration_H"]]
     Events_Weeks_GR["Week"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_Week)
     Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_WeekDay)
@@ -324,10 +314,8 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
 
     Events_Weeks["Days"] = Events_Weeks["Days"].astype(int)
     Events_Weeks["Total Events"] = Events_Weeks["Total Events"].astype(int)
-    print(Events_Weeks)
     
-    #! TimeSheet Details
-    print("\n---------------------------------------------------------------------------------- TimeSheet ----------------------------------------------------------------------------------")
+    # ---------------------------------------------------------------------------------- TimeSheet ----------------------------------------------------------------------------------
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]
@@ -336,5 +324,6 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
     Events.to_csv(path_or_buf=f"Operational\\TimeSheets.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-    print(Events)
-    return Events
+
+
+    return Events_Project_Concanet, Events_Activity_Concanet, Events_WeekDays, Events_Weeks, Events

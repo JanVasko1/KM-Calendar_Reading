@@ -1,7 +1,6 @@
 # Import Libraries
 from pandas import DataFrame as DataFrame
 from datetime import datetime, timedelta
-from tqdm import tqdm
 
 import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Download.Exchange as Exchange
@@ -9,9 +8,10 @@ import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Sharepoint.Authentication as Authentication
 import Libs.Sharepoint.Sharepoint as Sharepoint
 
+from CTkMessagebox import CTkMessagebox
+
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-Download_Source = Settings["General"]["Downloader"]["Source"]
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
 Personnel_number = Settings["General"]["Person"]["Code"]
@@ -19,28 +19,17 @@ Personnel_number = Settings["General"]["Person"]["Code"]
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events() -> DataFrame:
+def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> DataFrame:
     # Date Selection
     while True:
-        Auto_download = input(f" Do you want to auto downlaod missing days from Sharepoit? [Y/N]?")
-        Auto_download = Auto_download.upper()
-
-        if Auto_download == "Y":
-            print(f"\n---------- Sharepoint ----------")
+        if Download_Date_Range_Source == "Sharepoint":
             # Authentication
-            s_aut = Authentication.Authentication()
-
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            Data_df_TQDM = tqdm(total=int(1),desc=f"{now}>> Getting Data from Sharepoint")
+            s_aut = Authentication.Authentication(SP_Password=SP_Password)
 
             # Download
             Downloaded = Sharepoint.Download_Excel(s_aut=s_aut)
 
             if Downloaded == True:
-                # Update Project and Activity list in Settings.json
-                Sharepoint.Get_Project()
-                Sharepoint.Get_Activity()
-
                 # Start/End Date
                 Utilization_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="Utilization")
                 Input_Start_Date_dt = Utilization_Sheet["G2"].value
@@ -75,29 +64,18 @@ def Download_Events() -> DataFrame:
 
                     if My_Last_Day_dt >= Today:
                         # Skip whole automatic because it should not load anythin
-                        Data_df_TQDM.update(1) 
-                        Data_df_TQDM.close()
-                        Auto_download = "N"
-                        print(f"Last Day Reported is: {My_Last_Day_dt} --> cannot perform automatic Download. Use Manual.")
-                        continue
+                        CTkMessagebox(title="Error", message=f"Last Day Reported is: {My_Last_Day_dt} --> cannot perform automatic Download. Use Manual.", icon="cancel", fade_in_duration=1)
+                        raise ValueError
+
                     else:
                         Input_Start_Date_dt = My_Last_Day_dt + timedelta(days=1)
             else:
-                print(f"It was not possible to automatically dowload the master data from Sharepoint, please select Start Date and End Date manually.")
-                Auto_download = "N"
+                CTkMessagebox(title="Error", message="It was not possible to automatically dowload the master data from Sharepoint, please select Start Date and End Date manually.", icon="cancel", fade_in_duration=1)
+                raise ValueError
 
-            Data_df_TQDM.update(1) 
-            Data_df_TQDM.close()
+            CTkMessagebox(title="Information", message=f"Dates range to download: \n Date From: {Input_Start_Date_dt.strftime(Date_format)}\n Date To: {Input_End_Date_dt.strftime(Date_format)}", fade_in_duration=1, option_1="OK")
 
-            print(f"Start Date: {Input_Start_Date_dt.strftime(Date_format)}")
-            print(f"End Date: {Input_End_Date_dt.strftime(Date_format)}")
-
-        elif Auto_download == "N":
-            # Manually select dates
-            print(" Manually select dates:")
-            Input_Start_Date = input("""  Set the Start Date in format "YYYY-MM-DD"/"t": """)
-            Input_End_Date = input("""  Set the End Date in format "YYYY-MM-DD"/"t": """)
-
+        elif Download_Date_Range_Source == "Manual":
             # Prepare dates for download
             Input_Start_Date = Input_Start_Date.upper()
             Input_End_Date = Input_End_Date.upper()
@@ -115,15 +93,15 @@ def Download_Events() -> DataFrame:
             else:
                 Input_End_Date_dt = datetime.strptime(Input_End_Date, Date_format)
         else:
-            continue
+            CTkMessagebox(title="Error", message=f"Date source: {Download_Date_Range_Source} is not compatible, should be Sharepoint or Manual. Try again.", icon="cancel", fade_in_duration=1)
+            raise ValueError
         
-
         try:
             # Check if Input_Start_Date <= Input_End_Date
             if Input_Start_Date_dt <= Input_End_Date_dt:
                 pass
             else:
-                print("Start Date is after End Date --> try again.")
+                CTkMessagebox(title="Error", message="Start Date is after End Date --> try again.", icon="cancel", fade_in_duration=1)
                 raise ValueError
 
             # add 1 day 
@@ -133,15 +111,15 @@ def Download_Events() -> DataFrame:
             Filter_End_Date = Filter_End_Date_dt.strftime(Date_format)
             break
         except:
-            print("Something went wrong, try again.")
-            pass
+            CTkMessagebox(title="Error", message="Something went wrong, try again.", icon="cancel", fade_in_duration=1)
+            raise ValueError
 
     # Engine selection
-    if Download_Source == "Outlook_Client":
+    if Download_Data_Source == "Outlook_Client":
         Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
-    elif Download_Source == "Exchange":
-        Events_Process_df = Exchange.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
+    elif Download_Data_Source == "Exchange":
+        Events_Process_df = Exchange.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
     else:
-        print(f"Download source is not supported (Outlook_clasic, API_Exchange_server), current is {Download_Source}, change it in SEttings.json.")
-        exit()
+        CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_clasic, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
+        raise ValueError
     return Events_Process_df

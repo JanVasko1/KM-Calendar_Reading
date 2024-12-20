@@ -1,7 +1,6 @@
 # Import Libraries
 from pandas import DataFrame as DataFrame
 from datetime import datetime
-from tqdm import tqdm
 import win32com.client
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
@@ -43,8 +42,6 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
 
     Events_downloaded = {}
     Counter = 0
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(len(appts)),desc=f"{now}>> Downloader")
     for indx, Event in enumerate(appts):
         Subject = str(Event.Subject)
         Start_Date_dt = datetime(year=Event.Start.year, month=Event.Start.month, day=Event.Start.day, hour=Event.Start.hour, minute=Event.Start.minute)
@@ -73,9 +70,6 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
 
         # Udpate End_Date for all Day Event and split them to every day event
         Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
-
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
 
     # Close Outlook
     Outlook.Quit()

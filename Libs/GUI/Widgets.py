@@ -120,7 +120,7 @@ def Add_AutoFill_Event() -> None:
     pass
 
 # ---------------------------------------------------------- Download Page Widgets ---------------------------------------------------------- #
-def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
+def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Timesheets for donwload process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
@@ -129,7 +129,7 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFram
     # Field - Use
     Use_Sharepoint = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Sharepoint_Radio_Var = Use_Sharepoint.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Sharepoint_Radio_Var.configure(text="", variable=Download_Method, value=1)
+    Use_Sharepoint_Radio_Var.configure(text="", variable=Download_Date_Range_Source, value="Sharepoint")
     Use_Sharepoint.pack(side="top", padx=10, pady=10)
 
     # Field - User ID
@@ -152,7 +152,7 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFram
 
     return Frame_Main
 
-def Download_Manual(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
+def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for downlaod process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
@@ -161,7 +161,7 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
     # Field - Use
     Use_Manual = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Manual_Radio_Var = Use_Manual.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Manual_Radio_Var.configure(text="", variable=Download_Method, value=2)
+    Use_Manual_Radio_Var.configure(text="", variable=Download_Date_Range_Source, value="Manual")
     Use_Manual.pack(side="top", padx=10, pady=10)
 
     # Field - User ID
@@ -178,7 +178,7 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Method: IntVar) -> CTkFrame:
 
     return Frame_Main
 
-def Download_Exchange(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
+def Download_Exchange(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Exchange Server", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Konica Minolta Exchange server directly.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
@@ -187,7 +187,7 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
     # Field - Use
     Use_Exchange = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Exchange_Radio_Var = Use_Exchange.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Exchange_Radio_Var.configure(text="", variable=Download_Source, value=1)
+    Use_Exchange_Radio_Var.configure(text="", variable=Download_Data_Source, value="Exchange")
     Use_Exchange.pack(side="top", padx=10, pady=10)
 
     # Field - User ID
@@ -203,7 +203,7 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
 
     return Frame_Main
 
-def Download_Outlook(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
+def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook Classic Client", Additional_Text="Must be updated befor download", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Windows installtion of Outlook Classic client.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
@@ -212,7 +212,7 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Source: IntVar) -> CTkFrame:
     # Field - Use
     Use_Outlook = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Outlook_Radio_Var = Use_Outlook.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Outlook_Radio_Var.configure(text="", variable=Download_Source, value=2)
+    Use_Outlook_Radio_Var.configure(text="", variable=Download_Data_Source, value="Outlook_Client")
     Use_Outlook.pack(side="top", padx=10, pady=10)
 
     # Field - User ID

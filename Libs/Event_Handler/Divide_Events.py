@@ -2,8 +2,9 @@
 from pandas import DataFrame
 import pandas
 from datetime import datetime, timedelta
-from tqdm import tqdm
 import Libs.Defaults_Lists as Defaults_Lists
+
+from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -41,8 +42,6 @@ def Days_Handler(Event_Start_Date: str, Event_End_Date: str) -> list:
 def OverMidnight_Events(Events: DataFrame):
     # Handle Meetings wchich are for more days / over midnight --> splits them
     Event_Indexes = []
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(Events.shape[0]),desc=f"{now}>> Overnight Events")
     for row in Events.iterrows():
         row_Series = pandas.Series(row[1])
         Event_Start_Date = row_Series["Start_Date"]
@@ -82,15 +81,13 @@ def OverMidnight_Events(Events: DataFrame):
                 
                 # Should not happened
                 else:
-                    print(f"Divide_Events.py: This should happened.")
+                    CTkMessagebox(title="Error", message="Divide_Events.py: This should not happened.", icon="cancel", fade_in_duration=1)
 
             # Add index to list of indexes to be deleted
             Event_Indexes.append(row[0])
         else:
             pass
 
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
 
     # Delete original line as it will be substituted by newly created lines
     for Event_index in Event_Indexes:

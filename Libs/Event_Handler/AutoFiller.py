@@ -1,6 +1,5 @@
 from pandas import DataFrame
 import pandas
-from tqdm import tqdm
 from datetime import datetime
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -10,8 +9,6 @@ Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Details"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Events: DataFrame):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(Events.shape[0]),desc=f"{now}>> AutoFiller")
     for row in Events.iterrows():
         # Define current row as pandas Series
         row_index = row[0]
@@ -48,9 +45,6 @@ def AutoFiller(Events: DataFrame):
                 if (Location != "") and (Location != Event_Location):
                     Events.at[row_index, "Location"] = Location
                 else:
-                    pass
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
-        
+                    pass       
     return Events
 

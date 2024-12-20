@@ -4,10 +4,11 @@ from dotenv import load_dotenv
 import os
 import requests
 from datetime import datetime
-from tqdm import tqdm
 import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
+
+from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -70,7 +71,7 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
     return Counter
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
+def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
     import getpass
     # Laod OAuth2 info
     load_dotenv(dotenv_path=f"Libs\\Download\\Exchange.env")
@@ -78,16 +79,16 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     client_secret = os.getenv("client_secret")
     tenant_id = os.getenv("tenant_id")
     username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-    print(f"\n---------- Exchange server ----------")
-    print(f" Account: {username}")
-    password = getpass.getpass(f" Password:")
 
     if not client_id:
-        raise ValueError("No client_id found. Check your .env file.")
+        CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
+        raise ValueError()
     if not client_secret:
-        raise ValueError("No client_secret found. Check your .env file.")
+        CTkMessagebox(title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1)
+        raise ValueError()
     if not tenant_id:
-        raise ValueError("No tenant_id found. Check your .env file.")
+        CTkMessagebox(title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
+        raise ValueError()
 
     # OAuth2 authentification at KM Azure
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
@@ -97,7 +98,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         "client_secret": client_secret,
         "scope": "https://graph.microsoft.com/.default",
         "username": username,
-        "password": password}
+        "password": Exchange_Password}
     response = requests.post(url=url, data=payload)
     tokens = response.json()
     access_token = tokens["access_token"]
@@ -137,7 +138,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
                 Events = response.json()
                 Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
     else:
-        print(f"Not possible to download from Excange (Response Code: {response.status_code}), will try to download from Outlook Clasic Client.")
+        CTkMessagebox(title="Info", message=f"Not possible to download from Excange (Response Code: {response.status_code}), will try to download from Outlook Clasic Client.", fade_in_duration=1)
         Events_downloaded = {}
         Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 

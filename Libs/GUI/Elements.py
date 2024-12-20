@@ -1,5 +1,7 @@
 from customtkinter import CTkButton, CTk, CTkFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkTextbox, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkToplevel
 from CTkTable import CTkTable
+from CTkMessagebox import CTkMessagebox
+
 import json
 from PIL import Image
 

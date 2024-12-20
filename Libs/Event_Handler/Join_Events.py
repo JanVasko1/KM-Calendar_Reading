@@ -1,7 +1,6 @@
 # Import Libraries
 from pandas import DataFrame
 from datetime import datetime
-from tqdm import tqdm
 import pandas
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -21,8 +20,6 @@ def Join_Events(Events: DataFrame) -> DataFrame:
     Pre_Event_Start_time = ""
     Pre_Event_End_time = ""
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(Events.shape[0]),desc=f"{now}>> Join same Events")
     for row in Events.iterrows():
         # Define current row as pandas Series
         row_Series = pandas.Series(row[1])
@@ -67,7 +64,5 @@ def Join_Events(Events: DataFrame) -> DataFrame:
         Pre_Activity = Current_Activity
         Pre_Event_Start_time = Current_Event_Start_time
         Pre_Event_End_time = Current_Event_End_time
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
 
     return Cumulated_Events

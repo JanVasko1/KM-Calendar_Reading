@@ -7,6 +7,7 @@ import pandas
 import sharepy
 import json
 
+from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -109,7 +110,7 @@ def Information_Update(Area: str, Field: str, Information: int|str|list) -> None
         file.close()
 
     except Exception as Error:
-        pass
+        CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {Field}", icon="cancel", fade_in_duration=1)
 
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
 def Upload(Events: DataFrame) -> None:
@@ -131,12 +132,14 @@ def Upload(Events: DataFrame) -> None:
         data_boundary = data_boundary.replace("O", "J")
         TimeSheets_df = Get_Table_Data(ws=TimeSpent_ws, data_boundary=data_boundary)
         A_Cell, E_Cell = Timesheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
-        print(f"First Cell: {A_Cell}, {E_Cell}")
-        #! Dodělat --> automatically upload to Sharepoint only to new lines "Paste as text only"
 
-def Get_Project_and_Activity(Input_Password: str|None) -> None:
+        #! Dodělat --> automatically upload to Sharepoint only to new lines "Paste as text only"
+        CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")
+        
+
+def Get_Project_and_Activity(SP_Password: str|None) -> None:
     # Authentication
-    s_aut = Authentication.Authentication(Input_Password=Input_Password)
+    s_aut = Authentication.Authentication(SP_Password=SP_Password)
 
     # Download
     Downloaded = Download_Excel(s_aut=s_aut)

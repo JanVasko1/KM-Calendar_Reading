@@ -4,7 +4,6 @@ import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame
 import pandas
 from datetime import datetime
-from tqdm import tqdm
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -45,8 +44,6 @@ def Days_Handler(Events: DataFrame) -> list:
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 # Vacation
 def Vacation(Events: DataFrame):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(Events.shape[0]),desc=f"{now}>> Special Events - Vacation")
     for row in Events.iterrows():
         row_index = row[0]
         row_Series = pandas.Series(row[1])
@@ -80,9 +77,6 @@ def Vacation(Events: DataFrame):
                 # Delete all meetings of that day and within the Event time
                 Delete_Event_during_Vacation_Day(Dataframe=Events, Event_Day=Event_Day, Vacation_Start_Time_dt=Vacation_Start_Time_dt, Vacation_End_Time_dt=Vacation_End_Time_dt, Vacation_Index=row_index)
 
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
-
     return Events
 
 # Home Office
@@ -98,8 +92,6 @@ def Lunch(Events: DataFrame):
     #Get Days details from Events
     Days_List = Days_Handler(Events)
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Data_df_TQDM = tqdm(total=int(len(Days_List)),desc=f"{now}>> Special Events - Lunch")
     for Day in Days_List:
         mask1 = Events["Start_Date"] == Day
         Day_Events_df = Events.loc[mask1]
@@ -149,7 +141,6 @@ def Lunch(Events: DataFrame):
         
         # Add to Cumulated
         Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
-        Data_df_TQDM.update(1) 
-    Data_df_TQDM.close()
     Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)
+    
     return Cumulated_Events
