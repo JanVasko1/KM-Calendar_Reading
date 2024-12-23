@@ -1,4 +1,6 @@
 # Import Libraries
+from pandas import DataFrame
+
 import Libs.Download.Downloader as Downloader
 
 import Libs.Event_Handler.Fill_Empty_Place as Fill_Empty_Place
@@ -57,6 +59,4 @@ def Download_and_Process(Download_Date_Range_Source: str, Download_Data_Source: 
     Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
     # Sumamry Dataframes
-    Events_Project_Concanet, Events_Activity_Concanet, Events_WeekDays, Events_Weeks, Events = Summary.Generate_Summary(Events=Events)
-
-    return Events_Project_Concanet, Events_Activity_Concanet, Events_WeekDays, Events_Weeks, Events
+    Events = Summary.Generate_Summary(Events=Events)

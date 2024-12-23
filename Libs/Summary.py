@@ -141,6 +141,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_Project_Mean["Average[H]"] = Events_Project_Mean["Average[H]"].map(lambda x: round(x, 2))
     Events_Project_Count = Events_Project_GR.groupby(["Project"]).count()
     Events_Project_Count.rename(columns={"Duration_H": "Count"}, inplace=True)
+    global Events_Project_Concanet
     Events_Project_Concanet = pandas.concat(objs=[Events_Project_Count, Events_Project_Sum, Events_Project_Mean], axis=1, join="inner")
 
     # Summary line
@@ -159,6 +160,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_Activity_Mean["Average[H]"] = Events_Activity_Mean["Average[H]"].map(lambda x: round(x, 2))
     Events_Activity_Count = Events_Activity_GR.groupby(["Activity"]).count()
     Events_Activity_Count.rename(columns={"Duration_H": "Count"}, inplace=True)
+    global Events_Activity_Concanet
     Events_Activity_Concanet = pandas.concat(objs=[Events_Activity_Count, Events_Activity_Sum, Events_Activity_Mean], axis=1, join="inner")
 
     # Summary line
@@ -171,6 +173,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
 
     # ---------------------------------------------------------------------------------- Weekday ---------------------------------------------------------------------------------- #
     WeekDays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    global Events_WeekDays
     Events_WeekDays = pandas.DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
     Events_WeekDays_GR = Events.loc[:, ["Start_Date", "Project", "Activity", "Duration_H"]]
     Events_WeekDays_GR["WeekDay"] =  Events_WeekDays_GR["Start_Date"].apply(DataFrame_WeekDay)
@@ -268,6 +271,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_WeekDay)
     Weeks_list = list(set(Events_Weeks_GR["Week"]))
     Weeks_list.sort()
+    global Events_Weeks
     Events_Weeks = pandas.DataFrame(index=Weeks_list, columns=["Days", "Days w/o weekend", "Total Events", "Total[H]", "Average[H]", "Week Utilization[%]", "Active Days Utilization[%]"])
 
     for Week in Weeks_list:
@@ -324,6 +328,3 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
     Events.to_csv(path_or_buf=f"Operational\\TimeSheets.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-
-
-    return Events_Project_Concanet, Events_Activity_Concanet, Events_WeekDays, Events_Weeks, Events

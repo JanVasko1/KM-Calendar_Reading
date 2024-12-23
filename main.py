@@ -1,33 +1,50 @@
 
 #! Dodělat --> List bodů k dodělání
 """
-0) Definice promněných a funkce jejich nadčtení a necaht je aktualizovat --> příklad když nchám stáhnout Project a Activity, tak musí být hned k použití
+0) vyřešit ty podělaný obrázky
+0) Definice promněných a funkce jejich nadčtení a necaht je aktualizovat 
+    --> příklad když nchám stáhnout Project a Activity, tak musí být hned k použití
+    --> Jeslit je neudělat jako Global --> interní funkce pythonu k použití globálních promněných
+
 Napojení FrontEnd na backend:
     A) Save settins do Settings.json --> dát pozor jestli nebudu muset pro každou věc udělat Textovou promněnou!!!
 3) SideBar --> barevnou čárku u aktivního okna --> aby bylo oznat kde jsme jako to má Outlook
-4) 
+4) GRId 
+    -->Přidat Frame.configure --> rozdělit prostor jako ve videu!!!!!!!
+    --> pro tabulku vyplˇˇnující celý prostor stačí použít sticky="news" --> přiřadí pro celý definovaný prostor
+    --> můžu to přidat i dojednotlivých SEttupů a případně přidat rowspan = 2 (pro ty široký Widgety) --> tím bych se teoreticky mol zbavit dalšího seupu
+    --> Settup
 """
 
 # Import Libraries
 import time
 from datetime import datetime
+
 import customtkinter
-from customtkinter import CTk, CTkFrame, IntVar, StringVar, CTkProgressBar, CTkInputDialog
+from tkinter import ttk
+from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar
 from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Widgets as Widgets
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
+import pywinstyles
+import pandas
 
 import Libs.Defaults_Lists as Defaults_Lists
-import pywinstyles
 
 #! ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
 Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 Account_Name = Settings["General"]["Person"]["Name"]
 Account_ID = Settings["General"]["Person"]["Code"]
+Format_Date = Settings["General"]["Formats"]["Date"]
+
+GUI_Configuration = Defaults_Lists.Load_Configuration()
+Window_Frame_width = GUI_Configuration["Frames"]["Page_Frames"]["Background"]["width"]
+Window_Frame_height = GUI_Configuration["Frames"]["Page_Frames"]["Background"]["height"]
+
 Format_Date = Settings["General"]["Formats"]["Date"]
 
 #! ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
@@ -41,7 +58,6 @@ def Theme_Change():
         customtkinter.set_appearance_mode("dark")
     else:
         customtkinter.set_appearance_mode("system")
-
 
 #? ----------------------------------------------------- Buttong ----------------------------------------------------- #
 # -------------------------------------------- Page Listing -------------------------------------------- #
@@ -77,7 +93,6 @@ def Show_Settings_Page() -> None:
     
 # -------------------------------------------- Functionss -------------------------------------------- #
 def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
-    Progress_Bar.start()    #! Dodělat --> nějak se nespustí (asynchroně?)
     Can_Download = True
 
     # Actuall Values
@@ -87,6 +102,9 @@ def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: Stri
     Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
     Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
     Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+
+    Input_Start_Date = Input_Start_Date.upper()
+    Input_End_Date = Input_End_Date.upper()
 
     # Missing Data handler
     if Download_Date_Range_Source == "Sharepoint":
@@ -100,6 +118,18 @@ def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: Stri
     elif Download_Date_Range_Source == "Manual":
         SP_Password = None
         try:
+            # Test if Today is selected 
+            if Input_Start_Date == "T":
+                Input_Start_Date = datetime.now()
+                Input_Start_Date = Input_Start_Date.strftime(Format_Date)
+            else:
+                pass
+
+            if Input_End_Date == "T":
+                Input_End_Date = datetime.now()
+                Input_End_Date = Input_End_Date.strftime(Format_Date)
+            else:
+                pass
             datetime.strptime(Input_Start_Date, Format_Date)
             datetime.strptime(Input_End_Date, Format_Date)
         except:
@@ -123,10 +153,9 @@ def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: Stri
         pass
 
     if Can_Download == True:
+        Progress_Bar.start()    #! Dodělat --> nějak se nespustí (asynchroně?)
         import Libs.Process as Process
-        Events_Project_Concanet, Events_Activity_Concanet, Events_WeekDays, Events_Weeks, Events = Process.Download_and_Process(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
-        #! Dodělat --> dát promněné do Dashboardu a do tabulky !!!!
-
+        Process.Download_and_Process(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
         Progress_Bar.stop()
         CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
     else:
@@ -166,15 +195,15 @@ def Data_Excel():
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame Preparation
     Frame_Header = Elements.Get_Frame(Frame=Frame, Frame_Size="Header")
-    Frame_Header.pack_propagate(False)
+    Frame_Header.pack_propagate(flag=False)
     Frame_Header.pack(side="top", fill="x", expand=False)
 
     Frame_Logo = Elements.Get_Frame(Frame=Frame_Header, Frame_Size="Header_Logo_Element")
-    Frame_Logo.pack_propagate(False)
+    Frame_Logo.pack_propagate(flag=False)
     Frame_Logo.pack(side="left", fill="none", expand=False, padx=0, pady=0)
 
     Frame_Header_Information = Elements.Get_Frame(Frame=Frame_Header, Frame_Size="Header_Information")
-    Frame_Header_Information.pack_propagate(False)
+    Frame_Header_Information.pack_propagate(flag=False)
     Frame_Header_Information.pack(side="left", fill="none", expand=False, padx=0, pady=0)
 
     # ------------------------- Logo Area -------------------------#
@@ -190,19 +219,19 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # Account Mail
     Frame_Account_Mail = Elements.Get_Text_Column_Header(Frame=Frame_Header_Information)
     Frame_Account_Mail.configure(text=Account_Email)
-    Frame_Account_Mail.pack_propagate(False)
+    Frame_Account_Mail.pack_propagate(flag=False)
     Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     # Account ID
     Frame_Account_ID = Elements.Get_Text_Column_Header(Frame=Frame_Header_Information)
     Frame_Account_ID.configure(text=Account_ID)
-    Frame_Account_ID.pack_propagate(False)
+    Frame_Account_ID.pack_propagate(flag=False)
     Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     # Account Name
     Frame_Account_Name = Elements.Get_Text_Column_Header(Frame=Frame_Header_Information)
     Frame_Account_Name.configure(text=Account_Name)
-    Frame_Account_Name.pack_propagate(False)
+    Frame_Account_Name.pack_propagate(flag=False)
     Frame_Account_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     return Frame_Header
@@ -251,7 +280,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
 
     Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Download_Work_Detail_Area.grid_propagate(False)
+    Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
     Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # ------------------------- Work Area -------------------------#
@@ -300,8 +329,8 @@ def Page_Data(Frame: CTk|CTkFrame):
     Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
 
     Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Download_Work_Detail_Area.grid_propagate(False)
-    Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
+    Frame_Download_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
 
     # ------------------------- State Area -------------------------#
     # Download Button
@@ -317,22 +346,16 @@ def Page_Data(Frame: CTk|CTkFrame):
     CTkToolTip(widget=Button_Excel, message="Show generated Excel file")
 
     # ------------------------- Work Area -------------------------#
-    Data_Text = Elements.Get_Text_H1(Frame=Frame_Download_Work_Detail_Area)
-    Data_Text.configure(text="Data")
-    Data_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-
-    Frame_Data = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Data", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="")
-    Frame_Body = Frame_Data.children["!ctkframe2"]
-    Frame_Data.pack(side="top", padx=15, pady=15)
-
     # Data table
-    #! Dodělat --> mám Issue na Stuck overFlow https://github.com/Akascape/CTkTable/issues/116
-    """Rows = 1
-    Values = []
-    Data_Table = Elements.Get_Table(Frame=Frame_Download_Work_Detail_Area, Table_size="Triple_size")
-    Data_Table.configure(columns=8, rows=Rows, values=Values)
-    Data_Table.pack(side="top", expand=True, fill="both", padx=10, pady=10)"""
+    Events = pandas.read_csv(f"Operational\\TimeSheets.csv", sep=";")
+    Events_List = [["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
+    for row in Events.iterrows():
+        Events_List.append(row[1].to_list())
 
+    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Download_Work_Detail_Area, Table_Size="Triple_size", Table_Values=Events_List, Table_Columns=8, Table_Rows=len(Events_List))
+    Frame_Events_Table_Var = Frame_Events_Table.children["!ctktable"]
+    Frame_Events_Table_Var.configure(wraplength=180)
+    Frame_Events_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
 # -------------------------------------------- Information Page -------------------------------------------- #
 def Page_Information(Frame: CTk|CTkFrame):
@@ -345,13 +368,13 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
 
     Frame_Settings_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Settings_Work_Detail_Area.grid_propagate(False)
+    Frame_Settings_Work_Detail_Area.grid_propagate(flag=False)
     Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # ------------------------- State Area -------------------------#
     # Add Button - Downlaod New Project and Activities
     Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
-    Button_Download_Pro_Act.configure(text="Get Proejct/Activity", command = lambda:Download_Project_Activities())
+    Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=0, sticky="e")
     CTkToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities")
 
@@ -364,17 +387,17 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # ------------------------- Work Area -------------------------#
     # Tab View
     TabView = Elements.Get_Tab_View(Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
-    #TabView.pack_propagate(False)
+    #TabView.pack_propagate(flag=False)
     Tab_Gen = TabView.add("General")
-    Tab_Gen.pack_propagate(False)
+    Tab_Gen.pack_propagate(flag=False)
     Tab_Cal = TabView.add("Calendar")
-    Tab_Cal.pack_propagate(False)
+    Tab_Cal.pack_propagate(flag=False)
     Tab_E_G = TabView.add("Events - General")
-    Tab_E_G.pack_propagate(False)
+    Tab_E_G.pack_propagate(flag=False)
     Tab_E_E = TabView.add("Events - Empty/Scheduler")
-    Tab_E_E.pack_propagate(False)
+    Tab_E_E.pack_propagate(flag=False)
     Tab_E_A = TabView.add("Events - AutoFill")
-    Tab_E_A.pack_propagate(False)
+    Tab_E_A.pack_propagate(flag=False)
     TabView.set("General")
     TabView.grid(row=0, column=0, padx=5, pady=0, sticky="n")
 
@@ -427,16 +450,19 @@ def Page_Settings(Frame: CTk|CTkFrame):
 # main window
 window = customtkinter.CTk()
 window.title("Time Sheet Downloader")
+window.bind(sequence="<Escape>", func=lambda evet: window.quit())
+window.overrideredirect(boolean=True)
 
-# position window in center
-window.eval("tk::PlaceWindow . center")
-window.geometry("1800x1000")
-"""window.maxsize(width=1800, height=1000)
-window.minsize(width=1800, height=1000)
-"""
+display_widht = window.winfo_screenwidth()
+display_height = window.winfo_screenheight()
+
+left_position = int(display_widht // 2 - Window_Frame_width // 2)
+top_position = int(display_height // 2 - Window_Frame_height // 2)
+
+window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
+
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-customtkinter.set_appearance_mode("system")  # default
-#pywinstyles.apply_style(window=window, style="acrylic")     #! Dodělat v knihovně je poznámka, že se má background color natřít na černo aby to fungovalo
+pywinstyles.apply_style(window=window, style="aero")     #! Dodělat v knihovně je poznámka, že se má background color natřít na černo aby to fungovalo
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames
@@ -449,11 +475,11 @@ Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Ar
 Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
 Frame_Side_Bar = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_SideBar")
-Frame_Side_Bar.pack_propagate(False)
-Frame_Side_Bar.pack(side="left", fill="y", expand=False)
+Frame_Side_Bar.pack_propagate(flag=False)
+Frame_Side_Bar.pack(side="left", fill="y", expand=True)
 
 Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
-Frame_Work_Area_Detail.pack_propagate(False)
+Frame_Work_Area_Detail.pack_propagate(flag=False)
 Frame_Work_Area_Detail.pack(side="left", fill="both", expand=False)
 
 Get_Side_Bar(Frame=Frame_Side_Bar)
@@ -461,5 +487,4 @@ Get_Side_Bar(Frame=Frame_Side_Bar)
 Page_Download(Frame=Frame_Work_Area_Detail)
 
 # run
-customtkinter.set_appearance_mode("system")  # default
 window.mainloop()

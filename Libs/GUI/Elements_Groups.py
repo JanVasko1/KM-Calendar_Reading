@@ -1,4 +1,4 @@
-from customtkinter import CTk, CTkFrame
+from customtkinter import CTk, CTkFrame, CTkScrollableFrame
 import Libs.GUI.Elements as Elements
 from CTkToolTip import CTkToolTip
 
@@ -30,13 +30,13 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
 def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
-    Frame_Area.pack_propagate(False)
+    Frame_Area.pack_propagate(flag=False)
     Frame_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # Frame Label
     Frame_Label = Elements.Get_Widget_Field_Frame_Label(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Label.pack_propagate(False)
-    Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=0)
+    Frame_Label.pack_propagate(flag=False)
+    Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
     Label_text = Elements.Get_Text_Field(Frame=Frame_Label)
     Label_text.configure(text=f"{Label}")
@@ -48,7 +48,7 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 
     # Frame Value
     Frame_Value = Elements.Get_Widget_Field_Frame_Value(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Value.pack_propagate(False)
+    Frame_Value.pack_propagate(flag=False)
     Frame_Value.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
     if Field_Type == "Input_Normal":
@@ -76,13 +76,13 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
-    Frame_Area.pack_propagate(False)
+    Frame_Area.pack_propagate(flag=False)
     Frame_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # Frame Label
     Frame_Label = Elements.Get_Widget_Field_Frame_Label(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Label.pack_propagate(False)
-    Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=0)
+    Frame_Label.pack_propagate(flag=False)
+    Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
     Label_text = Elements.Get_Text_Field(Frame=Frame_Label)
     Label_text.configure(text=f"{Label}")
@@ -94,7 +94,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 
     # Frame Value1
     Frame_Value1 = Elements.Get_Widget_Field_Frame_Value(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Value1.pack_propagate(False)
+    Frame_Value1.pack_propagate(flag=False)
     Frame_Value1.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
     Field_Small1 = Elements.Get_Entry_Field(Frame=Frame_Value1, Field_Size="Small")
@@ -110,7 +110,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 
     # Frame Value2
     Frame_Value2 = Elements.Get_Widget_Field_Frame_Value(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Value2.pack_propagate(False)
+    Frame_Value2.pack_propagate(flag=False)
     Frame_Value2.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
     Field_Small2 = Elements.Get_Entry_Field(Frame=Frame_Value2, Field_Size="Small")
@@ -121,12 +121,12 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
     # Build one column for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
-    Frame_Area.pack_propagate(False)
+    Frame_Area.pack_propagate(flag=False)
     Frame_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # Frame Label
     Frame_Label = Elements.Get_Widget_Field_Frame_Label(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Label.pack_propagate(False)
+    Frame_Label.pack_propagate(flag=False)
     Frame_Label.pack(side="top", fill="y", expand=False, padx=0, pady=0)
 
     Label_text = Elements.Get_Text_Field(Frame=Frame_Label)
@@ -139,10 +139,22 @@ def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: 
 
     # Frame Value
     Frame_Value = Elements.Get_Widget_Field_Frame_Value(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
-    Frame_Value.pack_propagate(False)
+    Frame_Value.pack_propagate(flag=False)
     Frame_Value.pack(side="top", fill="y", expand=True, padx=0, pady=0)
 
     Input_checkbox = Elements.Get_CheckBox(Frame=Frame_Value)
     Input_checkbox.pack(side="top", fill="none")
 
     return Frame_Area
+
+def Get_Table_Frame(Frame: CTk|CTkFrame, Table_Size: str, Table_Values: list, Table_Columns: int, Table_Rows: int) -> CTkScrollableFrame:
+    # Buld only one frame wich contain whole Table
+    Frame_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame, Frame_Size=Table_Size)
+    Frame_Scrolable_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+
+    # Table
+    Skip_List_Table = Elements.Get_Table(Frame=Frame_Scrolable_Area, Table_size=Table_Size, columns=Table_Columns, rows=Table_Rows)
+    Skip_List_Table.configure(values=Table_Values)
+    Skip_List_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
+
+    return Frame_Scrolable_Area

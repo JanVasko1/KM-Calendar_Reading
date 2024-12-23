@@ -1,13 +1,10 @@
-from customtkinter import CTkButton, CTk, CTkFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkTextbox, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkToplevel
+from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog
 from CTkTable import CTkTable
-from CTkMessagebox import CTkMessagebox
+import Libs.Defaults_Lists as Defaults_Lists
 
-import json
 from PIL import Image
 
-File = open(file=f"Libs\\GUI\\Configuration.json", mode="r", encoding="UTF-8", errors="ignore")
-Configuration = json.load(fp=File)
-File.close()
+Configuration = Defaults_Lists.Load_Configuration() 
 
 # ---------------------------------------------- Font ----------------------------------------------# 
 def Get_Font(Font_Size: str) -> CTkFont:
@@ -213,28 +210,45 @@ def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
 
 
 # ---------------------------------------------- Frames ----------------------------------------------# 
+# NonScrolable
 def Get_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
-    Configuration_Bacground = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
+    Configuration_NonScrollable = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
     # fg_color - Preparation
-    fg_color_json = Configuration_Bacground["fg_color"]
+    fg_color_json = Configuration_NonScrollable["fg_color"]
     if type(fg_color_json) is list:
-        fg_color = tuple(Configuration_Bacground["fg_color"])
+        fg_color = tuple(Configuration_NonScrollable["fg_color"])
     else:
-        fg_color = Configuration_Bacground["fg_color"]
+        fg_color = Configuration_NonScrollable["fg_color"]
 
-    Frame_Big = CTkFrame(
+    Frame_NonScrolable = CTkFrame(
         master = Frame,
-        width = Configuration_Bacground["width"],
-        height = Configuration_Bacground["height"],
-        corner_radius = Configuration_Bacground["corner_radius"],
-        border_width = Configuration_Bacground["border_width"],
-        border_color = Configuration_Bacground["border_color"],
-        bg_color = Configuration_Bacground["bg_color"],
+        width = Configuration_NonScrollable["width"],
+        height = Configuration_NonScrollable["height"],
+        corner_radius = Configuration_NonScrollable["corner_radius"],
+        border_width = Configuration_NonScrollable["border_width"],
+        border_color = Configuration_NonScrollable["border_color"],
+        bg_color = Configuration_NonScrollable["bg_color"],
         fg_color = fg_color)
-    return Frame_Big
+    return Frame_NonScrolable
 
 # ------------------------------------------------------------------------------------------------------------ Widgets  ------------------------------------------------------------------------------------------------------------ #
 # ------------------------------------------ Widget Frames ------------------------------------------#
+# Scrolable --> Frames For tables
+def Get_Widget_Scrolable_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkScrollableFrame:
+    Configuration_Scrollable = Configuration["Frames"]["Widgets"]["Widget_Frames"]["Scrollable_Frames"][f"{Frame_Size}"]
+    Frame_Scrollable = CTkScrollableFrame(
+        master = Frame,
+        width = Configuration_Scrollable["width"],
+        corner_radius = Configuration_Scrollable["corner_radius"],
+        border_width = Configuration_Scrollable["border_width"],
+        border_color = tuple(Configuration_Scrollable["border_color"]),
+        bg_color = Configuration_Scrollable["bg_color"],
+        fg_color = Configuration_Scrollable["bg_color"],
+        scrollbar_fg_color = Configuration_Scrollable["scrollbar_fg_color"],
+        scrollbar_button_color = tuple(Configuration_Scrollable["scrollbar_button_color"]),
+        scrollbar_button_hover_color = tuple(Configuration_Scrollable["scrollbar_button_hover_color"]))
+    return Frame_Scrollable
+
 def Get_Widget_Frame_Body(Frame: CTk|CTkFrame, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Single_Column = Configuration["Frames"]["Widgets"]["Widget_Frames"][f"{Widget_size}"]["Body"]
     Frame_Single_Column = CTkFrame(
@@ -341,13 +355,14 @@ def Get_Tab_View(Frame: CTk|CTkFrame, Tab_size: str) -> CTkTabview:
     return TabView_Normal
 
 # ---------------------------------------------- Tables ----------------------------------------------# 
-def Get_Table(Frame: CTk|CTkFrame, Table_size: str) -> CTkTable:
+def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> CTkTable:
     Configuration_Table_Single = Configuration["Tables"][f"{Table_size}"]
     Table_Single = CTkTable(
         master = Frame,
+        row = rows,
+        column = columns,
         font = Get_Font(Font_Size="Field_Label"),
         width = Configuration_Table_Single["width"],
-        height = Configuration_Table_Single["height"],
         colors = Configuration_Table_Single["colors"],
         border_width = Configuration_Table_Single["border_width"],
         border_color = tuple(Configuration_Table_Single["border_color"]),

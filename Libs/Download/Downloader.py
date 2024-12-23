@@ -80,18 +80,8 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
             Input_Start_Date = Input_Start_Date.upper()
             Input_End_Date = Input_End_Date.upper()
 
-            # Today shortcut
-            if Input_Start_Date == "T":
-                Input_Start_Date_dt = datetime.now()
-                Input_Start_Date_dt = Input_Start_Date_dt.replace(hour=0, minute=0, second=0, microsecond=0)
-            else:
-                Input_Start_Date_dt = datetime.strptime(Input_Start_Date, Date_format)
-
-            if Input_End_Date == "T":
-                Input_End_Date_dt = datetime.now()
-                Input_End_Date_dt = Input_End_Date_dt.replace(hour=0, minute=0, second=0, microsecond=0)
-            else:
-                Input_End_Date_dt = datetime.strptime(Input_End_Date, Date_format)
+            Input_Start_Date_dt = datetime.strptime(Input_Start_Date, Date_format)
+            Input_End_Date_dt = datetime.strptime(Input_End_Date, Date_format)
         else:
             CTkMessagebox(title="Error", message=f"Date source: {Download_Date_Range_Source} is not compatible, should be Sharepoint or Manual. Try again.", icon="cancel", fade_in_duration=1)
             raise ValueError

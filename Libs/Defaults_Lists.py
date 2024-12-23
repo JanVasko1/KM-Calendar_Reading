@@ -27,3 +27,9 @@ def Load_Settings() -> dict:
     Settings = json.load(fp=File)
     File.close()
     return Settings
+
+def Load_Configuration() -> dict:
+    File = open(file=f"Libs\\GUI\\Configuration.json", mode="r", encoding="UTF-8", errors="ignore")
+    Configuration = json.load(fp=File)
+    File.close()
+    return Configuration
