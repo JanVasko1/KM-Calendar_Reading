@@ -871,7 +871,7 @@
     "ProgressBar": {
         "Horizontal": {
             "Download_Process": {
-                "width": 1500,
+                "width": 1360,
                 "height": 10,
                 "border_width": 1,
                 "border_color": [
@@ -889,8 +889,9 @@
                     "#517A31"
                 ],
                 "orientation": "horizontal",
-                "determinate_speed": 0.5,
-                "indeterminate_speed": 0.5
+                "determinate_speed": 3.84,
+                "indeterminate_speed": 0.5,
+                "mode": "determinate"
             }        
         },
         "Vertical": {

@@ -1,11 +1,10 @@
 from pandas import DataFrame
 import pandas
-from datetime import datetime
 import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Details"]
+Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Events: DataFrame):
@@ -19,15 +18,15 @@ def AutoFiller(Events: DataFrame):
         Event_Location = row_Series["Location"]
 
         for item in Details_dict.items():
-            Search_text = item[1][0]
+            Search_text = item[1]["Search_Text"]
             Part_Found = Event_Subject.find(Search_text)
 
             if Part_Found == -1:
                 pass
             else:
-                Project = item[1][1]
-                Activity = item[1][2]
-                Location = item[1][3]
+                Project = item[1]["Project"]
+                Activity = item[1]["Activity"]
+                Location = item[1]["Location"]
 
                 # Project
                 if (Project != "") and (Project != Event_Project):

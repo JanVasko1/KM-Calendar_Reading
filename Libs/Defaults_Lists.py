@@ -2,6 +2,8 @@
 from pandas import DataFrame
 import json
 
+from CTkMessagebox import CTkMessagebox
+
 def Busy_Status_List() -> list[str]:
     Busy_Stuses = ["Free", "Tentative", "Busy", "Out of Office", "Working elsewhere"]
     return Busy_Stuses
@@ -33,3 +35,19 @@ def Load_Configuration() -> dict:
     Configuration = json.load(fp=File)
     File.close()
     return Configuration
+
+def Information_Update_Settings(Area: str, Field: str, Information: int|str|list|dict) -> None:
+    try:
+        # Load Settings.json
+        Settings = Load_Settings()
+
+        # Update Last date in data dictionary
+        Settings["Event_Handler"][f"{Area}"][Field] = Information
+
+        # Save in Settings.json
+        with open(f"Libs\\Settings.json", mode="wt", encoding="UTF-8", errors="ignore") as file:
+            json.dump(obj=Settings, fp=file, indent=4, default=str, ensure_ascii=False)
+        file.close()
+
+    except Exception as Error:
+        CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {Field}", icon="cancel", fade_in_duration=1)

@@ -53,10 +53,10 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 
     if Field_Type == "Input_Normal":
         Field_Normal = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal")
-        Field_Normal.pack(side="left", fill="none")
+        Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Password_Normal":
         Field_Normal = Elements.Get_Password_Normal(Frame=Frame_Value)
-        Field_Normal.pack(side="left", fill="none")
+        Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Input_Small":
         Field_Small = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal")
         Frame_Area.configure(width=300)
@@ -66,7 +66,7 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
         RadioButton.pack(side="left", fill="none")
     elif Field_Type == "Input_OptionMenu":
         Input_OptionMenu = Elements.Get_Option_Menu(Frame=Frame_Value)
-        Input_OptionMenu.pack(side="left", fill="none")
+        Input_OptionMenu.pack(side="left", fill="x", expand=True)
     else:
         pass
         #! Dodělat --> Nějak zapsat chybu

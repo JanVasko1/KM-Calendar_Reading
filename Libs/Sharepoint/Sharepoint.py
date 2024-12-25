@@ -5,7 +5,6 @@ from openpyxl import load_workbook
 from pandas import DataFrame
 import pandas
 import sharepy
-import json
 
 from CTkMessagebox import CTkMessagebox
 
@@ -96,22 +95,6 @@ def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     E_Cell = f"E{Excel_row_No}"
     return A_Cell, E_Cell
 
-def Information_Update(Area: str, Field: str, Information: int|str|list) -> None:
-    try:
-        # Load Settings.json
-        Settings = Defaults_Lists.Load_Settings()
-
-        # Update Last date in data dictionary
-        Settings["Event_Handler"][f"{Area}"][Field] = Information
-
-        # Save in Settings.json
-        with open(f"Libs\\Settings.json", mode="wt", encoding="UTF-8", errors="ignore") as file:
-            json.dump(obj=Settings, fp=file, indent=4, default=str, ensure_ascii=False)
-        file.close()
-
-    except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {Field}", icon="cancel", fade_in_duration=1)
-
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
 def Upload(Events: DataFrame) -> None:
     # Authentication
@@ -153,7 +136,7 @@ def Get_Project() -> None:
     Projects_list = Projects[0].to_list()
 
     # Save to Settings.json
-    Information_Update(Area="Project", Field="Project_List",  Information=Projects_list)
+    Defaults_Lists.Information_Update_Settings(Area="Project", Field="Project_List",  Information=Projects_list)
     
 def Get_Activity() -> None:
     Activities = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A", skiprows=1, nrows=100, header=None)
@@ -162,4 +145,4 @@ def Get_Activity() -> None:
     Activities_list = Activities_list[:Empty_line_index - 1]
    
     # Save to Settings.json
-    Information_Update(Area="Activity", Field="Activity_List",  Information=Activities_list)
+    Defaults_Lists.Information_Update_Settings(Area="Activity", Field="Activity_List",  Information=Activities_list)

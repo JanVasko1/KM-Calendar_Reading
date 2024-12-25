@@ -420,7 +420,8 @@ def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -
         progress_color = tuple(Configuration_ProgressBar["progress_color"]),
         orientation = Configuration_ProgressBar["orientation"],
         determinate_speed = Configuration_ProgressBar["determinate_speed"],
-        indeterminate_speed = Configuration_ProgressBar["indeterminate_speed"])
+        indeterminate_speed = Configuration_ProgressBar["indeterminate_speed"],
+        mode = Configuration_ProgressBar["mode"])
     return Progress_Bar
 
 

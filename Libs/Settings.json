@@ -200,7 +200,11 @@
                 "Tentative": "Overwrite_Empty_Default",
                 "Busy": "Keep",
                 "Out of Office": "Keep",
-                "Working elsewhere": "Keep"
+                "Working elsewhere": "Keep",
+                "Methods_List": [
+                    "Keep",
+                    "Overwrite_Empty_Default"
+                ]
             },
             "Empty": {
                 "General": {
@@ -260,91 +264,83 @@
                 "TimeSheets - Upload"
             ],
             "Auto_Filler": {
-                "Template": [
-                    "Find Text within subject",
-                    "Set Project",
-                    "Set Activity",
-                    "Set Location"
-                ],
-                "Details": {
-                    "1": [
-                        "NAV ERP Team Meeting:",
-                        "Other Internal activities - BPC Brno",
-                        "Admin",
-                        "Office"
-                    ],
-                    "2": [
-                        "TDO - Team Meeting",
-                        "Other Internal activities - BPC Brno",
-                        "Admin",
-                        "Office"
-                    ],
-                    "3": [
-                        "NUS Cloud - Testing",
-                        "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Testing",
-                        "Office"
-                    ],
-                    "4": [
-                        "NUS Cloud - Sync call",
-                        "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Project Management",
-                        "Office"
-                    ],
-                    "5": [
-                        "NUS Cloud - Integrations: Status",
-                        "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Project Management",
-                        "Office"
-                    ],
-                    "6": [
-                        "BRO NUS Cloud - 2nd Migration Wave Daily Review",
-                        "BRO NUS Cloud Pilot",
-                        "Project Management",
-                        "Office"
-                    ],
-                    "7": [
-                        "BRO: ",
-                        "BRO NUS Cloud Pilot",
-                        "",
-                        ""
-                    ],
-                    "8": [
-                        "BBL: ",
-                        "NUS (CE) harm.&bus. Support",
-                        "",
-                        ""
-                    ],
-                    "9": [
-                        "Product Backlog Item",
-                        "",
-                        "Testing",
-                        ""
-                    ],
-                    "10": [
-                        "INC",
-                        "Incident handling / support - BPC Brno",
-                        "Consultancy",
-                        ""
-                    ],
-                    "11": [
-                        "Travel Time",
-                        "",
-                        "Travel Time (Project)",
-                        "Customer"
-                    ],
-                    "12": [
-                        "Dovolená",
-                        "Other Internal activities - BPC Brno",
-                        "Vacation",
-                        "Office"
-                    ],
-                    "13": [
-                        "BRO NUS Cloud - Cut-off and Migration - Daily review",
-                        "BRO NUS Cloud Pilot",
-                        "Project Management",
-                        "Office"
-                    ]
+                "1": {
+                    "Search_Text": "NAV ERP Team Meeting:",
+                    "Project": "Other Internal activities - BPC Brno",
+                    "Activity": "Admin",
+                    "Location": "Office"
+                },
+                "2": {
+                    "Search_Text": "TDO - Team Meeting",
+                    "Project": "Other Internal activities - BPC Brno",
+                    "Activity": "Admin",
+                    "Location": "Office"
+                },
+                "3": {
+                    "Search_Text": "NUS Cloud - Testing",
+                    "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                    "Activity": "Testing",
+                    "Location": "Office"
+                },
+                "4": {
+                    "Search_Text": "NUS Cloud - Sync call",
+                    "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                    "Activity": "Project Management",
+                    "Location": "Office"
+                },
+                "5": {
+                    "Search_Text": "NUS Cloud - Integrations: Status",
+                    "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                    "Activity": "Project Management",
+                    "Location": "Office"
+                },
+                "6": {
+                    "Search_Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
+                    "Project": "BRO NUS Cloud Pilot",
+                    "Activity": "Project Management",
+                    "Location": "Office"
+                },
+                "7": {
+                    "Search_Text": "BRO: ",
+                    "Project": "BRO NUS Cloud Pilot",
+                    "Activity": "",
+                    "Location": ""
+                },
+                "8": {
+                    "Search_Text": "BBL: ",
+                    "Project": "NUS (CE) harm.&bus. Support",
+                    "Activity": "",
+                    "Location": ""
+                },
+                "9": {
+                    "Search_Text": "Product Backlog Item",
+                    "Project": "",
+                    "Activity": "Testing",
+                    "Location": ""
+                },
+                "10": {
+                    "Search_Text": "INC",
+                    "Project": "Incident handling / support - BPC Brno",
+                    "Activity": "Consultancy",
+                    "Location": ""
+                },
+                "11": {
+                    "Search_Text": "Travel Time",
+                    "Project": "",
+                    "Activity": "Travel Time (Project)",
+                    "Location": "Customer"
+                },
+                "12": {
+                    "Search_Text": "Dovolená",
+                    "Project": "Other Internal activities - BPC Brno",
+                    "Activity": "Vacation",
+                    "Location": "Office"
+                },
+                "13": {
+                    "Search_Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
+                    "Project": "BRO NUS Cloud Pilot",
+                    "Activity": "Project Management",
+                    "Location": "Office"
                 }
             }
         }

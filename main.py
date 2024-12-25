@@ -21,8 +21,7 @@ import time
 from datetime import datetime
 
 import customtkinter
-from tkinter import ttk
-from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar
+from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel
 from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
 
@@ -92,7 +91,7 @@ def Show_Settings_Page() -> None:
     Page_Settings(Frame=Frame_Work_Area_Detail)
     
 # -------------------------------------------- Functionss -------------------------------------------- #
-def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
+def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
     Can_Download = True
 
     # Actuall Values
@@ -136,7 +135,8 @@ def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: Stri
             Can_Download = False
             CTkMessagebox(title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1)
     else:
-        pass
+        Can_Download = False
+        CTkMessagebox(title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1)
 
     if Can_Download == True:
         if Download_Data_Source == "Exchange":
@@ -148,18 +148,17 @@ def Download_Data(Progress_Bar: CTkProgressBar, Download_Date_Range_Source: Stri
         elif Download_Data_Source == "Outlook_Client":
             Exchange_Password = None
         else:
-            pass
+            Can_Download = False
+            CTkMessagebox(title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1)
     else:
         pass
 
     if Can_Download == True:
-        Progress_Bar.start()    #! Dodělat --> nějak se nespustí (asynchroně?)
         import Libs.Process as Process
-        Process.Download_and_Process(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
-        Progress_Bar.stop()
+        Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
         CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
     else:
-        Progress_Bar.stop()
+        CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
 
 def Save_Settings():
@@ -189,6 +188,35 @@ def Data_Excel():
     import subprocess
     #! Doděalt --> musím nastavit cestu dinamicky !!!!
     subprocess.run('start excel "D:\KM-Calendar_Reading\Operational\TimeSheets.csv"', shell=True, capture_output=False, text=False)
+
+def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry) -> None:
+    if Download_Date_Range_Source.get() == "Manual":
+        Manual_Date_From_Var.focus()
+        Manual_Date_From_Var.configure(state="normal")
+        Manual_Date_To_Var.configure(state="normal")
+
+        Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
+        Sharepoint_Password_Var.configure(state="disabled")
+    elif Download_Date_Range_Source.get() == "Sharepoint":
+        Sharepoint_Password_Var.focus()
+        Sharepoint_Password_Var.configure(state="normal")
+
+        Manual_Date_From_Var.delete(first_index=0, last_index=1000)
+        Manual_Date_From_Var.configure(state="disabled", placeholder_text="Date From")
+        Manual_Date_To_Var.delete(first_index=0, last_index=1000)
+        Manual_Date_To_Var.configure(state="disabled", placeholder_text="Date To")
+    else:
+        pass
+
+def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Password_Var: CTkEntry):
+    if Download_Data_Source.get() == "Exchange":
+        Exchange_Password_Var.focus()
+        Exchange_Password_Var.configure(state="normal")
+    elif Download_Data_Source.get() == "Outlook_Client":
+        Exchange_Password_Var.delete(first_index=0, last_index=1000)
+        Exchange_Password_Var.configure(state="disabled")
+    else:
+        pass
 
 #? ----------------------------------------------------- Pages ----------------------------------------------------- #
 # -------------------------------------------- Header -------------------------------------------- #
@@ -290,10 +318,21 @@ def Page_Download(Frame: CTk|CTkFrame):
     Metdod_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
     Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
+    Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
+    Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"]
     Sharepoint_Widget.grid(row=1, column=0, padx=20, pady=(5, 20), sticky="n")
 
     Manual_Widget = Widgets.Download_Manual(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
+    Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
+    Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
+    Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
+    Manual_Date_From_Var.configure(state="disabled")
+    Manual_Date_To_Var.configure(state="disabled")
     Manual_Widget.grid(row=1, column=1, padx=20, pady=(5, 20), sticky="n")
+
+    # Disabling fields --> Download_Date_Range_Source
+    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var))
+    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var))
 
     # Download Source
     Source_Text = Elements.Get_Text_H1(Frame=Frame_Download_Work_Detail_Area)
@@ -301,22 +340,36 @@ def Page_Download(Frame: CTk|CTkFrame):
     Source_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
 
     Exchange_Widget = Widgets.Download_Exchange(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
+    Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
+    Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
     Exchange_Widget.grid(row=3, column=0, padx=20, pady=(5, 20), sticky="n")
 
     Outlook_Widget = Widgets.Download_Outlook(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
+    Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Outlook_Widget.grid(row=3, column=1, padx=20, pady=(5, 20), sticky="n")
+
+    # Disabling fields --> Download_Data_Source
+    Exchange_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
+    Outlook_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
 
     # ------------------------- State Area -------------------------#
     # Progress Bar
     Progress_Bar = Elements.Get_ProgressBar(Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process")
-    Progress_Bar.configure(mode="indeterminate")
-    Progress_Bar.grid(row=0, column=1, padx=5, pady=0, sticky="e")
+    Progress_Bar.set(value=0)
 
-    # Download Button
+    Progress_text = Elements.Get_Text_Field(Frame=Frame_Download_State_Area)
+    Progress_text.configure(text=f"", width=140)
+
     Button_Download = Elements.Get_Button(Frame=Frame_Download_State_Area, Button_Size="Normal")
-    Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
-    Button_Download.grid(row=0, column=0, padx=5, pady=0, sticky="e")
+    Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
     CTkToolTip(widget=Button_Download, message="Initiate Download and Process")
+    
+    #? Build look of Widget
+    Button_Download.pack(side="left", fill="none", expand=False, padx=5, pady=0)
+    Progress_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
+    Progress_Bar.pack(side="left", fill="none", expand=False, padx=10, pady=0)
+
+    window.update_idletasks()
 
 # -------------------------------------------- Dashboadr Page -------------------------------------------- #
 def Page_Dashboard(Frame: CTk|CTkFrame):
@@ -433,6 +486,9 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     Event_Parralel_Widget = Widgets.Settings_Parralel_events(Frame=Tab_E_G)
     Event_Parralel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
+
+    Event_Join_Widget = Widgets.Settings_Join_events(Frame=Tab_E_G)
+    Event_Join_Widget.grid(row=1, column=2, padx=5, pady=5, sticky="nw")
 
     # Event-Empty Page
     Event_Empty_General_Widget = Widgets.Settings_Events_Empty_Generaly(Frame=Tab_E_E)
