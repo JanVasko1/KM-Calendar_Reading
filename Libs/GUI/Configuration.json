@@ -2,7 +2,7 @@
     "Font": {
         "Main": {
             "family": "Roboto",
-            "size": 4,
+            "size": 28,
             "weight": "bold",
             "slant": "roman",
             "underline": false,
@@ -485,8 +485,6 @@
                 "bg_color": "transparent",
                 "fg_color": "transparent"
             }
-            
-            
         },
         "Widgets": {
             "Widget_Frames": {
@@ -593,7 +591,7 @@
                             "#FFFFFF"
                         ],
                         "bg_color": "transparent",
-                        "fg_color": "red",
+                        "fg_color": "transparent",
                         "orientation": "vertical",
                         "scrollbar_fg_color": "transparent",
                         "scrollbar_button_color": [
@@ -614,7 +612,7 @@
                             "#FFFFFF"
                         ],
                         "bg_color": "transparent",
-                        "fg_color": "red",
+                        "fg_color": "transparent",
                         "orientation": "vertical",
                         "scrollbar_fg_color": "transparent",
                         "scrollbar_button_color": [
@@ -635,7 +633,7 @@
                             "#FFFFFF"
                         ],
                         "bg_color": "transparent",
-                        "fg_color": "red",
+                        "fg_color": "transparent",
                         "orientation": "vertical",
                         "scrollbar_fg_color": "transparent",
                         "scrollbar_button_color": [
@@ -750,6 +748,131 @@
                         "border_width": 0, 
                         "bg_color": "transparent",
                         "fg_color": "transparent"
+                    }
+                }
+            }
+        },
+        "Dashboard": {
+            "Backbround_Frames": {
+                "Totals_Line": {
+                    "width": 1700,
+                    "height": 100,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                },
+                "Project_Activity_Line": {
+                    "width": 1700,
+                    "height": 300,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                },
+                "Project_Activity_Section": {
+                    "width": 850,
+                    "height": 300,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                },
+                "Project_Activity_Detail_Section": {
+                    "width": 600,
+                    "height": 300,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                },
+                "Project_Activity_Side_Section": {
+                    "width": 250,
+                    "height": 300,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                },
+                "WeekDay_Weeks_Line": {
+                    "width": 1700,
+                    "height": 300,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                },
+                "Day_Chart_Line": {
+                    "width": 1700,
+                    "height": 500,
+                    "corner_radius": 0,
+                    "border_width": 0, 
+                    "border_color": [
+                        "#ecf0f1",
+                        "#111219"
+                    ],
+                    "bg_color": "transparent",
+                    "fg_color": "transparent"
+                }
+            },
+            "Widgets": {
+                "Totals_Line": {
+                    "Normal": {
+                        "Body": {
+                            "width": 300,
+                            "height": 80,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ]
+                        },
+                        "Header": {
+                            "width": 298,
+                            "height": 30,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        },
+                        "Data_Area": {
+                            "width": 298,
+                            "height": 50,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        }
                     }
                 }
             }
@@ -876,7 +999,7 @@
                 "border_width": 1,
                 "border_color": [
                     "#2C2C2C",
-                    "#111219"
+                    "#FFFFFF"
                 ],
                 "corner_radius": 6,
                 "bg_color": "transparent",

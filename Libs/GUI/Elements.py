@@ -32,71 +32,6 @@ def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
         pady = Configuration_Text_Main["pady"])
     return Text_Main
 
-def Get_Text_Main(Frame: CTk|CTkFrame) -> CTkLabel:
-    Configuration_Text_Main = Configuration["Texts"]["Main"]
-    Text_Main = CTkLabel(
-        master = Frame,
-        font = Get_Font(Font_Size="Main"),
-        height = Configuration_Text_Main["height"],
-        fg_color = Configuration_Text_Main["fg_color"],
-        text_color = tuple(Configuration_Text_Main["text_color"]),
-        anchor = Configuration_Text_Main["anchor"],
-        padx = Configuration_Text_Main["padx"],
-        pady = Configuration_Text_Main["pady"])
-    return Text_Main
-
-def Get_Text_H1(Frame: CTk|CTkFrame) -> CTkLabel:
-    Configuration_Text_H1 = Configuration["Texts"]["H1"]
-    Text_H1 = CTkLabel(
-        master = Frame,
-        font = Get_Font(Font_Size="H1"),
-        height = Configuration_Text_H1["height"],
-        fg_color = Configuration_Text_H1["fg_color"],
-        text_color = tuple(Configuration_Text_H1["text_color"]),
-        anchor = Configuration_Text_H1["anchor"],
-        padx = Configuration_Text_H1["padx"],
-        pady = Configuration_Text_H1["pady"])
-    return Text_H1
-
-def Get_Text_Column_Header(Frame: CTk|CTkFrame) -> CTkLabel:
-    Configuration_Text_Column_Header = Configuration["Texts"]["Column_Header"]
-    Text_Column_Header = CTkLabel(
-        master = Frame,
-        font = Get_Font(Font_Size="Column_Header"),
-        height = Configuration_Text_Column_Header["height"],
-        fg_color = Configuration_Text_Column_Header["fg_color"],
-        text_color = tuple(Configuration_Text_Column_Header["text_color"]),
-        anchor = Configuration_Text_Column_Header["anchor"],
-        padx = Configuration_Text_Column_Header["padx"],
-        pady = Configuration_Text_Column_Header["pady"])
-    return Text_Column_Header
-
-def Get_Text_Column_Header_additional(Frame: CTk|CTkFrame) -> CTkLabel:
-    Configuration_Text_Column_Header_Additional = Configuration["Texts"]["Column_Header_Additional"]
-    Text_Column_Header = CTkLabel(
-        master = Frame,
-        font = Get_Font(Font_Size="Column_Header_Additional"),
-        height = Configuration_Text_Column_Header_Additional["height"],
-        fg_color = Configuration_Text_Column_Header_Additional["fg_color"],
-        text_color = tuple(Configuration_Text_Column_Header_Additional["text_color"]),
-        anchor = Configuration_Text_Column_Header_Additional["anchor"],
-        padx = Configuration_Text_Column_Header_Additional["padx"],
-        pady = Configuration_Text_Column_Header_Additional["pady"])
-    return Text_Column_Header
-
-def Get_Text_Field(Frame: CTk|CTkFrame) -> CTkLabel:
-    Configuration_Text_Field_Label = Configuration["Texts"]["Field_Label"]
-    Text_Field_Label = CTkLabel(
-        master = Frame,
-        font = Get_Font(Font_Size="Field_Label"),
-        height = Configuration_Text_Field_Label["height"],
-        fg_color = Configuration_Text_Field_Label["fg_color"],
-        text_color = tuple(Configuration_Text_Field_Label["text_color"]),
-        anchor = Configuration_Text_Field_Label["anchor"],
-        padx = Configuration_Text_Field_Label["padx"],
-        pady = Configuration_Text_Field_Label["pady"])
-    return Text_Field_Label
-
 # ---------------------------------------------- Buttons ----------------------------------------------# 
 def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
     Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
@@ -231,7 +166,65 @@ def Get_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
         fg_color = fg_color)
     return Frame_NonScrolable
 
+def Get_Dashboards_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
+    Configuration_Dashboard = Configuration["Frames"]["Dashboard"]["Backbround_Frames"][f"{Frame_Size}"]
+    # fg_color - Preparation
+    fg_color_json = Configuration_Dashboard["fg_color"]
+    if type(fg_color_json) is list:
+        fg_color = tuple(Configuration_Dashboard["fg_color"])
+    else:
+        fg_color = Configuration_Dashboard["fg_color"]
+
+    Frame_NonScrolable = CTkFrame(
+        master = Frame,
+        width = Configuration_Dashboard["width"],
+        height = Configuration_Dashboard["height"],
+        corner_radius = Configuration_Dashboard["corner_radius"],
+        border_width = Configuration_Dashboard["border_width"],
+        border_color = Configuration_Dashboard["border_color"],
+        bg_color = Configuration_Dashboard["bg_color"],
+        fg_color = fg_color)
+    return Frame_NonScrolable
+
 # ------------------------------------------------------------------------------------------------------------ Widgets  ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------ Dashboards Widgets Frames ------------------------------------------#
+def Get_Dashboard_Widget_Frame_Body(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
+    Configuration_Frame_Dash_Body = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Body"]
+    Frame_Single_Column = CTkFrame(
+        master = Frame,
+        width = Configuration_Frame_Dash_Body["width"],
+        height = Configuration_Frame_Dash_Body["height"],
+        corner_radius = Configuration_Frame_Dash_Body["corner_radius"],
+        border_width = Configuration_Frame_Dash_Body["border_width"],
+        border_color = tuple(Configuration_Frame_Dash_Body["border_color"]),
+        bg_color = Configuration_Frame_Dash_Body["bg_color"],
+        fg_color = tuple(Configuration_Frame_Dash_Body["fg_color"]))
+    return Frame_Single_Column
+
+def Get_Dashboard_Widget_Frame_Header(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
+    Configuration_Frame_Dash_Header = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Header"]
+    Frame_Single_Column_Header = CTkFrame(
+        master = Frame,
+        width = Configuration_Frame_Dash_Header["width"],
+        height = Configuration_Frame_Dash_Header["height"],
+        corner_radius = Configuration_Frame_Dash_Header["corner_radius"],
+        border_width = Configuration_Frame_Dash_Header["border_width"],
+        bg_color = Configuration_Frame_Dash_Header["bg_color"],
+        fg_color = Configuration_Frame_Dash_Header["fg_color"])
+    return Frame_Single_Column_Header
+
+def Get_Dashboard_Widget_Frame_Area(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
+    Configuration_Frame_Dash_Data = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Data_Area"]
+    Frame_Single_Column = CTkFrame(
+        master = Frame,
+        width = Configuration_Frame_Dash_Data["width"],
+        height = Configuration_Frame_Dash_Data["height"],
+        corner_radius = Configuration_Frame_Dash_Data["corner_radius"],
+        border_width = Configuration_Frame_Dash_Data["border_width"],
+        bg_color = Configuration_Frame_Dash_Data["bg_color"],
+        fg_color = Configuration_Frame_Dash_Data["fg_color"])
+    return Frame_Single_Column
+
 # ------------------------------------------ Widget Frames ------------------------------------------#
 # Scrolable --> Frames For tables
 def Get_Widget_Scrolable_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkScrollableFrame:
@@ -380,6 +373,12 @@ def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> 
 def Get_Icon(Frame: CTk|CTkFrame, Icon: str, Icon_Size: tuple, Picture_size: str) -> CTkFrame:
     Frame_Icon = Get_Icon_Button(Frame=Frame, Picture_size=Picture_size)
     Image_Settings = Get_Image(light_image=f"Libs\\GUI\\Icons\\{Icon}_Light.png", dark_image=f"Libs\\GUI\\Icons\\{Icon}_Dark.png", size=Icon_Size)
+    Frame_Icon.configure(image=Image_Settings, text="")
+    return Frame_Icon
+
+def Get_Active_Icon(Frame: CTk|CTkFrame, Icon: str, Icon_Size: tuple, Picture_size: str) -> CTkFrame:
+    Frame_Icon = Get_Icon_Button(Frame=Frame, Picture_size=Picture_size)
+    Image_Settings = Get_Image(light_image=f"Libs\\GUI\\Icons\\{Icon}_Active.png", dark_image=f"Libs\\GUI\\Icons\\{Icon}_Active.png", size=Icon_Size)
     Frame_Icon.configure(image=Image_Settings, text="")
     return Frame_Icon
 

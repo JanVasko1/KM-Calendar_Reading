@@ -14,7 +14,7 @@ from CTkMessagebox import CTkMessagebox
 Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
-Personnel_number = Settings["General"]["Person"]["Code"]
+Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 

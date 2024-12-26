@@ -1,29 +1,62 @@
 from customtkinter import CTk, CTkFrame, CTkScrollableFrame
-import Libs.GUI.Elements as Elements
 from CTkToolTip import CTkToolTip
+from CTkMessagebox import CTkMessagebox
+
+import Libs.GUI.Elements as Elements
 
 def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str) -> CTkFrame:
     # Build base Frame for Widget
     Frame_Single_Body = Elements.Get_Widget_Frame_Body(Frame=Frame, Widget_size=Widget_size)
-    Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
 
     Frame_Single_Header = Elements.Get_Widget_Frame_Header(Frame=Frame_Single_Body, Widget_size=Widget_size)
-    Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=7)
     
-    Header_text = Elements.Get_Text_Column_Header(Frame=Frame_Single_Header)
+    Header_text = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header")
     Header_text.configure(text=f"{Name}")
-    Header_text.pack(side="left", fill="x")
 
     Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon="Question", Icon_Size=(15, 15), Picture_size="Question")
     Icon_Label_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
     CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
 
-    Header_text_Additional = Elements.Get_Text_Column_Header_additional(Frame=Frame_Single_Header)
+    Header_text_Additional = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
     Header_text_Additional.configure(text=f"{Additional_Text}")
-    Header_text_Additional.pack(side="right", fill="x")
 
     Frame_Single_Data_Area = Elements.Get_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_size=Widget_size)
+
+    #? Build look of Widget
+    Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
+    Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=7)
+    Header_text.pack(side="left", fill="x")
+    Header_text_Additional.pack(side="right", fill="x")
     Frame_Single_Data_Area.pack(side="top", fill="y", expand=True, padx=7, pady=7)
+
+    return Frame_Single_Body
+
+def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Icon: str|None, Widget_Label_Tooltip: str) -> CTkFrame:
+    # Build base Frame for Widget
+    Frame_Single_Body = Elements.Get_Dashboard_Widget_Frame_Body(Frame=Frame, Widget_Line=Widget_Line, Widget_size=Widget_size)
+
+    Frame_Single_Header = Elements.Get_Dashboard_Widget_Frame_Header(Frame=Frame_Single_Body, Widget_Line=Widget_Line, Widget_size=Widget_size)
+    
+    Header_text = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header")
+    Header_text.configure(text=f"{Label}")
+
+    if Icon != None:
+        Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon=Icon, Icon_Size=(20, 20), Picture_size="Question")
+        CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
+    else:
+        pass
+
+    Frame_Single_Data_Area = Elements.Get_Dashboard_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_Line=Widget_Line, Widget_size=Widget_size)
+    
+    #? Build look of Widget
+    Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
+    Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=(7, 2))
+    if Icon != None:
+        Icon_Label_text.pack(side="left", fill="none", expand=False, padx=1, pady=0)
+    else:
+        pass
+    Header_text.pack(side="left", fill="x")
+    Frame_Single_Data_Area.pack(side="top", fill="both", expand=True, padx=7, pady=(0, 7))
 
     return Frame_Single_Body
 
@@ -38,7 +71,7 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Label.pack_propagate(flag=False)
     Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
-    Label_text = Elements.Get_Text_Field(Frame=Frame_Label)
+    Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
     Label_text.configure(text=f"{Label}")
     Label_text.pack(side="right", fill="none")
 
@@ -68,8 +101,7 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
         Input_OptionMenu = Elements.Get_Option_Menu(Frame=Frame_Value)
         Input_OptionMenu.pack(side="left", fill="x", expand=True)
     else:
-        pass
-        #! Dodělat --> Nějak zapsat chybu
+        CTkMessagebox(title="Error", message=f"Field type: {Field_Type} not uspported.", icon="cancel", fade_in_duration=1)
 
     return Frame_Area
 
@@ -84,7 +116,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Label.pack_propagate(flag=False)
     Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
-    Label_text = Elements.Get_Text_Field(Frame=Frame_Label)
+    Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
     Label_text.configure(text=f"{Label}")
     Label_text.pack(side="right", fill="none")
 
@@ -104,7 +136,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Space2 = Elements.Get_Widget_Field_Frame_Space(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
     Frame_Space2.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 
-    Space_text = Elements.Get_Text_Field(Frame=Frame_Space2)
+    Space_text = Elements.Get_Label(Frame=Frame_Space2, Label_Size="Field_Label", Font_Size="Field_Label")
     Space_text.configure(text=f"-")
     Space_text.pack(side="left", fill="none")
 
@@ -129,7 +161,7 @@ def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: 
     Frame_Label.pack_propagate(flag=False)
     Frame_Label.pack(side="top", fill="y", expand=False, padx=0, pady=0)
 
-    Label_text = Elements.Get_Text_Field(Frame=Frame_Label)
+    Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
     Label_text.configure(text=f"{Label}")
     Label_text.pack(side="top", fill="none")
 

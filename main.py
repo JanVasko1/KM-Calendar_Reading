@@ -18,6 +18,7 @@ Napojení FrontEnd na backend:
 
 # Import Libraries
 import time
+from pandas import DataFrame
 from datetime import datetime
 
 import customtkinter
@@ -36,8 +37,8 @@ import Libs.Defaults_Lists as Defaults_Lists
 #! ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
 Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-Account_Name = Settings["General"]["Person"]["Name"]
-Account_ID = Settings["General"]["Person"]["Code"]
+Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
+Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 Format_Date = Settings["General"]["Formats"]["Date"]
 
 GUI_Configuration = Defaults_Lists.Load_Configuration()
@@ -58,7 +59,7 @@ def Theme_Change():
     else:
         customtkinter.set_appearance_mode("system")
 
-#? ----------------------------------------------------- Buttong ----------------------------------------------------- #
+#? ----------------------------------------------------- Buttons ----------------------------------------------------- #
 # -------------------------------------------- Page Listing -------------------------------------------- #
 def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
     # Find
@@ -89,6 +90,8 @@ def Show_Settings_Page() -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Settings(Frame=Frame_Work_Area_Detail)
+    
+
     
 # -------------------------------------------- Functionss -------------------------------------------- #
 def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
@@ -162,32 +165,38 @@ def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Downloa
 
 
 def Save_Settings():
-    #! Doděalt --> uložit všechno do Settings.json
+    #! Dodělat --> uložit všechno do Settings.json
     CTkMessagebox(title="Success", message="Changes saved to Settings.", icon="check", option_1="Thanks")
 
-def Download_Project_Activities():
+def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
     # Password required
-    dialog = Elements.Get_DialogWindow(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+    dialog = Elements.Get_DialogWindow(title=title, text=text, Dialog_Type=Dialog_Type)
     SP_Password = dialog.get_input()
+    return SP_Password
 
+def Download_Project_Activities():
+    SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+    
     if SP_Password == None:
-        pass
+        CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
     else:
         import Libs.Sharepoint.Sharepoint as Sharepoint
         Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
+        #! Dodělat --> je potřeba aktualizovat promněné Project_Variable a Action_Variable aby byli použitelný v celém systému
         CTkMessagebox(title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-        #! Dodělat --> je potřeba aktualizovat promněné Project_Variable a Action_Variable aby byli použitelný v celém systému
-
-def Data_Upload():
-    #! Doděalt --> Automaticky spustit Uplod na Sharepoint Backendový process
-    CTkMessagebox(title="Success", message="Sucessfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
-
+def Data_Upload(Events: DataFrame):
+    SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+    if SP_Password == None:
+        CTkMessagebox(title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1)
+    else:
+        import Libs.Sharepoint.Sharepoint as Sharepoint
+        Sharepoint.Upload(Events=Events, SP_Password=SP_Password)
+        CTkMessagebox(title="Success", message="Sucessfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
 
 def Data_Excel():
     import subprocess
-    #! Doděalt --> musím nastavit cestu dinamicky !!!!
-    subprocess.run('start excel "D:\KM-Calendar_Reading\Operational\TimeSheets.csv"', shell=True, capture_output=False, text=False)
+    subprocess.run('start excel "Operational\\Events.csv"', shell=True, capture_output=False, text=False)
 
 def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry) -> None:
     if Download_Date_Range_Source.get() == "Manual":
@@ -202,9 +211,11 @@ def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Man
         Sharepoint_Password_Var.configure(state="normal")
 
         Manual_Date_From_Var.delete(first_index=0, last_index=1000)
-        Manual_Date_From_Var.configure(state="disabled", placeholder_text="Date From")
+        Manual_Date_From_Var.configure(placeholder_text="Date From")
+        Manual_Date_From_Var.configure(state="disabled")
         Manual_Date_To_Var.delete(first_index=0, last_index=1000)
-        Manual_Date_To_Var.configure(state="disabled", placeholder_text="Date To")
+        Manual_Date_To_Var.configure(placeholder_text="Date To")
+        Manual_Date_To_Var.configure(state="disabled")
     else:
         pass
 
@@ -224,78 +235,87 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame Preparation
     Frame_Header = Elements.Get_Frame(Frame=Frame, Frame_Size="Header")
     Frame_Header.pack_propagate(flag=False)
-    Frame_Header.pack(side="top", fill="x", expand=False)
 
     Frame_Logo = Elements.Get_Frame(Frame=Frame_Header, Frame_Size="Header_Logo_Element")
     Frame_Logo.pack_propagate(flag=False)
-    Frame_Logo.pack(side="left", fill="none", expand=False, padx=0, pady=0)
 
     Frame_Header_Information = Elements.Get_Frame(Frame=Frame_Header, Frame_Size="Header_Information")
     Frame_Header_Information.pack_propagate(flag=False)
-    Frame_Header_Information.pack(side="left", fill="none", expand=False, padx=0, pady=0)
 
     # ------------------------- Logo Area -------------------------#
     Icon_Frame_Company_Logo = Elements.Get_Icon(Frame=Frame_Logo, Icon="Konica_Minolta", Icon_Size=(60, 60), Picture_size="Picture_Logo")
-    Icon_Frame_Company_Logo.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
     # ------------------------- Logo Area -------------------------#
     # Theme Change - Button
     Icon_Theme = Elements.Get_Icon(Frame=Frame_Header_Information, Icon="Theme", Icon_Size=(30, 30), Picture_size="Picture_Theme")
     Icon_Theme.configure(command = lambda: Theme_Change())
-    Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     # Account Mail
-    Frame_Account_Mail = Elements.Get_Text_Column_Header(Frame=Frame_Header_Information)
+    Frame_Account_Mail = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_Mail.configure(text=Account_Email)
     Frame_Account_Mail.pack_propagate(flag=False)
-    Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     # Account ID
-    Frame_Account_ID = Elements.Get_Text_Column_Header(Frame=Frame_Header_Information)
+    Frame_Account_ID = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_ID.configure(text=Account_ID)
     Frame_Account_ID.pack_propagate(flag=False)
-    Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     # Account Name
-    Frame_Account_Name = Elements.Get_Text_Column_Header(Frame=Frame_Header_Information)
+    Frame_Account_Name = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_Name.configure(text=Account_Name)
     Frame_Account_Name.pack_propagate(flag=False)
+
+    #? Build look of Widget
+    Frame_Header.pack(side="top", fill="x", expand=False)
+    Frame_Logo.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Header_Information.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Icon_Frame_Company_Logo.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
+    Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
+    Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
     return Frame_Header
+
+
 
 # -------------------------------------------- Side Bar -------------------------------------------- #
 def Get_Side_Bar(Frame: CTk|CTkFrame) -> CTkFrame:
     # Page - Downlaod
     Icon_Frame_Download = Elements.Get_Icon(Frame=Frame, Icon="Download", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
     CTkToolTip(widget=Icon_Frame_Download, message="Download page")
-    Icon_Frame_Download.configure(command = lambda: Show_Download_Page())
-    Icon_Frame_Download.pack(padx=5, pady=10, expand=True)
-    
+    Icon_Frame_Download.configure(command = lambda: Show_Download_Page())    
 
     # Page - Dashboard
     Icon_Frame_Dashboard = Elements.Get_Icon(Frame=Frame, Icon="Dashboard", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
     Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page())
-    Icon_Frame_Dashboard.pack(padx=5, pady=10, expand=True)
     CTkToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page").show()
 
     # Page - Data
     Icon_Frame_Data = Elements.Get_Icon(Frame=Frame, Icon="Table", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
     Icon_Frame_Data.configure(command = lambda: Show_Data_Page())
-    Icon_Frame_Data.pack(padx=5, pady=10, expand=True)
     CTkToolTip(widget=Icon_Frame_Data, message="Processed Data page")
 
     # Page - Information
     Icon_Frame_Information = Elements.Get_Icon(Frame=Frame, Icon="Information", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
     Icon_Frame_Information.configure(command = lambda: Show_Information_Page())
-    Icon_Frame_Information.pack(padx=5, pady=10, expand=True)
     CTkToolTip(widget=Icon_Frame_Information, message="About page")
 
     # Page - Settings
     Icon_Frame_Settings = Elements.Get_Icon(Frame=Frame, Icon="Settings", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
     Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page())
-    Icon_Frame_Settings.pack(padx=5, pady=10, expand=True)
     CTkToolTip(widget=Icon_Frame_Settings, message="Settings page")
+
+    #? Build look of Widget
+    Icon_Frame_Download.pack(padx=5, pady=10, expand=True)
+    Icon_Frame_Dashboard.pack(padx=5, pady=10, expand=True)
+    Icon_Frame_Data.pack(padx=5, pady=10, expand=True)
+    Icon_Frame_Information.pack(padx=5, pady=10, expand=True)
+    Icon_Frame_Settings.pack(padx=5, pady=10, expand=True)
+
+    window.update_idletasks()
+
+
 
 # -------------------------------------------- Downlaod Page -------------------------------------------- #
 def Page_Download(Frame: CTk|CTkFrame):
@@ -305,22 +325,19 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     # Divide Working Page into 2 parts
     Frame_Download_State_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
-    Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
 
     Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
-    Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # ------------------------- Work Area -------------------------#
     # Download Method
-    Metdod_Text = Elements.Get_Text_H1(Frame=Frame_Download_Work_Detail_Area)
+    Metdod_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
+    
     Metdod_Text.configure(text="Step 1 - Dates definition")
-    Metdod_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
     Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"]
-    Sharepoint_Widget.grid(row=1, column=0, padx=20, pady=(5, 20), sticky="n")
 
     Manual_Widget = Widgets.Download_Manual(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
@@ -328,25 +345,21 @@ def Page_Download(Frame: CTk|CTkFrame):
     Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_From_Var.configure(state="disabled")
     Manual_Date_To_Var.configure(state="disabled")
-    Manual_Widget.grid(row=1, column=1, padx=20, pady=(5, 20), sticky="n")
 
     # Disabling fields --> Download_Date_Range_Source
     Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var))
     Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var))
 
     # Download Source
-    Source_Text = Elements.Get_Text_H1(Frame=Frame_Download_Work_Detail_Area)
+    Source_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Define data source")
-    Source_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
 
     Exchange_Widget = Widgets.Download_Exchange(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
-    Exchange_Widget.grid(row=3, column=0, padx=20, pady=(5, 20), sticky="n")
 
     Outlook_Widget = Widgets.Download_Outlook(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
     Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    Outlook_Widget.grid(row=3, column=1, padx=20, pady=(5, 20), sticky="n")
 
     # Disabling fields --> Download_Data_Source
     Exchange_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
@@ -357,7 +370,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Progress_Bar = Elements.Get_ProgressBar(Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process")
     Progress_Bar.set(value=0)
 
-    Progress_text = Elements.Get_Text_Field(Frame=Frame_Download_State_Area)
+    Progress_text = Elements.Get_Label(Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
     Progress_text.configure(text=f"", width=140)
 
     Button_Download = Elements.Get_Button(Frame=Frame_Download_State_Area, Button_Size="Normal")
@@ -365,82 +378,202 @@ def Page_Download(Frame: CTk|CTkFrame):
     CTkToolTip(widget=Button_Download, message="Initiate Download and Process")
     
     #? Build look of Widget
+    Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    
+    Metdod_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Sharepoint_Widget.grid(row=1, column=0, padx=20, pady=(5, 20), sticky="n")
+    Manual_Widget.grid(row=1, column=1, padx=20, pady=(5, 20), sticky="n")
+    Source_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
+    Exchange_Widget.grid(row=3, column=0, padx=20, pady=(5, 20), sticky="n")
+    Outlook_Widget.grid(row=3, column=1, padx=20, pady=(5, 20), sticky="n")
+
     Button_Download.pack(side="left", fill="none", expand=False, padx=5, pady=0)
     Progress_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
     Progress_Bar.pack(side="left", fill="none", expand=False, padx=10, pady=0)
 
-    window.update_idletasks()
+    
 
 # -------------------------------------------- Dashboadr Page -------------------------------------------- #
 def Page_Dashboard(Frame: CTk|CTkFrame):
-    pass    
+    # Divide Working Page into 2 parts
+    Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+
+    Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
+
+    Frame_DashBoard_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
+
+    # ------------------------- Buttons Area -------------------------#
+
+    # ------------------------- Dashboard work Area -------------------------#
+    Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
+    Projects_Summary_Df = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
+    Activity_Summary_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
+    WeekDays_Summary_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
+    Weeks_Summary_Df = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
+    Events = pandas.read_csv(f"Operational\\Events.csv", sep=";")
+
+    # Total Line
+    Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
+    Mean_Duration_hours = float(Totals_Summary_Df.iloc[0]["Mean_Duration_hours"])
+    Event_counts = int(Totals_Summary_Df.iloc[0]["Event_counts"])
+    Total_Coverage = int(Totals_Summary_Df.iloc[0]["Total_Coverage"])
+    Day_Average_Coverage = int(Totals_Summary_Df.iloc[0]["Day_Average_Coverage"])
+
+    Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
+    Frame_Dashboard_Total_Line.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Total = Widgets.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
+    Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
+    Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Counter = Widgets.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
+    Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Coverage = Widgets.DashBoard_Totals_Coverage_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Coverage)
+    Frame_DashBoard_Totals_Coverage.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Day_Average_Coverage = Widgets.DashBoard_Totals_Day_Average_Cover_Widget(Frame=Frame_Dashboard_Total_Line, Label="Day Average Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Day_Average_Coverage)
+    Frame_DashBoard_Totals_Day_Average_Coverage.pack_propagate(flag=False)
+
+    # Project Activity Line
+    Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
+    Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
+    Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
+    Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
+
+    Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
+    Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
+    Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
+
+    # WeekDay and Weeks Line
+    Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
+
+    # Day Chart Line
+    Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
+
+
+
+
+    
+    #! Dodělat --> kompletní dashboard
+
+
+
+
+
+
+    #? Build look of Widget
+    Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+
+    Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=10)
+    Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Day_Average_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+
+    Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Project_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Project_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Project_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Activity_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Activity_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Activity_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+
+    Frame_Dashboard_WeekDay_Weeks_Line.pack(side="top", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=0)
+
+
+
 
 # -------------------------------------------- Data Page -------------------------------------------- #
 def Page_Data(Frame: CTk|CTkFrame):
     # Divide Working Page into 2 parts
     Frame_Data_Button_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
-    Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
 
-    Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
-    Frame_Download_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+    Frame_Data_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Data_Work_Detail_Area.grid_propagate(flag=False)
 
-    # ------------------------- State Area -------------------------#
+    Events = pandas.read_csv(f"Operational\\Events.csv", sep=";")
+
+    # ------------------------- Buttons Area -------------------------#
     # Download Button
     Button_Upload = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
-    Button_Upload.configure(text="Upload", command = lambda:Data_Upload())
-    Button_Upload.grid(row=0, column=0, padx=5, pady=0, sticky="e")
+    Button_Upload.configure(text="Upload", command = lambda:Data_Upload(Events=Events))
     CTkToolTip(widget=Button_Upload, message="Upload processed data directly to Sharepoint TimeSheets")
 
     # Download Button
     Button_Excel = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Excel.configure(text="Excel", command = lambda:Data_Excel())
-    Button_Excel.grid(row=0, column=1, padx=5, pady=0, sticky="e")
     CTkToolTip(widget=Button_Excel, message="Show generated Excel file")
 
     # ------------------------- Work Area -------------------------#
     # Data table
-    Events = pandas.read_csv(f"Operational\\TimeSheets.csv", sep=";")
     Events_List = [["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     for row in Events.iterrows():
         Events_List.append(row[1].to_list())
 
-    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Download_Work_Detail_Area, Table_Size="Triple_size", Table_Values=Events_List, Table_Columns=8, Table_Rows=len(Events_List))
+    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Size="Triple_size", Table_Values=Events_List, Table_Columns=8, Table_Rows=len(Events_List))
     Frame_Events_Table_Var = Frame_Events_Table.children["!ctktable"]
     Frame_Events_Table_Var.configure(wraplength=180)
+
+    #? Build look of Widget
+    Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    Frame_Data_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+
+    Button_Upload.grid(row=0, column=0, padx=5, pady=0, sticky="e")
+    Button_Excel.grid(row=0, column=1, padx=5, pady=0, sticky="e")
+
     Frame_Events_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+
+
 
 # -------------------------------------------- Information Page -------------------------------------------- #
 def Page_Information(Frame: CTk|CTkFrame):
-    pass
+    # Divide Working Page into 2 parts
+    Frame_Info_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+
+    Frame_Information_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Information_Work_Detail_Area.grid_propagate(flag=False)
+    
+    # ------------------------- Info Header Area -------------------------#
+
+    # ------------------------- Info Text Area -------------------------#
+    # Description
+    #! Dodělat --> text ohledně projektu a linka na víc info na Githubu!!!
+    Frame_Information_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
+
+    #? Build look of Widget
+    Frame_Info_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    Frame_Information_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+    Frame_Information_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+
+
 
 # -------------------------------------------- Settings Page -------------------------------------------- #
 def Page_Settings(Frame: CTk|CTkFrame):
     # Divide Working Page into 2 parts
     Frame_Settings_State_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
-    Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
 
     Frame_Settings_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Settings_Work_Detail_Area.grid_propagate(flag=False)
-    Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # ------------------------- State Area -------------------------#
     # Add Button - Downlaod New Project and Activities
     Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
-    Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=0, sticky="e")
     CTkToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities")
 
     # Add Button - Save Settings
     Button_Save_Settings = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Save_Settings.configure(text="Save", command = lambda:Save_Settings())
-    Button_Save_Settings.grid(row=0, column=1, padx=5, pady=0, sticky="e")
     CTkToolTip(widget=Button_Save_Settings, message="Save settings to Settings.json")
 
     # ------------------------- Work Area -------------------------#
     # Tab View
     TabView = Elements.Get_Tab_View(Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
-    #TabView.pack_propagate(flag=False)
+    TabView.pack_propagate(flag=False)
     Tab_Gen = TabView.add("General")
     Tab_Gen.pack_propagate(flag=False)
     Tab_Cal = TabView.add("Calendar")
@@ -452,73 +585,78 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_A = TabView.add("Events - AutoFill")
     Tab_E_A.pack_propagate(flag=False)
     TabView.set("General")
-    TabView.grid(row=0, column=0, padx=5, pady=0, sticky="n")
 
     # General Page
     Sharepoint_Widget = Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
-    Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-
+    Exchange_Widget = Widgets.Settings_General_Exchange(Frame=Tab_Gen)
     Formats_Widget = Widgets.Settings_General_Formats(Frame=Tab_Gen)
-    Formats_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
 
     # Calendar Page
     Calendar_Working_Widget = Widgets.Settings_Calendar_Working_Hours(Frame=Tab_Cal)
-    Calendar_Working_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-
     Calendar_Vacation_Widget = Widgets.Settings_Calendar_Vacation(Frame=Tab_Cal)
-    Calendar_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-
     Calendar_Start_End_Widget = Widgets.Settings_Calendar_Start_End_Time(Frame=Tab_Cal)
-    Calendar_Start_End_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
 
     # Event-General Page
     Event_Lunch_Widget = Widgets.Settings_Events_General_Lunch(Frame=Tab_E_G)
-    Event_Lunch_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-
     Event_Vacation_Widget = Widgets.Settings_Events_General_Vacation(Frame=Tab_E_G)
-    Event_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-
     Event_HomeOffice_Widget = Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_G)
-    Event_HomeOffice_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
-
     Event_Skip_Widget = Widgets.Settings_Events_General_Skip(Frame=Tab_E_G)
-    Event_Skip_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-
     Event_Parralel_Widget = Widgets.Settings_Parralel_events(Frame=Tab_E_G)
-    Event_Parralel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
-
     Event_Join_Widget = Widgets.Settings_Join_events(Frame=Tab_E_G)
-    Event_Join_Widget.grid(row=1, column=2, padx=5, pady=5, sticky="nw")
 
     # Event-Empty Page
     Event_Empty_General_Widget = Widgets.Settings_Events_Empty_Generaly(Frame=Tab_E_E)
-    Event_Empty_General_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    
     Event_Scheduler_Widget = Widgets.Settings_Events_Empt_Schedule(Frame=Tab_E_E)
-    Event_Scheduler_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
     # Event-AutoFill Page
     Event_AutoFiller_Widget = Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
+
+    #? Build look of Widget
+    Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+
+    Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=0, sticky="e")
+    Button_Save_Settings.grid(row=0, column=1, padx=5, pady=0, sticky="e")
+    TabView.grid(row=0, column=0, padx=5, pady=0, sticky="n")
+
+    Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
+    Formats_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+
+    Calendar_Working_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Calendar_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
+    Calendar_Start_End_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+
+    Event_Lunch_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Event_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
+    Event_HomeOffice_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Event_Skip_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Event_Parralel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
+    Event_Join_Widget.grid(row=1, column=2, padx=5, pady=5, sticky="nw")
+
+    Event_Empty_General_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Event_Scheduler_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+
     Event_AutoFiller_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+
 
 
 #! ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 # main window
 window = customtkinter.CTk()
 window.title("Time Sheet Downloader")
-window.bind(sequence="<Escape>", func=lambda evet: window.quit())
-window.overrideredirect(boolean=True)
 
 display_widht = window.winfo_screenwidth()
 display_height = window.winfo_screenheight()
-
 left_position = int(display_widht // 2 - Window_Frame_width // 2)
 top_position = int(display_height // 2 - Window_Frame_height // 2)
-
 window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
 
+window.bind(sequence="<Escape>", func=lambda evet: window.quit())
+window.overrideredirect(boolean=True)
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
 pywinstyles.apply_style(window=window, style="aero")     #! Dodělat v knihovně je poznámka, že se má background color natřít na černo aby to fungovalo
+customtkinter.set_appearance_mode("dark")
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames
@@ -540,7 +678,7 @@ Frame_Work_Area_Detail.pack(side="left", fill="both", expand=False)
 
 Get_Side_Bar(Frame=Frame_Side_Bar)
 
-Page_Download(Frame=Frame_Work_Area_Detail)
+Page_Dashboard(Frame=Frame_Work_Area_Detail)
 
 # run
 window.mainloop()

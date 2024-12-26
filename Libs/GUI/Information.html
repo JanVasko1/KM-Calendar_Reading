@@ -1,0 +1,268 @@
+<h1 id="timesheet-downloader">TimeSheet Downloader</h1>
+<p>This program was developed to make TimeSheet administration easier and harmonize it over all fo Konica Minolta employee.</p>
+<h1 id="setup">Setup</h1>
+<h3 id="-span-style-color-blue-installation-span-"><span style="color:blue;">Installation</span></h3>
+<ol>
+<li>Install <a href="https://www.python.org/downloads/release/python-3112/">Python 3.11.2</a> - recomended or higher<ul>
+<li>install it as &quot;Run as Administrator&quot;</li>
+<li>on pop-up page mark &quot;Add Python 3.8 to PATH&quot; and unmark &quot;Instal launcher for all users&quot; (if possible)</li>
+</ul>
+</li>
+<li>Run <code>Installation_libs.ps1</code> code (reflect correct path to your python installation)</li>
+<li>Update <code>TimeSheets.bat</code> to reflect correct path to your python installation</li>
+</ol>
+<h3 id="-span-style-color-blue-process-span-span-"><span style="color:blue;">Process</span></span></h3>
+<p><img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Process.png?raw=true" alt="Process" title="Overal process"></p>
+<ul>
+<li>red --&gt; manual steps</li>
+<li>green --&gt; automatic steps</li>
+</ul>
+<h3 id="-span-style-color-blue-outlook-callendar-pre-requisit-span-"><span style="color:blue;">Outlook Callendar - Pre-Requisit</span></h3>
+<p>There must be special Events created for each day and special behavior must be followed</p>
+<ul>
+<li><p><code>Work Start</code> --&gt; tells program when is particular working day starts</p>
+<ul>
+<li>must be 0 minutes duration </li>
+<li>Event Subject is defined in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Start_End_Events / Start</code>)</li>
+</ul>
+</li>
+<li><p><code>Work End</code> --&gt; tells program when is particular working day ends</p>
+<ul>
+<li>must be 0 minutes duration </li>
+<li>Event Subject is defined in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Start_End_Events / End</code>)</li>
+</ul>
+</li>
+<li><p><code>Lunch</code> --&gt; tells program when is particular lunch is </p>
+<ul>
+<li>Event Subject is defined in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events/ Special_Events / Lunch / Search_Text</code>)</li>
+</ul>
+</li>
+<li><p><code>Category</code> --&gt; is considerate as “Project” from TimeSheets</p>
+<ul>
+<li>Must be manually updated when needed from TimeSheet from Shareponit</li>
+<li>If event is marke by category, then whole program counts with it base on setup in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Project / Method</code>)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Category.png?raw=true" alt="Category " title="Category"></p>
+</blockquote>
+<ul>
+<li><code>Templates</code> --&gt; is considerate to contain “Activity” from Timesheets<ul>
+<li>If event has line: “Activity: Activity”, then whole program counts with it base on setup in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Activity / Method</code>)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Templates.png?raw=true" alt="Tempaltes " title="Tempaltes"></p>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Activity.png?raw=true" alt="Event body" title="Event body"></p>
+</blockquote>
+<h3 id="-span-style-color-blue-main-setup-file-settings-json-span-"><span style="color:blue;">Main Setup File <code>Settings.json</code></span></h3>
+<ul>
+<li><code>Calendar</code><ul>
+<li><code>Working Hours</code> - specify working hours for each day in week
+  <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>General / Calendar / ... / Work_Hours</code>)</li>
+<li><code>Vacation Hours</code> - specify vacation hours for each day in week when all day Vacation is used
+  <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>General / Calendar / ... / Vacation</code>)</li>
+</ul>
+</li>
+<li><code>Personal Information</code> - contains your KM Code and full name (Code is used as Personnel number in TimeSheets)</li>
+</ul>
+<h1 id="downloader">Downloader</h1>
+<p>This first part of program is used to download events from calendar</p>
+<h3 id="-span-style-color-blue-sharepoint-span-"><span style="color:blue;">Sharepoint</span></h3>
+<ul>
+<li><p>Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days (when working from home, you have to be on KM VPN) </p>
+</li>
+<li><p>Setup data must be correctly maintained to have a correct link to proper TimeSheet Excel on Sharepoint </p>
+<ul>
+<li><p><code>Authentication</code></p>
+<ul>
+<li>first attempt is required to put password (hashed and stored)</li>
+<li>It is required to reenter it time to time</li>
+</ul>
+</li>
+<li><p><code>Link</code> </p>
+<ul>
+<li>link to the TimeSheet Excel on the KM sharepoint site</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="-span-style-color-blue-manual-input-span-"><span style="color:blue;">Manual Input</span></h3>
+<ul>
+<li>Manual input you have to select form and to dates</li>
+<li><code>Format</code>: <ul>
+<li>YYYY-MM-DD</li>
+<li>Special sign: “t” = Today</li>
+</ul>
+</li>
+</ul>
+<h3 id="-span-style-color-blue-methods-span-"><span style="color:blue;">Methods</span></h3>
+<ul>
+<li><code>Outlook_classic</code> --&gt; download events from Outlook (classic) application installed on Windows, there is draback, must be only one account in Outlook client</li>
+<li><code>Exchange</code> --&gt; download events directly from Exchange Server for defined User</li>
+</ul>
+<h1 id="events-handlers">Events Handlers</h1>
+<p>Here are steps which process the downloaded date into the shape suitable for TimeSheets</p>
+<h3 id="-span-style-color-blue-overnights-span-"><span style="color:blue;">Overnights</span></h3>
+<ul>
+<li>This handler splits Events if they go over midnight</li>
+<li>This doesn´t require any setup as it is programmed.</li>
+<li>Videly used for multiday Vacation, travel-time ...</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/OverNight.png?raw=true" alt="Overnight Events" title="Overnight Events"></p>
+</blockquote>
+<h3 id="-span-style-color-blue-fill-empty-general-span-"><span style="color:blue;">Fill Empty: General</span></h3>
+<ul>
+<li>This is for filling empty space in the calendar between events where it react on <code>coverage</code> palced by each record (sum must be equal to 100%)</li>
+<li>Works only between “Work - Start” and “Work - End” events (only at the time when I&#39;m at work)</li>
+<li>It select one from the list from <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Empty / General / ...</code>) and use then coverage [%] to simulate real usage</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_General.png?raw=true" alt="Fill Empty General" title="Fill Empty General"></p>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_General_setup.png?raw=true" alt="Empty General setup" title="Empty General setup"></p>
+</blockquote>
+<h3 id="-span-style-color-blue-fill-empty-scheduled-span-"><span style="color:blue;">Fill Empty: Scheduled</span></h3>
+<ul>
+<li>This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00 of the week day</li>
+<li>Agenda can have multiple setup (only one used on picture)</li>
+<li>If in the period is another Event then this scheduled is not filled</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Empty_Schedules_setup.png?raw=true" alt="Empty Schedules setup" title="Empty Schedules setup"></p>
+</blockquote>
+<h3 id="-span-style-color-blue-location-span-"><span style="color:blue;">Location</span></h3>
+<ul>
+<li>Currently set for all events <code>Office</code></li>
+</ul>
+<h3 id="-span-style-color-blue-lunch-span-"><span style="color:blue;">Lunch</span></h3>
+<ul>
+<li>lunch is special event which should be skipped from Timesheet</li>
+<li>Also is used to split  parallel meeting which is planned over the lunch (like whole day meetings)</li>
+<li>Search text can be modified in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Special_Events / Lunch / ...</code>) </li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Lunch.png?raw=true" alt="Lunch Event" title="Lunch"></p>
+</blockquote>
+<h3 id="-span-style-color-blue-skip-events-span-"><span style="color:blue;">Skip Events</span></h3>
+<ul>
+<li>This is the list of evens which should be skiped from registering them into TimeSheets</li>
+<li><p>Can be extended in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Skip / ...</code>) </p>
+</li>
+<li><p>Text from <code>Settings.json</code> is compared with Event subject and if a part of subject contain text from (<code>Event_Handler / Events / Skip / ...</code>) then is recognized and event is not considerate for Time Sheets</p>
+</li>
+</ul>
+<h3 id="-span-style-color-blue-parralel-events-span-"><span style="color:blue;">Parralel Events</span></h3>
+<ul>
+<li>This handler helps to process Events which might be in parallelly set in Calendar</li>
+<li>has 2 modes only one can be selected in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Parralel_Events / Divide_Method</code>):<ul>
+<li><code>Divide</code> --&gt; will divide Parralle Events based on logic (eveerytime takes as separator the begining of Event)</li>
+<li><code>Keep_Parralel</code> --&gt; will keep both parallel events for TimeSheet</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+Divide:</p>
+<p><img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Parralel1.png?raw=true" alt="Parralel 1" title="Divide"></p>
+<p>[!TIP]
+Divide and Use Shorter:</p>
+<p><img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Parralel2.png?raw=true" alt="Parralel 2" title="Divide and use shorter"></p>
+<p>[!TIP]
+Keep parralel:</p>
+<p><img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Parralel_keep.png?raw=true" alt="Parralel Keep" title="Parralel Keep"></p>
+</blockquote>
+<ul>
+<li>has 2 methods for Events start at the same time:<ul>
+<li><code>Use_Shorter</code> --&gt; will consider the shortest event as first pick</li>
+<li><code>Use_Longer</code> --&gt; will consider the longest event as first pick</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>[!CAUTION]
+Use_Longer --&gt; Under development (now is defaulty used Use_Shorter)</p>
+</blockquote>
+<h3 id="-span-style-color-blue-autofiller-span-"><span style="color:blue;">AutoFiller</span></h3>
+<ul>
+<li>This special function to help automatically fill: <code>Project</code>, <code>Activity</code>, <code>Location</code></li>
+<li>It can be enhanced in <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Auto_Filler / Details / ...</code>)</li>
+<li>If there is empty text --&gt; then is not used</li>
+<li>As <a href="https://github.com/JanVasko1/KM-Calendar_Reading?tab=readme-ov-file#skip-events"><code>Skip Events</code></a> program is based on searching text in the Event Subject to apply mapping</li>
+</ul>
+<h3 id="-span-style-color-blue-vacation-span-"><span style="color:blue;">Vacation</span></h3>
+<ul>
+<li>Handler of Vacation to register correctly <ul>
+<li><code>All Day</code> --&gt; takes hours from <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+and apply them into TimeSheet</li>
+<li><code>Half Day</code> --&gt; uses only the time defined by Event</li>
+</ul>
+</li>
+<li><p>If the text appeared (defined by OKBase) in the event Subject <a href="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Settings.json"><code>Settings.json</code></a>:
+(<code>Event_Handler / Events / Special_Events / Vacation / ...</code>) </p>
+</li>
+<li><p>All Events within the Vacation period and Working hours are deleted</p>
+</li>
+</ul>
+<h3 id="-span-style-color-blue-home-office-span-"><span style="color:blue;">Home Office</span></h3>
+<ul>
+<li>Currently is not maintaining anything as HomeOffice is not used as special Location of TimeSheets</li>
+</ul>
+<h3 id="-span-style-color-blue-join-events-span-"><span style="color:blue;">Join Events</span></h3>
+<ul>
+<li>This part is to cumulate multiple meeting into one in the case that condition are met:<ol>
+<li>Date</li>
+<li>Project</li>
+<li>Activity</li>
+<li>Activity Description</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>[!TIP]
+<img src="https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Join_Event.png?raw=true" alt="Join Event" title="Join Events"></p>
+</blockquote>
+<h1 id="summary">Summary</h1>
+<p>Is defined to print statistic and all records of selected period to provide better overview of Time spent:</p>
+<pre><code>-<span class="ruby"> Total Statistics
+</span>-<span class="ruby"> Project Statistics
+</span>-<span class="ruby"> Activity Statistics
+</span>-<span class="ruby"> WeekDay Statistics
+</span>-<span class="ruby"> Week Statistics</span>
+</code></pre><h1 id="uploader">Uploader</h1>
+<blockquote>
+<p>[!CAUTION]
+Under Developemnt as whole functionality</p>
+</blockquote>
+<h1 id="export-csv">Export csv</h1>
+<p>The processed result is automatically exported to the defined path and automatically opened by Windows in the format ready to “Copy + Paste” to TimeSheet on Sharepoint</p>
+<h1 id="frontend">FrontEnd</h1>
+<blockquote>
+<p>[!CAUTION]
+Under Developemnt as whole functionality</p>
+</blockquote>
+<h1 id="footer">Footer</h1>
+<p>The Settings.json is real file of Jan Vasko usage</p>

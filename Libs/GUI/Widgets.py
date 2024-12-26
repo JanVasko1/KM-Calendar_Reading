@@ -2,19 +2,20 @@
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
-from customtkinter import CTk, CTkFrame, IntVar, StringVar
+from customtkinter import CTk, CTkFrame, StringVar, IntVar, DoubleVar, BooleanVar
 from CTkToolTip import CTkToolTip
 from CTkTable import CTkTable
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
 # Sharepoint
-SP_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
-SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
-
-# Person
-Person_Name = Settings["General"]["Person"]["Name"]
-Person_ID = Settings["General"]["Person"]["Code"]
+global SP_Auth_Email
+SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
+SP_Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
+SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
+SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+SP_Person_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
+SP_Person_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 
 # Outlook
 Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
@@ -142,7 +143,7 @@ def Recalculate_Empty_Event(Table: CTkTable) -> None:
 def Add_Schedule_Event() -> None:
     print("Add_Schedule_Event")
     #! Dodělat --> funkce přidání do Schedule eventů a uložení do json a znovunačtení tabulky
-    #! Check if Times are in proper format
+    #! Dodělat --> Check if Times are in proper format
     pass
 
 def Del_Schedule_Event_One() -> None:
@@ -185,13 +186,13 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     # Field - User ID
     User_ID = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
     User_ID_Text_Var = User_ID.children["!ctkframe3"].children["!ctkentry"]
-    User_ID_Text_Var.configure(placeholder_text=Person_ID)
+    User_ID_Text_Var.configure(placeholder_text=SP_Person_ID)
     User_ID_Text_Var.configure(state="disabled")
 
     # Field - User Email
     Email = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
-    Email_Text_Var.configure(placeholder_text=SP_Email)
+    Email_Text_Var.configure(placeholder_text=SP_Auth_Email)
     Email_Text_Var.configure(state="disabled")
 
     # Field - Password
@@ -290,7 +291,115 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
 
     return Frame_Main
 
+
 # ---------------------------------------------------------- Dashboard Page Widgets ---------------------------------------------------------- #
+# ------------- Total Line -------------#
+def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Time", Widget_Label_Tooltip="Shows total hours.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Total_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
+    Total_Hours_text.configure(text=f"{str(Data)}")
+
+    Total_Hours_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Total_Hours_unit_text.configure(text=f"hours")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Total_Hours_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
+    Total_Hours_text.pack(side="right", padx=0, pady=0)
+
+    return Frame_Main
+
+def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Event_Time", Widget_Label_Tooltip="Shows Averate hours per Event.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Average_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
+    Average_Hours_text.configure(text=f"{str(Data)}")
+
+    Average_Hours_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Average_Hours_unit_text.configure(text=f"/hours")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Average_Hours_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
+    Average_Hours_text.pack(side="right", padx=0, pady=0)
+
+    return Frame_Main
+
+def DashBoard_Totals_Counter_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Event_Count", Widget_Label_Tooltip="Shows total counts of Events.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Event_Counter_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
+    Event_Counter_text.configure(text=f"{str(Data)}")
+
+    Event_Counter_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Event_Counter_unit_text.configure(text=f"")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Event_Counter_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
+    Event_Counter_text.pack(side="right", padx=0, pady=0)
+
+    return Frame_Main
+
+def DashBoard_Totals_Coverage_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Coverage", Widget_Label_Tooltip="Shows if Utilization is covered.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
+    Coverage_text.configure(text=f"{str(Data)}")
+
+    Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Coverage_unit_text.configure(text=f"%")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Coverage_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
+    Coverage_text.pack(side="right", padx=0, pady=0)
+
+    return Frame_Main
+
+def DashBoard_Totals_Day_Average_Cover_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Coverage", Widget_Label_Tooltip="Shows average Coverage of utilization.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
+    Day_Average_Coverage_text.configure(text=f"{str(Data)}")
+
+    Day_Average_Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Day_Average_Coverage_unit_text.configure(text=f"%")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Day_Average_Coverage_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
+    Day_Average_Coverage_text.pack(side="right", padx=0, pady=0)
+
+    return Frame_Main
+
+
+def DashBoard_Project_Activity_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+    #! Dodělat --> tohle je Widget pro Aktivity a Projekty -->ten hlavní velký
+    pass
+
+def DashBoard_Sub_Project_Activity_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+    #! Dodělat --> tohle je Widget pro Aktivity a Projekty -->ten dodatečný malý
+    pass
+
+def DashBoard_Week_WeekDays_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+    #! Dodělat --> tohle je Widget pro zobrazení týdnů a dnů v týdnu
+    pass
+
+def DashBoard_Week_WeekDays_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+    #! Dodělat --> tohle je Widget pro zobrazení týdnů a dnů v týdnu
+    pass
 
 # ---------------------------------------------------------- Data Page Widgets ---------------------------------------------------------- #
 
@@ -304,27 +413,53 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Name
-    Date_From = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
-    Date_From_Text_Var = Date_From.children["!ctkframe3"].children["!ctkentry"]
-    Date_From_Text_Var.configure(placeholder_text=Person_Name)
+    SP_Name_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
+    SP_Name_Frame_Var = SP_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_Name_Frame_Var.configure(placeholder_text=SP_Person_Name)
 
     # Field - User ID
-    Date_To = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
-    Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text=Person_ID)
+    SP_User_ID_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
+    SP_User_ID_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_User_ID_Frame_Var.configure(placeholder_text=SP_Person_ID)
 
-    # Field - Email
-    Date_To = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text=SP_Email)
+    # Field - Path to Sharepoint
+    SP_Link_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoin Address", Field_Type="Input_Normal")
+    SP_Link_Frame_Var = SP_Link_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_Link_Frame_Var.configure(placeholder_text=SP_Link)
+
+    # Field - File Name 
+    SP_File_Name_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="File Name", Field_Type="Input_Normal")
+    SP_File_Name_Frame_Var = SP_File_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_File_Name_Frame_Var.configure(placeholder_text=SP_File_Name)
+    SP_File_Name_Frame_Var.configure(state="disabled")
+
+    # Field - Auth Email
+    SP_Auth_Email_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
+    SP_Auth_Email_Frame_Var = SP_Auth_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_Auth_Email_Frame_Var.configure(placeholder_text=SP_Auth_Email)
+
+    # Field - Auth Address
+    SP_Auth_Address_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Address", Field_Type="Input_Normal")
+    SP_Auth_Address_Frame_Var = SP_Auth_Address_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_Auth_Address_Frame_Var.configure(placeholder_text=SP_Auth_Address)
+    SP_Auth_Address_Frame_Var.configure(state="disabled")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Date_From.pack(side="top", padx=10, pady=(0,5))
-    Date_To.pack(side="top", padx=10, pady=(0,5))
-    Date_To.pack(side="top", padx=10, pady=(0,5))
+    SP_Name_Frame.pack(side="top", padx=10, pady=(0,5))
+    SP_User_ID_Frame.pack(side="top", padx=10, pady=(0,5))
+    SP_Link_Frame.pack(side="top", padx=10, pady=(0,5))
+    SP_File_Name_Frame.pack(side="top", padx=10, pady=(0,5))
+    SP_Auth_Email_Frame.pack(side="top", padx=10, pady=(0,5))
+    SP_Auth_Address_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
+
+
+
+def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
+    #! Dodělat --> přidat informaci o Authentifikaci a možnost update Secret ID
+    pass
 
 
 
@@ -888,7 +1023,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     End_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
 
     # Field - Week Days
-    Week_Days_Label = Elements.Get_Text_Column_Header(Frame=Frame_Imput_Area)
+    Week_Days_Label = Elements.Get_Label(Frame=Frame_Imput_Area, Label_Size="Column_Header", Font_Size="Column_Header")
     Week_Days_Label.configure(text="Week Days")
     Week_Days_Label.pack_propagate(flag=False)
 

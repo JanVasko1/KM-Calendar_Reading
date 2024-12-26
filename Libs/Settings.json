@@ -5,6 +5,10 @@
                 "Calendar": "Jan.Vasko@konicaminolta.eu"
             },
             "Sharepoint": {
+                "Person": {
+                    "Code": "CZ011845",
+                    "Name": "Jan Vasko"
+                },
                 "Link": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC.xlsm",
                 "File_name": "SP_TimeSheets.xlsx",
                 "Auth": {
@@ -17,10 +21,6 @@
             "Date": "%Y-%m-%d",
             "Time": "%H:%M",
             "Exchange_DateTime": "%Y-%m-%dT%H:%M:%S"
-        },
-        "Person": {
-            "Code": "CZ011845",
-            "Name": "Jan Vasko"
         },
         "Calendar": {
             "Monday": {

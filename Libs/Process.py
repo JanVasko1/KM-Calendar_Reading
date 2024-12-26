@@ -79,3 +79,4 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
     # Sumamry Dataframes
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Summary") 
     Events = Summary.Generate_Summary(Events=Events)
+    Progress_Bar.set(value=1)

@@ -96,9 +96,9 @@ def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     return A_Cell, E_Cell
 
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
-def Upload(Events: DataFrame) -> None:
+def Upload(Events: DataFrame, SP_Password: str|None) -> None:
     # Authentication
-    s_aut = Authentication.Authentication()
+    s_aut = Authentication.Authentication(SP_Password=SP_Password)
 
     # Download
     Downloaded = Download_Excel(s_aut=s_aut)
