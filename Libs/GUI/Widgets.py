@@ -7,9 +7,9 @@ from CTkToolTip import CTkToolTip
 from CTkTable import CTkTable
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
+client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
 Settings = Defaults_Lists.Load_Settings()
 # Sharepoint
-global SP_Auth_Email
 SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
 SP_Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
@@ -114,6 +114,11 @@ def Add_Skip_Event() -> None:
     #! Dodělat --> funkce přidání do Skip eventů a uložení do json a znovunačtení tabulky
     pass
 
+def Exchange_ReNew_Secret() -> None:
+    print("Exchange_ReNew_Secret")
+    #! Dodělat --> funkce musí znovu požádat o SEcredID a uložit si ho
+    pass
+
 def Del_Skip_Event() -> None:
     print("Del_Skip_Event")
     #! Dodělat --> vymazat z tabulky a uložit do Json
@@ -125,12 +130,12 @@ def Add_Empty_Event() -> None:
     #! Check if Coverage is Number
     pass
 
-def Del_Empty_One_Event() -> None:
-    print("Del_Empty_One_Event")
+def Del_Empty_Event_One() -> None:
+    print("Del_Empty_Event_One")
     #! Dodělat --> vymazat z tabulky a uložit do Json
     pass
 
-def Del_Empty_All_Event() -> None:
+def Del_Empty_Event_All() -> None:
     print("Del_Empty_All_Event")
     #! Dodělat --> vymazat z tabulky a uložit do Json
     pass
@@ -385,21 +390,137 @@ def DashBoard_Totals_Day_Average_Cover_Widget(Frame: CTk|CTkFrame, Label: str, W
     return Frame_Main
 
 
-def DashBoard_Project_Activity_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
-    #! Dodělat --> tohle je Widget pro Aktivity a Projekty -->ten hlavní velký
-    pass
+def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Projects Details.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
 
-def DashBoard_Sub_Project_Activity_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
-    #! Dodělat --> tohle je Widget pro Aktivity a Projekty -->ten dodatečný malý
-    pass
+    #! Dodělat --> dokončit Dashboard
 
-def DashBoard_Week_WeekDays_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
-    #! Dodělat --> tohle je Widget pro zobrazení týdnů a dnů v týdnu
-    pass
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
 
-def DashBoard_Week_WeekDays_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
-    #! Dodělat --> tohle je Widget pro zobrazení týdnů a dnů v týdnu
-    pass
+    return Frame_Main
+
+def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Events Count.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Projects Total Time.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Project_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Projects Average Time.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Activity_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Activity Details.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Activity_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Events Count.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Activity_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Total Time.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Activity_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Average Time.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Detal WeekDay Summary.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Week details.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+def DashBoard_DaysChart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Day Chart.") 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
 
 # ---------------------------------------------------------- Data Page Widgets ---------------------------------------------------------- #
 
@@ -458,8 +579,42 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
-    #! Dodělat --> přidat informaci o Authentifikaci a možnost update Secret ID
-    pass
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Exchange", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Exchange Server related setup.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Name
+    EX_Client_ID_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client ID", Field_Type="Input_Normal") 
+    EX_Client_ID_Frame_Var = EX_Client_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    EX_Client_ID_Frame_Var.configure(placeholder_text=client_id)
+    EX_Client_ID_Frame_Var.configure(state="disabled")
+
+    # Field - User ID
+    Ex_Client_Secret_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client Secret", Field_Type="Input_Normal")
+    Ex_Client_Secret_Frame_Var = Ex_Client_Secret_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Ex_Client_Secret_Frame_Var.configure(placeholder_text=client_secret)
+    Ex_Client_Secret_Frame_Var.configure(state="disabled")
+
+    # Field - Path to Sharepoint
+    EX_Tenant_ID_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Tenant ID", Field_Type="Input_Normal")
+    EX_Tenant_ID_Frame_Var = EX_Tenant_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    EX_Tenant_ID_Frame_Var.configure(placeholder_text=tenant_id)
+    EX_Tenant_ID_Frame_Var.configure(state="disabled")
+
+    # Update Secret ID Button
+    Button_Update_Secret = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
+    Button_Update_Secret.configure(text="Re-new Secret", command = lambda:Exchange_ReNew_Secret())
+    CTkToolTip(widget=Button_Update_Secret, message="Update Secret ID.")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    EX_Client_ID_Frame.pack(side="top", padx=10, pady=(0,5))
+    Ex_Client_Secret_Frame.pack(side="top", padx=10, pady=(0,5))
+    EX_Tenant_ID_Frame.pack(side="top", padx=10, pady=(0,5))
+    Button_Update_Secret.pack(side="right", padx=10, pady=(0,5))
+
+
+    return Frame_Main
 
 
 
@@ -892,7 +1047,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Action_Variable = StringVar(master=Frame, value=Activity_List[0])
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="These evets will be used according to coverage", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space program use fill them by this setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space program use fill them by this setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Imput Field + button in one line
@@ -941,12 +1096,12 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # Del One Button
     Button_Empty_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Empty_Del_One.configure(text="Del", command = lambda:Del_Empty_One_Event())
+    Button_Empty_Del_One.configure(text="Del", command = lambda:Del_Empty_Event_One())
     CTkToolTip(widget=Button_Empty_Del_One, message="Delete row from table based on input index.")
 
     # Del All Button
     Button_Empty_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Empty_Del_All.configure(text="Del all", command = lambda:Del_Empty_All_Event())
+    Button_Empty_Del_All.configure(text="Del all", command = lambda:Del_Empty_Event_All())
     CTkToolTip(widget=Button_Empty_Del_All, message="Delete all rows from table.")
 
     # Recalculate Button
@@ -986,7 +1141,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Sun_Var = IntVar(master=Frame, value=0)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="Shedule Periodical Events", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Imput Field + button in one line

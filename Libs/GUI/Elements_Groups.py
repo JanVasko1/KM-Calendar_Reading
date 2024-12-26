@@ -13,12 +13,12 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
     Header_text = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header")
     Header_text.configure(text=f"{Name}")
 
+    Header_text_Additional = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
+    Header_text_Additional.configure(text=f"{Additional_Text}")
+
     Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon="Question", Icon_Size=(15, 15), Picture_size="Question")
     Icon_Label_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
     CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
-
-    Header_text_Additional = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
-    Header_text_Additional.configure(text=f"{Additional_Text}")
 
     Frame_Single_Data_Area = Elements.Get_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_size=Widget_size)
 
@@ -26,6 +26,7 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
     Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
     Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=7)
     Header_text.pack(side="left", fill="x")
+    Icon_Label_text.pack(side="left", fill="none", expand=False, padx=1, pady=0)
     Header_text_Additional.pack(side="right", fill="x")
     Frame_Single_Data_Area.pack(side="top", fill="y", expand=True, padx=7, pady=7)
 

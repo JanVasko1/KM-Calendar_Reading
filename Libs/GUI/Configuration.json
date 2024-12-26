@@ -583,7 +583,7 @@
                 },
                 "Scrollable_Frames": {
                     "Single_size": {
-                        "width": 480,
+                        "width": 475,
                         "corner_radius": 6,
                         "border_width": 1, 
                         "border_color": [
@@ -755,7 +755,7 @@
         "Dashboard": {
             "Backbround_Frames": {
                 "Totals_Line": {
-                    "width": 1700,
+                    "width": 1600,
                     "height": 100,
                     "corner_radius": 0,
                     "border_width": 0, 
@@ -767,7 +767,7 @@
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Line": {
-                    "width": 1700,
+                    "width": 1600,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0, 
@@ -779,7 +779,7 @@
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Section": {
-                    "width": 850,
+                    "width": 800,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0, 
@@ -803,7 +803,7 @@
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Side_Section": {
-                    "width": 250,
+                    "width": 200,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0, 
@@ -815,7 +815,7 @@
                     "fg_color": "transparent"
                 },
                 "WeekDay_Weeks_Line": {
-                    "width": 1700,
+                    "width": 1600,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0, 
@@ -827,7 +827,7 @@
                     "fg_color": "transparent"
                 },
                 "Day_Chart_Line": {
-                    "width": 1700,
+                    "width": 1600,
                     "height": 500,
                     "corner_radius": 0,
                     "border_width": 0, 
@@ -868,6 +868,144 @@
                         "Data_Area": {
                             "width": 298,
                             "height": 50,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        }
+                    }
+                },
+                "Project_Activity_Line": {
+                    "Project_Activity": {
+                        "Body": {
+                            "width": 560,
+                            "height": 280,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ]
+                        },
+                        "Header": {
+                            "width": 558,
+                            "height": 30,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        },
+                        "Data_Area": {
+                            "width": 558,
+                            "height": 250,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        }
+                    },
+                    "Project_Activity_Details": {
+                        "Body": {
+                            "width": 180,
+                            "height": 80,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ]
+                        },
+                        "Header": {
+                            "width": 178,
+                            "height": 30,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        },
+                        "Data_Area": {
+                            "width": 178,
+                            "height": 50,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        }
+                    }
+                },
+                "WeekDay_Weeks": {
+                    "Normal": {
+                        "Body": {
+                            "width": 790,
+                            "height": 300,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ]
+                        },
+                        "Header": {
+                            "width": 788,
+                            "height": 30,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        },
+                        "Data_Area": {
+                            "width": 788,
+                            "height": 270,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        }
+                    }
+                },
+                "WeekChart": {
+                    "Normal": {
+                        "Body": {
+                            "width": 1630,
+                            "height": 400,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ]
+                        },
+                        "Header": {
+                            "width": 1628,
+                            "height": 30,
+                            "corner_radius": 0,
+                            "border_width": 0, 
+                            "bg_color": "transparent",
+                            "fg_color": "transparent"
+                        },
+                        "Data_Area": {
+                            "width": 1628,
+                            "height": 370,
                             "corner_radius": 0,
                             "border_width": 0, 
                             "bg_color": "transparent",
@@ -922,7 +1060,7 @@
     },
     "Tables": {
         "Single_size":{
-            "width": 450,
+            "width": 440,
             "colors": [
                 "#111219",
                 "#2C2C2C"

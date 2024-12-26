@@ -161,6 +161,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Project_AverageH_Sumary = round(Project_TotalH_Sumary / Project_Count_Sumary, 2)
     Events_Project_Concanet.loc["Summary"] = [Project_Count_Sumary, Project_TotalH_Sumary, Project_AverageH_Sumary]
     Events_Project_Concanet["Count"] = Events_Project_Concanet["Count"].astype(int)
+    Events_Project_Concanet = Events_Project_Concanet.reset_index().rename(columns={"index": "Project"})		
     Events_Project_Concanet.to_csv(path_or_buf=f"Operational\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Activity ---------------------------------------------------------------------------------- #
@@ -180,6 +181,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Activity_AverageH_Sumary = round(Activity_TotalH_Sumary / Activity_Count_Sumary, 2)
     Events_Activity_Concanet.loc["Summary"] = [Activity_Count_Sumary, Activity_TotalH_Sumary, Activity_AverageH_Sumary]
     Events_Activity_Concanet["Count"] = Events_Activity_Concanet["Count"].astype(int)
+    Events_Activity_Concanet = Events_Activity_Concanet.reset_index().rename(columns={"index": "Activity"})		
     Events_Activity_Concanet.to_csv(path_or_buf=f"Operational\\Events_Activity.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
 
@@ -275,6 +277,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_WeekDays.loc["Summary w/o weekend"] = [Total_Days_wo, Total_Events_wo, TotalH_wo, AverageH_wo, My_Day_Utilization_wo, KM_Day_Utilization_wo]
     Events_WeekDays["Days Count"] = Events_WeekDays["Days Count"].astype(int)
     Events_WeekDays["Total Events"] = Events_WeekDays["Total Events"].astype(int)
+    Events_WeekDays = Events_WeekDays.reset_index().rename(columns={"index": "Week Day"})		
     Events_WeekDays.to_csv(path_or_buf=f"Operational\\Events_WeekDays.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Weeks ---------------------------------------------------------------------------------- #
@@ -329,6 +332,7 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
 
     Events_Weeks["Days"] = Events_Weeks["Days"].astype(int)
     Events_Weeks["Total Events"] = Events_Weeks["Total Events"].astype(int)
+    Events_Weeks = Events_Weeks.reset_index().rename(columns={"index": "Week"})	
     Events_Weeks.to_csv(path_or_buf=f"Operational\\Events_Weeks.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
     
     # ---------------------------------------------------------------------------------- TimeSheet ----------------------------------------------------------------------------------

@@ -65,31 +65,37 @@ def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
     # Find
     for widget in Pre_Working_Frame.winfo_children():
         widget.destroy()
+        window.update_idletasks()
 
 def Show_Download_Page() -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Download(Frame=Frame_Work_Area_Detail)
+    window.update_idletasks()
 
 def Show_Dashboard_Page() -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Dashboard(Frame=Frame_Work_Area_Detail)
+    window.update_idletasks()
 
 def Show_Data_Page() -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Data(Frame=Frame_Work_Area_Detail)
+    window.update_idletasks()
 
 def Show_Information_Page() -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Information(Frame=Frame_Work_Area_Detail)
+    window.update_idletasks()
 
 def Show_Settings_Page() -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Settings(Frame=Frame_Work_Area_Detail)
+    window.update_idletasks()
     
 
     
@@ -396,6 +402,8 @@ def Page_Download(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Dashboadr Page -------------------------------------------- #
 def Page_Dashboard(Frame: CTk|CTkFrame):
+    #! Dodělat --> dokončit Dashboard
+
     # Divide Working Page into 2 parts
     Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
@@ -438,51 +446,66 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
     Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
     Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
+    Frame_DashBoard_Project_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity")
     Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
+    Frame_DashBoard_Project_Detail1_Frame = Widgets.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Events Count", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+    Frame_DashBoard_Project_Detail2_Frame = Widgets.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Total Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+    Frame_DashBoard_Project_Detail3_Frame = Widgets.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Average Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
 
     Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
     Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
+    Frame_DashBoard_Activity_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity")
     Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
+    Frame_DashBoard_Activity_Detail1_Frame = Widgets.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Events Count", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+    Frame_DashBoard_Activity_Detail2_Frame = Widgets.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Total Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+    Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Average Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+
 
     # WeekDay and Weeks Line
     Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
+    Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal")
+    Frame_DashBoard_Weeks_Frame = Widgets.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal")
 
     # Day Chart Line
     Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
-
-
-
-
-    
-    #! Dodělat --> kompletní dashboard
-
-
-
-
-
+    Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day chart", Widget_Line="WeekChart", Widget_size="Normal")
 
     #? Build look of Widget
     Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
-    Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=10)
+    Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
     Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Day_Average_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 
-    Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
     Frame_Dashboard_Project_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
     Frame_Dashboard_Project_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-    Frame_Dashboard_Project_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Project_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_Dashboard_Project_Side_Section.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+    Frame_DashBoard_Project_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+    Frame_DashBoard_Project_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+    Frame_DashBoard_Project_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+
     Frame_Dashboard_Activity_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
     Frame_Dashboard_Activity_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Activity_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_Dashboard_Activity_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Activity_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+    Frame_DashBoard_Activity_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+    Frame_DashBoard_Activity_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
 
-    Frame_Dashboard_WeekDay_Weeks_Line.pack(side="top", fill="x", expand=True, padx=0, pady=0)
-    Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=0)
+    Frame_Dashboard_WeekDay_Weeks_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
+    Frame_DashBoard_WeekDays_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
+    Frame_DashBoard_Weeks_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
+
+
+    Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
+    Frame_DashBoard_Day_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
 
 
 

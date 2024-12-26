@@ -74,10 +74,7 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
 def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
     import getpass
     # Laod OAuth2 info
-    load_dotenv(dotenv_path=f"Libs\\Download\\Exchange.env")
-    client_id = os.getenv("client_id")
-    client_secret = os.getenv("client_secret")
-    tenant_id = os.getenv("tenant_id")
+    client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
     username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
     if not client_id:

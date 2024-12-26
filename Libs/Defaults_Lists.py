@@ -1,6 +1,8 @@
 # Import Libraries
 from pandas import DataFrame
+from dotenv import load_dotenv
 import json
+import os
 
 from CTkMessagebox import CTkMessagebox
 
@@ -29,6 +31,14 @@ def Load_Settings() -> dict:
     Settings = json.load(fp=File)
     File.close()
     return Settings
+
+def Load_Exchange_env() -> list[str, str, str]:
+    load_dotenv(dotenv_path=f"Libs\\Download\\Exchange.env")
+    client_id = os.getenv("client_id")
+    client_secret = os.getenv("client_secret")
+    tenant_id = os.getenv("tenant_id")
+    return client_id, client_secret, tenant_id
+    
 
 def Load_Configuration() -> dict:
     File = open(file=f"Libs\\GUI\\Configuration.json", mode="r", encoding="UTF-8", errors="ignore")
