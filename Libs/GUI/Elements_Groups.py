@@ -61,6 +61,36 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
 
     return Frame_Single_Body
 
+def Get_DashBoard_Scrollable_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Icon: str|None, Widget_Label_Tooltip: str) -> CTkFrame:
+    # Build base Frame for Widget
+    Frame_Single_Body = Elements.Get_Dashboard_Widget_Frame_Body_Scrollable(Frame=Frame, Widget_Line=Widget_Line, Widget_size=Widget_size)
+
+    Frame_Single_Header = Elements.Get_Dashboard_Widget_Frame_Header(Frame=Frame_Single_Body, Widget_Line=Widget_Line, Widget_size=Widget_size)
+    
+    Header_text = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header")
+    Header_text.configure(text=f"{Label}")
+
+    if Icon != None:
+        Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon=Icon, Icon_Size=(20, 20), Picture_size="Question")
+        CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
+    else:
+        pass
+
+    Frame_Single_Data_Area = Elements.Get_Dashboard_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_Line=Widget_Line, Widget_size=Widget_size)
+    
+    #? Build look of Widget
+    Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
+    Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=(7, 2))
+    if Icon != None:
+        Icon_Label_text.pack(side="left", fill="none", expand=False, padx=1, pady=0)
+    else:
+        pass
+    Header_text.pack(side="left", fill="x")
+    Frame_Single_Data_Area.pack(side="top", fill="both", expand=True, padx=7, pady=(0, 7))
+
+    return Frame_Single_Body
+
+
 def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)

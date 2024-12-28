@@ -14,6 +14,7 @@ Napojení FrontEnd na backend:
     --> pro tabulku vyplˇˇnující celý prostor stačí použít sticky="news" --> přiřadí pro celý definovaný prostor
     --> můžu to přidat i dojednotlivých SEttupů a případně přidat rowspan = 2 (pro ty široký Widgety) --> tím bych se teoreticky mol zbavit dalšího seupu
     --> Settup
+5) opravit to podělaný "načítání vedle kurzoru"
 """
 
 # Import Libraries
@@ -416,11 +417,11 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
-    Projects_Summary_Df = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
-    Activity_Summary_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
-    WeekDays_Summary_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
-    Weeks_Summary_Df = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
-    Events = pandas.read_csv(f"Operational\\Events.csv", sep=";")
+    Projec_DF = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
+    Activity_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
+    WeekDays_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
+    Weeks_DF = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
+    Events_DF = pandas.read_csv(f"Operational\\Events.csv", sep=";")
 
     # Total Line
     Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
@@ -431,12 +432,12 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
     Frame_Dashboard_Total_Line.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Counter = Widgets.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
+    Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Total = Widgets.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
     Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
     Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Counter = Widgets.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
-    Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Coverage = Widgets.DashBoard_Totals_Coverage_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Coverage)
     Frame_DashBoard_Totals_Coverage.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Day_Average_Coverage = Widgets.DashBoard_Totals_Day_Average_Cover_Widget(Frame=Frame_Dashboard_Total_Line, Label="Day Average Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Day_Average_Coverage)
@@ -446,29 +447,35 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
     Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
     Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
-    Frame_DashBoard_Project_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity")
+    Frame_DashBoard_Project_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Projec_DF=Projec_DF)
     Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
-    Frame_DashBoard_Project_Detail1_Frame = Widgets.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Events Count", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
-    Frame_DashBoard_Project_Detail2_Frame = Widgets.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Total Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
-    Frame_DashBoard_Project_Detail3_Frame = Widgets.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Average Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+    Frame_DashBoard_Project_Detail1_Frame = Widgets.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+    Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
+    Frame_DashBoard_Project_Detail2_Frame = Widgets.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+    Frame_DashBoard_Project_Detail2_Frame.pack_propagate(flag=False)
+    Frame_DashBoard_Project_Detail3_Frame = Widgets.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+    Frame_DashBoard_Project_Detail3_Frame.pack_propagate(flag=False)
 
     Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
     Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
-    Frame_DashBoard_Activity_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity")
+    Frame_DashBoard_Activity_Frame = Widgets.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
     Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
-    Frame_DashBoard_Activity_Detail1_Frame = Widgets.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Events Count", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
-    Frame_DashBoard_Activity_Detail2_Frame = Widgets.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Total Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
-    Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Average Time", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details")
+    Frame_DashBoard_Activity_Detail1_Frame = Widgets.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+    Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
+    Frame_DashBoard_Activity_Detail2_Frame = Widgets.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+    Frame_DashBoard_Activity_Detail2_Frame.pack_propagate(flag=False)
+    Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+    Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
 
 
     # WeekDay and Weeks Line
     Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
-    Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal")
-    Frame_DashBoard_Weeks_Frame = Widgets.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal")
+    Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
+    Frame_DashBoard_Weeks_Frame = Widgets.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
 
     # Day Chart Line
     Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
-    Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day chart", Widget_Line="WeekChart", Widget_size="Normal")
+    Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_DaysChart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day chart", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
 
     #? Build look of Widget
     Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
@@ -476,9 +483,9 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
     Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
+    Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Day_Average_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 

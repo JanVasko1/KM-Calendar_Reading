@@ -892,6 +892,31 @@
                                 "#2C2C2C"
                             ]
                         },
+                        "Body_Scrollable": {
+                            "width": 560,
+                            "height": 280,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ],
+                            "orientation": "vertical",
+                            "scrollbar_fg_color": "transparent",
+                            "scrollbar_button_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "scrollbar_button_hover_color": [
+                                "#00a9ff",
+                                "#00a9ff"
+                            ]
+                        },
                         "Header": {
                             "width": 558,
                             "height": 30,
@@ -960,6 +985,31 @@
                                 "#2C2C2C"
                             ]
                         },
+                        "Body_Scrollable": {
+                            "width": 790,
+                            "height": 300,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ],
+                            "orientation": "vertical",
+                            "scrollbar_fg_color": "transparent",
+                            "scrollbar_button_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "scrollbar_button_hover_color": [
+                                "#00a9ff",
+                                "#00a9ff"
+                            ]
+                        },
                         "Header": {
                             "width": 788,
                             "height": 30,
@@ -993,6 +1043,31 @@
                             "fg_color": [
                                 "#f7f9f9",
                                 "#2C2C2C"
+                            ]
+                        },
+                        "Body_Scrollable": {
+                            "width": 1630,
+                            "height": 400,
+                            "corner_radius": 6,
+                            "border_width": 1, 
+                            "border_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "bg_color": "transparent",
+                            "fg_color": [
+                                "#f7f9f9",
+                                "#2C2C2C"
+                            ],
+                            "orientation": "vertical",
+                            "scrollbar_fg_color": "transparent",
+                            "scrollbar_button_color": [
+                                "#2C2C2C",
+                                "#FFFFFF"
+                            ],
+                            "scrollbar_button_hover_color": [
+                                "#00a9ff",
+                                "#00a9ff"
                             ]
                         },
                         "Header": {
@@ -1125,6 +1200,75 @@
                 "#00a9ff"
             ],
             "wraplength": 1000,
+            "justify": "center",
+            "anchor": "l"
+        },
+        "Dashboard_Project_Activity": {
+            "width": 550,
+            "colors": [
+                "#111219",
+                "#2C2C2C"
+            ],
+            "border_width": 0,
+            "border_color": [
+                "#2C2C2C",
+                "#111219"
+            ],
+            "color_phase": "horizontal",
+            "orientation": "horizontal",
+            "header_color": "#00a9ff",
+            "corner_radius": 6,
+            "hover_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "wraplength": 120,
+            "justify": "center",
+            "anchor": "l"
+        },
+        "Dashboard_WeekDays": {
+            "width": 780,
+            "colors": [
+                "#111219",
+                "#2C2C2C"
+            ],
+            "border_width": 0,
+            "border_color": [
+                "#2C2C2C",
+                "#111219"
+            ],
+            "color_phase": "horizontal",
+            "orientation": "horizontal",
+            "header_color": "#00a9ff",
+            "corner_radius": 6,
+            "hover_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "wraplength": 110,
+            "justify": "center",
+            "anchor": "l"
+        },
+        "Dashboard_Weeks": {
+            "width": 780,
+            "colors": [
+                "#111219",
+                "#2C2C2C"
+            ],
+            "border_width": 0,
+            "border_color": [
+                "#2C2C2C",
+                "#111219"
+            ],
+            "color_phase": "horizontal",
+            "orientation": "horizontal",
+            "header_color": "#00a9ff",
+            "corner_radius": 6,
+            "hover_color": [
+                "#00a9ff",
+                "#00a9ff"
+            ],
+            "wraplength": 95,
             "justify": "center",
             "anchor": "l"
         }

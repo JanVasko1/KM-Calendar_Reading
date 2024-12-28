@@ -190,7 +190,7 @@ def Get_Dashboards_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
 # ------------------------------------------ Dashboards Widgets Frames ------------------------------------------#
 def Get_Dashboard_Widget_Frame_Body(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Dash_Body = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Body"]
-    Frame_Single_Column = CTkFrame(
+    Frame_Body = CTkFrame(
         master = Frame,
         width = Configuration_Frame_Dash_Body["width"],
         height = Configuration_Frame_Dash_Body["height"],
@@ -199,11 +199,27 @@ def Get_Dashboard_Widget_Frame_Body(Frame: CTk|CTkFrame, Widget_Line: str, Widge
         border_color = tuple(Configuration_Frame_Dash_Body["border_color"]),
         bg_color = Configuration_Frame_Dash_Body["bg_color"],
         fg_color = tuple(Configuration_Frame_Dash_Body["fg_color"]))
-    return Frame_Single_Column
+    return Frame_Body
+
+def Get_Dashboard_Widget_Frame_Body_Scrollable(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkScrollableFrame:
+    Configuration_Frame_Dash_Body_Scroll = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Body_Scrollable"]
+    Frame_Body_Scroll = CTkScrollableFrame(
+        master = Frame,
+        width = Configuration_Frame_Dash_Body_Scroll["width"],
+        height = Configuration_Frame_Dash_Body_Scroll["height"],
+        corner_radius = Configuration_Frame_Dash_Body_Scroll["corner_radius"],
+        border_width = Configuration_Frame_Dash_Body_Scroll["border_width"],
+        border_color = tuple(Configuration_Frame_Dash_Body_Scroll["border_color"]),
+        bg_color = Configuration_Frame_Dash_Body_Scroll["bg_color"],
+        fg_color = tuple(Configuration_Frame_Dash_Body_Scroll["fg_color"]),
+        scrollbar_fg_color = Configuration_Frame_Dash_Body_Scroll["scrollbar_fg_color"],
+        scrollbar_button_color = tuple(Configuration_Frame_Dash_Body_Scroll["scrollbar_button_color"]),
+        scrollbar_button_hover_color = tuple(Configuration_Frame_Dash_Body_Scroll["scrollbar_button_hover_color"]))
+    return Frame_Body_Scroll
 
 def Get_Dashboard_Widget_Frame_Header(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Dash_Header = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Header"]
-    Frame_Single_Column_Header = CTkFrame(
+    Frame_Header = CTkFrame(
         master = Frame,
         width = Configuration_Frame_Dash_Header["width"],
         height = Configuration_Frame_Dash_Header["height"],
@@ -211,11 +227,11 @@ def Get_Dashboard_Widget_Frame_Header(Frame: CTk|CTkFrame, Widget_Line: str, Wid
         border_width = Configuration_Frame_Dash_Header["border_width"],
         bg_color = Configuration_Frame_Dash_Header["bg_color"],
         fg_color = Configuration_Frame_Dash_Header["fg_color"])
-    return Frame_Single_Column_Header
+    return Frame_Header
 
 def Get_Dashboard_Widget_Frame_Area(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Dash_Data = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Data_Area"]
-    Frame_Single_Column = CTkFrame(
+    Frame_Area = CTkFrame(
         master = Frame,
         width = Configuration_Frame_Dash_Data["width"],
         height = Configuration_Frame_Dash_Data["height"],
@@ -223,7 +239,7 @@ def Get_Dashboard_Widget_Frame_Area(Frame: CTk|CTkFrame, Widget_Line: str, Widge
         border_width = Configuration_Frame_Dash_Data["border_width"],
         bg_color = Configuration_Frame_Dash_Data["bg_color"],
         fg_color = Configuration_Frame_Dash_Data["fg_color"])
-    return Frame_Single_Column
+    return Frame_Area
 
 # ------------------------------------------ Widget Frames ------------------------------------------#
 # Scrolable --> Frames For tables
