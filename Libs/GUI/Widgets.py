@@ -118,7 +118,7 @@ def Add_Skip_Event() -> None:
 
 def Exchange_ReNew_Secret() -> None:
     print("Exchange_ReNew_Secret")
-    #! Dodělat --> funkce musí znovu požádat o SEcredID a uložit si ho
+    #! Dodělat --> Zobrazí popu form a nechá vyplnit nový SEcret ID a pouze uloží do DB
     pass
 
 def Del_Skip_Event() -> None:
@@ -811,7 +811,7 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------- Calendar -------------#
 def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Working Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - MY Own utilisation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
@@ -879,7 +879,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Vacation Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Vacation Hours + KM Working Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
