@@ -93,3 +93,7 @@ def OverMidnight_Events(Events: DataFrame):
     for Event_index in Event_Indexes:
         Events.drop(labels=[Event_index], axis=0, inplace=True)
     return Events
+
+def Too_Logn_Empty_Events(Events: DataFrame):
+    #! Dodělat --> namyslet celou logiku toho jak by se to mělo splitovat, na základě nejakýho RAndom rozložení (Empty Event delší než --> splitni na 2 a záoveň to splitni nějak na random --> podle setupu a musí být na SEtup Widget)
+    return Events

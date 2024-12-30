@@ -1,10 +1,14 @@
 from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog
 from CTkTable import CTkTable
+from CTkColorPicker import AskColor
+
 import Libs.Defaults_Lists as Defaults_Lists
 
 from PIL import Image
 
 Configuration = Defaults_Lists.Load_Configuration() 
+Accent_Color_Style = Configuration["Global_Apperance"]["Window"]["Accent_Color_Mode"]
+Accent_Color_Style_Manual = Configuration["Global_Apperance"]["Window"]["Accent_Color_Manual"]
 
 # ---------------------------------------------- Font ----------------------------------------------# 
 def Get_Font(Font_Size: str) -> CTkFont:
@@ -35,6 +39,7 @@ def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
 # ---------------------------------------------- Buttons ----------------------------------------------# 
 def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
     Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Button_Normal = CTkButton(
         master = Frame,
         font = Get_Font(Font_Size="Field_Label"),
@@ -44,9 +49,9 @@ def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
         border_width = Configuration_Button_Normal["border_width"],
         border_color = tuple(Configuration_Button_Normal["border_color"]),
         bg_color = Configuration_Button_Normal["bg_color"],
-        fg_color = tuple(Configuration_Button_Normal["fg_color"]),
+        fg_color = tuple([Accent_Color, Accent_Color]),
         hover = Configuration_Button_Normal["hover"],
-        hover_color = tuple(Configuration_Button_Normal["hover_color"]),
+        hover_color = tuple([Accent_Color, Accent_Color]),
         anchor = Configuration_Button_Normal["anchor"])
     return Button_Normal
 
@@ -86,6 +91,7 @@ def Get_Password_Normal(Frame: CTk|CTkFrame) -> CTkEntry:
 
 def Get_RadioButton_Normal(Frame: CTk|CTkFrame) -> CTkRadioButton:
     Configuration_RadioButton_Normal = Configuration["Fields"]["RadioButton"]["Normal"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     RadioButton_Normal = CTkRadioButton(
         master = Frame,
         width = Configuration_RadioButton_Normal["width"],
@@ -95,14 +101,15 @@ def Get_RadioButton_Normal(Frame: CTk|CTkFrame) -> CTkRadioButton:
         corner_radius = Configuration_RadioButton_Normal["corner_radius"],
         border_width_unchecked = Configuration_RadioButton_Normal["border_width_unchecked"],
         border_width_checked = Configuration_RadioButton_Normal["border_width_checked"],
-        fg_color = tuple(Configuration_RadioButton_Normal["fg_color"]),
+        fg_color = tuple([Accent_Color, Accent_Color]),
         border_color = tuple(Configuration_RadioButton_Normal["border_color"]),
-        hover_color = tuple(Configuration_RadioButton_Normal["hover_color"]),
+        hover_color = tuple([Accent_Color, Accent_Color]),
         hover = Configuration_RadioButton_Normal["hover"])
     return RadioButton_Normal
 
 def Get_Option_Menu(Frame: CTk|CTkFrame) -> CTkOptionMenu:
     Configuration_Option_Menu = Configuration["Fields"]["OptionMenu"]["Normal"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Option_Menu = CTkOptionMenu(
         master = Frame,
         font = Get_Font(Font_Size="Field_Label"),
@@ -111,12 +118,12 @@ def Get_Option_Menu(Frame: CTk|CTkFrame) -> CTkOptionMenu:
         corner_radius = Configuration_Option_Menu["corner_radius"],
         bg_color = Configuration_Option_Menu["bg_color"],
         fg_color = tuple(Configuration_Option_Menu["fg_color"]),
-        button_color = tuple(Configuration_Option_Menu["button_color"]),
-        button_hover_color = tuple(Configuration_Option_Menu["button_hover_color"]),
+        button_color = tuple([Accent_Color, Accent_Color]),
+        button_hover_color = tuple([Accent_Color, Accent_Color]),
         text_color = tuple(Configuration_Option_Menu["text_color"]),
         text_color_disabled = tuple(Configuration_Option_Menu["text_color_disabled"]),
         dropdown_fg_color = tuple(Configuration_Option_Menu["dropdown_fg_color"]),
-        dropdown_hover_color = tuple(Configuration_Option_Menu["dropdown_hover_color"]),
+        dropdown_hover_color = tuple([Accent_Color, Accent_Color]),
         dropdown_text_color = tuple(Configuration_Option_Menu["dropdown_text_color"]),
         hover = Configuration_Option_Menu["hover"],
         dynamic_resizing = Configuration_Option_Menu["dynamic_resizing"],
@@ -125,6 +132,7 @@ def Get_Option_Menu(Frame: CTk|CTkFrame) -> CTkOptionMenu:
 
 def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
     Configuration_Check_Box = Configuration["Fields"]["CheckBox"]["Normal"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Check_Box = CTkCheckBox(
         master = Frame,
         font = Get_Font(Font_Size="Field_Label"),
@@ -136,8 +144,8 @@ def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
         border_width = Configuration_Check_Box["border_width"],
         border_color = tuple(Configuration_Check_Box["border_color"]),
         bg_color = Configuration_Check_Box["bg_color"],
-        fg_color = tuple(Configuration_Check_Box["fg_color"]),
-        hover_color = tuple(Configuration_Check_Box["hover_color"]),
+        fg_color = tuple([Accent_Color, Accent_Color]),
+        hover_color = tuple([Accent_Color, Accent_Color]),
         checkmark_color = tuple(Configuration_Check_Box["checkmark_color"]),
         text_color = tuple(Configuration_Check_Box["text_color"]),
         hover = Configuration_Check_Box["hover"])
@@ -203,6 +211,7 @@ def Get_Dashboard_Widget_Frame_Body(Frame: CTk|CTkFrame, Widget_Line: str, Widge
 
 def Get_Dashboard_Widget_Frame_Body_Scrollable(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkScrollableFrame:
     Configuration_Frame_Dash_Body_Scroll = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Body_Scrollable"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Frame_Body_Scroll = CTkScrollableFrame(
         master = Frame,
         width = Configuration_Frame_Dash_Body_Scroll["width"],
@@ -214,7 +223,7 @@ def Get_Dashboard_Widget_Frame_Body_Scrollable(Frame: CTk|CTkFrame, Widget_Line:
         fg_color = tuple(Configuration_Frame_Dash_Body_Scroll["fg_color"]),
         scrollbar_fg_color = Configuration_Frame_Dash_Body_Scroll["scrollbar_fg_color"],
         scrollbar_button_color = tuple(Configuration_Frame_Dash_Body_Scroll["scrollbar_button_color"]),
-        scrollbar_button_hover_color = tuple(Configuration_Frame_Dash_Body_Scroll["scrollbar_button_hover_color"]))
+        scrollbar_button_hover_color = tuple([Accent_Color, Accent_Color]))
     return Frame_Body_Scroll
 
 def Get_Dashboard_Widget_Frame_Header(Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
@@ -345,6 +354,7 @@ def Get_Widget_Field_Frame_Value(Frame: CTk|CTkFrame, Field_Frame_Type: str) -> 
 # ------------------------------------------ Tab View ------------------------------------------ 
 def Get_Tab_View(Frame: CTk|CTkFrame, Tab_size: str) -> CTkTabview:
     Configuration_TabView_Normal = Configuration["TabView"][f"{Tab_size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     TabView_Normal = CTkTabview(
         master = Frame,
         width = Configuration_TabView_Normal["width"],
@@ -354,10 +364,10 @@ def Get_Tab_View(Frame: CTk|CTkFrame, Tab_size: str) -> CTkTabview:
         border_color = tuple(Configuration_TabView_Normal["border_color"]),
         bg_color = Configuration_TabView_Normal["bg_color"],
         segmented_button_fg_color = tuple(Configuration_TabView_Normal["segmented_button_fg_color"]),
-        segmented_button_selected_color = tuple(Configuration_TabView_Normal["segmented_button_selected_color"]),
-        segmented_button_selected_hover_color = tuple(Configuration_TabView_Normal["segmented_button_selected_hover_color"]),
+        segmented_button_selected_color = tuple([Accent_Color, Accent_Color]),
+        segmented_button_selected_hover_color = tuple([Accent_Color, Accent_Color]),
         segmented_button_unselected_color = tuple(Configuration_TabView_Normal["segmented_button_unselected_color"]),
-        segmented_button_unselected_hover_color = tuple(Configuration_TabView_Normal["segmented_button_unselected_hover_color"]),
+        segmented_button_unselected_hover_color = tuple([Accent_Color, Accent_Color]),
         text_color = tuple(Configuration_TabView_Normal["text_color"]),
         text_color_disabled = tuple(Configuration_TabView_Normal["text_color_disabled"]),
         anchor = Configuration_TabView_Normal["anchor"])
@@ -366,6 +376,7 @@ def Get_Tab_View(Frame: CTk|CTkFrame, Tab_size: str) -> CTkTabview:
 # ---------------------------------------------- Tables ----------------------------------------------# 
 def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> CTkTable:
     Configuration_Table_Single = Configuration["Tables"][f"{Table_size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Table_Single = CTkTable(
         master = Frame,
         row = rows,
@@ -377,9 +388,9 @@ def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> 
         border_color = tuple(Configuration_Table_Single["border_color"]),
         color_phase = Configuration_Table_Single["color_phase"],
         orientation = Configuration_Table_Single["orientation"],
-        header_color = Configuration_Table_Single["header_color"],
+        header_color = Accent_Color,
         corner_radius = Configuration_Table_Single["corner_radius"],
-        hover_color = tuple(Configuration_Table_Single["hover_color"]),
+        hover_color = tuple([Accent_Color, Accent_Color]),
         wraplength = Configuration_Table_Single["wraplength"],
         justify = Configuration_Table_Single["justify"],
         anchor = Configuration_Table_Single["anchor"])
@@ -407,6 +418,7 @@ def Get_Image(light_image: str, dark_image: str, size: tuple) -> CTkImage:
 
 def Get_Icon_Button(Frame: CTk|CTkFrame, Picture_size: str) -> CTkButton:
     Configuration_Button_Picture_SideBar = Configuration["Buttons"][f"{Picture_size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Button_Picture_SideBar = CTkButton(
         master = Frame,
         width = Configuration_Button_Picture_SideBar["width"],
@@ -416,13 +428,14 @@ def Get_Icon_Button(Frame: CTk|CTkFrame, Picture_size: str) -> CTkButton:
         bg_color = Configuration_Button_Picture_SideBar["bg_color"],
         fg_color = Configuration_Button_Picture_SideBar["fg_color"],
         hover = Configuration_Button_Picture_SideBar["hover"],
-        hover_color = tuple(Configuration_Button_Picture_SideBar["hover_color"]),
+        hover_color = tuple([Accent_Color, Accent_Color]),
         anchor = Configuration_Button_Picture_SideBar["anchor"])
     return Button_Picture_SideBar
 
 # ---------------------------------------------- Progress Bar ----------------------------------------------# 
 def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -> CTkProgressBar:
     Configuration_ProgressBar = Configuration["ProgressBar"][f"{orientation}"][f"{Progress_Size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Progress_Bar = CTkProgressBar(
         master = Frame,
         width = Configuration_ProgressBar["width"],
@@ -432,7 +445,7 @@ def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -
         corner_radius = Configuration_ProgressBar["corner_radius"],
         bg_color = Configuration_ProgressBar["bg_color"],
         fg_color = tuple(Configuration_ProgressBar["fg_color"]),
-        progress_color = tuple(Configuration_ProgressBar["progress_color"]),
+        progress_color = tuple([Accent_Color, Accent_Color]),
         orientation = Configuration_ProgressBar["orientation"],
         determinate_speed = Configuration_ProgressBar["determinate_speed"],
         indeterminate_speed = Configuration_ProgressBar["indeterminate_speed"],
@@ -443,6 +456,7 @@ def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -
 # ---------------------------------------------- InputDialog ----------------------------------------------# 
 def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
     Configuration_Dialog = Configuration["InputDialog"][f"{Dialog_Type}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     Dialog = CTkInputDialog(
         text=text,
         title=title,
@@ -450,10 +464,25 @@ def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
         fg_color = tuple(Configuration_Dialog["fg_color"]),
         text_color = tuple(Configuration_Dialog["text_color"]),
         button_fg_color = tuple(Configuration_Dialog["button_fg_color"]),
-        button_hover_color = tuple(Configuration_Dialog["button_hover_color"]),
+        button_hover_color = tuple([Accent_Color, Accent_Color]),
         button_text_color = tuple(Configuration_Dialog["button_text_color"]),
         entry_fg_color = tuple(Configuration_Dialog["entry_fg_color"]),
         entry_border_color = tuple(Configuration_Dialog["entry_border_color"]),
         entry_text_color = tuple(Configuration_Dialog["entry_text_color"]),
         password = Configuration_Dialog["password"])
     return Dialog
+
+# ---------------------------------------------- ColorPicker ----------------------------------------------# 
+def Get_Color_Picker() -> AskColor:
+    Configuration_ColorPicker = Configuration["ColorPicker"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
+    Color_Picker = AskColor(
+        width = Configuration_ColorPicker["width"],
+        initial_color = Configuration_ColorPicker["initial_color"],
+        fg_color = Configuration_ColorPicker["fg_color"],
+        slider_border = Configuration_ColorPicker["slider_border"],
+        corner_radius = Configuration_ColorPicker["corner_radius"],
+        button_color = Accent_Color,
+        button_hover_color = Accent_Color,
+        text = Configuration_ColorPicker["text"])
+    return Color_Picker

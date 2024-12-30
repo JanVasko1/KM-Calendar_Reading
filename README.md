@@ -69,6 +69,7 @@ This first part of program is used to download events from calendar
 
 ### <span style="color:blue;">Sharepoint</span>
 - Program prompts at the beginning if you want to directly download missing days from Sharepoint (online) and analyze missing days (when working from home, you have to be on KM VPN) 
+- Program is also capable to download whole reporting period nevertheless if there is some records of my ID
 
 - Setup data must be correctly maintained to have a correct link to proper TimeSheet Excel on Sharepoint 
     - `Authentication`
@@ -99,6 +100,17 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 > [!TIP]
 > ![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/OverNight.png?raw=true
  "Overnight Events")
+
+### <span style="color:blue;">Too Long Empty space split</span>
+- This handler splits Empty space between 2 Events into multiple parts
+
+> [!TIP]
+> ![Overnight Events](https://github.com/JanVasko1/KM-Calendar_Reading/blob/main/Libs/Readme/Too_Long_Empty_Space.png?raw=true
+ "Overnight Events")
+
+> [!CAUTION]
+> Under Developemnt
+
 
 ### <span style="color:blue;">Fill Empty: General</span>
 - This is for filling empty space in the calendar between events where it react on `coverage` palced by each record (sum must be equal to 100%)
@@ -223,7 +235,7 @@ The processed result is automatically exported to the defined path and automatic
 
 # FrontEnd
 > [!CAUTION]
-> Under Developemnt as whole functionality
+> Under Developemnt as whole functionality, Will have to udpate whole Readmme.md --> because of change on global scale
 
 
 # Footer

@@ -15,6 +15,7 @@ Napojení FrontEnd na backend:
     --> můžu to přidat i dojednotlivých SEttupů a případně přidat rowspan = 2 (pro ty široký Widgety) --> tím bych se teoreticky mol zbavit dalšího seupu
     --> Settup
 5) opravit to podělaný "načítání vedle kurzoru"
+6) Implementovat nějaký "Knob" (import tkdial) --> jako ukazatel utilizace
 """
 
 # Import Libraries
@@ -23,7 +24,7 @@ from pandas import DataFrame
 from datetime import datetime
 
 import customtkinter
-from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel
+from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkCheckBox
 from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
 
@@ -37,6 +38,7 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 #! ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
+Configuration = Defaults_Lists.Load_Configuration() 
 Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
 Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
@@ -47,6 +49,9 @@ Window_Frame_width = GUI_Configuration["Frames"]["Page_Frames"]["Background"]["w
 Window_Frame_height = GUI_Configuration["Frames"]["Page_Frames"]["Background"]["height"]
 
 Format_Date = Settings["General"]["Formats"]["Date"]
+
+Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
+Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
 
 #! ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Theme_Change():
@@ -108,6 +113,16 @@ def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Downloa
     Download_Date_Range_Source = Download_Date_Range_Source.get()
     Download_Data_Source = Download_Data_Source.get()
     SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"].get()
+    SP_Whole_Period = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+    if SP_Whole_Period == 1:
+        SP_Whole_Period = True
+    else:
+        SP_Whole_Period = False
+    SP_Active_Per_Days_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+    if SP_Active_Per_Days_Var == 1:
+        SP_Active_Per_Days_Var = True
+    else:
+        SP_Active_Per_Days_Var = False
     Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
     Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
     Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
@@ -165,7 +180,7 @@ def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Downloa
 
     if Can_Download == True:
         import Libs.Process as Process
-        Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+        Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_Active_Per_Days_Var=SP_Active_Per_Days_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
         CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
     else:
         CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
@@ -205,7 +220,7 @@ def Data_Excel():
     import subprocess
     subprocess.run('start excel "Operational\\Events.csv"', shell=True, capture_output=False, text=False)
 
-def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry) -> None:
+def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry, Sharepoint_Whole_Period_Var: CTkCheckBox, Sharepoint_Active_Per_Days_Var: CTkCheckBox) -> None:
     if Download_Date_Range_Source.get() == "Manual":
         Manual_Date_From_Var.focus()
         Manual_Date_From_Var.configure(state="normal")
@@ -213,9 +228,13 @@ def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Man
 
         Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
         Sharepoint_Password_Var.configure(state="disabled")
+        Sharepoint_Whole_Period_Var.configure(state="disabled")
+        Sharepoint_Active_Per_Days_Var.configure(state="disabled")
     elif Download_Date_Range_Source.get() == "Sharepoint":
         Sharepoint_Password_Var.focus()
         Sharepoint_Password_Var.configure(state="normal")
+        Sharepoint_Whole_Period_Var.configure(state="normal")
+        Sharepoint_Active_Per_Days_Var.configure(state="normal")
 
         Manual_Date_From_Var.delete(first_index=0, last_index=1000)
         Manual_Date_From_Var.configure(placeholder_text="Date From")
@@ -345,6 +364,8 @@ def Page_Download(Frame: CTk|CTkFrame):
     Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"]
+    Sharepoint_Whole_Period_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"]
+    Sharepoint_Active_Per_Days_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"]
 
     Manual_Widget = Widgets.Download_Manual(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
@@ -354,8 +375,8 @@ def Page_Download(Frame: CTk|CTkFrame):
     Manual_Date_To_Var.configure(state="disabled")
 
     # Disabling fields --> Download_Date_Range_Source
-    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var))
-    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var))
+    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Whole_Period_Var=Sharepoint_Whole_Period_Var, Sharepoint_Active_Per_Days_Var=Sharepoint_Active_Per_Days_Var))
+    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Whole_Period_Var=Sharepoint_Whole_Period_Var, Sharepoint_Active_Per_Days_Var=Sharepoint_Active_Per_Days_Var))
 
     # Download Source
     Source_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
@@ -403,10 +424,8 @@ def Page_Download(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Dashboadr Page -------------------------------------------- #
 def Page_Dashboard(Frame: CTk|CTkFrame):
-    #! Dodělat --> dokončit Dashboard
-
     # Divide Working Page into 2 parts
-    Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    #Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
     Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
@@ -427,7 +446,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
     Mean_Duration_hours = float(Totals_Summary_Df.iloc[0]["Mean_Duration_hours"])
     Event_counts = int(Totals_Summary_Df.iloc[0]["Event_counts"])
-    Total_Coverage = int(Totals_Summary_Df.iloc[0]["Total_Coverage"])
+    Reporting_Period_Utilization = int(Totals_Summary_Df.iloc[0]["Reporting_Period_Utilization"])
     Day_Average_Coverage = int(Totals_Summary_Df.iloc[0]["Day_Average_Coverage"])
 
     Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
@@ -438,8 +457,8 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
     Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Coverage = Widgets.DashBoard_Totals_Coverage_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Coverage)
-    Frame_DashBoard_Totals_Coverage.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Report_Per_Util = Widgets.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Repor Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
+    Frame_DashBoard_Totals_Report_Per_Util.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Day_Average_Coverage = Widgets.DashBoard_Totals_Day_Average_Cover_Widget(Frame=Frame_Dashboard_Total_Line, Label="Day Average Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Day_Average_Coverage)
     Frame_DashBoard_Totals_Day_Average_Coverage.pack_propagate(flag=False)
 
@@ -476,9 +495,12 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     # Day Chart Line
     Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
     Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_DaysChart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day chart", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
+    Frame_DashBoard_Day_Chart_Frame.pack_propagate(flag=False)
+    Frame_DashBoard_Cumulated_Chart_Frame = Widgets.DashBoard_Cumulated_Time_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Cumulated", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
+    Frame_DashBoard_Cumulated_Chart_Frame.pack_propagate(flag=False)
 
     #? Build look of Widget
-    Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    #Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
@@ -486,7 +508,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Report_Per_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Day_Average_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 
     Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
@@ -513,7 +535,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
     Frame_DashBoard_Day_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-
+    Frame_DashBoard_Cumulated_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
 
 
 
@@ -571,7 +593,7 @@ def Page_Information(Frame: CTk|CTkFrame):
 
     # ------------------------- Info Text Area -------------------------#
     # Description
-    #! Dodělat --> text ohledně projektu a linka na víc info na Githubu!!!
+    #! Dodělat --> text ohledně projektu a linka na víc info na Githubu (nejlepší by bylo, kdyby to přímo přečetlo Readme.md)!!!
     Frame_Information_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
     #? Build look of Widget
@@ -604,7 +626,9 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # Tab View
     TabView = Elements.Get_Tab_View(Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
     TabView.pack_propagate(flag=False)
-    Tab_Gen = TabView.add("General")
+    Tab_Ape = TabView.add("Apperance")
+    Tab_Ape.pack_propagate(flag=False)
+    Tab_Gen = TabView.add("Data Source")
     Tab_Gen.pack_propagate(flag=False)
     Tab_Cal = TabView.add("Calendar")
     Tab_Cal.pack_propagate(flag=False)
@@ -614,7 +638,11 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_E.pack_propagate(flag=False)
     Tab_E_A = TabView.add("Events - AutoFill")
     Tab_E_A.pack_propagate(flag=False)
-    TabView.set("General")
+    TabView.set("Apperance")
+
+    # Apperance
+    Theme_Widget = Widgets.Settings_Aperance_Theme(Frame=Tab_Ape)
+    Color_Pallete_Widget = Widgets.Settings_Aperance_Color_Pallete(Frame=Tab_Ape)
 
     # General Page
     Sharepoint_Widget = Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
@@ -648,6 +676,9 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=0, sticky="e")
     Button_Save_Settings.grid(row=0, column=1, padx=5, pady=0, sticky="e")
     TabView.grid(row=0, column=0, padx=5, pady=0, sticky="n")
+
+    Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Color_Pallete_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
 
     Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
@@ -685,8 +716,8 @@ window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{to
 window.bind(sequence="<Escape>", func=lambda evet: window.quit())
 window.overrideredirect(boolean=True)
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-pywinstyles.apply_style(window=window, style="aero")     #! Dodělat v knihovně je poznámka, že se má background color natřít na černo aby to fungovalo
-customtkinter.set_appearance_mode("dark")
+pywinstyles.apply_style(window=window, style=Win_Style_Actual)
+customtkinter.set_appearance_mode(mode_string=Theme_Actual)
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames

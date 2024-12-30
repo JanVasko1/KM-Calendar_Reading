@@ -25,15 +25,19 @@ def Progress_Bar_step(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: 
     window.update_idletasks()
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None):
+def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Password: str|None, SP_Whole_Period:bool|None, SP_Active_Per_Days_Var: bool|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None):
     # Download Events 
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Downloading") 
-    Events = Downloader.Download_Events(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+    Events, Report_Period_Active_Days = Downloader.Download_Events(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_Active_Per_Days_Var=SP_Active_Per_Days_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
     
     # Process Events
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Overniight Events") 
     Events = Divide_Events.OverMidnight_Events(Events=Events)
+    Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+
+    Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Too long Empty Events") 
+    Events = Divide_Events.Too_Logn_Empty_Events(Events=Events)
     Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Fill Empty") 
@@ -78,5 +82,5 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
 
     # Sumamry Dataframes
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Summary") 
-    Events = Summary.Generate_Summary(Events=Events)
+    Events = Summary.Generate_Summary(Events=Events, Report_Period_Active_Days=Report_Period_Active_Days)
     Progress_Bar.set(value=1)

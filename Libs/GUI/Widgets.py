@@ -2,15 +2,32 @@
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
-from customtkinter import CTk, CTkFrame, StringVar, IntVar, DoubleVar, BooleanVar
+
+import pywinstyles
+import customtkinter
+from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, CTkToplevel
 from CTkToolTip import CTkToolTip
 from CTkTable import CTkTable
+
+from CTkColorPicker import *
+
 
 from pandas import DataFrame
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
 Settings = Defaults_Lists.Load_Settings()
+Configuration = Defaults_Lists.Load_Configuration() 
+
+# Apperance
+Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
+Theme_List = list(Configuration["Global_Apperance"]["Window"]["Theme_List"])
+Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
+Win_Style_List = list(Configuration["Global_Apperance"]["Window"]["Style_List"])
+Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Accent_Color_Mode"]
+Accent_Color_Mode_List = list(Configuration["Global_Apperance"]["Window"]["Accent_Color_List"])
+Accent_Color_Manual = Configuration["Global_Apperance"]["Window"]["Accent_Color_Manual"]
+
 # Sharepoint
 SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
 SP_Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
@@ -111,6 +128,33 @@ Join_OutOfOffice = Settings["Event_Handler"]["Events"]["Join_method"]["Out of Of
 Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working elsewhere"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
+def Apperance_Change_Theme() ->  None:
+    print("Apperance_Change_Theme")
+    #! Dodělat --> spustit hned při změně hodnoty 
+    pass
+
+def Apperance_Change_Win_Style() -> None:
+    print("Apperance_Change_Win_Style")
+    #! Dodělat --> spustit hned při změně hodnoty
+    pass
+
+def Apperance_Accent_Color(Accent_Color_Mode_Variable: StringVar, Accent_Color_Manual_Frame_Var: CTkEntry) -> None:
+    #! Dodělat --> nefunguje píše to něco s Variable 
+    if Accent_Color_Mode_Variable.get() == "System":
+        Accent_Color_Manual_Frame_Var.configure(state="disabled")
+    elif Accent_Color_Mode_Variable.get() == "Manual":
+        Accent_Color_Manual_Frame_Var.focus()
+        Accent_Color_Manual_Frame_Var.configure(state="normal")
+    elif Accent_Color_Mode_Variable.get() == "Original":
+        Accent_Color_Manual_Frame_Var.configure(state="disabled")
+    else:
+        pass
+
+def Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var: CTkEntry) -> None:
+    Color_Picker = Elements.Get_Color_Picker()
+    Accent_Color_Selected = Color_Picker.get() 
+    Accent_Color_Manual_Frame_Var.insert(index=0, string=Accent_Color_Selected)
+
 def Add_Skip_Event() -> None:
     print("Add_Skip_Event")
     #! Dodělat --> funkce přidání do Skip eventů a uložení do json a znovunačtení tabulky
@@ -178,6 +222,16 @@ def Del_AutoFill_Event_All() -> None:
     #! Dodělat --> vymazat z tabulky a uložit do Json
     pass
 
+def DashBoard_Chart_Project() -> None:
+    print("DashBoard_Chart_Project")
+    #! Dodělat --> Přepnout graf na Projekty
+    pass
+
+def DashBoard_Chart_Activity() -> None:
+    print("DashBoard_Chart_Activity")
+    #! Dodělat --> Přepnout graf na Aktivity
+    pass
+
 
 # ---------------------------------------------------------- Download Page Widgets ---------------------------------------------------------- #
 def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
@@ -205,12 +259,24 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     # Field - Password
     Password = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
 
+    # Field - Get whole report Period
+    Whole_Period_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Whole report period", Field_Type="Input_CheckBox") 
+    Whole_Period_Frame_Var = Whole_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
+    Whole_Period_Frame_Var.configure(text="")
+
+    # Field - Get whole report Period
+    Active_Period_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Get Active Period Days", Field_Type="Input_CheckBox") 
+    Active_Period_Frame_Var = Active_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
+    Active_Period_Frame_Var.configure(text="")
+
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Use_Sharepoint.pack(side="top", padx=10, pady=(0,5))
     User_ID.pack(side="top", padx=10, pady=(0,5))
     Email.pack(side="top", padx=10, pady=(0,5))
     Password.pack(side="top", padx=10, pady=(0,5))
+    Whole_Period_Frame.pack(side="top", padx=10, pady=(0,5))
+    Active_Period_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -303,7 +369,7 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
 # ------------- Total Line -------------#
 def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Time", Widget_Label_Tooltip="Shows total hours.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Time", Widget_Label_Tooltip="Shows total hours.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Total_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -321,7 +387,7 @@ def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:s
 
 def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Event_Time", Widget_Label_Tooltip="Shows Averate hours per Event.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Event_Time", Widget_Label_Tooltip="Shows Averate hours per Event.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Average_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -339,7 +405,7 @@ def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
 
 def DashBoard_Totals_Counter_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Event_Count", Widget_Label_Tooltip="Shows total counts of Events.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Event_Count", Widget_Label_Tooltip="Shows total counts of Events.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Event_Counter_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -355,9 +421,9 @@ def DashBoard_Totals_Counter_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
 
     return Frame_Main
 
-def DashBoard_Totals_Coverage_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
+def DashBoard_Totals_Report_Period_Util_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Coverage", Widget_Label_Tooltip="Shows if Utilization is covered.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Coverage", Widget_Label_Tooltip="Shows if Utilization of Reporting Period.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -375,7 +441,7 @@ def DashBoard_Totals_Coverage_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
 
 def DashBoard_Totals_Day_Average_Cover_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Coverage", Widget_Label_Tooltip="Shows average Coverage of utilization.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Coverage", Widget_Label_Tooltip="Shows average Coverage of utilization.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -400,7 +466,7 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
         Table_Values.append(data_list)
 
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Scrollable_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Projects Details.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Projects Details.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -420,7 +486,7 @@ def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Most_Occurence_Project = Projec_DF.iloc[Most_Occurence_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Most Occcurence") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Most Occcurence", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -439,7 +505,7 @@ def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Most_Project_Hours = Projec_DF.iloc[Most_Hours_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Most Hours") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Most Hours", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -458,7 +524,7 @@ def DashBoard_Project_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Most_Project_Avg_Hours = Projec_DF.iloc[Most_Hours_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Projects Average Time.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Projects Average Time.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Hours_Avg_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -478,7 +544,7 @@ def DashBoard_Activity_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Scrollable_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Activity Details.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Activity Details.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -498,7 +564,7 @@ def DashBoard_Activity_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Most_Occurence_Activity = Activity_Df.iloc[Most_Occurence_ID]["Activity"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Events Count.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Events Count.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -517,7 +583,7 @@ def DashBoard_Activity_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Most_Activity_Hours = Activity_Df.iloc[Most_Hours_ID]["Activity"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Total Time.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Total Time.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -536,7 +602,7 @@ def DashBoard_Activity_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Most_Activity_Avg_Hours = Activity_Df.iloc[Most_Hours_ID]["Activity"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Average Time.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Average Time.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Hours_Avg_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -556,7 +622,7 @@ def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Scrollable_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Detal WeekDay Summary.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Detal WeekDay Summary.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -577,7 +643,7 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Scrollable_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Week details.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Week details.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -594,10 +660,36 @@ def DashBoard_DaysChart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
     # Data preparation
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Scrollable_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Day Chart.") 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Day Chart.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    #! Dodělat --> dokončit Dashboard
+    #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
+
+    # Update Secret ID Button
+    Button_Show_Projects = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
+    Button_Show_Projects.configure(text="Projects", command = lambda:DashBoard_Chart_Project())
+    CTkToolTip(widget=Button_Show_Projects, message="Shows Charts with Projects.")
+
+    # Update Secret ID Button
+    Button_Show_Activities = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
+    Button_Show_Activities.configure(text="Activities", command = lambda:DashBoard_Chart_Activity())
+    CTkToolTip(widget=Button_Show_Activities, message="Shows Charts with Activities.")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Button_Show_Projects.pack(side="right", padx=10, pady=(0,5))
+    Button_Show_Activities.pack(side="top", padx=10, pady=(0,5))
+
+    return Frame_Main
+
+def DashBoard_Cumulated_Time_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Events_DF: DataFrame) -> CTkFrame:
+    # Data preparation
+    
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Day Chart.", Scrollable=False) 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -609,6 +701,67 @@ def DashBoard_DaysChart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
 # ---------------------------------------------------------- Information Page Widgets ---------------------------------------------------------- #
 
 # ---------------------------------------------------------- Settings Page Widgets ---------------------------------------------------------- #
+# ------------- Apperance -------------#
+def Settings_Aperance_Theme(Frame: CTk|CTkFrame) -> CTkFrame:
+    Theme_Variable = StringVar(master=Frame, value=Theme_Actual)
+    Win_Style_Variable = StringVar(master=Frame, value=Win_Style_Actual)
+    Accent_Color_Mode_Variable = StringVar(master=Frame, value=Accent_Color_Mode)
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="General Apperance", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Theme
+    Theme_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Theme", Field_Type="Input_OptionMenu") 
+    Theme_Frame_Var = Theme_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Theme_Frame_Var.configure(values=Theme_List, variable=Theme_Variable)
+
+    # Field - Windows Style
+    Win_Style_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Window Style", Field_Type="Input_OptionMenu") 
+    Win_Style_Frame_Var = Win_Style_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Win_Style_Frame_Var.configure(values=Win_Style_List, variable=Win_Style_Variable)
+
+    # Field - Accent Color Mode
+    Accent_Color_Mode_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Mode", Field_Type="Input_OptionMenu") 
+    Accent_Color_Mode_Frame_Var = Accent_Color_Mode_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Accent_Color_Mode_Frame_Var.configure(values=Accent_Color_Mode_List, variable=Accent_Color_Mode_Variable)
+
+    # Field - Accent Color Manual
+    Accent_Color_Manual_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Manual", Field_Type="Input_Normal") 
+    Accent_Color_Manual_Frame_Var = Accent_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual)
+
+    # Add Button
+    Button_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
+    Button_Color_Picker.configure(text="Color Picker", command = lambda:Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+    CTkToolTip(widget=Button_Color_Picker, message="Select Manual Accent Collor.")
+
+    # Disabling fields --> Download_Date_Range_Source
+    Accent_Color_Mode_Frame_Var.configure(command = lambda:Apperance_Accent_Color(Accent_Color_Mode_Variable=Accent_Color_Mode_Variable, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Theme_Frame.pack(side="top", padx=10, pady=(0,5))
+    Win_Style_Frame.pack(side="top", padx=10, pady=(0,5))
+    Accent_Color_Mode_Frame.pack(side="top", padx=10, pady=(0,5))
+    Accent_Color_Manual_Frame.pack(side="top", padx=10, pady=(0,5))
+    Button_Color_Picker.pack(side="right", padx=10, pady=(0,5))
+
+    return Frame_Main
+
+
+
+def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    #! Dodělat --> nastavit defaultní BArevnou čkálu pro celý systém (příklad pro grafy)
+
+    return Frame_Main
+    
+
+
 # ------------- General -------------#
 def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
@@ -811,7 +964,7 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------- Calendar -------------#
 def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - MY Own utilisation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
@@ -879,7 +1032,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - Vacation Hours + KM Working Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - KM Working/Vacation Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday

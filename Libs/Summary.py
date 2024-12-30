@@ -114,7 +114,7 @@ KM_WH_dict = {
     }
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Generate_Summary(Events: DataFrame) -> DataFrame:
+def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int) -> DataFrame:
     #Update Events Dataframe
     Events["Personnel number"] = Personnel_number
     Events["Start_Time"] = Events["Start_Time"].astype(str)
@@ -125,25 +125,6 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events["End_Time"] = Events["End_Time"].map(lambda x: x[:])
     Events["Duration_H"] = Events["Duration"].map(lambda x: round(x/60, 2))
     
-    # ------------------------------ Statistics ------------------------------ #
-    # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
-    Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
-    Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
-    Event_counts = Events.shape[0]
-    Total_Coverage = 0          #! Dodělat --> spočítat coverage (někde už to spočítany je) spočítat i ostatní main statistiky!!! a vrátit je zpátky do hlavního programu
-    Day_Average_Coverage = 0    #! Dodělat --> spočítat coverage (někde už to spočítany je) spočítat i ostatní main statistiky!!! a vrátit je zpátky do hlavního programu
-
-    Totals_dict = {
-        "Total_Duration_hours": Total_Duration_hours,
-        "Mean_Duration_hours": Mean_Duration_hours,
-        "Event_counts": Event_counts,
-        "Total_Coverage": Total_Coverage,
-        "Day_Average_Coverage": Day_Average_Coverage}
-    
-    Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
-    Totals_df.to_csv(path_or_buf=f"Operational\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-
-
     # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
     Events_Project_GR = Events.loc[:, ["Project", "Duration_H"]]
     Events_Project_Sum = Events_Project_GR.groupby(["Project"]).sum()
@@ -334,8 +315,30 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     Events_Weeks["Total Events"] = Events_Weeks["Total Events"].astype(int)
     Events_Weeks = Events_Weeks.reset_index().rename(columns={"index": "Week"})	
     Events_Weeks.to_csv(path_or_buf=f"Operational\\Events_Weeks.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+
+    # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
+    Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
+    Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
+    Event_counts = Events.shape[0]
+    try:
+        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours, ndigits=0) / (Report_Period_Active_Days * 8) * 100, ndigits=2)
+    except:
+        # Cannot divide by 0
+        Reporting_Period_Utilization = "NaN"
+    Day_Average_Coverage = 0                #! Dodělat --> spočítat coverage (někde už to spočítany je) spočítat i ostatní main statistiky!!! a vrátit je zpátky do hlavního programu
+
+    Totals_dict = {
+        "Total_Duration_hours": Total_Duration_hours,
+        "Mean_Duration_hours": Mean_Duration_hours,
+        "Event_counts": Event_counts,
+        "Reporting_Period_Utilization": Reporting_Period_Utilization,
+        "Day_Average_Coverage": Day_Average_Coverage}
     
-    # ---------------------------------------------------------------------------------- TimeSheet ----------------------------------------------------------------------------------
+    Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
+    Totals_df.to_csv(path_or_buf=f"Operational\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+
+    
+    # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]
@@ -344,3 +347,13 @@ def Generate_Summary(Events: DataFrame) -> DataFrame:
     pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
     Events.to_csv(path_or_buf=f"Operational\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+
+
+    # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
+    #! Dodělat --> připravit Graf v BOKEH
+    """
+    1) Transparentní pozadí !!! --> abych 
+    Typy:
+    - to je ten sloupcový 100%: za Projekty a za Aktivity
+    - Cumulativní --> celkový (line chart tak jak mě kumulativně nabíhaly hodiny) --> batva Accent Color
+    """
