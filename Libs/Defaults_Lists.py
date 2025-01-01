@@ -7,6 +7,24 @@ import os
 from CTkMessagebox import CTkMessagebox
 import winaccent
 
+def Load_Settings() -> dict:
+    File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
+    Settings = json.load(fp=File)
+    File.close()
+    return Settings
+
+def Load_Configuration() -> dict:
+    File = open(file=f"Libs\\GUI\\Configuration.json", mode="r", encoding="UTF-8", errors="ignore")
+    Configuration = json.load(fp=File)
+    File.close()
+    return Configuration
+
+def Load_Figures(Theme:str) -> dict:
+    File = open(file=f"Libs\\GUI\\Figure_settings_{Theme}.json", mode="r", encoding="UTF-8", errors="ignore")
+    Configuration = json.load(fp=File)
+    File.close()
+    return Configuration
+
 def Busy_Status_List() -> list[str]:
     Busy_Stuses = ["Free", "Tentative", "Busy", "Out of Office", "Working elsewhere"]
     return Busy_Stuses
@@ -27,25 +45,12 @@ def Dataframe_sort(Sort_Dataframe: DataFrame, Columns_list: list, Accenting_list
     Sort_Dataframe.drop(labels=["index"], inplace=True, axis=1)
     return Sort_Dataframe
 
-def Load_Settings() -> dict:
-    File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
-    Settings = json.load(fp=File)
-    File.close()
-    return Settings
-
 def Load_Exchange_env() -> list[str, str, str]:
     load_dotenv(dotenv_path=f"Libs\\Download\\Exchange.env")
     client_id = os.getenv("client_id")
     client_secret = os.getenv("client_secret")
     tenant_id = os.getenv("tenant_id")
     return client_id, client_secret, tenant_id
-    
-
-def Load_Configuration() -> dict:
-    File = open(file=f"Libs\\GUI\\Configuration.json", mode="r", encoding="UTF-8", errors="ignore")
-    Configuration = json.load(fp=File)
-    File.close()
-    return Configuration
 
 def Information_Update_Settings(Area: str, Field: str, Information: int|str|list|dict) -> None:
     try:

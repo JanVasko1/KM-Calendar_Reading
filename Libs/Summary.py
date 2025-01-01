@@ -1,7 +1,11 @@
-import Libs.Defaults_Lists as Defaults_Lists
+# Import Libraries
 from pandas import DataFrame
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas
+import holidays
+
+import Libs.Defaults_Lists as Defaults_Lists
+import Libs.GUI.Charts as Charts
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -35,6 +39,63 @@ def Duration_Couter(Time1: str, Time2: str) -> float:
     except:
         Duration = 0
     return round(Duration, 2)
+
+def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, Report_Period_End: datetime) -> DataFrame:
+    Czech_Holidays = holidays.country_holidays("CZ")
+    Utilization_Calendar_df = DataFrame(columns=["Working_day", "KM_Cumulative_Utilization", "Day_Total_Time", "Reported_Cumulative_Time"])
+    KM_Cumulative_Utilization = 0
+    Day_Total_Time = 0
+    Reported_Cumulative_Time = 0
+
+    # Dataframe preparation
+    Events_Date_GR = Events.loc[:, ["Start_Date", "Duration_H"]]
+    Events_Date_Sum = Events_Date_GR.groupby(["Start_Date"]).sum()
+    Events_Date_Sum["Cumulated_H"] = Events_Date_Sum["Duration_H"].cumsum()
+    
+    while True:
+        Check_Date_str = Report_Period_Start.strftime(format=Date_Format)
+        Working_day = True
+
+        # Working Day
+        Holliday_day = Czech_Holidays.get(key=Check_Date_str)
+        if Holliday_day == None:
+            Weekend_Day = Report_Period_Start.weekday()
+            if Weekend_Day < 5:
+                pass
+            else:
+                Working_day = False
+        else:
+            Working_day = False
+
+        # Cumulated KM Utilization
+        if Working_day == True:
+            KM_Cumulative_Utilization = KM_Cumulative_Utilization + 8
+        else: 
+            KM_Cumulative_Utilization = KM_Cumulative_Utilization
+
+        # Day Total Time
+        try:
+            Day_Total_Time = Events_Date_Sum.loc[f"{Check_Date_str}"]["Duration_H"]
+        except:
+            Day_Total_Time = Day_Total_Time
+
+
+        # Reported Cumulative Utilization
+        try:
+            Reported_Cumulative_Time = Events_Date_Sum.loc[f"{Check_Date_str}"]["Cumulated_H"]
+        except:
+            Reported_Cumulative_Time = Reported_Cumulative_Time
+    	
+        #Add to calendar
+        Utilization_Calendar_df.loc[f"{Check_Date_str}"] = [Working_day, KM_Cumulative_Utilization, Day_Total_Time, Reported_Cumulative_Time]
+
+        # Check End of Report Period
+        if Report_Period_Start == Report_Period_End:
+            break
+        else:
+            Report_Period_Start += timedelta(days=1)
+    
+    return Utilization_Calendar_df  
 
 # ---------------------------------------------------------- Local Variables ---------------------------------------------------------- #
 My_Monday_Start_WH = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Start_Time"]
@@ -114,7 +175,7 @@ KM_WH_dict = {
     }
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int) -> DataFrame:
+def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime) -> None:
     #Update Events Dataframe
     Events["Personnel number"] = Personnel_number
     Events["Start_Time"] = Events["Start_Time"].astype(str)
@@ -129,6 +190,7 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int) -> DataF
     Events_Project_GR = Events.loc[:, ["Project", "Duration_H"]]
     Events_Project_Sum = Events_Project_GR.groupby(["Project"]).sum()
     Events_Project_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
+    Events_Project_Sum["Total[H]"] = Events_Project_Sum["Total[H]"].map(lambda x: round(x, 2))
     Events_Project_Mean = Events_Project_GR.groupby(["Project"]).mean()
     Events_Project_Mean.rename(columns={"Duration_H": "Average[H]"}, inplace=True)
     Events_Project_Mean["Average[H]"] = Events_Project_Mean["Average[H]"].map(lambda x: round(x, 2))
@@ -149,6 +211,7 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int) -> DataF
     Events_Activity_GR = Events.loc[:, ["Activity", "Duration_H"]]
     Events_Activity_Sum = Events_Activity_GR.groupby(["Activity"]).sum()
     Events_Activity_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
+    Events_Activity_Sum["Total[H]"] = Events_Activity_Sum["Total[H]"].map(lambda x: round(x, 2))
     Events_Activity_Mean = Events_Activity_GR.groupby(["Activity"]).mean()
     Events_Activity_Mean.rename(columns={"Duration_H": "Average[H]"}, inplace=True)
     Events_Activity_Mean["Average[H]"] = Events_Activity_Mean["Average[H]"].map(lambda x: round(x, 2))
@@ -320,23 +383,55 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int) -> DataF
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
     Event_counts = Events.shape[0]
-    try:
-        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours, ndigits=0) / (Report_Period_Active_Days * 8) * 100, ndigits=2)
-    except:
+    
+    # Reporting Period Utilization
+    if type(Report_Period_Active_Days) is int:
+        Period_Utilization = Report_Period_Active_Days * 8
+        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
+
+        # Utilization suprlust calculation
+        if type(Report_Period_End) is datetime:
+            Utilization_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
+            Utilization_Calendar_df.to_csv(path_or_buf=f"Operational\\Utilization_Calendar_df.csv", index=True, sep=";", header=True, encoding="utf-8-sig")    #! Dodělat --> vymazat
+            Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
+            KM_Cumulative_Util_by_Date = Utilization_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
+            Reported_Cumulative_Time_by_Date = Utilization_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
+            Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
+
+            # Prepare Chart
+            #! Dodělat --> připravit graf
+        else:
+            Utilization_Surplus_hours = None
+    else:
         # Cannot divide by 0
-        Reporting_Period_Utilization = "NaN"
-    Day_Average_Coverage = 0                #! Dodělat --> spočítat coverage (někde už to spočítany je) spočítat i ostatní main statistiky!!! a vrátit je zpátky do hlavního programu
+        Reporting_Period_Utilization = None
+    My_Calendar_Utilization = KM_Day_Utilization_w
 
     Totals_dict = {
         "Total_Duration_hours": Total_Duration_hours,
         "Mean_Duration_hours": Mean_Duration_hours,
         "Event_counts": Event_counts,
         "Reporting_Period_Utilization": Reporting_Period_Utilization,
-        "Day_Average_Coverage": Day_Average_Coverage}
+        "My_Calendar_Utilization": My_Calendar_Utilization,
+        "Utilization_Surplus_hours": Utilization_Surplus_hours}
     
     Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
     Totals_df.to_csv(path_or_buf=f"Operational\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
+    # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
+    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Dark", Events=Events)
+    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events)
+    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events)
+    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events)
+    #! Dodělat --> připravit Graf v BOKEH
+    """
+    1) Transparentní pozadí !!! --> abych 
+    Typy:
+    - to je ten sloupcový 100%: za Projekty a za Aktivity
+    - Cumulativní --> celkový (line chart tak jak mě kumulativně nabíhaly hodiny) --> batva Accent Color
+        --> dát do grafu i linku optimální utilizace (takovou rostoucí "stepLine" aby bylo vidět jestli jsem v daný den nad nebo pod utilizací)
+        --> přidat i projektovanou Forcast --> podle kalendáře a to do konce reportovacího období
+    """
     
     # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
@@ -347,13 +442,3 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int) -> DataF
     pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
     Events.to_csv(path_or_buf=f"Operational\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-
-
-    # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
-    #! Dodělat --> připravit Graf v BOKEH
-    """
-    1) Transparentní pozadí !!! --> abych 
-    Typy:
-    - to je ten sloupcový 100%: za Projekty a za Aktivity
-    - Cumulativní --> celkový (line chart tak jak mě kumulativně nabíhaly hodiny) --> batva Accent Color
-    """

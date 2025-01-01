@@ -128,15 +128,12 @@ Join_OutOfOffice = Settings["Event_Handler"]["Events"]["Join_method"]["Out of Of
 Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working elsewhere"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Apperance_Change_Theme() ->  None:
-    print("Apperance_Change_Theme")
-    #! Dodělat --> spustit hned při změně hodnoty 
-    pass
+def Apperance_Change_Theme(Theme_Selected: str) ->  None:
+    customtkinter.set_appearance_mode(mode_string=Theme_Selected)
 
-def Apperance_Change_Win_Style() -> None:
-    print("Apperance_Change_Win_Style")
-    #! Dodělat --> spustit hned při změně hodnoty
-    pass
+def Apperance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
+    pywinstyles.apply_style(window=window, style=Win_Style_Selected)
+    window.update_idletasks()
 
 def Apperance_Accent_Color(Accent_Color_Mode_Variable: StringVar, Accent_Color_Manual_Frame_Var: CTkEntry) -> None:
     #! Dodělat --> nefunguje píše to něco s Variable 
@@ -151,9 +148,22 @@ def Apperance_Accent_Color(Accent_Color_Mode_Variable: StringVar, Accent_Color_M
         pass
 
 def Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var: CTkEntry) -> None:
-    Color_Picker = Elements.Get_Color_Picker()
-    Accent_Color_Selected = Color_Picker.get() 
-    Accent_Color_Manual_Frame_Var.insert(index=0, string=Accent_Color_Selected)
+    Collor_Picker_window = CTkToplevel()
+    Collor_Picker_window.title("Collor Picker")
+    Collor_Picker_window.geometry("295x240")
+    Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Collor_Picker_window.quit())
+    Collor_Picker_window.overrideredirect(boolean=True)
+    Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+    Collor_Picker_window.resizable(width=False, height=False)
+    Collor_Picker_window.attributes('-topmost', True)
+    pywinstyles.apply_style(window=Collor_Picker_window, style=Win_Style_Actual)
+    customtkinter.set_appearance_mode(mode_string=Theme_Actual)
+
+    Colorpicker_Frame = Elements.Get_Color_Picker(Frame=Collor_Picker_window, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var)
+
+    #? Build look of Widget --> must be before inset
+    Colorpicker_Frame.pack(padx=0, pady=0) 
+    
 
 def Add_Skip_Event() -> None:
     print("Add_Skip_Event")
@@ -264,10 +274,10 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     Whole_Period_Frame_Var = Whole_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Whole_Period_Frame_Var.configure(text="")
 
-    # Field - Get whole report Period
-    Active_Period_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Get Active Period Days", Field_Type="Input_CheckBox") 
-    Active_Period_Frame_Var = Active_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
-    Active_Period_Frame_Var.configure(text="")
+    # Field - Maximal Today date
+    Max_Today_Date_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="End Date max Today", Field_Type="Input_CheckBox") 
+    Max_Today_Date_Frame_Var = Max_Today_Date_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
+    Max_Today_Date_Frame_Var.configure(text="")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -276,7 +286,7 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     Email.pack(side="top", padx=10, pady=(0,5))
     Password.pack(side="top", padx=10, pady=(0,5))
     Whole_Period_Frame.pack(side="top", padx=10, pady=(0,5))
-    Active_Period_Frame.pack(side="top", padx=10, pady=(0,5))
+    Max_Today_Date_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -439,9 +449,9 @@ def DashBoard_Totals_Report_Period_Util_Widget(Frame: CTk|CTkFrame, Label: str, 
 
     return Frame_Main
 
-def DashBoard_Totals_Day_Average_Cover_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
+def DashBoard_Totals_Active_Day_Util_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Coverage", Widget_Label_Tooltip="Shows average Coverage of utilization.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Coverage", Widget_Label_Tooltip="Shows utilization in realtion to my calendar and for active days only.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -449,6 +459,24 @@ def DashBoard_Totals_Day_Average_Cover_Widget(Frame: CTk|CTkFrame, Label: str, W
 
     Day_Average_Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Day_Average_Coverage_unit_text.configure(text=f"%")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Day_Average_Coverage_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
+    Day_Average_Coverage_text.pack(side="right", padx=0, pady=0)
+
+    return Frame_Main
+
+def DashBoard_Totals_Utilization_Surplus_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
+    # Field - Use
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Util_Surplus", Widget_Label_Tooltip="Shows hours if Im surplus againts KM actual day utilization for Imput End Date.", Scrollable=False) 
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
+    Day_Average_Coverage_text.configure(text=f"{str(Data)}")
+
+    Day_Average_Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Day_Average_Coverage_unit_text.configure(text=f"hours")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -702,7 +730,7 @@ def DashBoard_Cumulated_Time_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
 
 # ---------------------------------------------------------- Settings Page Widgets ---------------------------------------------------------- #
 # ------------- Apperance -------------#
-def Settings_Aperance_Theme(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
     Theme_Variable = StringVar(master=Frame, value=Theme_Actual)
     Win_Style_Variable = StringVar(master=Frame, value=Win_Style_Actual)
     Accent_Color_Mode_Variable = StringVar(master=Frame, value=Accent_Color_Mode)
@@ -715,11 +743,13 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame) -> CTkFrame:
     Theme_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Theme", Field_Type="Input_OptionMenu") 
     Theme_Frame_Var = Theme_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Theme_Frame_Var.configure(values=Theme_List, variable=Theme_Variable)
+    Theme_Frame_Var.configure(command= lambda Theme_Selected: Apperance_Change_Theme(Theme_Selected=Theme_Selected))
 
     # Field - Windows Style
     Win_Style_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Window Style", Field_Type="Input_OptionMenu") 
     Win_Style_Frame_Var = Win_Style_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Win_Style_Frame_Var.configure(values=Win_Style_List, variable=Win_Style_Variable)
+    Win_Style_Frame_Var.configure(command= lambda Win_Style_Selected: Apperance_Change_Win_Style(Win_Style_Selected=Win_Style_Selected, window=window))
 
     # Field - Accent Color Mode
     Accent_Color_Mode_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Mode", Field_Type="Input_OptionMenu") 
@@ -731,7 +761,7 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame) -> CTkFrame:
     Accent_Color_Manual_Frame_Var = Accent_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
     Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual)
 
-    # Add Button
+    # Button - Collor Picker
     Button_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
     Button_Color_Picker.configure(text="Color Picker", command = lambda:Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
     CTkToolTip(widget=Button_Color_Picker, message="Select Manual Accent Collor.")

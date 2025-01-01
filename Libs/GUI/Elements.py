@@ -1,6 +1,6 @@
 from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog
 from CTkTable import CTkTable
-from CTkColorPicker import AskColor
+from CTkColorPicker import CTkColorPicker
 
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -473,16 +473,19 @@ def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
     return Dialog
 
 # ---------------------------------------------- ColorPicker ----------------------------------------------# 
-def Get_Color_Picker() -> AskColor:
+def Get_Color_Picker(Frame: CTk|CTkFrame, Accent_Color_Manual_Frame_Var: CTkEntry) -> CTkColorPicker:
+    def Change_Entry_Information(color: str) -> None:
+        Accent_Color_Manual_Frame_Var.delete(first_index=0, last_index=8)
+        Accent_Color_Manual_Frame_Var.insert(index=0, string=color)
+
     Configuration_ColorPicker = Configuration["ColorPicker"]
-    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
-    Color_Picker = AskColor(
+    Color_Picker = CTkColorPicker(
+        master = Frame,
         width = Configuration_ColorPicker["width"],
         initial_color = Configuration_ColorPicker["initial_color"],
         fg_color = Configuration_ColorPicker["fg_color"],
         slider_border = Configuration_ColorPicker["slider_border"],
         corner_radius = Configuration_ColorPicker["corner_radius"],
-        button_color = Accent_Color,
-        button_hover_color = Accent_Color,
-        text = Configuration_ColorPicker["text"])
+        command = lambda color: Change_Entry_Information(color=color),
+        orientation = Configuration_ColorPicker["orientation"])
     return Color_Picker

@@ -118,11 +118,11 @@ def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Downloa
         SP_Whole_Period = True
     else:
         SP_Whole_Period = False
-    SP_Active_Per_Days_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
-    if SP_Active_Per_Days_Var == 1:
-        SP_Active_Per_Days_Var = True
+    SP_End_Date_Max_Today_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+    if SP_End_Date_Max_Today_Var == 1:
+        SP_End_Date_Max_Today_Var = True
     else:
-        SP_Active_Per_Days_Var = False
+        SP_End_Date_Max_Today_Var = False
     Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
     Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
     Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
@@ -180,8 +180,7 @@ def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Downloa
 
     if Can_Download == True:
         import Libs.Process as Process
-        Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_Active_Per_Days_Var=SP_Active_Per_Days_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
-        CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_End_Date_Max_Today_Var=SP_End_Date_Max_Today_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     else:
         CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
@@ -446,8 +445,9 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
     Mean_Duration_hours = float(Totals_Summary_Df.iloc[0]["Mean_Duration_hours"])
     Event_counts = int(Totals_Summary_Df.iloc[0]["Event_counts"])
-    Reporting_Period_Utilization = int(Totals_Summary_Df.iloc[0]["Reporting_Period_Utilization"])
-    Day_Average_Coverage = int(Totals_Summary_Df.iloc[0]["Day_Average_Coverage"])
+    Reporting_Period_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["Reporting_Period_Utilization"], ndigits=2))
+    My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
+    Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
     Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
     Frame_Dashboard_Total_Line.pack_propagate(flag=False)
@@ -457,10 +457,12 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
     Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
     Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Report_Per_Util = Widgets.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Repor Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
+    Frame_DashBoard_Totals_Report_Per_Util = Widgets.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
     Frame_DashBoard_Totals_Report_Per_Util.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Day_Average_Coverage = Widgets.DashBoard_Totals_Day_Average_Cover_Widget(Frame=Frame_Dashboard_Total_Line, Label="Day Average Coverage", Widget_Line="Totals_Line", Widget_size="Normal", Data=Day_Average_Coverage)
-    Frame_DashBoard_Totals_Day_Average_Coverage.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Active_Day_Util = Widgets.DashBoard_Totals_Active_Day_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
+    Frame_DashBoard_Totals_Active_Day_Util.pack_propagate(flag=False)
+    Frame_DashBoard_Totals_Util_by_today_surplus = Widgets.DashBoard_Totals_Utilization_Surplus_Widget(Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
+    Frame_DashBoard_Totals_Util_by_today_surplus.pack_propagate(flag=False)
 
     # Project Activity Line
     Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
@@ -509,7 +511,8 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
     Frame_DashBoard_Totals_Report_Per_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Day_Average_Coverage.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Active_Day_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+    Frame_DashBoard_Totals_Util_by_today_surplus.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 
     Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
     Frame_Dashboard_Project_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
@@ -641,7 +644,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     TabView.set("Apperance")
 
     # Apperance
-    Theme_Widget = Widgets.Settings_Aperance_Theme(Frame=Tab_Ape)
+    Theme_Widget = Widgets.Settings_Aperance_Theme(Frame=Tab_Ape, window=window)
     Color_Pallete_Widget = Widgets.Settings_Aperance_Color_Pallete(Frame=Tab_Ape)
 
     # General Page
@@ -713,11 +716,11 @@ left_position = int(display_widht // 2 - Window_Frame_width // 2)
 top_position = int(display_height // 2 - Window_Frame_height // 2)
 window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
 
-window.bind(sequence="<Escape>", func=lambda evet: window.quit())
-window.overrideredirect(boolean=True)
+window.bind(sequence="<Shift-Escape>", func=lambda evet: window.quit())
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 customtkinter.set_appearance_mode(mode_string=Theme_Actual)
+#window.overrideredirect(boolean=True)
+pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames
