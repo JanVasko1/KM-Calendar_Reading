@@ -25,22 +25,22 @@ def Progress_Bar_step(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: 
     Progress_text.configure(text=f"{Lable}")
     window.update_idletasks()
 
-def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Lable: str) -> None:
-    Progress_Bar.set(value=0)
+def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Lable: str, value: int) -> None:
+    Progress_Bar.set(value=value)
     Progress_text.configure(text=f"{Lable}")
     window.update_idletasks()
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Password: str|None, SP_Whole_Period:bool|None, SP_End_Date_Max_Today_Var: bool|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None):
     # Download Events 
-    Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Downloading") 
+    Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Downloading", value=0) 
     Events, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Input_Start_Date_dt, Input_End_Date_dt, Download_canceled = Downloader.Download_Events(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_End_Date_Max_Today_Var=SP_End_Date_Max_Today_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     
     if Download_canceled == False:
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         # Process Events
-        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Overniight Events") 
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Overnight Events") 
         Events = Divide_Events.OverMidnight_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
@@ -76,6 +76,10 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Events = AutoFiller.AutoFiller(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Auto Activity Corrections") 
+        Events = AutoFiller.Auto_Activity_Corrections(Events=Events)
+        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Vacation") 
         Events = Special_Events.Vacation(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -93,6 +97,7 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Events = Summary.Generate_Summary(Events=Events, Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)
         Progress_Bar.set(value=1)
 
+        Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Done", value=1) 
         CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
     else:
-        Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Canceled") 
+        Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Canceled", value=0) 

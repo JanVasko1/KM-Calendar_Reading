@@ -383,6 +383,7 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
     Event_counts = Events.shape[0]
+    Utilization_Surplus_hours = None    # Must be as default value
     
     # Reporting Period Utilization
     if type(Report_Period_Active_Days) is int:
@@ -392,16 +393,16 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
         # Utilization suprlust calculation
         if type(Report_Period_End) is datetime:
             Utilization_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
-            Utilization_Calendar_df.to_csv(path_or_buf=f"Operational\\Utilization_Calendar_df.csv", index=True, sep=";", header=True, encoding="utf-8-sig")    #! Dodělat --> vymazat
             Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
             KM_Cumulative_Util_by_Date = Utilization_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
             Reported_Cumulative_Time_by_Date = Utilization_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
             Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
 
             # Prepare Chart
-            #! Dodělat --> připravit graf
+            Charts.Gen_Chart_Calendar_Utilization(theme="Dark", Utilization_Calendar_df=Utilization_Calendar_df)
+            Charts.Gen_Chart_Calendar_Utilization(theme="Light", Utilization_Calendar_df=Utilization_Calendar_df)
         else:
-            Utilization_Surplus_hours = None
+            pass
     else:
         # Cannot divide by 0
         Reporting_Period_Utilization = None
@@ -423,15 +424,6 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events)
-    #! Dodělat --> připravit Graf v BOKEH
-    """
-    1) Transparentní pozadí !!! --> abych 
-    Typy:
-    - to je ten sloupcový 100%: za Projekty a za Aktivity
-    - Cumulativní --> celkový (line chart tak jak mě kumulativně nabíhaly hodiny) --> batva Accent Color
-        --> dát do grafu i linku optimální utilizace (takovou rostoucí "stepLine" aby bylo vidět jestli jsem v daný den nad nebo pod utilizací)
-        --> přidat i projektovanou Forcast --> podle kalendáře a to do konce reportovacího období
-    """
     
     # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)

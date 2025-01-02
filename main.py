@@ -1,22 +1,5 @@
 
-#! Dodělat --> List bodů k dodělání
-"""
-0) vyřešit ty podělaný obrázky
-0) Definice promněných a funkce jejich nadčtení a necaht je aktualizovat 
-    --> příklad když nchám stáhnout Project a Activity, tak musí být hned k použití
-    --> Jeslit je neudělat jako Global --> interní funkce pythonu k použití globálních promněných
-
-Napojení FrontEnd na backend:
-    A) Save settins do Settings.json --> dát pozor jestli nebudu muset pro každou věc udělat Textovou promněnou!!!
-3) SideBar --> barevnou čárku u aktivního okna --> aby bylo oznat kde jsme jako to má Outlook
-4) GRId 
-    -->Přidat Frame.configure --> rozdělit prostor jako ve videu!!!!!!!
-    --> pro tabulku vyplˇˇnující celý prostor stačí použít sticky="news" --> přiřadí pro celý definovaný prostor
-    --> můžu to přidat i dojednotlivých SEttupů a případně přidat rowspan = 2 (pro ty široký Widgety) --> tím bych se teoreticky mol zbavit dalšího seupu
-    --> Settup
-5) opravit to podělaný "načítání vedle kurzoru"
-6) Implementovat nějaký "Knob" (import tkdial) --> jako ukazatel utilizace
-"""
+#! Dodělat --> Dodělat nahrávání obrázků a zobrazování 
 
 # Import Libraries
 import time
@@ -73,34 +56,39 @@ def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
         widget.destroy()
         window.update_idletasks()
 
-def Show_Download_Page() -> None:
+def Show_Download_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Download(Frame=Frame_Work_Area_Detail)
+    Active_Window.grid(row=0, column=0, padx=0, pady=5, sticky="")
     window.update_idletasks()
 
-def Show_Dashboard_Page() -> None:
+def Show_Dashboard_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Dashboard(Frame=Frame_Work_Area_Detail)
+    Active_Window.grid(row=1, column=0, padx=0, pady=5, sticky="")
     window.update_idletasks()
 
-def Show_Data_Page() -> None:
+def Show_Data_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Data(Frame=Frame_Work_Area_Detail)
+    Active_Window.grid(row=2, column=0, padx=0, pady=5, sticky="")
     window.update_idletasks()
 
-def Show_Information_Page() -> None:
+def Show_Information_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Information(Frame=Frame_Work_Area_Detail)
+    Active_Window.grid(row=3, column=0, padx=0, pady=5, sticky="")
     window.update_idletasks()
 
-def Show_Settings_Page() -> None:
+def Show_Settings_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Settings(Frame=Frame_Work_Area_Detail)
+    Active_Window.grid(row=4, column=0, padx=0, pady=5, sticky="")
     window.update_idletasks()
     
 
@@ -305,41 +293,43 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 # -------------------------------------------- Side Bar -------------------------------------------- #
-def Get_Side_Bar(Frame: CTk|CTkFrame) -> CTkFrame:
+def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
+    Active_Window = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Active_Window", Icon_Size=(2, 30), Picture_size="Picture_Active_SideBar")
+    
     # Page - Downlaod
-    Icon_Frame_Download = Elements.Get_Icon(Frame=Frame, Icon="Download", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Download = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Download", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
     CTkToolTip(widget=Icon_Frame_Download, message="Download page")
-    Icon_Frame_Download.configure(command = lambda: Show_Download_Page())    
+    Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window))    
 
     # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Icon(Frame=Frame, Icon="Dashboard", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
-    Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page())
+    Icon_Frame_Dashboard = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Dashboard", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page").show()
 
     # Page - Data
-    Icon_Frame_Data = Elements.Get_Icon(Frame=Frame, Icon="Table", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
-    Icon_Frame_Data.configure(command = lambda: Show_Data_Page())
+    Icon_Frame_Data = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Table", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Data, message="Processed Data page")
 
     # Page - Information
-    Icon_Frame_Information = Elements.Get_Icon(Frame=Frame, Icon="Information", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
-    Icon_Frame_Information.configure(command = lambda: Show_Information_Page())
+    Icon_Frame_Information = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Information", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Information, message="About page")
 
     # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Icon(Frame=Frame, Icon="Settings", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
-    Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page())
+    Icon_Frame_Settings = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Settings", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Settings, message="Settings page")
 
     #? Build look of Widget
-    Icon_Frame_Download.pack(padx=5, pady=10, expand=True)
-    Icon_Frame_Dashboard.pack(padx=5, pady=10, expand=True)
-    Icon_Frame_Data.pack(padx=5, pady=10, expand=True)
-    Icon_Frame_Information.pack(padx=5, pady=10, expand=True)
-    Icon_Frame_Settings.pack(padx=5, pady=10, expand=True)
+    Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=5, sticky="")
+    Icon_Frame_Dashboard.grid(row=1, column=1, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=1, column=0, padx=0, pady=5, sticky="ew")
+    Icon_Frame_Data.grid(row=2, column=1, padx=0, pady=5, sticky="")
+    Icon_Frame_Information.grid(row=3, column=1, padx=0, pady=5, sticky="")
+    Icon_Frame_Settings.grid(row=4, column=1, padx=0, pady=5, sticky="")
 
     window.update_idletasks()
-
 
 
 # -------------------------------------------- Downlaod Page -------------------------------------------- #
@@ -350,6 +340,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     # Divide Working Page into 2 parts
     Frame_Download_State_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Download_State_Area.pack_propagate(flag=False)
 
     Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
@@ -398,7 +389,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Progress_Bar.set(value=0)
 
     Progress_text = Elements.Get_Label(Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
-    Progress_text.configure(text=f"", width=140)
+    Progress_text.configure(text=f"", width=200)
 
     Button_Download = Elements.Get_Button(Frame=Frame_Download_State_Area, Button_Size="Normal")
     Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
@@ -488,7 +479,6 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
     Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
 
-
     # WeekDay and Weeks Line
     Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
     Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
@@ -496,9 +486,9 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     # Day Chart Line
     Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
-    Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_DaysChart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day chart", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
+    Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_DaysChart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day Project/Activity distribution", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
     Frame_DashBoard_Day_Chart_Frame.pack_propagate(flag=False)
-    Frame_DashBoard_Cumulated_Chart_Frame = Widgets.DashBoard_Cumulated_Time_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Cumulated", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
+    Frame_DashBoard_Cumulated_Chart_Frame = Widgets.DashBoard_Cumulated_Time_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="My reported time vs KM planned util.", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
     Frame_DashBoard_Cumulated_Chart_Frame.pack_propagate(flag=False)
 
     #? Build look of Widget
@@ -733,14 +723,14 @@ Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Ar
 Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
 Frame_Side_Bar = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_SideBar")
-Frame_Side_Bar.pack_propagate(flag=False)
+Frame_Side_Bar.grid_propagate(flag=False)
 Frame_Side_Bar.pack(side="left", fill="y", expand=True)
 
 Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
 Frame_Work_Area_Detail.pack_propagate(flag=False)
 Frame_Work_Area_Detail.pack(side="left", fill="both", expand=False)
 
-Get_Side_Bar(Frame=Frame_Side_Bar)
+Get_Side_Bar(Side_Bar_Frame=Frame_Side_Bar)
 
 Page_Dashboard(Frame=Frame_Work_Area_Detail)
 

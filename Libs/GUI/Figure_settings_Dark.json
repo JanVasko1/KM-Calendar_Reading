@@ -145,7 +145,7 @@
             "BoxZoomTool_Visbile": true,
             "BoxZoomTool_Mode": "width",
             "PolyDrawTool_Visible": false,
-            "HelpTool_Visible": true
+            "HelpTool_Visible": false
         }
     },
     "Bar_Vertical_Stucked_xTime_Charts": {
@@ -293,7 +293,7 @@
             "BoxZoomTool_Visbile": true,
             "BoxZoomTool_Mode": "width",
             "PolyDrawTool_Visible": false,
-            "HelpTool_Visible": true
+            "HelpTool_Visible": false
         }
     }
 }

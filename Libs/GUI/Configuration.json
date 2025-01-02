@@ -203,6 +203,20 @@
             ],
             "anchor": "center"
         },
+        "Picture_Active_SideBar": {
+            "width": 2,
+            "height": 40,
+            "corner_radius": 0,
+            "border_width": 0,
+            "bg_color": "transparent",
+            "fg_color": "transparent",
+            "hover": false,
+            "hover_color": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
+            "anchor": "center"
+        },
         "Picture_Logo": {
             "width": 100,
             "height": 100,
@@ -1308,7 +1322,7 @@
     "ProgressBar": {
         "Horizontal": {
             "Download_Process": {
-                "width": 1360,
+                "width": 1300,
                 "height": 10,
                 "border_width": 1,
                 "border_color": [

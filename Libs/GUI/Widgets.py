@@ -108,9 +108,9 @@ End_Event_json = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
 
 # Projects and Activities
 Project_List = list(Settings["Event_Handler"]["Project"]["Project_List"])
-Project_List.insert(0, "")
+Project_List.insert(0, "")  # Because there might be not filled one in Calendar
 Activity_List = list(Settings["Event_Handler"]["Activity"]["Activity_List"])
-Activity_List.insert(0, "")
+Activity_List.insert(0, "") # Because there might be not filled one in Calendar
 Location_List = Settings["Event_Handler"]["Location"]["Location_List"]
 
 # Parralle Events
@@ -136,7 +136,6 @@ def Apperance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) ->
     window.update_idletasks()
 
 def Apperance_Accent_Color(Accent_Color_Mode_Variable: StringVar, Accent_Color_Manual_Frame_Var: CTkEntry) -> None:
-    #! Dodělat --> nefunguje píše to něco s Variable 
     if Accent_Color_Mode_Variable.get() == "System":
         Accent_Color_Manual_Frame_Var.configure(state="disabled")
     elif Accent_Color_Mode_Variable.get() == "Manual":
@@ -688,7 +687,7 @@ def DashBoard_DaysChart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
     # Data preparation
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Day Chart.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
@@ -714,7 +713,7 @@ def DashBoard_Cumulated_Time_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
     # Data preparation
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Day Chart.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Comparison between KM planned utilization and reported houss.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
@@ -767,7 +766,7 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     CTkToolTip(widget=Button_Color_Picker, message="Select Manual Accent Collor.")
 
     # Disabling fields --> Download_Date_Range_Source
-    Accent_Color_Mode_Frame_Var.configure(command = lambda:Apperance_Accent_Color(Accent_Color_Mode_Variable=Accent_Color_Mode_Variable, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+    Accent_Color_Mode_Frame_Var.configure(command = lambda a :Apperance_Accent_Color(Accent_Color_Mode_Variable=Accent_Color_Mode_Variable, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

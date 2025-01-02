@@ -89,13 +89,13 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
     # x_Axis range
     Max_range_len = Value_df.shape[0]
     Min_range = min(Value_df["Date"])
-    Min_range_bound = Min_range
+    Min_range_bound = Min_range - timedelta(days=1)
 
     if Max_range_len < Active_Area_size:
         pass
     elif Max_range_len > Active_Area_size:
         Min_Range_Len = Max_range_len - Active_Area_size
-        Min_range = Value_df.iloc[Min_Range_Len]["Date"] - + timedelta(days=1)
+        Min_range = Value_df.iloc[Min_Range_Len]["Date"]
     else:
         CTkMessagebox(title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1)
         raise ValueError
@@ -120,19 +120,15 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
     # Chart
     DataSource = ColumnDataSource(data = Value_df)
     if Legend_Properties.iloc[0]["Legend_Title_Visible"] == True:
-        Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, color=Colors_pallete, source=DataSource, legend_label=Colum_list, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
+        Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, line_color=None, color=Colors_pallete, source=DataSource, legend_label=Colum_list, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
     else:
-        Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, color=Colors_pallete, source=DataSource, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
+        Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, line_color=None, color=Colors_pallete, source=DataSource, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
 
     Chart_Layout = layout(children=[Chart],sizing_mode="stretch_width")
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
         save(obj=Chart_Layout, filename=f"Operational\\DashBoard_{Category}_{theme}.html", title=f"{Category}")
-        #! Dodělat --> musí se doinstalovat webdriver: https://docs.bokeh.org/en/2.4.3/docs/user_guide/export.html#exporting-svg-images
-        #export_png(obj=Chart_Layout, filename=f"Operational\\DashBoard_{Category}_{theme}.png", width=1643 , height=370)
-        #export_svg(obj=Chart_Layout, filename=f"Operational\\DashBoard_{Category}_{theme}.svg", width=1643 , height=370)
-        #export_svgs(obj=Chart_Layout,filename=f"Operational\\DashBoard_{Category}_{theme}2.svg", width=1643 , height=370)
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError
@@ -175,8 +171,8 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
 
     # Process Data
     Utilization_Calendar_df.reset_index(inplace=True)
-    Utilization_Calendar_df.rename(columns={"index": "Date"}, inplace=True)
-    Value_df = Utilization_Calendar_df.loc[:, ["Date", "KM_Cumulative_Utilization", "Reported_Cumulative_Time"]]
+    Value_df = Utilization_Calendar_df.loc[:, ["index", "KM_Cumulative_Utilization", "Reported_Cumulative_Time"]]
+    Value_df.rename(columns={"index": "Date"}, inplace=True)
 
     Value_df.drop_duplicates(inplace=True)
     Value_df.sort_values(by=["Date"], ascending=True, inplace=True)
@@ -191,13 +187,10 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
     # ToolTip
     ToolTip_KM = [
         ("Date", "@Date{%F}"), 
-        ("Value", "@KM_Cumulative_Utilization{0.00}")]
+        ("KM cumulated util.", "@KM_Cumulative_Utilization{0.00}"),
+        ("My report cum. time", "@Reported_Cumulative_Time{0.00}")]
 
-    ToolTip_Reported = [
-        ("Date", "@Date{%F}"), 
-        ("Value", "@Reported_Cumulative_Time{0.00}")]
-
-    ToolTip_list = [ToolTip_KM, ToolTip_Reported]
+    ToolTip_list = [ToolTip_KM]
     ToolTip_list_count = len(ToolTip_list)
     
     ToolTip_Format = {
@@ -211,7 +204,7 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
     Min_range = min(Value_df[X_Series_Column])
     Min_range_bound = Min_range
 
-    if Max_range_len < Active_Area_size:
+    if Max_range_len <= Active_Area_size:
         pass
     elif Max_range_len > Active_Area_size:
         Min_Range_Len = Max_range_len - Active_Area_size
@@ -259,17 +252,12 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
             GS_Diff_Cycles_KM = Chart.circle(source=DataSource, x=X_Series_Column, y="KM_Cumulative_Utilization", size=int(Chart_Area_Propertie.iloc[0]["Tick_Size"]), fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"], line_color=Colors_pallete1[1], hover_fill_color=Colors_pallete1[1])
             GS_Diff_Cycles_REported = Chart.circle(source=DataSource, x=X_Series_Column, y="Reported_Cumulative_Time", size=int(Chart_Area_Propertie.iloc[0]["Tick_Size"]), fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"], line_color=Colors_pallete1[0], hover_fill_color=Colors_pallete1[0])
         Chart.hover[0].renderers = [GS_Diff_Cycles_REported]
-        Chart.hover[1].renderers = [GS_Diff_Cycles_KM]
 
     Chart_Layout = layout(children=[Chart],sizing_mode='stretch_width')
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
         save(obj=Chart_Layout, filename=f"Operational\\DashBoard_Utilization_{theme}.html", title=f"Report Rage utilization compare")
-        #! Dodělat --> musí se doinstalovat webdriver: https://docs.bokeh.org/en/2.4.3/docs/user_guide/export.html#exporting-svg-images
-        #export_png(obj=Chart_Layout, filename=f"Operational\\DashBoard_{Category}_{theme}.png", width=1643 , height=370)
-        #export_svg(obj=Chart_Layout, filename=f"Operational\\DashBoard_{Category}_{theme}.svg", width=1643 , height=370)
-        #export_svgs(obj=Chart_Layout,filename=f"Operational\\DashBoard_{Category}_{theme}2.svg", width=1643 , height=370)
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError

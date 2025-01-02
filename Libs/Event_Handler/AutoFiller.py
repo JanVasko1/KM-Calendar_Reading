@@ -47,3 +47,12 @@ def AutoFiller(Events: DataFrame):
                     pass       
     return Events
 
+def Auto_Activity_Corrections(Events: DataFrame):
+    #! Dodělat --> nastavit nějaký automatický process a taky data do SEttings, který by automaticky kontrolovali povolené kombinace Projektu a Aktivity a případně opravit aktivitu + potřeba upravit nastavení a stahovat i k projektům a Aktivitám vztah na "Project Type"
+    """
+    - musí se vytvořit i nové nastavení a musí se to pokrýt i v stahování "Project/ Activity", kdy ty kombinace by měl aktualizovat
+    - pro každý záznam musí kontorlovat jestli Project a Activity patří pod stejný "Proejct Type" a když ne mapovat
+    Mapování
+        Project - Activity --> Activity
+    """
+    return Events
