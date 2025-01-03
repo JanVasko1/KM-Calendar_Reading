@@ -424,7 +424,7 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events)
-    
+
     # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)

@@ -16,7 +16,7 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
     Header_text_Additional = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
     Header_text_Additional.configure(text=f"{Additional_Text}")
 
-    Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon="Question", Icon_Size=(15, 15), Picture_size="Question")
+    Icon_Label_text = Elements.Get_Button_Icon(Frame=Frame_Single_Header,  Icon_Set="lucide", Icon_Name="message-circle-question", Icon_Size="Question",  Button_Size="Question") #! Dodělat --> opravit to z Buttonu na obyčejný obrázek --> tohle nemusí být Button
     Icon_Label_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
     CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
 
@@ -32,7 +32,7 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
 
     return Frame_Single_Body
 
-def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Icon: str|None, Widget_Label_Tooltip: str, Scrollable: bool) -> CTkFrame:
+def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Icon_Set: str|None, Icon_Name: str|None, Widget_Label_Tooltip: str, Scrollable: bool) -> CTkFrame:
     # Build base Frame for Widget
     if Scrollable == True:
         Frame_Single_Body = Elements.Get_Dashboard_Widget_Frame_Body_Scrollable(Frame=Frame, Widget_Line=Widget_Line, Widget_size=Widget_size)
@@ -44,8 +44,8 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
     Header_text = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header")
     Header_text.configure(text=f"{Label}")
 
-    if Icon != None:
-        Icon_Label_text = Elements.Get_Icon(Frame=Frame_Single_Header, Icon=Icon, Icon_Size=(20, 20), Picture_size="Question")
+    if Icon_Name != None:
+        Icon_Label_text = Elements.Get_Button_Icon(Frame=Frame_Single_Header, Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size="DashBoard_Totals", Button_Size="Question")   #! Dodělat --> opravit to z Buttonu na obyčejný obrázek --> tohle nemusí být Button
         CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
     else:
         pass
@@ -55,7 +55,7 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
     #? Build look of Widget
     Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
     Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=(7, 2))
-    if Icon != None:
+    if Icon_Name != None:
         Icon_Label_text.pack(side="left", fill="none", expand=False, padx=1, pady=0)
     else:
         pass

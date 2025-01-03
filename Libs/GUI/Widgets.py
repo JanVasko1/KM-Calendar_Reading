@@ -150,7 +150,7 @@ def Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var: CTkEntry) -> None
     Collor_Picker_window = CTkToplevel()
     Collor_Picker_window.title("Collor Picker")
     Collor_Picker_window.geometry("295x240")
-    Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Collor_Picker_window.quit())
+    Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Collor_Picker_window.destroy())
     Collor_Picker_window.overrideredirect(boolean=True)
     Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
     Collor_Picker_window.resizable(width=False, height=False)
@@ -378,7 +378,7 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
 # ------------- Total Line -------------#
 def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Time", Widget_Label_Tooltip="Shows total hours.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="history", Widget_Label_Tooltip="Shows total hours.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Total_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -396,7 +396,7 @@ def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:s
 
 def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Event_Time", Widget_Label_Tooltip="Shows Averate hours per Event.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="clock-arrow-up", Widget_Label_Tooltip="Shows Averate hours per Event.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Average_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -414,7 +414,7 @@ def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
 
 def DashBoard_Totals_Counter_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Event_Count", Widget_Label_Tooltip="Shows total counts of Events.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="arrow-up-1-0", Widget_Label_Tooltip="Shows total counts of Events.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Event_Counter_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -432,7 +432,7 @@ def DashBoard_Totals_Counter_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
 
 def DashBoard_Totals_Report_Period_Util_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Total_Coverage", Widget_Label_Tooltip="Shows if Utilization of Reporting Period.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="circle-percent", Widget_Label_Tooltip="Shows if Utilization of Reporting Period.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -450,7 +450,7 @@ def DashBoard_Totals_Report_Period_Util_Widget(Frame: CTk|CTkFrame, Label: str, 
 
 def DashBoard_Totals_Active_Day_Util_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Average_Coverage", Widget_Label_Tooltip="Shows utilization in realtion to my calendar and for active days only.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="activity", Widget_Label_Tooltip="Shows utilization in realtion to my calendar and for active days only.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -468,7 +468,7 @@ def DashBoard_Totals_Active_Day_Util_Widget(Frame: CTk|CTkFrame, Label: str, Wid
 
 def DashBoard_Totals_Utilization_Surplus_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon="DashBoard_Util_Surplus", Widget_Label_Tooltip="Shows hours if Im surplus againts KM actual day utilization for Imput End Date.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="message-square-diff", Widget_Label_Tooltip="Shows hours if Im surplus againts KM actual day utilization for Imput End Date.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -493,7 +493,7 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
         Table_Values.append(data_list)
 
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Projects Details.", Scrollable=True) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Shows Projects Details.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -513,7 +513,7 @@ def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Most_Occurence_Project = Projec_DF.iloc[Most_Occurence_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Most Occcurence", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Most Occcurence", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -532,7 +532,7 @@ def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Most_Project_Hours = Projec_DF.iloc[Most_Hours_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Most Hours", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Most Hours", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -551,7 +551,7 @@ def DashBoard_Project_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Most_Project_Avg_Hours = Projec_DF.iloc[Most_Hours_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Projects Average Time.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Projects Average Time.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Hours_Avg_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -571,7 +571,7 @@ def DashBoard_Activity_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Shows Activity Details.", Scrollable=True) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Shows Activity Details.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -591,7 +591,7 @@ def DashBoard_Activity_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Most_Occurence_Activity = Activity_Df.iloc[Most_Occurence_ID]["Activity"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Events Count.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Events Count.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -610,7 +610,7 @@ def DashBoard_Activity_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Most_Activity_Hours = Activity_Df.iloc[Most_Hours_ID]["Activity"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Total Time.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Activity Total Time.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -629,7 +629,7 @@ def DashBoard_Activity_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Most_Activity_Avg_Hours = Activity_Df.iloc[Most_Hours_ID]["Activity"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Activity Average Time.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Activity Average Time.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Hours_Avg_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
@@ -649,7 +649,7 @@ def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Detal WeekDay Summary.", Scrollable=True) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detal WeekDay Summary.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -670,7 +670,7 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Week details.", Scrollable=True) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Week details.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table
@@ -687,7 +687,7 @@ def DashBoard_DaysChart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
     # Data preparation
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
@@ -713,7 +713,7 @@ def DashBoard_Cumulated_Time_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
     # Data preparation
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon=None, Widget_Label_Tooltip="Comparison between KM planned utilization and reported houss.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Comparison between KM planned utilization and reported houss.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 

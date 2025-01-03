@@ -2,6 +2,8 @@ from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry
 from CTkTable import CTkTable
 from CTkColorPicker import CTkColorPicker
 
+from iconipy import IconFactory 
+
 import Libs.Defaults_Lists as Defaults_Lists
 
 from PIL import Image
@@ -54,6 +56,29 @@ def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
         hover_color = tuple([Accent_Color, Accent_Color]),
         anchor = Configuration_Button_Normal["anchor"])
     return Button_Normal
+
+def Get_Button_fot_Icon(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
+    Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
+    Button_Normal = CTkButton(
+        master = Frame,
+        width = Configuration_Button_Normal["width"],
+        height = Configuration_Button_Normal["height"],
+        corner_radius = Configuration_Button_Normal["corner_radius"],
+        border_width = Configuration_Button_Normal["border_width"],
+        bg_color = Configuration_Button_Normal["bg_color"],
+        fg_color = Configuration_Button_Normal["fg_color"],
+        hover = Configuration_Button_Normal["hover"],
+        hover_color = tuple([Accent_Color, Accent_Color]),
+        anchor = Configuration_Button_Normal["anchor"])
+    return Button_Normal
+
+def Get_Button_Icon(Frame: CTk|CTkFrame, Icon_Set: str, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
+    Frame_Button = Get_Button_fot_Icon(Frame=Frame, Button_Size=Button_Size)
+    CTK_Image = Get_CTk_Image(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
+    Frame_Button.configure(image=CTK_Image, text="")
+    return Frame_Button
+
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
 def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str) -> CTkEntry:
@@ -396,41 +421,30 @@ def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> 
         anchor = Configuration_Table_Single["anchor"])
     return Table_Single
 
-# ---------------------------------------------- Images ----------------------------------------------# 
-def Get_Icon(Frame: CTk|CTkFrame, Icon: str, Icon_Size: tuple, Picture_size: str) -> CTkFrame:
-    Frame_Icon = Get_Icon_Button(Frame=Frame, Picture_size=Picture_size)
-    Image_Settings = Get_Image(light_image=f"Libs\\GUI\\Icons\\{Icon}_Light.png", dark_image=f"Libs\\GUI\\Icons\\{Icon}_Dark.png", size=Icon_Size)
-    Frame_Icon.configure(image=Image_Settings, text="")
-    return Frame_Icon
+# ---------------------------------------------- Icons ----------------------------------------------# 
+def Create_Icon(Icon_Set: str, Icon_Name: str, Icon_Size: str, Theme_index: int) -> Image:
+    # Theme_Index: 0 --> light, 1 --> dark
+    Configuration_Icon = Configuration["Icons"][f"{Icon_Size}"]
+    Icon_Fact = IconFactory(
+        icon_set = Icon_Set,
+        icon_size = Configuration_Icon["icon_size"],
+        font_size = Configuration_Icon["font_size"],
+        font_color = Configuration_Icon["font_color"][Theme_index],
+        outline_width = Configuration_Icon["outline_width"],
+        outline_color = Configuration_Icon["outline_color"][Theme_index],
+        background_color = Configuration_Icon["background_color"][Theme_index],
+        background_radius = Configuration_Icon["background_radius"])
+    Icon_PIL = Icon_Fact.asPil(Icon_Name)
+    return Icon_PIL
 
-def Get_Active_Icon(Frame: CTk|CTkFrame, Icon: str, Icon_Size: tuple, Picture_size: str) -> CTkFrame:
-    Frame_Icon = Get_Icon_Button(Frame=Frame, Picture_size=Picture_size)
-    Image_Settings = Get_Image(light_image=f"Libs\\GUI\\Icons\\{Icon}_Active.png", dark_image=f"Libs\\GUI\\Icons\\{Icon}_Active.png", size=Icon_Size)
-    Frame_Icon.configure(image=Image_Settings, text="")
-    return Frame_Icon
-
-def Get_Image(light_image: str, dark_image: str, size: tuple) -> CTkImage:
+def Get_CTk_Image(Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
+    Configuration_Icon = Configuration["Icons"][f"{Icon_Size}"]
+    Icon_Size_px = Configuration_Icon["icon_size"]
     Picture = CTkImage(
-        light_image = Image.open(f"{light_image}"),
-        dark_image = Image.open(f"{dark_image}"),
-        size = size)
+        light_image = Create_Icon(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size, Theme_index=0),
+        dark_image =Create_Icon(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size, Theme_index=1),
+        size = (Icon_Size_px, Icon_Size_px))
     return Picture
-
-def Get_Icon_Button(Frame: CTk|CTkFrame, Picture_size: str) -> CTkButton:
-    Configuration_Button_Picture_SideBar = Configuration["Buttons"][f"{Picture_size}"]
-    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
-    Button_Picture_SideBar = CTkButton(
-        master = Frame,
-        width = Configuration_Button_Picture_SideBar["width"],
-        height = Configuration_Button_Picture_SideBar["height"],
-        corner_radius = Configuration_Button_Picture_SideBar["corner_radius"],
-        border_width = Configuration_Button_Picture_SideBar["border_width"],
-        bg_color = Configuration_Button_Picture_SideBar["bg_color"],
-        fg_color = Configuration_Button_Picture_SideBar["fg_color"],
-        hover = Configuration_Button_Picture_SideBar["hover"],
-        hover_color = tuple([Accent_Color, Accent_Color]),
-        anchor = Configuration_Button_Picture_SideBar["anchor"])
-    return Button_Picture_SideBar
 
 # ---------------------------------------------- Progress Bar ----------------------------------------------# 
 def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -> CTkProgressBar:

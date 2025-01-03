@@ -18,6 +18,47 @@ from CTkMessagebox import CTkMessagebox
 Settings = Defaults_Lists.Load_Settings()
 Date_Format = Settings["General"]["Formats"]["Date"]
 
+# ---------------------------------------------------------- Local Functions---------------------------------------------------------- #
+def Chart_update_html(Chart: str, color: str, opacity: float):
+    with open(file=f"{Chart}", mode="r") as file:
+        lines = file.readlines()
+    file.close()
+
+    Lines_new = []
+    Header_Style_search_text = "html, body {"
+    Body_Search_text = "<body>"
+    Background_color_text = f"""        background-color: {color};\n"""
+    Drag_view_text = f"""    <div class='pywebview-drag-region' style="color: {color}; opacity: {opacity};">.</div>\n"""
+
+    Find_Header_stryle = -1
+    Find_Body = -1
+    for line in lines:
+        Lines_new.append(line)
+        if Find_Header_stryle == -1:
+            Find_Header_stryle = line.find(Header_Style_search_text)
+            if Find_Header_stryle > 0:
+                # Insert text to as next line
+                Lines_new.append(Background_color_text)
+            else:
+                pass
+        else:
+            pass
+
+        if Find_Body == -1:
+            Find_Body = line.find(Body_Search_text)
+            if Find_Body > 0:
+                # Insert text to as next line
+                Lines_new.append(Drag_view_text)
+            else:
+                pass
+        else:
+            pass
+
+    # Save again
+    with open(file=f"{Chart}", mode="w") as new_file:
+        new_file.writelines(Lines_new)
+    new_file.close()
+
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> None:
@@ -129,12 +170,14 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
         save(obj=Chart_Layout, filename=f"Operational\\DashBoard_{Category}_{theme}.html", title=f"{Category}")
+        Chart_update_html(Chart=f"Operational\\DashBoard_{Category}_{theme}.html", color=Chart_Area_Propertie.iloc[0]["Background_Color"], opacity=Chart_Area_Propertie.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError
-
-
+    
 def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFrame):
+    #! Dodělat -->třetí křivku jako projekci kolik toho stihnu podle kalendáře
+    #! Dodělat -->křivku mých hodin vykreslit pouze za dny které jsou opravdu aktuální a né až do konce 
     warnings.filterwarnings("ignore")
 
     # Variable Defaults
@@ -258,6 +301,7 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
         save(obj=Chart_Layout, filename=f"Operational\\DashBoard_Utilization_{theme}.html", title=f"Report Rage utilization compare")
+        Chart_update_html(Chart=f"Operational\\DashBoard_Utilization_{theme}.html", color=Chart_Area_Propertie.iloc[0]["Background_Color"], opacity=Chart_Area_Propertie.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError

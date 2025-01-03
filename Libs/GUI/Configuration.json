@@ -1,7 +1,7 @@
 {
     "Global_Apperance": {
         "Window": {
-            "Style": "acrylic",
+            "Style": "normal",
             "Style_List": [
                 "dark", 
                 "mica", 
@@ -175,27 +175,14 @@
             ],
             "anchor": "center"
         },
-        "Picture_Background": {
-            "width": 1800,
-            "height": 900,
-            "corner_radius": 0,
-            "border_width": 0,
-            "bg_color": "transparent",
-            "fg_color": "transparent",
-            "hover": false,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
-            "anchor": "center"
-        },
         "Picture_SideBar": {
             "width": 40,
             "height": 40,
             "corner_radius": 0,
             "border_width": 0,
+            "border_color": null,
             "bg_color": "transparent",
-            "fg_color": "transparent",
+            "fg_color": null,
             "hover": false,
             "hover_color": [
                 "#00A9FF",
@@ -208,9 +195,10 @@
             "height": 40,
             "corner_radius": 0,
             "border_width": 0,
+            "border_color": null,
             "bg_color": "transparent",
             "fg_color": "transparent",
-            "hover": false,
+            "hover": true,
             "hover_color": [
                 "#00A9FF",
                 "#00A9FF"
@@ -222,8 +210,9 @@
             "height": 100,
             "corner_radius": 0,
             "border_width": 0,
+            "border_color": null,
             "bg_color": "transparent",
-            "fg_color": "transparent",
+            "fg_color": null,
             "hover": false,
             "hover_color": [
                 "#00A9FF",
@@ -236,8 +225,9 @@
             "height": 40,
             "corner_radius": 0,
             "border_width": 0,
+            "border_color": null,
             "bg_color": "transparent",
-            "fg_color": "transparent",
+            "fg_color": null,
             "hover": false,
             "hover_color": [
                 "#00A9FF",
@@ -250,8 +240,9 @@
             "height": 20,
             "corner_radius": 0,
             "border_width": 0,
+            "border_color": null,
             "bg_color": "transparent",
-            "fg_color": "transparent",
+            "fg_color": null,
             "hover": false,
             "hover_color": [
                 "#00A9FF",
@@ -414,7 +405,7 @@
             "Background": {
                 "width": 1800,
                 "height": 900,
-                "corner_radius": 0,
+                "corner_radius": 10,
                 "border_width": 0, 
                 "border_color": [
                     "#2C2C2C",
@@ -1431,5 +1422,79 @@
         "slider_border": 1,
         "corner_radius": 25,
         "orientation": "vertical"
+    },
+    "Icons": {
+        "Header": {
+            "icon_size": 40,
+            "font_size": 30,
+            "font_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        },
+        "Side_Bar": {
+            "icon_size": 30,
+            "font_size": 30,
+            "font_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        },
+        "DashBoard_Totals": {
+            "icon_size": 20,
+            "font_size": 20,
+            "font_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        },
+        "Question": {
+            "icon_size": 15,
+            "font_size": 15,
+            "font_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        }
     }
 }

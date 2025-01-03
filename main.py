@@ -1,11 +1,12 @@
 
-#! Dodělat --> Dodělat nahrávání obrázků a zobrazování 
+#! Dodělat --> Dodělat nahrávání obrázků a zobrazování (použít k tomu iconpy)
 
 # Import Libraries
 import time
 from pandas import DataFrame
 from datetime import datetime
 
+import webview 
 import customtkinter
 from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkCheckBox
 from CTkToolTip import CTkToolTip
@@ -37,8 +38,15 @@ Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
 Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
 
 #! ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Theme_Change():
+def Trun_Off_Application() -> None:
+    window.quit()
+
+def Get_Current_Theme() -> str:
     Current_Theme = customtkinter.get_appearance_mode()
+    return Current_Theme
+
+def Theme_Change():
+    Current_Theme = Get_Current_Theme() 
     if Current_Theme == "Dark":
         customtkinter.set_appearance_mode("light")
     elif Current_Theme == "Light":
@@ -256,11 +264,11 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Header_Information.pack_propagate(flag=False)
 
     # ------------------------- Logo Area -------------------------#
-    Icon_Frame_Company_Logo = Elements.Get_Icon(Frame=Frame_Logo, Icon="Konica_Minolta", Icon_Size=(60, 60), Picture_size="Picture_Logo")
+    #Icon_Frame_Company_Logo = Elements.Get_Button_Icon(Frame=Frame_Logo, Icon="Konica_Minolta", Icon_Size=(60, 60), Button_Size="Picture_Logo")
 
-    # ------------------------- Logo Area -------------------------#
+    # ------------------------- Logo Area -------------------------#  
     # Theme Change - Button
-    Icon_Theme = Elements.Get_Icon(Frame=Frame_Header_Information, Icon="Theme", Icon_Size=(30, 30), Picture_size="Picture_Theme")
+    Icon_Theme = Elements.Get_Button_Icon(Frame=Frame_Header_Information, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
     Icon_Theme.configure(command = lambda: Theme_Change())
 
     # Account Mail
@@ -282,7 +290,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Header.pack(side="top", fill="x", expand=False)
     Frame_Logo.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Header_Information.pack(side="left", fill="none", expand=False, padx=0, pady=0)
-    Icon_Frame_Company_Logo.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    #Icon_Frame_Company_Logo.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
@@ -294,40 +302,46 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # -------------------------------------------- Side Bar -------------------------------------------- #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
-    Active_Window = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Active_Window", Icon_Size=(2, 30), Picture_size="Picture_Active_SideBar")
+    Active_Window = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="tally-1", Icon_Size="Side_Bar", Button_Size="Picture_Active_SideBar")   #! Dodělat --> předělat na Pouhou ikonu / Label
     
     # Page - Downlaod
-    Icon_Frame_Download = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Download", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     CTkToolTip(widget=Icon_Frame_Download, message="Download page")
     Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window))    
 
     # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Dashboard", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page").show()
 
     # Page - Data
-    Icon_Frame_Data = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Table", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Data = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Data, message="Processed Data page")
 
     # Page - Information
-    Icon_Frame_Information = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Information", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Information = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Information, message="About page")
 
     # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Icon(Frame=Side_Bar_Frame, Icon="Settings", Icon_Size=(30, 30), Picture_size="Picture_SideBar")
+    Icon_Frame_Settings = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window))
     CTkToolTip(widget=Icon_Frame_Settings, message="Settings page")
 
+    # Close Aplication
+    Close_Application = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar", Button_Size="Picture_Theme")
+    Close_Application.configure(command = lambda: Trun_Off_Application())
+    CTkToolTip(widget=Icon_Frame_Settings, message="Close program")
+
     #? Build look of Widget
+    Active_Window.grid(row=1, column=0, padx=0, pady=5, sticky="e")
     Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=5, sticky="")
     Icon_Frame_Dashboard.grid(row=1, column=1, padx=0, pady=5, sticky="")
-    Active_Window.grid(row=1, column=0, padx=0, pady=5, sticky="ew")
     Icon_Frame_Data.grid(row=2, column=1, padx=0, pady=5, sticky="")
     Icon_Frame_Information.grid(row=3, column=1, padx=0, pady=5, sticky="")
     Icon_Frame_Settings.grid(row=4, column=1, padx=0, pady=5, sticky="")
+    Close_Application.grid(row=5, column=1, padx=0, pady=5, sticky="")
 
     window.update_idletasks()
 
@@ -414,8 +428,36 @@ def Page_Download(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Dashboadr Page -------------------------------------------- #
 def Page_Dashboard(Frame: CTk|CTkFrame):
+    def DashBoard_Project():
+        Theme = Get_Current_Theme()
+        if Theme == "System":
+            Theme = "Dark"
+        else:
+            pass
+        webview.create_window(title="Project Detail", width=1645, height=428, url=f"Operational\\DashBoard_Project_{Theme}.html", frameless=True, easy_drag=True, resizable=True) 
+        webview.start()
+
+    def DashBoard_Activity():
+        Theme = Get_Current_Theme()
+        if Theme == "System":
+            Theme = "Dark"
+        else:
+            pass
+        webview.create_window(title="Activity Detail", width=1645, height=428, url=f"Operational\\DashBoard_Activity_{Theme}.html", frameless=True, easy_drag=True, resizable=True) 
+        webview.start()
+
+    def DashBoard_Utilization():
+        Theme = Get_Current_Theme()
+        if Theme == "System":
+            Theme = "Dark"
+        else:
+            pass
+        webview.create_window(title="Utilization Detail", width=1645, height=428, url=f"Operational\\DashBoard_Utilization_{Theme}.html", frameless=True, easy_drag=True, resizable=True) 
+        webview.start()
+
     # Divide Working Page into 2 parts
-    #Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Dashboard_Header_Area.pack_propagate(flag=False)
 
     Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
@@ -423,6 +465,11 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
 
     # ------------------------- Buttons Area -------------------------#
+    Project_Detail_button = customtkinter.CTkButton(master=Frame_Dashboard_Header_Area, text="Project Detail", command=DashBoard_Project)
+
+    Activity_Detail_button = customtkinter.CTkButton(master=Frame_Dashboard_Header_Area, text="Activity Detail", command=DashBoard_Activity)
+
+    Utilization_Detail_button = customtkinter.CTkButton(master=Frame_Dashboard_Header_Area, text="Utilization Detail", command=DashBoard_Utilization)
 
     # ------------------------- Dashboard work Area -------------------------#
     Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
@@ -492,7 +539,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_DashBoard_Cumulated_Chart_Frame.pack_propagate(flag=False)
 
     #? Build look of Widget
-    #Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
+    Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
@@ -529,6 +576,10 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
     Frame_DashBoard_Day_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
     Frame_DashBoard_Cumulated_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+
+    Project_Detail_button.pack(side="left", pady=10, expand=True)
+    Activity_Detail_button.pack(side="left", pady=10, expand=True)
+    Utilization_Detail_button.pack(side="left", pady=10, expand=True)
 
 
 
@@ -706,10 +757,9 @@ left_position = int(display_widht // 2 - Window_Frame_width // 2)
 top_position = int(display_height // 2 - Window_Frame_height // 2)
 window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
 
-window.bind(sequence="<Shift-Escape>", func=lambda evet: window.quit())
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
 customtkinter.set_appearance_mode(mode_string=Theme_Actual)
-#window.overrideredirect(boolean=True)
+window.overrideredirect(boolean=True)
 pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
 # ---------------------------------- Main Page ----------------------------------#
