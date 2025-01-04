@@ -1,12 +1,14 @@
+# Import Libraries
+from PIL import Image
+
 from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog
 from CTkTable import CTkTable
 from CTkColorPicker import CTkColorPicker
+from CTkToolTip import CTkToolTip
 
 from iconipy import IconFactory 
 
 import Libs.Defaults_Lists as Defaults_Lists
-
-from PIL import Image
 
 Configuration = Defaults_Lists.Load_Configuration() 
 Accent_Color_Style = Configuration["Global_Apperance"]["Window"]["Accent_Color_Mode"]
@@ -38,6 +40,12 @@ def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
         pady = Configuration_Text_Main["pady"])
     return Text_Main
 
+def Get_Label_Icon(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str, Icon_Set: str, Icon_Name: str, Icon_Size: str,) -> CTkLabel:
+    Frame_Label = Get_Label(Frame=Frame, Label_Size=Label_Size, Font_Size=Font_Size)
+    CTK_Image = Get_CTk_Image(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
+    Frame_Label.configure(image=CTK_Image, text="", anchor="e")
+    return Frame_Label
+
 # ---------------------------------------------- Buttons ----------------------------------------------# 
 def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
     Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
@@ -54,13 +62,14 @@ def Get_Button(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
         fg_color = tuple([Accent_Color, Accent_Color]),
         hover = Configuration_Button_Normal["hover"],
         hover_color = tuple([Accent_Color, Accent_Color]),
-        anchor = Configuration_Button_Normal["anchor"])
+        anchor = Configuration_Button_Normal["anchor"],
+        text_color=tuple(Configuration_Button_Normal["text_color"]))
     return Button_Normal
 
-def Get_Button_fot_Icon(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
+def Get_Button_Icon(Frame: CTk|CTkFrame, Icon_Set: str, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
     Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
     Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
-    Button_Normal = CTkButton(
+    Frame_Button = CTkButton(
         master = Frame,
         width = Configuration_Button_Normal["width"],
         height = Configuration_Button_Normal["height"],
@@ -70,15 +79,29 @@ def Get_Button_fot_Icon(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
         fg_color = Configuration_Button_Normal["fg_color"],
         hover = Configuration_Button_Normal["hover"],
         hover_color = tuple([Accent_Color, Accent_Color]),
-        anchor = Configuration_Button_Normal["anchor"])
-    return Button_Normal
-
-def Get_Button_Icon(Frame: CTk|CTkFrame, Icon_Set: str, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
-    Frame_Button = Get_Button_fot_Icon(Frame=Frame, Button_Size=Button_Size)
+        anchor = Configuration_Button_Normal["anchor"],
+        text = "")
     CTK_Image = Get_CTk_Image(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
     Frame_Button.configure(image=CTK_Image, text="")
     return Frame_Button
 
+def Get_Button_Chart(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
+    Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
+    Frame_Button = CTkButton(
+        master = Frame,
+        font = Get_Font(Font_Size="Field_Label"),
+        width = Configuration_Button_Normal["width"],
+        height = Configuration_Button_Normal["height"],
+        corner_radius = Configuration_Button_Normal["corner_radius"],
+        border_width = Configuration_Button_Normal["border_width"],
+        bg_color = Configuration_Button_Normal["bg_color"],
+        fg_color = Configuration_Button_Normal["fg_color"],
+        hover = Configuration_Button_Normal["hover"],
+        hover_color = tuple([Accent_Color, Accent_Color]),
+        anchor = Configuration_Button_Normal["anchor"],
+        text_color=tuple(Configuration_Button_Normal["text_color"]))
+    return Frame_Button
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
 def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str) -> CTkEntry:
@@ -181,12 +204,16 @@ def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
 # NonScrolable
 def Get_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
     Configuration_NonScrollable = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
     # fg_color - Preparation
     fg_color_json = Configuration_NonScrollable["fg_color"]
     if type(fg_color_json) is list:
         fg_color = tuple(Configuration_NonScrollable["fg_color"])
     else:
-        fg_color = Configuration_NonScrollable["fg_color"]
+        if fg_color_json == "Accent_Color":
+            fg_color = Accent_Color
+        else:
+            fg_color = Configuration_NonScrollable["fg_color"]
 
     Frame_NonScrolable = CTkFrame(
         master = Frame,
@@ -425,11 +452,17 @@ def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> 
 def Create_Icon(Icon_Set: str, Icon_Name: str, Icon_Size: str, Theme_index: int) -> Image:
     # Theme_Index: 0 --> light, 1 --> dark
     Configuration_Icon = Configuration["Icons"][f"{Icon_Size}"]
+    Accent_Color = Defaults_Lists.Get_Accent_Collor(Accent_Color_Style=Accent_Color_Style, Accent_Color_Style_Manual=Accent_Color_Style_Manual)
+    if Icon_Size == "Side_Bar_active":
+        Used_Icon_Color = Accent_Color
+    else:
+        Used_Icon_Color = Configuration_Icon["font_color"][Theme_index]
+    
     Icon_Fact = IconFactory(
         icon_set = Icon_Set,
         icon_size = Configuration_Icon["icon_size"],
         font_size = Configuration_Icon["font_size"],
-        font_color = Configuration_Icon["font_color"][Theme_index],
+        font_color = Used_Icon_Color,
         outline_width = Configuration_Icon["outline_width"],
         outline_color = Configuration_Icon["outline_color"][Theme_index],
         background_color = Configuration_Icon["background_color"][Theme_index],
@@ -503,3 +536,21 @@ def Get_Color_Picker(Frame: CTk|CTkFrame, Accent_Color_Manual_Frame_Var: CTkEntr
         command = lambda color: Change_Entry_Information(color=color),
         orientation = Configuration_ColorPicker["orientation"])
     return Color_Picker
+
+# ---------------------------------------------- CTkToolTip ----------------------------------------------# 
+def Get_ToolTip(widget: any, message: str, ToolTip_Size) -> CTkToolTip:
+    Configuration_ToolTip = Configuration["Tooltips"][f"{ToolTip_Size}"]
+    ToolTip = CTkToolTip(
+        widget = widget,
+        message = message,
+        delay = Configuration_ToolTip["delay"],
+        follow = Configuration_ToolTip["follow"],
+        x_offset = Configuration_ToolTip["x_offset"],
+        y_offset = Configuration_ToolTip["y_offset"],
+        bg_color = Configuration_ToolTip["bg_color"],
+        corner_radius = Configuration_ToolTip["corner_radius"],
+        border_width = Configuration_ToolTip["border_width"],
+        border_color = Configuration_ToolTip["border_color"],
+        alpha = Configuration_ToolTip["alpha"],
+        padding = tuple(Configuration_ToolTip["padding"]))
+    return ToolTip

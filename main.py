@@ -1,22 +1,19 @@
-
-#! Dodělat --> Dodělat nahrávání obrázků a zobrazování (použít k tomu iconpy)
-
 # Import Libraries
 import time
+import pandas
+import markdown
 from pandas import DataFrame
 from datetime import datetime
 
-import webview 
 import customtkinter
 from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkCheckBox
-from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Widgets as Widgets
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 import pywinstyles
-import pandas
+from tkhtmlview import HTMLLabel
 
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -38,9 +35,6 @@ Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
 Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
 
 #! ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Trun_Off_Application() -> None:
-    window.quit()
-
 def Get_Current_Theme() -> str:
     Current_Theme = customtkinter.get_appearance_mode()
     return Current_Theme
@@ -48,13 +42,13 @@ def Get_Current_Theme() -> str:
 def Theme_Change():
     Current_Theme = Get_Current_Theme() 
     if Current_Theme == "Dark":
-        customtkinter.set_appearance_mode("light")
+        customtkinter.set_appearance_mode(mode_string="light")
     elif Current_Theme == "Light":
-        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_appearance_mode(mode_string="dark")
     elif Current_Theme == "System":
-        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_appearance_mode(mode_string="dark")
     else:
-        customtkinter.set_appearance_mode("system")
+        customtkinter.set_appearance_mode(mode_string="system")
 
 #? ----------------------------------------------------- Buttons ----------------------------------------------------- #
 # -------------------------------------------- Page Listing -------------------------------------------- #
@@ -68,35 +62,35 @@ def Show_Download_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Download(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=0, column=0, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=0, column=0, padx=(10, 2), pady=(210, 10), sticky="e")
     window.update_idletasks()
 
 def Show_Dashboard_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Dashboard(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=1, column=0, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
     window.update_idletasks()
 
 def Show_Data_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Data(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=2, column=0, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=2, column=0, padx=(10, 2), pady=10, sticky="e")
     window.update_idletasks()
 
 def Show_Information_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Information(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=3, column=0, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=3, column=0, padx=(10, 2), pady=10, sticky="e")
     window.update_idletasks()
 
 def Show_Settings_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Settings(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=4, column=0, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=4, column=0, padx=(10, 2), pady=10, sticky="e")
     window.update_idletasks()
     
 
@@ -269,7 +263,9 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Logo Area -------------------------#  
     # Theme Change - Button
     Icon_Theme = Elements.Get_Button_Icon(Frame=Frame_Header_Information, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Theme.configure(text="")
     Icon_Theme.configure(command = lambda: Theme_Change())
+    Elements.Get_ToolTip(widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
 
     # Account Mail
     Frame_Account_Mail = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
@@ -302,48 +298,47 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # -------------------------------------------- Side Bar -------------------------------------------- #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
-    Active_Window = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="tally-1", Icon_Size="Side_Bar", Button_Size="Picture_Active_SideBar")   #! Dodělat --> předělat na Pouhou ikonu / Label
+    Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="Work_Area_SideBar_active")
     
     # Page - Downlaod
     Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
-    CTkToolTip(widget=Icon_Frame_Download, message="Download page")
     Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window))    
+    Elements.Get_ToolTip(widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal")
 
     # Page - Dashboard
     Icon_Frame_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window))
-    CTkToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page").show()
+    Elements.Get_ToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page.", ToolTip_Size="Normal")
 
     # Page - Data
     Icon_Frame_Data = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window))
-    CTkToolTip(widget=Icon_Frame_Data, message="Processed Data page")
+    Elements.Get_ToolTip(widget=Icon_Frame_Data, message="Data page.", ToolTip_Size="Normal")
 
     # Page - Information
     Icon_Frame_Information = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window))
-    CTkToolTip(widget=Icon_Frame_Information, message="About page")
+    Elements.Get_ToolTip(widget=Icon_Frame_Information, message="Information page.", ToolTip_Size="Normal")
 
     # Page - Settings
     Icon_Frame_Settings = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window))
-    CTkToolTip(widget=Icon_Frame_Settings, message="Settings page")
+    Elements.Get_ToolTip(widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal")
 
     # Close Aplication
-    Close_Application = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar", Button_Size="Picture_Theme")
-    Close_Application.configure(command = lambda: Trun_Off_Application())
-    CTkToolTip(widget=Icon_Frame_Settings, message="Close program")
+    Icon_Frame_Close = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
+    Icon_Frame_Close.configure(command = lambda: window.quit())
+    Elements.Get_ToolTip(widget=Icon_Frame_Close, message="Close.", ToolTip_Size="Normal")
 
     #? Build look of Widget
-    Active_Window.grid(row=1, column=0, padx=0, pady=5, sticky="e")
-    Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=5, sticky="")
-    Icon_Frame_Dashboard.grid(row=1, column=1, padx=0, pady=5, sticky="")
-    Icon_Frame_Data.grid(row=2, column=1, padx=0, pady=5, sticky="")
-    Icon_Frame_Information.grid(row=3, column=1, padx=0, pady=5, sticky="")
-    Icon_Frame_Settings.grid(row=4, column=1, padx=0, pady=5, sticky="")
-    Close_Application.grid(row=5, column=1, padx=0, pady=5, sticky="")
+    Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
+    Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=(210, 10), sticky="")
+    Icon_Frame_Dashboard.grid(row=1, column=1, padx=0, pady=10, sticky="")
+    Icon_Frame_Data.grid(row=2, column=1, padx=0, pady=10, sticky="")
+    Icon_Frame_Information.grid(row=3, column=1, padx=0, pady=10, sticky="")
+    Icon_Frame_Settings.grid(row=4, column=1, padx=0, pady=10, sticky="")
+    Icon_Frame_Close.grid(row=5, column=1, padx=0, pady=10, sticky="")
 
-    window.update_idletasks()
 
 
 # -------------------------------------------- Downlaod Page -------------------------------------------- #
@@ -363,7 +358,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     # Download Method
     Metdod_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
     
-    Metdod_Text.configure(text="Step 1 - Dates definition")
+    Metdod_Text.configure(text="Step 1 - Date Range Source")
 
     Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
@@ -384,7 +379,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     # Download Source
     Source_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
-    Source_Text.configure(text="Step 2 - Define data source")
+    Source_Text.configure(text="Step 2 - Download Data Source")
 
     Exchange_Widget = Widgets.Download_Exchange(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
@@ -407,7 +402,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     Button_Download = Elements.Get_Button(Frame=Frame_Download_State_Area, Button_Size="Normal")
     Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
-    CTkToolTip(widget=Button_Download, message="Initiate Download and Process")
+    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
     
     #? Build look of Widget
     Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
@@ -428,159 +423,115 @@ def Page_Download(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Dashboadr Page -------------------------------------------- #
 def Page_Dashboard(Frame: CTk|CTkFrame):
-    def DashBoard_Project():
-        Theme = Get_Current_Theme()
-        if Theme == "System":
-            Theme = "Dark"
-        else:
-            pass
-        webview.create_window(title="Project Detail", width=1645, height=428, url=f"Operational\\DashBoard_Project_{Theme}.html", frameless=True, easy_drag=True, resizable=True) 
-        webview.start()
-
-    def DashBoard_Activity():
-        Theme = Get_Current_Theme()
-        if Theme == "System":
-            Theme = "Dark"
-        else:
-            pass
-        webview.create_window(title="Activity Detail", width=1645, height=428, url=f"Operational\\DashBoard_Activity_{Theme}.html", frameless=True, easy_drag=True, resizable=True) 
-        webview.start()
-
-    def DashBoard_Utilization():
-        Theme = Get_Current_Theme()
-        if Theme == "System":
-            Theme = "Dark"
-        else:
-            pass
-        webview.create_window(title="Utilization Detail", width=1645, height=428, url=f"Operational\\DashBoard_Utilization_{Theme}.html", frameless=True, easy_drag=True, resizable=True) 
-        webview.start()
-
-    # Divide Working Page into 2 parts
-    Frame_Dashboard_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
-    Frame_Dashboard_Header_Area.pack_propagate(flag=False)
-
+    # Define Frames
     Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
 
     Frame_DashBoard_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
 
-    # ------------------------- Buttons Area -------------------------#
-    Project_Detail_button = customtkinter.CTkButton(master=Frame_Dashboard_Header_Area, text="Project Detail", command=DashBoard_Project)
-
-    Activity_Detail_button = customtkinter.CTkButton(master=Frame_Dashboard_Header_Area, text="Activity Detail", command=DashBoard_Activity)
-
-    Utilization_Detail_button = customtkinter.CTkButton(master=Frame_Dashboard_Header_Area, text="Utilization Detail", command=DashBoard_Utilization)
-
     # ------------------------- Dashboard work Area -------------------------#
-    Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
-    Projec_DF = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
-    Activity_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
-    WeekDays_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
-    Weeks_DF = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
-    Events_DF = pandas.read_csv(f"Operational\\Events.csv", sep=";")
+    try:
+        Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
+        Projec_DF = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
+        Activity_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
+        WeekDays_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
+        Weeks_DF = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
+        Events_DF = pandas.read_csv(f"Operational\\Events.csv", sep=";")
 
-    # Total Line
-    Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
-    Mean_Duration_hours = float(Totals_Summary_Df.iloc[0]["Mean_Duration_hours"])
-    Event_counts = int(Totals_Summary_Df.iloc[0]["Event_counts"])
-    Reporting_Period_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["Reporting_Period_Utilization"], ndigits=2))
-    My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
-    Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
+        # Total Line
+        Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
+        Mean_Duration_hours = float(Totals_Summary_Df.iloc[0]["Mean_Duration_hours"])
+        Event_counts = int(Totals_Summary_Df.iloc[0]["Event_counts"])
+        Reporting_Period_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["Reporting_Period_Utilization"], ndigits=2))
+        My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
+        Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
-    Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
-    Frame_Dashboard_Total_Line.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Counter = Widgets.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
-    Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Total = Widgets.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
-    Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
-    Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Report_Per_Util = Widgets.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
-    Frame_DashBoard_Totals_Report_Per_Util.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Active_Day_Util = Widgets.DashBoard_Totals_Active_Day_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
-    Frame_DashBoard_Totals_Active_Day_Util.pack_propagate(flag=False)
-    Frame_DashBoard_Totals_Util_by_today_surplus = Widgets.DashBoard_Totals_Utilization_Surplus_Widget(Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
-    Frame_DashBoard_Totals_Util_by_today_surplus.pack_propagate(flag=False)
+        Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
+        Frame_Dashboard_Total_Line.pack_propagate(flag=False)
+        Frame_DashBoard_Totals_Counter = Widgets.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
+        Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
+        Frame_DashBoard_Totals_Total = Widgets.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
+        Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
+        Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
+        Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
+        Frame_DashBoard_Totals_Report_Per_Util = Widgets.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
+        Frame_DashBoard_Totals_Report_Per_Util.pack_propagate(flag=False)
+        Frame_DashBoard_Totals_Active_Day_Util = Widgets.DashBoard_Totals_Active_Day_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
+        Frame_DashBoard_Totals_Active_Day_Util.pack_propagate(flag=False)
+        Frame_DashBoard_Totals_Util_by_today_surplus = Widgets.DashBoard_Totals_Utilization_Surplus_Widget(Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
+        Frame_DashBoard_Totals_Util_by_today_surplus.pack_propagate(flag=False)
 
-    # Project Activity Line
-    Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
-    Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
-    Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
-    Frame_DashBoard_Project_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Projec_DF=Projec_DF)
-    Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
-    Frame_DashBoard_Project_Detail1_Frame = Widgets.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
-    Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
-    Frame_DashBoard_Project_Detail2_Frame = Widgets.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
-    Frame_DashBoard_Project_Detail2_Frame.pack_propagate(flag=False)
-    Frame_DashBoard_Project_Detail3_Frame = Widgets.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
-    Frame_DashBoard_Project_Detail3_Frame.pack_propagate(flag=False)
+        # Project Activity Line
+        Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
+        Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
+        Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
+        Frame_DashBoard_Project_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Projec_DF=Projec_DF)
+        Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
+        Frame_DashBoard_Project_Detail1_Frame = Widgets.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
+        Frame_DashBoard_Project_Detail2_Frame = Widgets.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail2_Frame.pack_propagate(flag=False)
+        Frame_DashBoard_Project_Detail3_Frame = Widgets.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail3_Frame.pack_propagate(flag=False)
 
-    Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
-    Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
-    Frame_DashBoard_Activity_Frame = Widgets.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
-    Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
-    Frame_DashBoard_Activity_Detail1_Frame = Widgets.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
-    Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
-    Frame_DashBoard_Activity_Detail2_Frame = Widgets.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
-    Frame_DashBoard_Activity_Detail2_Frame.pack_propagate(flag=False)
-    Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
-    Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
+        Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
+        Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
+        Frame_DashBoard_Activity_Frame = Widgets.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
+        Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
+        Frame_DashBoard_Activity_Detail1_Frame = Widgets.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
+        Frame_DashBoard_Activity_Detail2_Frame = Widgets.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail2_Frame.pack_propagate(flag=False)
+        Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
 
-    # WeekDay and Weeks Line
-    Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
-    Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
-    Frame_DashBoard_Weeks_Frame = Widgets.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
+        # WeekDay and Weeks Line
+        Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
+        Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
+        Frame_DashBoard_Weeks_Frame = Widgets.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
 
-    # Day Chart Line
-    Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
-    Frame_DashBoard_Day_Chart_Frame = Widgets.DashBoard_DaysChart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Day Project/Activity distribution", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
-    Frame_DashBoard_Day_Chart_Frame.pack_propagate(flag=False)
-    Frame_DashBoard_Cumulated_Chart_Frame = Widgets.DashBoard_Cumulated_Time_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="My reported time vs KM planned util.", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
-    Frame_DashBoard_Cumulated_Chart_Frame.pack_propagate(flag=False)
+        # Day Chart Line
+        Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
+        Frame_DashBoard_Chart_Frame = Widgets.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
+        Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
-    #? Build look of Widget
-    Frame_Dashboard_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
-    Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+        #? Build look of Widget
+        Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
-    Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
-    Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Report_Per_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Active_Day_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Totals_Util_by_today_surplus.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
+        Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Totals_Report_Per_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Totals_Active_Day_Util.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Totals_Util_by_today_surplus.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 
-    Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
-    Frame_Dashboard_Project_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-    Frame_Dashboard_Project_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Project_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_Dashboard_Project_Side_Section.pack(side="left", fill="x", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Project_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Project_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Project_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
+        Frame_Dashboard_Project_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Project_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Project_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Project_Side_Section.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
 
-    Frame_Dashboard_Activity_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-    Frame_Dashboard_Activity_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Activity_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Frame_Dashboard_Activity_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-    Frame_DashBoard_Activity_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Activity_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Activity_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_Dashboard_Activity_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Activity_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Activity_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Activity_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Activity_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Activity_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Activity_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
 
-    Frame_Dashboard_WeekDay_Weeks_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
-    Frame_DashBoard_WeekDays_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Weeks_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
+        Frame_Dashboard_WeekDay_Weeks_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
+        Frame_DashBoard_WeekDays_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Weeks_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
 
-
-    Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
-    Frame_DashBoard_Day_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-    Frame_DashBoard_Cumulated_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-
-    Project_Detail_button.pack(side="left", pady=10, expand=True)
-    Activity_Detail_button.pack(side="left", pady=10, expand=True)
-    Utilization_Detail_button.pack(side="left", pady=10, expand=True)
-
+        Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
+        Frame_DashBoard_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+    except:
+        CTkMessagebox(title="Error", message=f"Dashboard not all data available, pelase run Downloader first.", icon="cancel", fade_in_duration=1)
 
 
 # -------------------------------------------- Data Page -------------------------------------------- #
@@ -597,12 +548,12 @@ def Page_Data(Frame: CTk|CTkFrame):
     # Download Button
     Button_Upload = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Upload.configure(text="Upload", command = lambda:Data_Upload(Events=Events))
-    CTkToolTip(widget=Button_Upload, message="Upload processed data directly to Sharepoint TimeSheets")
+    Elements.Get_ToolTip(widget=Button_Upload, message="Upload processed data directly to Sharepoint TimeSheets.", ToolTip_Size="Normal")
 
     # Download Button
     Button_Excel = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Excel.configure(text="Excel", command = lambda:Data_Excel())
-    CTkToolTip(widget=Button_Excel, message="Show generated Excel file")
+    Elements.Get_ToolTip(widget=Button_Excel, message="Show generated Excel file.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Data table
@@ -627,23 +578,24 @@ def Page_Data(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Information Page -------------------------------------------- #
 def Page_Information(Frame: CTk|CTkFrame):
-    # Divide Working Page into 2 parts
-    Frame_Info_Header_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
-
     Frame_Information_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Information_Work_Detail_Area.grid_propagate(flag=False)
     
-    # ------------------------- Info Header Area -------------------------#
-
     # ------------------------- Info Text Area -------------------------#
     # Description
     #! Dodělat --> text ohledně projektu a linka na víc info na Githubu (nejlepší by bylo, kdyby to přímo přečetlo Readme.md)!!!
     Frame_Information_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
+    with open('README.md', 'r', encoding="UTF-8") as file:
+        htmlmarkdown=markdown.markdown( file.read() )
+    file.close()
+
+    Information_html = HTMLLabel(Frame_Information_Scrolable_Area, html=f"{htmlmarkdown}")
+
     #? Build look of Widget
-    Frame_Info_Header_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Information_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     Frame_Information_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+    Information_html.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
 
 
@@ -659,12 +611,12 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # Add Button - Downlaod New Project and Activities
     Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
-    CTkToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities")
+    Elements.Get_ToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities.", ToolTip_Size="Normal")
 
     # Add Button - Save Settings
     Button_Save_Settings = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Save_Settings.configure(text="Save", command = lambda:Save_Settings())
-    CTkToolTip(widget=Button_Save_Settings, message="Save settings to Settings.json")
+    Elements.Get_ToolTip(widget=Button_Save_Settings, message="Save settings.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Tab View
@@ -680,7 +632,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_G.pack_propagate(flag=False)
     Tab_E_E = TabView.add("Events - Empty/Scheduler")
     Tab_E_E.pack_propagate(flag=False)
-    Tab_E_A = TabView.add("Events - AutoFill")
+    Tab_E_A = TabView.add("Events - Rules")
     Tab_E_A.pack_propagate(flag=False)
     TabView.set("Apperance")
 
@@ -691,6 +643,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # General Page
     Sharepoint_Widget = Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
     Exchange_Widget = Widgets.Settings_General_Exchange(Frame=Tab_Gen)
+    Outlook_Widget = Widgets.Settings_General_Outlook(Frame=Tab_Gen)
     Formats_Widget = Widgets.Settings_General_Formats(Frame=Tab_Gen)
 
     # Calendar Page
@@ -726,7 +679,8 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Formats_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Outlook_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Formats_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
     Calendar_Working_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Calendar_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
@@ -767,6 +721,7 @@ pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
 Frame_Background.pack(side="top", fill="both", expand=False)
 
+
 Frame_Header = Get_Header(Frame=Frame_Background)
 
 Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Area")
@@ -774,7 +729,7 @@ Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
 Frame_Side_Bar = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_SideBar")
 Frame_Side_Bar.grid_propagate(flag=False)
-Frame_Side_Bar.pack(side="left", fill="y", expand=True)
+Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
 Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
 Frame_Work_Area_Detail.pack_propagate(flag=False)

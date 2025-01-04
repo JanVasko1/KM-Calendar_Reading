@@ -1,5 +1,4 @@
 from customtkinter import CTk, CTkFrame, CTkScrollableFrame
-from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Elements as Elements
@@ -16,9 +15,8 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
     Header_text_Additional = Elements.Get_Label(Frame=Frame_Single_Header, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
     Header_text_Additional.configure(text=f"{Additional_Text}")
 
-    Icon_Label_text = Elements.Get_Button_Icon(Frame=Frame_Single_Header,  Icon_Set="lucide", Icon_Name="message-circle-question", Icon_Size="Question",  Button_Size="Question") #! Dodělat --> opravit to z Buttonu na obyčejný obrázek --> tohle nemusí být Button
-    Icon_Label_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
-    CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
+    Icon_Label_text = Elements.Get_Label_Icon(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header", Icon_Set="lucide", Icon_Name="circle-help", Icon_Size="Question")
+    Elements.Get_ToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip, ToolTip_Size="Normal")
 
     Frame_Single_Data_Area = Elements.Get_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_size=Widget_size)
 
@@ -45,8 +43,8 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
     Header_text.configure(text=f"{Label}")
 
     if Icon_Name != None:
-        Icon_Label_text = Elements.Get_Button_Icon(Frame=Frame_Single_Header, Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size="DashBoard_Totals", Button_Size="Question")   #! Dodělat --> opravit to z Buttonu na obyčejný obrázek --> tohle nemusí být Button
-        CTkToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip).show()
+        Icon_Label_text = Elements.Get_Label_Icon(Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header", Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size="DashBoard_Totals")
+        Elements.Get_ToolTip(widget=Icon_Label_text, message=Widget_Label_Tooltip, ToolTip_Size="Normal")
     else:
         pass
 

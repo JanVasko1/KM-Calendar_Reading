@@ -151,8 +151,11 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "anchor": "center"
-
+            "anchor": "center",
+            "text_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ]
         },
         "Small": {
             "width": 80,
@@ -173,17 +176,21 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "anchor": "center"
+            "anchor": "center",
+            "text_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ]
         },
         "Picture_SideBar": {
             "width": 40,
             "height": 40,
-            "corner_radius": 0,
+            "corner_radius": 6,
             "border_width": 0,
             "border_color": null,
             "bg_color": "transparent",
-            "fg_color": null,
-            "hover": false,
+            "fg_color": "transparent",
+            "hover": true,
             "hover_color": [
                 "#00A9FF",
                 "#00A9FF"
@@ -198,7 +205,7 @@
             "border_color": null,
             "bg_color": "transparent",
             "fg_color": "transparent",
-            "hover": true,
+            "hover": false,
             "hover_color": [
                 "#00A9FF",
                 "#00A9FF"
@@ -212,7 +219,7 @@
             "border_width": 0,
             "border_color": null,
             "bg_color": "transparent",
-            "fg_color": null,
+            "fg_color": "transparent",
             "hover": false,
             "hover_color": [
                 "#00A9FF",
@@ -227,7 +234,7 @@
             "border_width": 0,
             "border_color": null,
             "bg_color": "transparent",
-            "fg_color": null,
+            "fg_color": "transparent",
             "hover": false,
             "hover_color": [
                 "#00A9FF",
@@ -235,20 +242,24 @@
             ],
             "anchor": "center"
         },
-        "Question": {
-            "width": 20,
+        "Chart_Button": {
+            "width": 40,
             "height": 20,
-            "corner_radius": 0,
+            "corner_radius": 6,
             "border_width": 0,
             "border_color": null,
             "bg_color": "transparent",
-            "fg_color": null,
-            "hover": false,
+            "fg_color": "transparent",
+            "hover": true,
             "hover_color": [
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "anchor": "center"
+            "anchor": "center",
+            "text_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ]
         }
     },
     "Fields": {
@@ -482,6 +493,18 @@
                     "#f7f9f9",
                     "#2C2C2C"
                 ]
+            },
+            "Work_Area_SideBar_active": {
+                "width": 3,
+                "height": 40,
+                "corner_radius": 10,
+                "border_width": 0, 
+                "border_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ],
+                "bg_color": "transparent",
+                "fg_color": "Accent_Color"
             },
             "Work_Area_Main": {
                 "width": 1730,
@@ -1121,7 +1144,7 @@
                             "corner_radius": 0,
                             "border_width": 0, 
                             "bg_color": "transparent",
-                            "fg_color": "transparent"
+                            "fg_color": "red"
                         }
                     }
                 }
@@ -1460,6 +1483,24 @@
             ],
             "background_radius": 0
         },
+        "Side_Bar_active": {
+            "icon_size": 40,
+            "font_size": 40,
+            "font_color": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        },
         "DashBoard_Totals": {
             "icon_size": 20,
             "font_size": 20,
@@ -1495,6 +1536,23 @@
                 null
             ],
             "background_radius": 0
+        }
+    },
+    "Tooltips": {
+        "Normal": {
+            "delay": 0.2,
+            "follow": true,
+            "x_offset": 20,
+            "y_offset": 10,
+            "bg_color": null,
+            "corner_radius": 6,
+            "border_width":  0,
+            "border_color": null,
+            "alpha": 0.8,
+            "padding": [
+                10,
+                2
+            ]
         }
     }
 }

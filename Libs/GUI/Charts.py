@@ -176,8 +176,8 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
         raise ValueError
     
 def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFrame):
-    #! Dodělat -->třetí křivku jako projekci kolik toho stihnu podle kalendáře
-    #! Dodělat -->křivku mých hodin vykreslit pouze za dny které jsou opravdu aktuální a né až do konce 
+    #! Dodělat --> třetí křivku jako projekci kolik toho stihnu podle kalendáře
+    #! Dodělat --> křivku mých hodin vykreslit pouze za dny které jsou opravdu aktuální a né až do konce 
     warnings.filterwarnings("ignore")
 
     # Variable Defaults

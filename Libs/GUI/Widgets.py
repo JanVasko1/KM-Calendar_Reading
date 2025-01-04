@@ -1,18 +1,19 @@
 # Import Libraries
+import os
+from pandas import DataFrame
+
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 
+import webview 
 import pywinstyles
 import customtkinter
 from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, CTkToplevel
-from CTkToolTip import CTkToolTip
 from CTkTable import CTkTable
+from CTkMessagebox import CTkMessagebox
 
 from CTkColorPicker import *
-
-
-from pandas import DataFrame
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
@@ -128,6 +129,10 @@ Join_OutOfOffice = Settings["Event_Handler"]["Events"]["Join_method"]["Out of Of
 Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working elsewhere"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
+def Get_Current_Theme() -> str:
+    Current_Theme = customtkinter.get_appearance_mode()
+    return Current_Theme
+
 def Apperance_Change_Theme(Theme_Selected: str) ->  None:
     customtkinter.set_appearance_mode(mode_string=Theme_Selected)
 
@@ -231,15 +236,50 @@ def Del_AutoFill_Event_All() -> None:
     #! Dodělat --> vymazat z tabulky a uložit do Json
     pass
 
-def DashBoard_Chart_Project() -> None:
-    print("DashBoard_Chart_Project")
-    #! Dodělat --> Přepnout graf na Projekty
-    pass
+def DashBoard_Project():
+    Theme = Get_Current_Theme()
+    if Theme == "System":
+        Theme = "Dark"
+    else:
+        pass
 
-def DashBoard_Chart_Activity() -> None:
-    print("DashBoard_Chart_Activity")
-    #! Dodělat --> Přepnout graf na Aktivity
-    pass
+    Chart_path = f"Operational\\DashBoard_Project_{Theme}.html"
+    Chart_Exist = os.path.isfile(Chart_path)
+    if Chart_Exist == True:
+        webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True) 
+        webview.start()
+    else:
+        CTkMessagebox(title="Error", message=f"Chart of Project not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
+
+def DashBoard_Activity():
+    Theme = Get_Current_Theme()
+    if Theme == "System":
+        Theme = "Dark"
+    else:
+        pass
+
+    Chart_path = f"Operational\\DashBoard_Activity_{Theme}.html"
+    Chart_Exist = os.path.isfile(Chart_path)
+    if Chart_Exist == True:
+        webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True) 
+        webview.start()
+    else:
+        CTkMessagebox(title="Error", message=f"Chart of Activity not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
+
+def DashBoard_Utilization():
+    Theme = Get_Current_Theme()
+    if Theme == "System":
+        Theme = "Dark"
+    else:
+        pass
+
+    Chart_path = f"Operational\\DashBoard_Utilization_{Theme}.html"
+    Chart_Exist = os.path.isfile(Chart_path)
+    if Chart_Exist == True:
+        webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True) 
+        webview.start()
+    else:
+        CTkMessagebox(title="Error", message=f"Chart of Utilization not avvailable, please download data first from Sharepoint.", icon="cancel", fade_in_duration=1)
 
 
 # ---------------------------------------------------------- Download Page Widgets ---------------------------------------------------------- #
@@ -683,45 +723,38 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
 
     return Frame_Main
 
-def DashBoard_DaysChart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Events_DF: DataFrame) -> CTkFrame:
+def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Events_DF: DataFrame) -> CTkFrame:
     # Data preparation
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    Frame_Whole = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
+    Frame_Header = Frame_Whole.children["!ctkframe"]
+    Frame_Body = Frame_Whole.children["!ctkframe2"]
 
-    #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
+    #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného buttonu do Framu
 
-    # Update Secret ID Button
-    Button_Show_Projects = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
-    Button_Show_Projects.configure(text="Projects", command = lambda:DashBoard_Chart_Project())
-    CTkToolTip(widget=Button_Show_Projects, message="Shows Charts with Projects.")
+    # Button --> Projects
+    Button_Show_Projects = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Projects.configure(text="Projects", command = lambda:DashBoard_Project())
+    Elements.Get_ToolTip(widget=Button_Show_Projects, message="Shows project chart.", ToolTip_Size="Normal")
 
-    # Update Secret ID Button
-    Button_Show_Activities = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
-    Button_Show_Activities.configure(text="Activities", command = lambda:DashBoard_Chart_Activity())
-    CTkToolTip(widget=Button_Show_Activities, message="Shows Charts with Activities.")
+    # Button --> Activities
+    Button_Show_Activities = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Activities.configure(text="Activities", command = lambda:DashBoard_Activity())
+    Elements.Get_ToolTip(widget=Button_Show_Activities, message="Shows activity chart.", ToolTip_Size="Normal")
+
+    # Button --> Activities
+    Button_Show_Utilization = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Utilization.configure(text="Utilization", command = lambda:DashBoard_Utilization())
+    Elements.Get_ToolTip(widget=Button_Show_Utilization, message="Show utilization chart", ToolTip_Size="Normal")
 
     #? Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
+    Frame_Whole.pack(side="top", padx=15, pady=15)
+    Button_Show_Utilization.pack(side="right", padx=10, pady=(0,5))
+    Button_Show_Activities.pack(side="right", padx=10, pady=(0,5))
     Button_Show_Projects.pack(side="right", padx=10, pady=(0,5))
-    Button_Show_Activities.pack(side="top", padx=10, pady=(0,5))
-
-    return Frame_Main
-
-def DashBoard_Cumulated_Time_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Events_DF: DataFrame) -> CTkFrame:
-    # Data preparation
     
-    # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Comparison between KM planned utilization and reported houss.", Scrollable=False) 
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    #! Dodělat --> dokončit Dashboard --> načtení grafů podle zvoleného 
-
-    #? Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
+    return Frame_Whole
 
 # ---------------------------------------------------------- Data Page Widgets ---------------------------------------------------------- #
 
@@ -735,7 +768,7 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     Accent_Color_Mode_Variable = StringVar(master=Frame, value=Accent_Color_Mode)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="General Apperance", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="General Apperance", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="GEnerall apperance settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Theme
@@ -763,7 +796,7 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     # Button - Collor Picker
     Button_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
     Button_Color_Picker.configure(text="Color Picker", command = lambda:Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
-    CTkToolTip(widget=Button_Color_Picker, message="Select Manual Accent Collor.")
+    Elements.Get_ToolTip(widget=Button_Color_Picker, message="Select manualy Accent collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Download_Date_Range_Source
     Accent_Color_Mode_Frame_Var.configure(command = lambda a :Apperance_Accent_Color(Accent_Color_Mode_Variable=Accent_Color_Mode_Variable, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
@@ -782,7 +815,7 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
 
 def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Color palletes for charts.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     #! Dodělat --> nastavit defaultní BArevnou čkálu pro celý systém (příklad pro grafy)
@@ -844,7 +877,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Exchange", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Exchange Server related setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Exchange", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Exchange Server related settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Name
@@ -868,7 +901,7 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     # Update Secret ID Button
     Button_Update_Secret = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
     Button_Update_Secret.configure(text="Re-new Secret", command = lambda:Exchange_ReNew_Secret())
-    CTkToolTip(widget=Button_Update_Secret, message="Update Secret ID.")
+    Elements.Get_ToolTip(widget=Button_Update_Secret, message="Update Secret ID.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -877,6 +910,24 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     EX_Tenant_ID_Frame.pack(side="top", padx=10, pady=(0,5))
     Button_Update_Secret.pack(side="right", padx=10, pady=(0,5))
 
+
+    return Frame_Main
+
+
+
+def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Outlook Client related settings.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Name
+    Outlook_Email_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal") 
+    Outlook_Email_Frame_Var = Outlook_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Outlook_Email_Frame_Var.configure(placeholder_text=Outlook_Email)
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Outlook_Email_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -993,7 +1044,7 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------- Calendar -------------#
 def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have. Used for projected Utilization.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
@@ -1284,12 +1335,12 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     # Add Button
     Button_Skip_Add = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
     Button_Skip_Add.configure(text="Add", command = lambda:Add_Skip_Event())
-    CTkToolTip(widget=Button_Skip_Add, message="Add selected subejct to skip list")
+    Elements.Get_ToolTip(widget=Button_Skip_Add, message="Add selected subejct to skip list", ToolTip_Size="Normal")
 
     # Del Button
     Button_Skip_Del = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
     Button_Skip_Del.configure(text="Del", command = lambda:Del_Skip_Event())
-    CTkToolTip(widget=Button_Skip_Del, message="Delete row from table based on input index.")
+    Elements.Get_ToolTip(widget=Button_Skip_Del, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1311,7 +1362,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Action_Variable = StringVar(master=Frame, value=Activity_List[0])
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space program use fill them by this setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space (between Events in calendar) program use fill them by this setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Imput Field + button in one line
@@ -1356,22 +1407,22 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     # Add Button
     Button_Empty_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Empty_Add.configure(text="Add", command = lambda:Add_Empty_Event())
-    CTkToolTip(widget=Button_Empty_Add, message="Add selected combination into the list")
+    Elements.Get_ToolTip(widget=Button_Empty_Add, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     # Del One Button
     Button_Empty_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Empty_Del_One.configure(text="Del", command = lambda:Del_Empty_Event_One())
-    CTkToolTip(widget=Button_Empty_Del_One, message="Delete row from table based on input index.")
+    Elements.Get_ToolTip(widget=Button_Empty_Del_One, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     # Del All Button
     Button_Empty_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Empty_Del_All.configure(text="Del all", command = lambda:Del_Empty_Event_All())
-    CTkToolTip(widget=Button_Empty_Del_All, message="Delete all rows from table.")
+    Elements.Get_ToolTip(widget=Button_Empty_Del_All, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     # Recalculate Button
     Button_Empty_Recal = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Empty_Recal.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Table=Frame_Empty_General_Table_Var))
-    CTkToolTip(widget=Button_Empty_Recal, message="Recalculate coverage for all lines.")
+    Elements.Get_ToolTip(widget=Button_Empty_Recal, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1491,17 +1542,17 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     # Add Button
     Button_Schedule_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Schedule_Add.configure(text="Add", command = lambda:Add_Schedule_Event())
-    CTkToolTip(widget=Button_Schedule_Add, message="Add selected combination into the list")
+    Elements.Get_ToolTip(widget=Button_Schedule_Add, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     # Del Button
     Button_Schedule_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Schedule_Del_One.configure(text="Del", command = lambda:Del_Schedule_Event_One())
-    CTkToolTip(widget=Button_Schedule_Del_One, message="Delete row from table based on input index.")
+    Elements.Get_ToolTip(widget=Button_Schedule_Del_One, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     # Del All Button
     Button_Schedule_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_Schedule_Del_All.configure(text="Del all", command = lambda:Del_Schedule_Event_All())
-    CTkToolTip(widget=Button_Schedule_Del_All, message="Delete all rows from table.")
+    Elements.Get_ToolTip(widget=Button_Schedule_Del_All, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1538,7 +1589,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Location_Variable = StringVar(master=Frame, value=Location_List[0])
     
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="AutoFill rules", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple ruless applied on TimeSheet Entry if part/whole Search Text is found in Subject. If empty then do not fill it or overwrite it.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="AutoFill rules", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple rules applied on TimeSheet Entry if part/whole Search Text is found in Subject. If empty then do not fill it or overwrite it.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Imput Field + button in one line
@@ -1583,17 +1634,17 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     # Add Button
     Button_AutoFill_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_AutoFill_Add.configure(text="Add", command = lambda:Add_AutoFill_Event())
-    CTkToolTip(widget=Button_AutoFill_Add, message="Add selected combination into the list")
+    Elements.Get_ToolTip(widget=Button_AutoFill_Add, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     # Del Button
     Button_AutoFill_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_AutoFill_Del_One.configure(text="Del", command = lambda:Del_AutoFill_Event_One())
-    CTkToolTip(widget=Button_AutoFill_Del_One, message="Delete row from table based on input index.")
+    Elements.Get_ToolTip(widget=Button_AutoFill_Del_One, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     # Del All Button
     Button_AutoFill_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
     Button_AutoFill_Del_All.configure(text="Del all", command = lambda:Del_AutoFill_Event_All())
-    CTkToolTip(widget=Button_AutoFill_Del_All, message="Delete all rows from table.")
+    Elements.Get_ToolTip(widget=Button_AutoFill_Del_All, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
