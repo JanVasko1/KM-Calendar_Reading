@@ -1,5 +1,6 @@
 from customtkinter import CTk, CTkFrame, CTkScrollableFrame
 from CTkMessagebox import CTkMessagebox
+import pywinstyles
 
 import Libs.GUI.Elements as Elements
 

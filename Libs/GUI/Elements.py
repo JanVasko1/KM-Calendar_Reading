@@ -479,6 +479,13 @@ def Get_CTk_Image(Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
         size = (Icon_Size_px, Icon_Size_px))
     return Picture
 
+def Get_Image(Name: str, postfix: str, width: int, heigh: int) -> CTkImage:
+    Picture = CTkImage(
+        light_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Name}_Light.{postfix}"),
+        dark_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Name}_Dark.{postfix}"),
+        size = (width, heigh))
+    return Picture
+
 # ---------------------------------------------- Progress Bar ----------------------------------------------# 
 def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -> CTkProgressBar:
     Configuration_ProgressBar = Configuration["ProgressBar"][f"{orientation}"][f"{Progress_Size}"]

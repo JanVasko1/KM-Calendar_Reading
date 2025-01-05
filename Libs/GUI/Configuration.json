@@ -413,75 +413,9 @@
     },
     "Frames": {
         "Page_Frames": {
-            "Background": {
-                "width": 1800,
+            "SideBar": {
+                "width": 70,
                 "height": 900,
-                "corner_radius": 10,
-                "border_width": 0, 
-                "border_color": [
-                    "#2C2C2C",
-                    "#111219"
-                ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
-            },
-            "Header": {
-                "width": 1800,
-                "height": 70,
-                "corner_radius": 0,
-                "border_width": 0, 
-                "border_color": [
-                    "#ecf0f1",
-                    "#111219"
-                ],
-                "bg_color": "transparent",
-                "fg_color": [
-                    "#ecf0f1",
-                    "#111219"
-                ]
-            },
-            "Header_Logo_Element": {
-                "width": 70,
-                "height": 70,
-                "corner_radius": 0,
-                "border_width": 0,  
-                "border_color": [
-                    "#f7f9f9",
-                    "#2C2C2C"
-                ],
-                "bg_color": "transparent",
-                "fg_color": [
-                    "#f7f9f9",
-                    "#2C2C2C"
-                ]
-            },
-            "Header_Information": {
-                "width": 1730,
-                "height": 70,
-                "corner_radius": 0,
-                "border_width": 0,  
-                "border_color": [
-                    "#f7f9f9",
-                    "#2C2C2C"
-                ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
-            },
-            "Work_Area": {
-                "width": 1800,
-                "height": 830,
-                "corner_radius": 0,
-                "border_width": 0, 
-                "border_color": [
-                    "#ecf0f1",
-                    "#111219"
-                ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
-            },
-            "Work_Area_SideBar": {
-                "width": 70,
-                "height": 830,
                 "corner_radius": 0,
                 "border_width": 0, 
                 "border_color": [
@@ -494,7 +428,7 @@
                     "#2C2C2C"
                 ]
             },
-            "Work_Area_SideBar_active": {
+            "SideBar_active": {
                 "width": 3,
                 "height": 40,
                 "corner_radius": 10,
@@ -506,6 +440,30 @@
                 "bg_color": "transparent",
                 "fg_color": "Accent_Color"
             },
+            "Work_Area": {
+                "width": 1730,
+                "height": 900,
+                "corner_radius": 0,
+                "border_width": 0, 
+                "border_color": [
+                    "#ecf0f1",
+                    "#111219"
+                ],
+                "bg_color": "transparent",
+                "fg_color": "transparent"
+            },
+            "Work_Area_Header": {
+                "width": 1730,
+                "height": 70,
+                "corner_radius": 0,
+                "border_width": 0,  
+                "border_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ],
+                "bg_color": "transparent",
+                "fg_color": "transparent"
+            },
             "Work_Area_Main": {
                 "width": 1730,
                 "height": 830,
@@ -516,10 +474,7 @@
                     "#111219"
                 ],
                 "bg_color": "transparent",
-                "fg_color": [
-                    "#ecf0f1",
-                    "#111219"
-                ]
+                "fg_color": "transparent"
             },
             "Work_Area_Status_Line": {
                 "width": 1730,

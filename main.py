@@ -1,3 +1,5 @@
+
+#! Dodělat --> Frames nemají "transparent" pro transparentní ale None
 # Import Libraries
 import time
 import pandas
@@ -24,11 +26,6 @@ Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
 Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 Format_Date = Settings["General"]["Formats"]["Date"]
-
-GUI_Configuration = Defaults_Lists.Load_Configuration()
-Window_Frame_width = GUI_Configuration["Frames"]["Page_Frames"]["Background"]["width"]
-Window_Frame_height = GUI_Configuration["Frames"]["Page_Frames"]["Background"]["height"]
-
 Format_Date = Settings["General"]["Formats"]["Date"]
 
 Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
@@ -248,45 +245,33 @@ def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Passwo
 # -------------------------------------------- Header -------------------------------------------- #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # Frame Preparation
-    Frame_Header = Elements.Get_Frame(Frame=Frame, Frame_Size="Header")
+    Frame_Header = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Header")
     Frame_Header.pack_propagate(flag=False)
-
-    Frame_Logo = Elements.Get_Frame(Frame=Frame_Header, Frame_Size="Header_Logo_Element")
-    Frame_Logo.pack_propagate(flag=False)
-
-    Frame_Header_Information = Elements.Get_Frame(Frame=Frame_Header, Frame_Size="Header_Information")
-    Frame_Header_Information.pack_propagate(flag=False)
-
-    # ------------------------- Logo Area -------------------------#
-    #Icon_Frame_Company_Logo = Elements.Get_Button_Icon(Frame=Frame_Logo, Icon="Konica_Minolta", Icon_Size=(60, 60), Button_Size="Picture_Logo")
 
     # ------------------------- Logo Area -------------------------#  
     # Theme Change - Button
-    Icon_Theme = Elements.Get_Button_Icon(Frame=Frame_Header_Information, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Theme = Elements.Get_Button_Icon(Frame=Frame_Header, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
     Icon_Theme.configure(text="")
     Icon_Theme.configure(command = lambda: Theme_Change())
     Elements.Get_ToolTip(widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
 
     # Account Mail
-    Frame_Account_Mail = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_Account_Mail = Elements.Get_Label(Frame=Frame_Header, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_Mail.configure(text=Account_Email)
     Frame_Account_Mail.pack_propagate(flag=False)
 
     # Account ID
-    Frame_Account_ID = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_Account_ID = Elements.Get_Label(Frame=Frame_Header, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_ID.configure(text=Account_ID)
     Frame_Account_ID.pack_propagate(flag=False)
 
     # Account Name
-    Frame_Account_Name = Elements.Get_Label(Frame=Frame_Header_Information, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_Account_Name = Elements.Get_Label(Frame=Frame_Header, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_Name.configure(text=Account_Name)
     Frame_Account_Name.pack_propagate(flag=False)
 
     #? Build look of Widget
     Frame_Header.pack(side="top", fill="x", expand=False)
-    Frame_Logo.pack(side="left", fill="none", expand=False, padx=0, pady=0)
-    Frame_Header_Information.pack(side="left", fill="none", expand=False, padx=0, pady=0)
-    #Icon_Frame_Company_Logo.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
@@ -298,7 +283,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # -------------------------------------------- Side Bar -------------------------------------------- #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
-    Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="Work_Area_SideBar_active")
+    Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
     
     # Page - Downlaod
     Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
@@ -332,7 +317,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
-    Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=(210, 10), sticky="")
+    Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=(280, 10), sticky="")
     Icon_Frame_Dashboard.grid(row=1, column=1, padx=0, pady=10, sticky="")
     Icon_Frame_Data.grid(row=2, column=1, padx=0, pady=10, sticky="")
     Icon_Frame_Information.grid(row=3, column=1, padx=0, pady=10, sticky="")
@@ -415,9 +400,9 @@ def Page_Download(Frame: CTk|CTkFrame):
     Exchange_Widget.grid(row=3, column=0, padx=20, pady=(5, 20), sticky="n")
     Outlook_Widget.grid(row=3, column=1, padx=20, pady=(5, 20), sticky="n")
 
-    Button_Download.pack(side="left", fill="none", expand=False, padx=5, pady=0)
-    Progress_text.pack(side="left", fill="none", expand=False, padx=5, pady=0)
-    Progress_Bar.pack(side="left", fill="none", expand=False, padx=10, pady=0)
+    Button_Download.grid(row=0, column=0, padx=5, pady=15, sticky="e")
+    Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="e")
+    Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="e")
 
     
 
@@ -569,8 +554,8 @@ def Page_Data(Frame: CTk|CTkFrame):
     Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Data_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
 
-    Button_Upload.grid(row=0, column=0, padx=5, pady=0, sticky="e")
-    Button_Excel.grid(row=0, column=1, padx=5, pady=0, sticky="e")
+    Button_Upload.grid(row=0, column=0, padx=5, pady=15, sticky="e")
+    Button_Excel.grid(row=0, column=1, padx=5, pady=15, sticky="e")
 
     Frame_Events_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
@@ -670,9 +655,9 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
-    Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=0, sticky="e")
-    Button_Save_Settings.grid(row=0, column=1, padx=5, pady=0, sticky="e")
-    TabView.grid(row=0, column=0, padx=5, pady=0, sticky="n")
+    Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=15, sticky="e")
+    Button_Save_Settings.grid(row=0, column=1, padx=5, pady=15, sticky="e")
+    TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
 
     Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Color_Pallete_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
@@ -707,6 +692,8 @@ window.title("Time Sheet Downloader")
 
 display_widht = window.winfo_screenwidth()
 display_height = window.winfo_screenheight()
+Window_Frame_width = 1800
+Window_Frame_height = 900
 left_position = int(display_widht // 2 - Window_Frame_width // 2)
 top_position = int(display_height // 2 - Window_Frame_height // 2)
 window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
@@ -718,18 +705,15 @@ pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
 # ---------------------------------- Main Page ----------------------------------#
 # Frames
-Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
-Frame_Background.pack(side="top", fill="both", expand=False)
-
-
-Frame_Header = Get_Header(Frame=Frame_Background)
-
-Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Area")
-Frame_Work_Area.pack(side="top", fill="both", expand=False)
-
-Frame_Side_Bar = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_SideBar")
+Frame_Side_Bar = Elements.Get_Frame(Frame=window, Frame_Size="SideBar")
 Frame_Side_Bar.grid_propagate(flag=False)
 Frame_Side_Bar.pack(side="left", fill="y", expand=False)
+
+Frame_Work_Area = Elements.Get_Frame(Frame=window, Frame_Size="Work_Area")
+Frame_Work_Area.pack(side="top", fill="both", expand=False)
+
+Frame_Header = Get_Header(Frame=Frame_Work_Area)
+Frame_Header.pack(side="top", fill="both", expand=False)
 
 Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
 Frame_Work_Area_Detail.pack_propagate(flag=False)
