@@ -25,9 +25,13 @@ Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
 Theme_List = list(Configuration["Global_Apperance"]["Window"]["Theme_List"])
 Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
 Win_Style_List = list(Configuration["Global_Apperance"]["Window"]["Style_List"])
-Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Accent_Color_Mode"]
-Accent_Color_Mode_List = list(Configuration["Global_Apperance"]["Window"]["Accent_Color_List"])
-Accent_Color_Manual = Configuration["Global_Apperance"]["Window"]["Accent_Color_Manual"]
+Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
+Accent_Color_Mode_List = list(Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_List"])
+Accent_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
+
+Hover_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
+Hover_Color_Mode_List = list(Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_List"])
+Hover_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
 
 # Sharepoint
 SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
@@ -151,7 +155,18 @@ def Apperance_Accent_Color(Accent_Color_Mode_Variable: StringVar, Accent_Color_M
     else:
         pass
 
-def Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var: CTkEntry) -> None:
+def Apperance_Hover_Color(Hover_Color_Mode_Variable: StringVar, Hover_Color_Manual_Frame_Var: CTkEntry) -> None:
+    if Hover_Color_Mode_Variable.get() == "System":
+        Hover_Color_Manual_Frame_Var.configure(state="disabled")
+    elif Hover_Color_Mode_Variable.get() == "Manual":
+        Hover_Color_Manual_Frame_Var.focus()
+        Hover_Color_Manual_Frame_Var.configure(state="normal")
+    elif Hover_Color_Mode_Variable.get() == "Original":
+        Hover_Color_Manual_Frame_Var.configure(state="disabled")
+    else:
+        pass
+
+def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry) -> None:
     Collor_Picker_window = CTkToplevel()
     Collor_Picker_window.title("Collor Picker")
     Collor_Picker_window.geometry("295x240")
@@ -163,7 +178,7 @@ def Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var: CTkEntry) -> None
     pywinstyles.apply_style(window=Collor_Picker_window, style=Win_Style_Actual)
     customtkinter.set_appearance_mode(mode_string=Theme_Actual)
 
-    Colorpicker_Frame = Elements.Get_Color_Picker(Frame=Collor_Picker_window, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var)
+    Colorpicker_Frame = Elements.Get_Color_Picker(Frame=Collor_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
 
     #? Build look of Widget --> must be before inset
     Colorpicker_Frame.pack(padx=0, pady=0) 
@@ -765,7 +780,6 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
 def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
     Theme_Variable = StringVar(master=Frame, value=Theme_Actual)
     Win_Style_Variable = StringVar(master=Frame, value=Win_Style_Actual)
-    Accent_Color_Mode_Variable = StringVar(master=Frame, value=Accent_Color_Mode)
 
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="General Apperance", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="GEnerall apperance settings.")
@@ -783,6 +797,23 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     Win_Style_Frame_Var.configure(values=Win_Style_List, variable=Win_Style_Variable)
     Win_Style_Frame_Var.configure(command= lambda Win_Style_Selected: Apperance_Change_Win_Style(Win_Style_Selected=Win_Style_Selected, window=window))
 
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Theme_Frame.pack(side="top", padx=10, pady=(0,5))
+    Win_Style_Frame.pack(side="top", padx=10, pady=(0,5))
+
+    return Frame_Main
+
+
+
+def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
+    Accent_Color_Mode_Variable = StringVar(master=Frame, value=Accent_Color_Mode)
+    Hover_Color_Mode_Variable = StringVar(master=Frame, value=Hover_Color_Mode)
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Color palletes for charts.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
     # Field - Accent Color Mode
     Accent_Color_Mode_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Mode", Field_Type="Input_OptionMenu") 
     Accent_Color_Mode_Frame_Var = Accent_Color_Mode_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
@@ -794,31 +825,43 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual)
 
     # Button - Collor Picker
-    Button_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
-    Button_Color_Picker.configure(text="Color Picker", command = lambda:Apperance_Pick_Manual_Color(Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
-    Elements.Get_ToolTip(widget=Button_Color_Picker, message="Select manualy Accent collor.", ToolTip_Size="Normal")
+    Accent_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
+    Accent_Color_Picker.configure(text="Accent Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+    Elements.Get_ToolTip(widget=Accent_Color_Picker, message="Select manualy Accent collor.", ToolTip_Size="Normal")
 
-    # Disabling fields --> Download_Date_Range_Source
+    # Disabling fields --> Accent_Color_Mode_Variable
     Accent_Color_Mode_Frame_Var.configure(command = lambda a :Apperance_Accent_Color(Accent_Color_Mode_Variable=Accent_Color_Mode_Variable, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
 
+    # Field - Hover Color Mode
+    Hover_Color_Mode_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Mode", Field_Type="Input_OptionMenu") 
+    Hover_Color_Mode_Frame_Var = Hover_Color_Mode_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Hover_Color_Mode_Frame_Var.configure(values=Hover_Color_Mode_List, variable=Hover_Color_Mode_Variable)
+
+    # Field - Hover Color Manual
+    Hover_Color_Manual_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Manual", Field_Type="Input_Normal") 
+    Hover_Color_Manual_Frame_Var = Hover_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Hover_Color_Manual_Frame_Var.configure(placeholder_text=Hover_Color_Manual)
+
+    # Button - Collor Picker
+    Hover_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
+    Hover_Color_Picker.configure(text="Hover Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var))
+    Elements.Get_ToolTip(widget=Hover_Color_Picker, message="Select manualy Hover collor.", ToolTip_Size="Normal")
+
+    # Disabling fields --> Accent_Color_Mode_Variable
+    Hover_Color_Mode_Frame_Var.configure(command = lambda a :Apperance_Hover_Color(Hover_Color_Mode_Variable=Hover_Color_Mode_Variable, Hover_Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var))
+
+
+    #! Dodělat --> Hover Color settings
+    #! Dodělat --> nastavit defaultní BArevnou čkálu pro celý systém (příklad pro grafy)
+
     #? Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-    Theme_Frame.pack(side="top", padx=10, pady=(0,5))
-    Win_Style_Frame.pack(side="top", padx=10, pady=(0,5))
     Accent_Color_Mode_Frame.pack(side="top", padx=10, pady=(0,5))
     Accent_Color_Manual_Frame.pack(side="top", padx=10, pady=(0,5))
-    Button_Color_Picker.pack(side="right", padx=10, pady=(0,5))
+    Accent_Color_Picker.pack(side="right", padx=10, pady=(0,5))
 
-    return Frame_Main
-
-
-
-def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Color palletes for charts.")
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    #! Dodělat --> nastavit defaultní BArevnou čkálu pro celý systém (příklad pro grafy)
+    Hover_Color_Mode_Frame.pack(side="top", padx=10, pady=(0,5))
+    Hover_Color_Manual_Frame.pack(side="top", padx=10, pady=(0,5))
+    Hover_Color_Picker.pack(side="right", padx=10, pady=(0,5))
 
     return Frame_Main
     

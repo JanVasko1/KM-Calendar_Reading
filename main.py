@@ -59,7 +59,7 @@ def Show_Download_Page(Active_Window: CTkFrame) -> None:
     Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
     time.sleep(0.1)
     Page_Download(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=0, column=0, padx=(10, 2), pady=(210, 10), sticky="e")
+    Active_Window.grid(row=0, column=0, padx=(10, 2), pady=(280, 10), sticky="e")
     window.update_idletasks()
 
 def Show_Dashboard_Page(Active_Window: CTkFrame) -> None:
@@ -317,12 +317,12 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
-    Icon_Frame_Download.grid(row=0, column=1, padx=0, pady=(280, 10), sticky="")
-    Icon_Frame_Dashboard.grid(row=1, column=1, padx=0, pady=10, sticky="")
-    Icon_Frame_Data.grid(row=2, column=1, padx=0, pady=10, sticky="")
-    Icon_Frame_Information.grid(row=3, column=1, padx=0, pady=10, sticky="")
-    Icon_Frame_Settings.grid(row=4, column=1, padx=0, pady=10, sticky="")
-    Icon_Frame_Close.grid(row=5, column=1, padx=0, pady=10, sticky="")
+    Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(280, 10), sticky="w")
+    Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=10, sticky="w")
+    Icon_Frame_Data.grid(row=2, column=1, padx=(0, 10), pady=10, sticky="w")
+    Icon_Frame_Information.grid(row=3, column=1, padx=(0, 10), pady=10, sticky="w")
+    Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=10, sticky="w")
+    Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=10, sticky="w")
 
 
 
@@ -706,7 +706,7 @@ pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 # ---------------------------------- Main Page ----------------------------------#
 # Frames
 Frame_Side_Bar = Elements.Get_Frame(Frame=window, Frame_Size="SideBar")
-Frame_Side_Bar.grid_propagate(flag=False)
+
 Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
 Frame_Work_Area = Elements.Get_Frame(Frame=window, Frame_Size="Work_Area")

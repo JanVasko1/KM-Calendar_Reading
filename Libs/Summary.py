@@ -175,6 +175,7 @@ KM_WH_dict = {
     }
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
+#! Dodělat --> smazat fily před napočítáním --> aby se prostě po downloadu zobrazila správná a aktuální data
 def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime) -> None:
     #Update Events Dataframe
     Events["Personnel number"] = Personnel_number
@@ -187,6 +188,10 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Events["Duration_H"] = Events["Duration"].map(lambda x: round(x/60, 2))
     
     # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Events_Project.csv")
+
+    # Calculation
     Events_Project_GR = Events.loc[:, ["Project", "Duration_H"]]
     Events_Project_Sum = Events_Project_GR.groupby(["Project"]).sum()
     Events_Project_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
@@ -208,6 +213,10 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Events_Project_Concanet.to_csv(path_or_buf=f"Operational\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Activity ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Events_Activity.csv")
+
+    # Calculation
     Events_Activity_GR = Events.loc[:, ["Activity", "Duration_H"]]
     Events_Activity_Sum = Events_Activity_GR.groupby(["Activity"]).sum()
     Events_Activity_Sum.rename(columns={"Duration_H": "Total[H]"}, inplace=True)
@@ -230,6 +239,10 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
 
 
     # ---------------------------------------------------------------------------------- Weekday ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Events_WeekDays.csv")
+
+    # Calculation
     WeekDays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     Events_WeekDays = pandas.DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
     Events_WeekDays_GR = Events.loc[:, ["Start_Date", "Project", "Activity", "Duration_H"]]
@@ -325,6 +338,10 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Events_WeekDays.to_csv(path_or_buf=f"Operational\\Events_WeekDays.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Weeks ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Events_Weeks.csv")
+
+    # Calculation
     Events_Weeks_GR = Events.loc[:, ["Start_Date", "Project", "Duration_H"]]
     Events_Weeks_GR["Week"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_Week)
     Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_WeekDay)
@@ -380,6 +397,12 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Events_Weeks.to_csv(path_or_buf=f"Operational\\Events_Weeks.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Events_Totals.csv")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Utilization_Light.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Utilization_Dark.html")
+
+    # Calculation
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
     Event_counts = Events.shape[0]
@@ -420,12 +443,23 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Totals_df.to_csv(path_or_buf=f"Operational\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Project_Light.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Project_Dark.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Activity_Light.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Activity_Dark.html")
+
+    # Generate charts
     Charts.Gen_Chart_Project_Activity(Category="Project", theme="Dark", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events)
     Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events)
 
     # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Events.csv")
+
+    # Calculation
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]

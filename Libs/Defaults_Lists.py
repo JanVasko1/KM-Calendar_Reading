@@ -5,7 +5,6 @@ import json
 import os
 
 from CTkMessagebox import CTkMessagebox
-import winaccent
 
 def Load_Settings() -> dict:
     File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
@@ -68,15 +67,10 @@ def Information_Update_Settings(Area: str, Field: str, Information: int|str|list
     except Exception as Error:
         CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {Field}", icon="cancel", fade_in_duration=1)
 
-def Get_Accent_Collor(Accent_Color_Style: str, Accent_Color_Style_Manual: str) -> str:
-    if Accent_Color_Style == "System":
-        Accent_Color = winaccent.accent_normal
-    elif Accent_Color_Style == "Manual":
-        Accent_Color = Accent_Color_Style_Manual
-    elif Accent_Color_Style == "Original":
-        Accent_Color = ""
-    else:
-        Accent_Color = ""
-        CTkMessagebox(title="Error", message=f"Accent Color selected: {Accent_Color_Style}, which is not supported.", icon="cancel", fade_in_duration=1)
-    return Accent_Color
-        
+
+def Delete_File(file_path: str) -> None:
+    # Delete File before generation
+    try: 
+        os.remove(path=f"{file_path}")
+    except:
+        pass
