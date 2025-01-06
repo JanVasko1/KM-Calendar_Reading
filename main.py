@@ -679,9 +679,27 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
 #! ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 # ---------------------------------- Application window ----------------------------------#
-window = customtkinter.CTk()
-window.title("Time Sheet Downloader")
+class Win(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+        super().overrideredirect(True)
+        super().title("Time Sheet Downloader")
+        super().iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        self._offsetx = 0
+        self._offsety = 0
+        super().bind("<Button-1>" ,self.clickwin)
+        super().bind("<B1-Motion>", self.dragwin)
 
+    def dragwin(self,event):
+        x = super().winfo_pointerx() - self._offsetx
+        y = super().winfo_pointery() - self._offsety
+        super().geometry(f"+{x}+{y}")
+
+    def clickwin(self,event):
+        self._offsetx = super().winfo_pointerx() - super().winfo_rootx()
+        self._offsety = super().winfo_pointery() - super().winfo_rooty()
+
+window = Win()
 display_widht = window.winfo_screenwidth()
 display_height = window.winfo_screenheight()
 Window_Frame_width = 1800
@@ -694,10 +712,7 @@ window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{to
 window.config(background="#000001")
 window.attributes("-transparentcolor", "#000001")
 
-
-window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
 customtkinter.set_appearance_mode(mode_string=Theme_Actual)
-window.overrideredirect(boolean=True)
 pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
 # ---------------------------------- Content ----------------------------------#
