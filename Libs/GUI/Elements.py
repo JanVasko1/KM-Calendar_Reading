@@ -67,7 +67,7 @@ def Get_Font(Font_Size: str) -> CTkFont:
 
 # ---------------------------------------------- Text ----------------------------------------------# 
 def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
-    Configuration_Text_Main = Configuration["Texts"][f"{Label_Size}"]
+    Configuration_Text_Main = Configuration["Labels"][f"{Label_Size}"]
     Text_Main = CTkLabel(
         master = Frame,
         font = Get_Font(Font_Size=Font_Size),
@@ -81,7 +81,7 @@ def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
 
 def Get_Label_Icon(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str, Icon_Set: str, Icon_Name: str, Icon_Size: str,) -> CTkLabel:
     Frame_Label = Get_Label(Frame=Frame, Label_Size=Label_Size, Font_Size=Font_Size)
-    CTK_Image = Get_CTk_Image(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
+    CTK_Image = Get_CTk_Icon(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
     Frame_Label.configure(image=CTK_Image, text="", anchor="e")
     return Frame_Label
 
@@ -127,7 +127,7 @@ def Get_Button_Icon(Frame: CTk|CTkFrame, Icon_Set: str, Icon_Name: str, Icon_Siz
         hover_color = hover_color,
         anchor = Configuration_Button_Icon["anchor"],
         text = "")
-    CTK_Image = Get_CTk_Image(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
+    CTK_Image = Get_CTk_Icon(Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
     Frame_Button.configure(image=CTK_Image, text="")
     return Frame_Button
 
@@ -580,7 +580,7 @@ def Create_Icon(Icon_Set: str, Icon_Name: str, Icon_Size: str, Theme_index: int)
     Icon_PIL = Icon_Fact.asPil(Icon_Name)
     return Icon_PIL
 
-def Get_CTk_Image(Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
+def Get_CTk_Icon(Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
     Configuration_Icon = Configuration["Icons"][f"{Icon_Size}"]
     Icon_Size_px = Configuration_Icon["icon_size"]
     Picture = CTkImage(
@@ -589,12 +589,14 @@ def Get_CTk_Image(Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
         size = (Icon_Size_px, Icon_Size_px))
     return Picture
 
-def Get_Image(Name: str, postfix: str, width: int, heigh: int) -> CTkImage:
+def Get_Backgruond_Image(Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
     Picture = CTkImage(
-        light_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Name}_Light.{postfix}"),
-        dark_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Name}_Dark.{postfix}"),
+        light_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}"),
+        dark_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}"),
         size = (width, heigh))
-    return Picture
+    Background_Image_Label = Get_Label(Frame=Frame, Label_Size="Main", Font_Size="Main")
+    Background_Image_Label.configure(image=Picture, text="")
+    return Background_Image_Label
 
 # ---------------------------------------------- Progress Bar ----------------------------------------------# 
 def Get_ProgressBar(Frame: CTk|CTkFrame, orientation: str, Progress_Size: str) -> CTkProgressBar:

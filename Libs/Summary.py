@@ -205,7 +205,7 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
 
     # Summary line
     Project_Count_Sumary = Events_Project_Concanet["Count"].sum()
-    Project_TotalH_Sumary = Events_Project_Concanet["Total[H]"].sum()
+    Project_TotalH_Sumary = round(Events_Project_Concanet["Total[H]"].sum(), 2)
     Project_AverageH_Sumary = round(Project_TotalH_Sumary / Project_Count_Sumary, 2)
     Events_Project_Concanet.loc["Summary"] = [Project_Count_Sumary, Project_TotalH_Sumary, Project_AverageH_Sumary]
     Events_Project_Concanet["Count"] = Events_Project_Concanet["Count"].astype(int)
@@ -230,7 +230,7 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
 
     # Summary line
     Activity_Count_Sumary = Events_Activity_Concanet["Count"].sum()
-    Activity_TotalH_Sumary = Events_Activity_Concanet["Total[H]"].sum()
+    Activity_TotalH_Sumary = round(Events_Activity_Concanet["Total[H]"].sum(), 2)
     Activity_AverageH_Sumary = round(Activity_TotalH_Sumary / Activity_Count_Sumary, 2)
     Events_Activity_Concanet.loc["Summary"] = [Activity_Count_Sumary, Activity_TotalH_Sumary, Activity_AverageH_Sumary]
     Events_Activity_Concanet["Count"] = Events_Activity_Concanet["Count"].astype(int)

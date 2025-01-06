@@ -86,7 +86,7 @@
             "overstrike": false
         }
     },
-    "Texts": {
+    "Labels": {
         "Main": {
             "height": 36,
             "fg_color": "transparent",
@@ -422,17 +422,17 @@
             "SideBar": {
                 "width": 70,
                 "height": 900,
-                "corner_radius": 0,
+                "corner_radius": 10,
                 "border_width": 0, 
                 "border_color": [
                     "#f7f9f9",
                     "#2C2C2C"
                 ],
-                "bg_color": "transparent",
+                "bg_color": "#000001",
                 "fg_color": "Global_Accent_Color"
             },
             "SideBar_active": {
-                "width": 3,
+                "width": 5,
                 "height": 40,
                 "corner_radius": 10,
                 "border_width": 0, 
@@ -455,8 +455,11 @@
                     "#ecf0f1",
                     "#111219"
                 ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
+                "bg_color": "#000001",
+                "fg_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ]
             },
             "Work_Area_Header": {
                 "width": 1730,
@@ -467,8 +470,11 @@
                     "#f7f9f9",
                     "#2C2C2C"
                 ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
+                "bg_color": "#000001",
+                "fg_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ]
             },
             "Work_Area_Main": {
                 "width": 1730,
@@ -479,8 +485,11 @@
                     "#ecf0f1",
                     "#111219"
                 ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
+                "bg_color": "#000001",
+                "fg_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ]
             },
             "Work_Area_Status_Line": {
                 "width": 1730,
@@ -491,8 +500,11 @@
                     "#ecf0f1",
                     "#111219"
                 ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
+                "bg_color": "#000001",
+                "fg_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ]
             },
             "Work_Area_Detail": {
                 "width": 1730,
@@ -503,8 +515,11 @@
                     "#ecf0f1",
                     "#111219"
                 ],
-                "bg_color": "transparent",
-                "fg_color": "transparent"
+                "bg_color": "#000001",
+                "fg_color": [
+                    "#f7f9f9",
+                    "#2C2C2C"
+                ]
             }
         },
         "Widgets": {

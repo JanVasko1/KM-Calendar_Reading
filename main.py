@@ -244,40 +244,32 @@ def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Passwo
 #? ----------------------------------------------------- Pages ----------------------------------------------------- #
 # -------------------------------------------- Header -------------------------------------------- #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
-    # Frame Preparation
-    Frame_Header = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Header")
-    Frame_Header.pack_propagate(flag=False)
-
-    # ------------------------- Logo Area -------------------------#  
     # Theme Change - Button
-    Icon_Theme = Elements.Get_Button_Icon(Frame=Frame_Header, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Theme = Elements.Get_Button_Icon(Frame=Frame, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
     Icon_Theme.configure(text="")
     Icon_Theme.configure(command = lambda: Theme_Change())
     Elements.Get_ToolTip(widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
 
     # Account Mail
-    Frame_Account_Mail = Elements.Get_Label(Frame=Frame_Header, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_Account_Mail = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_Mail.configure(text=Account_Email)
     Frame_Account_Mail.pack_propagate(flag=False)
 
     # Account ID
-    Frame_Account_ID = Elements.Get_Label(Frame=Frame_Header, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_Account_ID = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_ID.configure(text=Account_ID)
     Frame_Account_ID.pack_propagate(flag=False)
 
     # Account Name
-    Frame_Account_Name = Elements.Get_Label(Frame=Frame_Header, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_Account_Name = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_Account_Name.configure(text=Account_Name)
     Frame_Account_Name.pack_propagate(flag=False)
 
     #? Build look of Widget
-    Frame_Header.pack(side="top", fill="x", expand=False)
     Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
-
-    return Frame_Header
 
 
 
@@ -571,7 +563,7 @@ def Page_Information(Frame: CTk|CTkFrame):
     #! Dodělat --> text ohledně projektu a linka na víc info na Githubu (nejlepší by bylo, kdyby to přímo přečetlo Readme.md)!!!
     Frame_Information_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
-    with open('README.md', 'r', encoding="UTF-8") as file:
+    with open("README.md", "r", encoding="UTF-8") as file:
         htmlmarkdown=markdown.markdown( file.read() )
     file.close()
 
@@ -686,7 +678,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
 
 #! ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-# main window
+# ---------------------------------- Application window ----------------------------------#
 window = customtkinter.CTk()
 window.title("Time Sheet Downloader")
 
@@ -698,29 +690,35 @@ left_position = int(display_widht // 2 - Window_Frame_width // 2)
 top_position = int(display_height // 2 - Window_Frame_height // 2)
 window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
 
+# Rounded corners 
+window.config(background="#000001")
+window.attributes("-transparentcolor", "#000001")
+
+
 window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
 customtkinter.set_appearance_mode(mode_string=Theme_Actual)
 window.overrideredirect(boolean=True)
 pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
-# ---------------------------------- Main Page ----------------------------------#
-# Frames
+# ---------------------------------- Content ----------------------------------#
+# SideBar
 Frame_Side_Bar = Elements.Get_Frame(Frame=window, Frame_Size="SideBar")
-
 Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
+# Work Area
 Frame_Work_Area = Elements.Get_Frame(Frame=window, Frame_Size="Work_Area")
 Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
-Frame_Header = Get_Header(Frame=Frame_Work_Area)
+Frame_Header = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Header")
+Frame_Header.pack_propagate(flag=False)
 Frame_Header.pack(side="top", fill="both", expand=False)
 
 Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
 Frame_Work_Area_Detail.pack_propagate(flag=False)
-Frame_Work_Area_Detail.pack(side="left", fill="both", expand=False)
+Frame_Work_Area_Detail.pack(side="left", fill="none", expand=False)
 
 Get_Side_Bar(Side_Bar_Frame=Frame_Side_Bar)
-
+Get_Header(Frame=Frame_Header)
 Page_Dashboard(Frame=Frame_Work_Area_Detail)
 
 # run
