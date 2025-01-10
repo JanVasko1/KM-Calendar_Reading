@@ -62,11 +62,11 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
 
     return Frame_Single_Body
 
-def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str) -> CTkFrame:
+def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
-    Frame_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Area.pack(side="top", fill="none", expand=True, padx=10, pady=(0,5))
 
     # Frame Label
     Frame_Label = Elements.Get_Widget_Field_Frame_Label(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
@@ -110,11 +110,28 @@ def Get_Single_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 
     return Frame_Area
 
+def Get_Widget_Button_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Buttons_count: int, Button_Size: str) -> CTkFrame:
+    # Build one line for one input field
+    Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
+    Frame_Area.pack_propagate(flag=False)
+    Frame_Area.pack(side="top", fill="none", expand=True, padx=10, pady=(0,5))
+
+    # Frame Value
+    Frame_Buttons = Elements.Get_Widget_Field_Frame_Value(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
+    Frame_Buttons.pack_propagate(flag=False)
+    Frame_Buttons.pack(side="right", fill="x", expand=True, padx=0, pady=0)
+
+    for Button in range(Buttons_count): 
+        Button_Normal = Elements.Get_Button(Frame=Frame_Buttons, Button_Size=Button_Size)
+        Button_Normal.pack(side="right", fill="none", expand=False, padx=(10,0))
+
+    return Frame_Area
+
 def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
-    Frame_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Area.pack(side="top", fill="none", expand=True, padx=10, pady=(0,5))
 
     # Frame Label
     Frame_Label = Elements.Get_Widget_Field_Frame_Label(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
@@ -184,14 +201,17 @@ def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: 
 
     return Frame_Area
 
-def Get_Table_Frame(Frame: CTk|CTkFrame, Table_Size: str, Table_Values: list, Table_Columns: int, Table_Rows: int) -> CTkScrollableFrame:
+def Get_Table_Frame(Frame: CTk|CTkFrame, Table_Size: str, Table_Values: list|None, Table_Columns: int, Table_Rows: int) -> CTkScrollableFrame:
     # Buld only one frame wich contain whole Table
     Frame_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame, Frame_Size=Table_Size)
     Frame_Scrolable_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     # Table
     Skip_List_Table = Elements.Get_Table(Frame=Frame_Scrolable_Area, Table_size=Table_Size, columns=Table_Columns, rows=Table_Rows)
-    Skip_List_Table.configure(values=Table_Values)
+    if Table_Values == None:
+        pass
+    else:
+        Skip_List_Table.configure(values=Table_Values)
     Skip_List_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Scrolable_Area

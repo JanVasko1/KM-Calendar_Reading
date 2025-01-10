@@ -10,6 +10,7 @@ from datetime import datetime
 import customtkinter
 from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkCheckBox
 from CTkMessagebox import CTkMessagebox
+from CTkTable import CTkTable
 
 import Libs.GUI.Widgets as Widgets
 import Libs.GUI.Elements_Groups as Elements_Groups
@@ -513,6 +514,30 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Data Page -------------------------------------------- #
 def Page_Data(Frame: CTk|CTkFrame):
+    global Info_current_page, Info_Table_Rows
+    Info_current_page = 0
+    Info_Table_Rows = 20
+
+    def change_left(Table: CTkTable, Current_Rows: CTkLabel) -> None:
+        global Info_current_page
+        if Info_current_page > Info_Table_Rows:
+            Info_current_page -= Info_Table_Rows
+            Table.update_values(Events_List[Info_current_page - Info_Table_Rows : Info_current_page])
+            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page}")
+            window.update_idletasks()
+        else:
+            pass
+
+    def change_right(Table: CTkTable, Current_Rows: CTkLabel, Events_list_len: int) -> None:
+        global Info_current_page
+        if Info_current_page < Events_list_len:
+            Info_current_page += Info_Table_Rows
+            Table.update_values(Events_List[Info_current_page - Info_Table_Rows : Info_current_page])
+            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page}")
+            window.update_idletasks()
+        else:
+            pass
+
     # Divide Working Page into 2 parts
     Frame_Data_Button_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
@@ -533,14 +558,30 @@ def Page_Data(Frame: CTk|CTkFrame):
     Elements.Get_ToolTip(widget=Button_Excel, message="Show generated Excel file.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
+    # Current Page text
+    Page_text = Elements.Get_Label(Frame=Frame_Data_Work_Detail_Area, Label_Size="Main", Font_Size="Main")
+
     # Data table
     Events_List = [["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     for row in Events.iterrows():
         Events_List.append(row[1].to_list())
+    Events_list_len = len(Events_List)
 
-    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Size="Triple_size", Table_Values=Events_List, Table_Columns=8, Table_Rows=len(Events_List))
+    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Values=None, Table_Size="Triple_size", Table_Columns=8, Table_Rows=Info_Table_Rows)
     Frame_Events_Table_Var = Frame_Events_Table.children["!ctktable"]
     Frame_Events_Table_Var.configure(wraplength=180)
+    # Init values in table
+    change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len)
+
+    # Pre Button
+    Button_Pre = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Normal")
+    Button_Pre.configure(text="<", command = lambda: change_left(Table=Frame_Events_Table_Var, Current_Rows=Page_text))
+    Elements.Get_ToolTip(widget=Button_Pre, message="Previous page", ToolTip_Size="Normal")
+
+    # next Button
+    Button_Next = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Normal")
+    Button_Next.configure(text=">", command = lambda: change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
+    Elements.Get_ToolTip(widget=Button_Next, message="Next page", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
@@ -550,6 +591,9 @@ def Page_Data(Frame: CTk|CTkFrame):
     Button_Excel.grid(row=0, column=1, padx=5, pady=15, sticky="e")
 
     Frame_Events_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+    Button_Pre.pack(side="left", expand=True, pady=10)
+    Page_text.pack(side="left", expand=True, pady=10)
+    Button_Next.pack(side="right", expand=True, pady=10)
 
 
 

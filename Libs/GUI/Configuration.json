@@ -16,16 +16,15 @@
                 "light", 
                 "normal"
             ],
-            "Theme": "System",
+            "Theme": "Dark",
             "Theme_List": [
-                "System",
                 "Dark",
                 "Light"
             ],
             "Colors": {
                 "Accent": {
                     "Accent_Color_Mode": "System",
-                    "Accent_Color_Manual": "#00A9FF",
+                    "Accent_Color_Manual": "#e6960f",
                     "Accent_Color_List": [
                         "System",
                         "Manual",
@@ -33,9 +32,10 @@
                     ]
                 },
                 "Hover": {
-                    "Hover_Color_Mode": "Widget",
-                    "Hover_Color_Manual": "#00A9FF",
+                    "Hover_Color_Mode": "System",
+                    "Hover_Color_Manual": "#e6960f",
                     "Hover_Color_List": [
+                        "System",
                         "Manual",
                         "Widget"
                     ]
@@ -173,10 +173,7 @@
             "bg_color": "transparent",
             "fg_color": "Global_Accent_Color",
             "hover": true,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center",
             "text_color": [
                 "#2C2C2C",
@@ -195,10 +192,7 @@
             "bg_color": "transparent",
             "fg_color": "Global_Accent_Color",
             "hover": true,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center",
             "text_color": [
                 "#2C2C2C",
@@ -214,10 +208,7 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": true,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center"
         },
         "Picture_Active_SideBar": {
@@ -229,10 +220,7 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": false,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center"
         },
         "Picture_Logo": {
@@ -244,10 +232,7 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": false,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center"
         },
         "Picture_Theme": {
@@ -259,10 +244,7 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": false,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center"
         },
         "Chart_Button": {
@@ -274,10 +256,7 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": true,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "anchor": "center",
             "text_color": [
                 "#2C2C2C",
@@ -343,18 +322,12 @@
                 "corner_radius": 1000,
                 "border_width_unchecked": 3,
                 "border_width_checked": 6,
-                "fg_color": [
-                    "#00A9FF",
-                    "#00A9FF"
-                ],
+                "fg_color": "Global_Accent_Color",
                 "border_color": [
                     "#D0D0D0",
                     "#111219"
                 ],
-                "hover_color": [
-                    "#00A9FF",
-                    "#00A9FF"
-                ],
+                "hover_color": "Global_Hover_Color",
                 "hover": true
             }
         },
@@ -373,10 +346,7 @@
                         "#00A9FF",
                         "#00A9FF"
                     ],
-                    "button_hover_color": [
-                        "#00A9FF",
-                        "#00A9FF"
-                    ],
+                    "button_hover_color": "Global_Hover_Color",
                     "text_color": [
                         "#2C2C2C",
                         "#FFFFFF"
@@ -389,10 +359,7 @@
                         "#D0D0D0",
                         "#2C2C2C"
                     ],
-                    "dropdown_hover_color": [
-                        "#00A9FF",
-                        "#00A9FF"
-                    ],
+                    "dropdown_hover_color": "Global_Hover_Color",
                     "dropdown_text_color": [
                         "#2C2C2C",
                         "#FFFFFF"
@@ -404,7 +371,7 @@
             },
             "AdvancedCTk": {
                 "Normal": {
-                    "width": 250,
+                    "width": 300,
                     "height": 200,
                     "image_values": [],
                     "fg_color": [
@@ -412,13 +379,10 @@
                         "#2C2C2C"
                     ],
                     "button_color": [
-                        "#D0D0D0",
+                        "#FFFFFF",
                         "#111219"
                     ],
-                    "hover_color": [
-                        "#00A9FF",
-                        "#00A9FF"
-                    ],
+                    "hover_color": "Global_Hover_Color",
                     "button_height": 28,
                     "justify": "center",
                     "frame_corner_radius": 6,
@@ -432,10 +396,7 @@
                         "#2C2C2C",
                         "#FFFFFF"
                     ],
-                    "scrollbar_button_hover_color": [
-                        "#00A9FF",
-                        "#00A9FF"
-                    ],
+                    "scrollbar_button_hover_color": "Global_Hover_Color",
                     "resize": true,
                     "text_color": [
                         "#2C2C2C",
@@ -455,14 +416,8 @@
                 "corner_radius": 10,
                 "border_width": 3,
                 "bg_color": "transparent",
-                "fg_color": [
-                    "#00A9FF",
-                    "#00A9FF"
-                ],
-                "hover_color": [
-                    "#00A9FF",
-                    "#00A9FF"
-                ],
+                "fg_color": "Global_Accent_Color",
+                "hover_color": "Global_Hover_Color",
                 "border_color": [
                     "#D0D0D0",
                     "#111219"
@@ -519,8 +474,8 @@
                 ],
                 "bg_color": "transparent",
                 "fg_color": [
-                    "#00A9FF",
-                    "#00A9FF"
+                    "#FFFFFF",
+                    "#FFFFFF"
                 ]
             },
             "Work_Area": {
@@ -711,10 +666,7 @@
                             "#2C2C2C",
                             "#FFFFFF"
                         ],
-                        "scrollbar_button_hover_color": [
-                            "#00A9FF",
-                            "#00A9FF"
-                        ]
+                        "scrollbar_button_hover_color": "Global_Hover_Color"
                     },
                     "Double_size": {
                         "width": 1000,
@@ -732,10 +684,7 @@
                             "#2C2C2C",
                             "#FFFFFF"
                         ],
-                        "scrollbar_button_hover_color": [
-                            "#00A9FF",
-                            "#00A9FF"
-                        ]
+                        "scrollbar_button_hover_color": "Global_Hover_Color"
                     },
                     "Triple_size": {
                         "width": 1600,
@@ -753,10 +702,7 @@
                             "#2C2C2C",
                             "#FFFFFF"
                         ],
-                        "scrollbar_button_hover_color": [
-                            "#00A9FF",
-                            "#00A9FF"
-                        ]
+                        "scrollbar_button_hover_color": "Global_Hover_Color"
                     }
                 }
             },
@@ -1025,10 +971,7 @@
                                 "#2C2C2C",
                                 "#FFFFFF"
                             ],
-                            "scrollbar_button_hover_color": [
-                                "#00A9FF",
-                                "#00A9FF"
-                            ]
+                            "scrollbar_button_hover_color": "Global_Hover_Color"
                         },
                         "Header": {
                             "width": 558,
@@ -1118,10 +1061,7 @@
                                 "#2C2C2C",
                                 "#FFFFFF"
                             ],
-                            "scrollbar_button_hover_color": [
-                                "#00A9FF",
-                                "#00A9FF"
-                            ]
+                            "scrollbar_button_hover_color": "Global_Hover_Color"
                         },
                         "Header": {
                             "width": 783,
@@ -1178,10 +1118,7 @@
                                 "#2C2C2C",
                                 "#FFFFFF"
                             ],
-                            "scrollbar_button_hover_color": [
-                                "#00A9FF",
-                                "#00A9FF"
-                            ]
+                            "scrollbar_button_hover_color": "Global_Hover_Color"
                         },
                         "Header": {
                             "width": 1643,
@@ -1223,18 +1160,12 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "segmented_button_selected_hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "segmented_button_selected_hover_color": "Global_Hover_Color",
             "segmented_button_unselected_color": [
                 "#f7f9f9",
                 "#2C2C2C"
             ],
-            "segmented_button_unselected_hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "segmented_button_unselected_hover_color": "Global_Hover_Color",
             "text_color": [
                 "#2C2C2C",
                 "#FFFFFF"
@@ -1262,10 +1193,7 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "wraplength": 1000,
             "justify": "center",
             "anchor": "c"
@@ -1285,10 +1213,7 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "wraplength": 200,
             "justify": "center",
             "anchor": "l"
@@ -1308,10 +1233,7 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "wraplength": 1000,
             "justify": "center",
             "anchor": "l"
@@ -1331,10 +1253,7 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "wraplength": 120,
             "justify": "center",
             "anchor": "l"
@@ -1354,10 +1273,7 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "wraplength": 110,
             "justify": "center",
             "anchor": "l"
@@ -1377,10 +1293,7 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "hover_color": "Global_Hover_Color",
             "wraplength": 95,
             "justify": "center",
             "anchor": "l"
@@ -1430,10 +1343,7 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "button_hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "button_hover_color": "Global_Hover_Color",
             "button_text_color": [
                 "#2C2C2C",
                 "#FFFFFF"
@@ -1465,10 +1375,7 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "button_hover_color": [
-                "#00A9FF",
-                "#00A9FF"
-            ],
+            "button_hover_color": "Global_Hover_Color",
             "button_text_color": [
                 "#2C2C2C",
                 "#FFFFFF"
@@ -1496,7 +1403,7 @@
         "initial_color": "",
         "fg_color": "#2C2C2C",
         "slider_border": 1,
-        "corner_radius": 25,
+        "corner_radius": 10,
         "orientation": "vertical"
     },
     "Icons": {
@@ -1522,7 +1429,7 @@
             "icon_size": 30,
             "font_size": 30,
             "font_color": [
-                "#2C2C2C",
+                "#FFFFFF",
                 "#FFFFFF"
             ],
             "outline_width": 0,

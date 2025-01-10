@@ -12,7 +12,6 @@ import customtkinter
 from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, CTkToplevel, CTkOptionMenu
 from CTkTable import CTkTable
 from CTkMessagebox import CTkMessagebox
-from Libs.GUI.CTk.ctk_scrollable_dropdown import *
 
 from CTkColorPicker import *
 
@@ -177,6 +176,7 @@ def Apperance_Hover_Color(Hover_Color_Mode_Variable: StringVar, Hover_Color_Manu
 
 def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry) -> None:
     Collor_Picker_window = CTkToplevel()
+    Collor_Picker_window.configure(fg_color="#000001")
     Collor_Picker_window.title("Collor Picker")
     Collor_Picker_window.geometry("295x240")
     Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Collor_Picker_window.destroy())
@@ -184,6 +184,11 @@ def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry) -> None:
     Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
     Collor_Picker_window.resizable(width=False, height=False)
     Collor_Picker_window.attributes('-topmost', True)
+
+    # Rounded corners 
+    Collor_Picker_window.config(background="#000001")
+    Collor_Picker_window.attributes("-transparentcolor", "#000001")
+
     pywinstyles.apply_style(window=Collor_Picker_window, style=Win_Style_Actual)
     customtkinter.set_appearance_mode(mode_string=Theme_Actual)
 
@@ -210,7 +215,7 @@ def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_O
                 break
     except:
         Activity_List = [""]
-    Activity_Option_Var.configure(values=Activity_List)
+    Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var, values=Activity_List)
 
 def Add_Skip_Event() -> None:
     print("Add_Skip_Event")
@@ -239,7 +244,7 @@ def Del_Empty_Event_One() -> None:
     pass
 
 def Del_Empty_Event_All() -> None:
-    print("Del_Empty_All_Event")
+    print("Del_Empty_Event_All")
     #! Dodělat --> vymazat z tabulky a uložit do Json
     pass
 
@@ -332,43 +337,37 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Sharepoint = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Sharepoint = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Sharepoint_Radio_Var = Use_Sharepoint.children["!ctkframe3"].children["!ctkradiobutton"]
     Use_Sharepoint_Radio_Var.configure(text="", variable=Download_Date_Range_Source, value="Sharepoint")
 
     # Field - User ID
-    User_ID = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
+    User_ID = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
     User_ID_Text_Var = User_ID.children["!ctkframe3"].children["!ctkentry"]
     User_ID_Text_Var.configure(placeholder_text=SP_Person_ID)
     User_ID_Text_Var.configure(state="disabled")
 
     # Field - User Email
-    Email = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
     Email_Text_Var.configure(placeholder_text=SP_Auth_Email)
     Email_Text_Var.configure(state="disabled")
 
     # Field - Password
-    Password = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    Password = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
 
     # Field - Get whole report Period
-    Whole_Period_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Whole report period", Field_Type="Input_CheckBox") 
+    Whole_Period_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Whole report period", Field_Type="Input_CheckBox") 
     Whole_Period_Frame_Var = Whole_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Whole_Period_Frame_Var.configure(text="")
 
     # Field - Maximal Today date
-    Max_Today_Date_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="End Date max Today", Field_Type="Input_CheckBox") 
+    Max_Today_Date_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="End Date max Today", Field_Type="Input_CheckBox") 
     Max_Today_Date_Frame_Var = Max_Today_Date_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Max_Today_Date_Frame_Var.configure(text="")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Use_Sharepoint.pack(side="top", padx=10, pady=(0,5))
-    User_ID.pack(side="top", padx=10, pady=(0,5))
-    Email.pack(side="top", padx=10, pady=(0,5))
-    Password.pack(side="top", padx=10, pady=(0,5))
-    Whole_Period_Frame.pack(side="top", padx=10, pady=(0,5))
-    Max_Today_Date_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -380,25 +379,22 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Manual = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Manual = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Manual_Radio_Var = Use_Manual.children["!ctkframe3"].children["!ctkradiobutton"]
     Use_Manual_Radio_Var.configure(text="", variable=Download_Date_Range_Source, value="Manual")
 
     # Field - User ID
-    Date_From = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From / T", Field_Type="Input_Normal") 
+    Date_From = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From / T", Field_Type="Input_Normal") 
     Date_From_Text_Var = Date_From.children["!ctkframe3"].children["!ctkentry"]
     Date_From_Text_Var.configure(placeholder_text="Date From")
 
     # Field - User Email
-    Date_To = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To / T", Field_Type="Input_Normal")
+    Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To / T", Field_Type="Input_Normal")
     Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
     Date_To_Text_Var.configure(placeholder_text="Date To")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Use_Manual.pack(side="top", padx=10, pady=(0,5))
-    Date_From.pack(side="top", padx=10, pady=(0,5))
-    Date_To.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -410,24 +406,21 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> C
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Exchange = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Exchange = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Exchange_Radio_Var = Use_Exchange.children["!ctkframe3"].children["!ctkradiobutton"]
     Use_Exchange_Radio_Var.configure(text="", variable=Download_Data_Source, value="Exchange")
 
     # Field - User ID
-    Email = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
     Email_Text_Var.configure(placeholder_text=Outlook_Email)
     Email_Text_Var.configure(state="disabled")
 
     # Field - Password
-    Password = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    Password = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Use_Exchange.pack(side="top", padx=10, pady=(0,5))
-    Email.pack(side="top", padx=10, pady=(0,5))
-    Password.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -439,20 +432,18 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Outlook = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Outlook = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
     Use_Outlook_Radio_Var = Use_Outlook.children["!ctkframe3"].children["!ctkradiobutton"]
     Use_Outlook_Radio_Var.configure(text="", variable=Download_Data_Source, value="Outlook_Client")
 
     # Field - User ID
-    Email = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
     Email_Text_Var.configure(placeholder_text=Outlook_Email)
     Email_Text_Var.configure(state="disabled")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Use_Outlook.pack(side="top", padx=10, pady=(0,5))
-    Email.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -793,9 +784,9 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
 
     #? Build look of Widget
     Frame_Whole.pack(side="top", padx=15, pady=15)
-    Button_Show_Utilization.pack(side="right", padx=10, pady=(0,5))
-    Button_Show_Activities.pack(side="right", padx=10, pady=(0,5))
-    Button_Show_Projects.pack(side="right", padx=10, pady=(0,5))
+    Button_Show_Utilization.pack(side="right")
+    Button_Show_Activities.pack(side="right")
+    Button_Show_Projects.pack(side="right")
     
     return Frame_Whole
 
@@ -814,14 +805,14 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Theme
-    Theme_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Theme", Field_Type="Input_OptionMenu") 
+    Theme_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Theme", Field_Type="Input_OptionMenu") 
     Theme_Frame_Var = Theme_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Theme_Frame_Var.configure( variable=Theme_Variable)
     Elements.Get_Option_Menu_Advance(attach=Theme_Frame_Var, values=Theme_List)
     Theme_Frame_Var.configure(command= lambda Theme_Selected: Apperance_Change_Theme(Theme_Selected=Theme_Selected))
 
     # Field - Windows Style
-    Win_Style_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Window Style", Field_Type="Input_OptionMenu") 
+    Win_Style_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Window Style", Field_Type="Input_OptionMenu") 
     Win_Style_Frame_Var = Win_Style_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Win_Style_Frame_Var.configure(variable=Win_Style_Variable)
     Win_Style_Frame_Var_adv = Elements.Get_Option_Menu_Advance(attach=Win_Style_Frame_Var, values=Win_Style_List)
@@ -829,8 +820,6 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Theme_Frame.pack(side="top", padx=10, pady=(0,5))
-    Win_Style_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -841,43 +830,45 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     Hover_Color_Mode_Variable = StringVar(master=Frame, value=Hover_Color_Mode)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Color palletes for charts.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="Applied after restart.", Widget_size="Single_size", Widget_Label_Tooltip="Colors")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Accent Color Mode
-    Accent_Color_Mode_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Mode", Field_Type="Input_OptionMenu") 
+    Accent_Color_Mode_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Mode", Field_Type="Input_OptionMenu") 
     Accent_Color_Mode_Frame_Var = Accent_Color_Mode_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Accent_Color_Mode_Frame_Var.configure(variable=Accent_Color_Mode_Variable)
     Elements.Get_Option_Menu_Advance(attach=Accent_Color_Mode_Frame_Var, values=Accent_Color_Mode_List)
 
     # Field - Accent Color Manual
-    Accent_Color_Manual_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Manual", Field_Type="Input_Normal") 
+    Accent_Color_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Manual", Field_Type="Input_Normal") 
     Accent_Color_Manual_Frame_Var = Accent_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
     Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual)
 
     # Button - Collor Picker
-    Accent_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
-    Accent_Color_Picker.configure(text="Accent Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
-    Elements.Get_ToolTip(widget=Accent_Color_Picker, message="Select manualy Accent collor.", ToolTip_Size="Normal")
+    Accent_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
+    Accent_Color_Picker_Button_Var = Accent_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
+    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+    Elements.Get_ToolTip(widget=Accent_Color_Picker_Button_Var, message="Select manualy Accent collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
     Accent_Color_Mode_Frame_Var.configure(command = lambda a :Apperance_Accent_Color(Accent_Color_Mode_Variable=Accent_Color_Mode_Variable, Accent_Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
 
     # Field - Hover Color Mode
-    Hover_Color_Mode_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Mode", Field_Type="Input_OptionMenu") 
+    Hover_Color_Mode_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Mode", Field_Type="Input_OptionMenu") 
     Hover_Color_Mode_Frame_Var = Hover_Color_Mode_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Hover_Color_Mode_Frame_Var.configure(variable=Hover_Color_Mode_Variable)
     Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List)
 
     # Field - Hover Color Manual
-    Hover_Color_Manual_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Manual", Field_Type="Input_Normal") 
+    Hover_Color_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Manual", Field_Type="Input_Normal") 
     Hover_Color_Manual_Frame_Var = Hover_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
     Hover_Color_Manual_Frame_Var.configure(placeholder_text=Hover_Color_Manual)
 
     # Button - Collor Picker
-    Hover_Color_Picker = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
-    Hover_Color_Picker.configure(text="Hover Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var))
-    Elements.Get_ToolTip(widget=Hover_Color_Picker, message="Select manualy Hover collor.", ToolTip_Size="Normal")
+    Hover_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
+    Hover_Color_Picker_Button_Var = Hover_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
+    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var))
+    Elements.Get_ToolTip(widget=Hover_Color_Picker_Button_Var, message="Select manualy Hover collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
     Hover_Color_Mode_Frame_Var.configure(command = lambda a :Apperance_Hover_Color(Hover_Color_Mode_Variable=Hover_Color_Mode_Variable, Hover_Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var))
@@ -887,13 +878,7 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     #! Dodělat --> nastavit defaultní BArevnou škálu pro celý systém (příklad pro grafy)
 
     #? Build look of Widget
-    Accent_Color_Mode_Frame.pack(side="top", padx=10, pady=(0,5))
-    Accent_Color_Manual_Frame.pack(side="top", padx=10, pady=(0,5))
-    Accent_Color_Picker.pack(side="right", padx=10, pady=(0,5))
-
-    Hover_Color_Mode_Frame.pack(side="top", padx=10, pady=(0,5))
-    Hover_Color_Manual_Frame.pack(side="top", padx=10, pady=(0,5))
-    Hover_Color_Picker.pack(side="right", padx=10, pady=(0,5))
+    Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
     
@@ -906,45 +891,39 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Name
-    SP_Name_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
+    SP_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
     SP_Name_Frame_Var = SP_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Name_Frame_Var.configure(placeholder_text=SP_Person_Name)
 
     # Field - User ID
-    SP_User_ID_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
+    SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
     SP_User_ID_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_User_ID_Frame_Var.configure(placeholder_text=SP_Person_ID)
 
     # Field - Path to Sharepoint
-    SP_Link_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoin Address", Field_Type="Input_Normal")
+    SP_Link_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoin Address", Field_Type="Input_Normal")
     SP_Link_Frame_Var = SP_Link_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Link_Frame_Var.configure(placeholder_text=SP_Link)
 
     # Field - File Name 
-    SP_File_Name_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="File Name", Field_Type="Input_Normal")
+    SP_File_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="File Name", Field_Type="Input_Normal")
     SP_File_Name_Frame_Var = SP_File_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_File_Name_Frame_Var.configure(placeholder_text=SP_File_Name)
     SP_File_Name_Frame_Var.configure(state="disabled")
 
     # Field - Auth Email
-    SP_Auth_Email_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
+    SP_Auth_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
     SP_Auth_Email_Frame_Var = SP_Auth_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Auth_Email_Frame_Var.configure(placeholder_text=SP_Auth_Email)
 
     # Field - Auth Address
-    SP_Auth_Address_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Address", Field_Type="Input_Normal")
+    SP_Auth_Address_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Address", Field_Type="Input_Normal")
     SP_Auth_Address_Frame_Var = SP_Auth_Address_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Auth_Address_Frame_Var.configure(placeholder_text=SP_Auth_Address)
     SP_Auth_Address_Frame_Var.configure(state="disabled")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    SP_Name_Frame.pack(side="top", padx=10, pady=(0,5))
-    SP_User_ID_Frame.pack(side="top", padx=10, pady=(0,5))
-    SP_Link_Frame.pack(side="top", padx=10, pady=(0,5))
-    SP_File_Name_Frame.pack(side="top", padx=10, pady=(0,5))
-    SP_Auth_Email_Frame.pack(side="top", padx=10, pady=(0,5))
-    SP_Auth_Address_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -956,35 +935,31 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Name
-    EX_Client_ID_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client ID", Field_Type="Input_Normal") 
+    EX_Client_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client ID", Field_Type="Input_Normal") 
     EX_Client_ID_Frame_Var = EX_Client_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     EX_Client_ID_Frame_Var.configure(placeholder_text=client_id)
     EX_Client_ID_Frame_Var.configure(state="disabled")
 
     # Field - User ID
-    Ex_Client_Secret_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client Secret", Field_Type="Input_Normal")
+    Ex_Client_Secret_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client Secret", Field_Type="Input_Normal")
     Ex_Client_Secret_Frame_Var = Ex_Client_Secret_Frame.children["!ctkframe3"].children["!ctkentry"]
     Ex_Client_Secret_Frame_Var.configure(placeholder_text=client_secret)
     Ex_Client_Secret_Frame_Var.configure(state="disabled")
 
     # Field - Path to Sharepoint
-    EX_Tenant_ID_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Tenant ID", Field_Type="Input_Normal")
+    EX_Tenant_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Tenant ID", Field_Type="Input_Normal")
     EX_Tenant_ID_Frame_Var = EX_Tenant_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     EX_Tenant_ID_Frame_Var.configure(placeholder_text=tenant_id)
     EX_Tenant_ID_Frame_Var.configure(state="disabled")
 
     # Update Secret ID Button
-    Button_Update_Secret = Elements.Get_Button(Frame=Frame_Body, Button_Size="Small")
-    Button_Update_Secret.configure(text="Re-new Secret", command = lambda:Exchange_ReNew_Secret())
-    Elements.Get_ToolTip(widget=Button_Update_Secret, message="Update Secret ID.", ToolTip_Size="Normal")
+    Button_Update_Secret = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
+    Button_Update_Secret_Var = Button_Update_Secret.children["!ctkframe"].children["!ctkbutton"]
+    Button_Update_Secret_Var.configure(text="Re-new Secret", command = lambda:Exchange_ReNew_Secret())
+    Elements.Get_ToolTip(widget=Button_Update_Secret_Var, message="Update Secret ID.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    EX_Client_ID_Frame.pack(side="top", padx=10, pady=(0,5))
-    Ex_Client_Secret_Frame.pack(side="top", padx=10, pady=(0,5))
-    EX_Tenant_ID_Frame.pack(side="top", padx=10, pady=(0,5))
-    Button_Update_Secret.pack(side="right", padx=10, pady=(0,5))
-
 
     return Frame_Main
 
@@ -996,13 +971,12 @@ def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Name
-    Outlook_Email_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal") 
+    Outlook_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal") 
     Outlook_Email_Frame_Var = Outlook_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
     Outlook_Email_Frame_Var.configure(placeholder_text=Outlook_Email)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Outlook_Email_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1014,28 +988,25 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Name
-    Date_From = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date", Field_Type="Input_Normal") 
+    Date_From = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date", Field_Type="Input_Normal") 
     Date_From_Text_Var = Date_From.children["!ctkframe3"].children["!ctkentry"]
     Date_From_Text_Var.configure(placeholder_text=Format_Date)
     Date_From_Text_Var.configure(state="disabled")
 
     # Field - User ID
-    Date_To = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Time", Field_Type="Input_Normal")
+    Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Time", Field_Type="Input_Normal")
     Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
     Date_To_Text_Var.configure(placeholder_text=Format_Time)
     Date_To_Text_Var.configure(state="disabled")
 
     # Field - Email
-    Date_To = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
+    Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
     Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
     Date_To_Text_Var.configure(placeholder_text=Format_SP_DateTime)
     Date_To_Text_Var.configure(state="disabled")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Date_From.pack(side="top", padx=10, pady=(0,5))
-    Date_To.pack(side="top", padx=10, pady=(0,5))
-    Date_To.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1050,21 +1021,19 @@ def Settings_Parralel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Divide Method
-    Divide_Method_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Divide Method", Field_Type="Input_OptionMenu") 
+    Divide_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Divide Method", Field_Type="Input_OptionMenu") 
     Divide_Method_Frame_Var = Divide_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Divide_Method_Frame_Var.configure(variable=Divide_Method_Variable)
     Elements.Get_Option_Menu_Advance(attach=Divide_Method_Frame_Var, values=Divide_Method_List)
 
     # Field - Start Method
-    Start_Method_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Start Method", Field_Type="Input_OptionMenu") 
+    Start_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Start Method", Field_Type="Input_OptionMenu") 
     Start_Method_Frame_Var = Start_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Start_Method_Frame_Var.configure(variable=Start_Method_Variable)
     Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Divide_Method_Frame.pack(side="top", padx=10, pady=(0,5))
-    Start_Method_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1082,42 +1051,37 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Join Free Events
-    Join_Free_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Free", Field_Type="Input_OptionMenu") 
+    Join_Free_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Free", Field_Type="Input_OptionMenu") 
     Join_Free_Frame_Var = Join_Free_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Free_Frame_Var.configure(variable=Join_Free_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Free_Frame_Var, values=Join_Methods_List)
 
     # Field - Join Tentative Events
-    Join_Tentative_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Tentative", Field_Type="Input_OptionMenu") 
+    Join_Tentative_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Tentative", Field_Type="Input_OptionMenu") 
     Join_Tentative_Frame_Var = Join_Tentative_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Tentative_Frame_Var.configure(variable=Join_Tentative_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Tentative_Frame_Var, values=Join_Methods_List)
 
     # Field - Join Busy Events
-    Join_Busy_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Busy", Field_Type="Input_OptionMenu") 
+    Join_Busy_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Busy", Field_Type="Input_OptionMenu") 
     Join_Busy_Frame_Var = Join_Busy_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Busy_Frame_Var.configure(variable=Join_Busy_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Busy_Frame_Var, values=Join_Methods_List)
 
     # Field - Join Out of Office Events
-    Join_OutOfOffice_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Out of Office", Field_Type="Input_OptionMenu") 
+    Join_OutOfOffice_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Out of Office", Field_Type="Input_OptionMenu") 
     Join_OutOfOffice_Frame_Var = Join_OutOfOffice_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_OutOfOffice_Frame_Var.configure(variable=Join_OutOfOffice_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_OutOfOffice_Frame_Var, values=Join_Methods_List)
 
     # Field - Join Working ElseWhere Events
-    Join_Work_ElseWhere_Frame = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Working ElseWhere", Field_Type="Input_OptionMenu") 
+    Join_Work_ElseWhere_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Working ElseWhere", Field_Type="Input_OptionMenu") 
     Join_Work_ElseWhere_Frame_Var = Join_Work_ElseWhere_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Work_ElseWhere_Frame_Var.configure(variable=Join_Work_Else_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Work_ElseWhere_Frame_Var, values=Join_Methods_List)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Join_Free_Frame.pack(side="top", padx=10, pady=(0,5))
-    Join_Tentative_Frame.pack(side="top", padx=10, pady=(0,5))
-    Join_Busy_Frame.pack(side="top", padx=10, pady=(0,5))
-    Join_OutOfOffice_Frame.pack(side="top", padx=10, pady=(0,5))
-    Join_Work_ElseWhere_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1180,13 +1144,6 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Monday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Tuesday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Wednesday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Thursday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Friday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Saturday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Sunday_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1248,13 +1205,6 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Monday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Tuesday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Wednesday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Thursday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Friday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Saturday_Frame.pack(side="top", padx=10, pady=(0,5))
-    Sunday_Frame.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1266,19 +1216,17 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Work - Start
-    Start_Event = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - Start", Field_Type="Input_Normal") 
+    Start_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - Start", Field_Type="Input_Normal") 
     Start_Event_Var = Start_Event.children["!ctkframe3"].children["!ctkentry"]
     Start_Event_Var.configure(placeholder_text=Start_Event_json)
 
     # Field - Work - End
-    End_Event = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - End", Field_Type="Input_Normal") 
+    End_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - End", Field_Type="Input_Normal") 
     End_Event_Var = End_Event.children["!ctkframe3"].children["!ctkentry"]
     End_Event_Var.configure(placeholder_text=End_Event_json)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Start_Event.pack(side="top", padx=10, pady=(0,5))
-    End_Event.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1294,27 +1242,24 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Seach Text
-    Search_Text_Lunch = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Lunch_Var = Search_Text_Lunch.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_Lunch_Var.configure(placeholder_text=Lunch_Search_Text)
 
     # Field - All Day
-    All_Day_Lunch = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     All_Day_Lunch_Var = All_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
     All_Day_Lunch_Var.configure(variable=Lunch_All_Variable)
     Elements.Get_Option_Menu_Advance(attach=All_Day_Lunch_Var, values=Lunch_Day_Option_List)
 
     # Field - Part Day
-    Part_Day_Lunch = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
     Part_Day_Lunch_Var = Part_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
     Part_Day_Lunch_Var.configure(variable=Lunch_Part_Variable)
     Elements.Get_Option_Menu_Advance(attach=Part_Day_Lunch_Var, values=Lunch_Day_Option_List)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Search_Text_Lunch.pack(side="top", padx=10, pady=(0,5))
-    All_Day_Lunch.pack(side="top", padx=10, pady=(0,5))
-    Part_Day_Lunch.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1329,27 +1274,24 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Seach Text
-    Search_Text_Vacation = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Vacation_Var = Search_Text_Vacation.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_Vacation_Var.configure(placeholder_text=Vacation_Search_Text)
 
     # Field - All Day
-    All_Day_Vacation = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     All_Day_Vacation_Var = All_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
     All_Day_Vacation_Var.configure(variable=Vacation_All_Variable)
     Elements.Get_Option_Menu_Advance(attach=All_Day_Vacation_Var, values=Vacation_Day_Option_List)
 
     # Field - Part Day
-    Part_Day_Vacation = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
     Part_Day_Vacation_Var = Part_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
     Part_Day_Vacation_Var.configure(variable=Vacation_Part_Variable)
     Elements.Get_Option_Menu_Advance(attach=Part_Day_Vacation_Var, values=Vacation_Day_Option_List)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Search_Text_Vacation.pack(side="top", padx=10, pady=(0,5))
-    All_Day_Vacation.pack(side="top", padx=10, pady=(0,5))
-    Part_Day_Vacation.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1364,27 +1306,24 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Seach Text
-    Search_Text_HomeOffice = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_HomeOffice_Var = Search_Text_HomeOffice.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_HomeOffice_Var.configure(placeholder_text=HomeOffice_Search_Text)
 
     # Field - All Day
-    All_Day_HomeOffice = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     All_Day_HomeOffice_Var = All_Day_HomeOffice.children["!ctkframe3"].children["!ctkoptionmenu"]
     All_Day_HomeOffice_Var.configure(variable=HomeOffice_All_Variable)
     Elements.Get_Option_Menu_Advance(attach=All_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List)
 
     # Field - Part Day
-    Part_Day = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
     Part_Day_HomeOffice_Var = Part_Day.children["!ctkframe3"].children["!ctkoptionmenu"]
     Part_Day_HomeOffice_Var.configure(variable=HomeOffice_Part_Variable)
     Elements.Get_Option_Menu_Advance(attach=Part_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Search_Text_HomeOffice.pack(side="top", padx=10, pady=(0,5))
-    All_Day_HomeOffice.pack(side="top", padx=10, pady=(0,5))
-    Part_Day.pack(side="top", padx=10, pady=(0,5))
 
     return Frame_Main
 
@@ -1395,21 +1334,20 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="List of text be skipped as TimeSheet Entry in the case that part of text is found in Event Subject.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Imput Field + button in one line
-    Frame_Imput_Total_Skip = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
-    Frame_Imput_Total_Skip.configure(height=50)
-    Frame_Imput_Total_Skip.pack_propagate(flag=False)
-
-    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total_Skip, Field_Frame_Type="Single_Column")
-    Frame_Imput_Area.configure(width=400)
-
-    Frame_Button_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total_Skip, Field_Frame_Type="Single_Column")
-    Frame_Button_Area.configure(width=96)
-
     # Field - Subject
-    Subject_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Subject", Field_Type="Input_Small") 
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Subject", Field_Type="Input_Normal") 
     Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
     Subject_Text_Text_Var.configure(placeholder_text="Add new text")
+
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
+    Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Skip_Add_Var.configure(text="Add", command = lambda:Add_Skip_Event())
+    Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Add selected subejct to skip list", ToolTip_Size="Normal")
+
+    Button_Skip_Del_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_Skip_Del_Var.configure(text="Del", command = lambda:Del_Skip_Event())
+    Elements.Get_ToolTip(widget=Button_Skip_Del_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     # Skip Events Table
     Show_Skip_Events_list = [["Skip Events"]]
@@ -1420,25 +1358,8 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Skip_Table_Var = Frame_Skip_Table.children["!ctktable"]
     Frame_Skip_Table_Var.configure(wraplength=440)
 
-    # Add Button
-    Button_Skip_Add = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
-    Button_Skip_Add.configure(text="Add", command = lambda:Add_Skip_Event())
-    Elements.Get_ToolTip(widget=Button_Skip_Add, message="Add selected subejct to skip list", ToolTip_Size="Normal")
-
-    # Del Button
-    Button_Skip_Del = Elements.Get_Button(Frame=Frame_Button_Area, Button_Size="Small")
-    Button_Skip_Del.configure(text="Del", command = lambda:Del_Skip_Event())
-    Elements.Get_ToolTip(widget=Button_Skip_Del, message="Delete row from table based on input index.", ToolTip_Size="Normal")
-
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Frame_Imput_Total_Skip.pack(side="top", fill="none", expand=True, padx=0, pady=0)
-    Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
-    Frame_Button_Area.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-    Subject_Text.pack(side="top", padx=10, pady=(0,5))
-    Button_Skip_Add.pack(side="left", padx=10, pady=(0,5))
-    Button_Skip_Del.pack(side="left", padx=10, pady=(0,5))
-    Frame_Skip_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Main
 
@@ -1447,7 +1368,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------- Events - Empty -------------#
 def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Project_Variable = StringVar(master=Frame, value=Project_List[0])
-    Action_Variable = StringVar(master=Frame, value=Activity_All_List[0])
+    Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
 
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space (between Events in calendar) program use fill them by this setup.")
@@ -1462,27 +1383,26 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
 
     # Field - Subject
-    Subject_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
     Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
     Subject_Text_Text_Var.configure(placeholder_text="Add new text")
 
+    # Field - Activity --> placed before project because of variable to be used
+    #! Dodělat --> filtrovat aktivity podle Project Type!!!! --> abych zadal správnou aktivitu
+    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
+    Activity_Option_Var1 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Activity_Option_Var1.configure(variable=Activity_Variable)
+    #Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var1, values=Activity_All_List)
+
     # Field - Project
-    Project_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
     Project_Option_Var1 = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var1.configure(variable=Project_Variable)
+    Project_Option_Var1.configure(command = Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var1, Activity_Option_Var=Activity_Option_Var1))
     Elements.Get_Option_Menu_Advance(attach=Project_Option_Var1, values=Project_List)
 
-    # Field - Activity
-    #! Dodělat --> filtrovat aktivity podle Project Type!!!! --> abych zadal správnou aktivitu
-    Activity_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
-    Activity_Option_Var1 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Activity_Option_Var1.configure(variable=Action_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var1, values=Activity_All_List)
-
-    Activity_Option_Var1.configure(command = Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var1, Activity_Option_Var=Activity_Option_Var1))
-
     # Field - Coverage
-    Coverage_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Coverage", Field_Type="Input_Normal") 
+    Coverage_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Coverage", Field_Type="Input_Normal") 
     Activity_Option_Var = Coverage_Text.children["!ctkframe3"].children["!ctkentry"]
     Activity_Option_Var.configure(placeholder_text="Add %")
 
@@ -1497,40 +1417,29 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Empty_General_Table_Var = Frame_Empty_General_Table.children["!ctktable"]
     Frame_Empty_General_Table_Var.configure(wraplength=230)
 
-    # Add Button
-    Button_Empty_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Empty_Add.configure(text="Add", command = lambda:Add_Empty_Event())
-    Elements.Get_ToolTip(widget=Button_Empty_Add, message="Add selected combination into the list", ToolTip_Size="Normal")
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=4, Button_Size="Small") 
+    Button_Empty_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Empty_Add_Var.configure(text="Add", command = lambda:Add_Skip_Event())
+    Elements.Get_ToolTip(widget=Button_Empty_Add_Var, message="Add selected subejct to skip list", ToolTip_Size="Normal")
 
-    # Del One Button
-    Button_Empty_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Empty_Del_One.configure(text="Del", command = lambda:Del_Empty_Event_One())
-    Elements.Get_ToolTip(widget=Button_Empty_Del_One, message="Delete row from table based on input index.", ToolTip_Size="Normal")
+    Button_Empty_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_Empty_Del_One_Var.configure(text="Del", command = lambda:Del_Empty_Event_One())
+    Elements.Get_ToolTip(widget=Button_Empty_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
-    # Del All Button
-    Button_Empty_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Empty_Del_All.configure(text="Del all", command = lambda:Del_Empty_Event_All())
-    Elements.Get_ToolTip(widget=Button_Empty_Del_All, message="Delete all rows from table.", ToolTip_Size="Normal")
+    Button_Empty_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
+    Button_Empty_Del_All_Var.configure(text="Del all", command = lambda:Del_Empty_Event_All())
+    Elements.Get_ToolTip(widget=Button_Empty_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    # Recalculate Button
-    Button_Empty_Recal = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Empty_Recal.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Table=Frame_Empty_General_Table_Var))
-    Elements.Get_ToolTip(widget=Button_Empty_Recal, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
+    Button_Empty_Recal_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Empty_Recal_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Table=Frame_Empty_General_Table_Var))
+    Elements.Get_ToolTip(widget=Button_Empty_Recal_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Imput_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
-    Subject_Text.pack(side="top", padx=10, pady=(0,5))
-    Project_Option.pack(side="top", padx=10, pady=(0,5))
-    Activity_Option.pack(side="top", padx=10, pady=(0,5))
-    Coverage_Text.pack(side="top", padx=10, pady=(0,5))
-    Button_Empty_Add.pack(side="right", padx=10, pady=(0,5))
-    Button_Empty_Del_One.pack(side="right", padx=10, pady=(0,5))
-    Button_Empty_Del_All.pack(side="right", padx=10, pady=(0,5))
-    Button_Empty_Recal.pack(side="right", padx=10, pady=(0,5))
-    Frame_Empty_General_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Main
 
@@ -1538,7 +1447,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Project_Variable = StringVar(master=Frame, value=Project_List[0])
-    Action_Variable = StringVar(master=Frame, value=Activity_All_List[0])
+    Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
 
     Mon_Var = IntVar(master=Frame, value=0)
     Tue_Var = IntVar(master=Frame, value=0)
@@ -1552,43 +1461,10 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Imput Field + button in one line
-    Frame_Imput_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
-
-    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
+    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
     Frame_Imput_Area.configure(width=300)
 
-    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
-
-    # Field - Subject
-    Subject_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
-    Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
-    Subject_Text_Text_Var.configure(placeholder_text="Add new text")
-
-    # Field - Project
-    Project_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
-    Project_Option_Var2 = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Project_Option_Var2.configure(variable=Project_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var2, values=Project_List)
-
-    # Field - Activity
-    #! Dodělat --> filtrovat aktivity podle Project Type!!!! --> abych zadal správnou aktivitu
-    Activity_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
-    Activity_Option_Var2 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Activity_Option_Var2.configure(variable=Action_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var2, values=Activity_All_List)
-
-    Activity_Option_Var2.configure(command = Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var2, Activity_Option_Var=Activity_Option_Var2))
-
-    # Field - Start Time
-    Start_Time_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal") 
-    Start_Time_Text_Var = Start_Time_Text.children["!ctkframe3"].children["!ctkentry"]
-    Start_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
-
-    # Field - End Time
-    End_Time_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal") 
-    End_Time_Text_Var = End_Time_Text.children["!ctkframe3"].children["!ctkentry"]
-    End_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
+    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
 
     # Field - Week Days
     Week_Days_Label = Elements.Get_Label(Frame=Frame_Imput_Area, Label_Size="Column_Header", Font_Size="Column_Header")
@@ -1626,6 +1502,49 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Sunday_Check_Frame_Var = Sunday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Sunday_Check_Frame_Var.configure(variable=Sun_Var, text="")
 
+    # Field - Subject
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
+    Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
+    Subject_Text_Text_Var.configure(placeholder_text="Add new text")
+
+    # Field - Activity --> placed before project because of variable to be used
+    #! Dodělat --> filtrovat aktivity podle Project Type!!!! --> abych zadal správnou aktivitu
+    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
+    Activity_Option_Var2 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Activity_Option_Var2.configure(variable=Activity_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var2, values=Activity_All_List)
+
+    # Field - Project
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option_Var2 = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Project_Option_Var2.configure(variable=Project_Variable)
+    Project_Option_Var2.configure(command = Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var2, Activity_Option_Var=Activity_Option_Var2))
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var2, values=Project_List)
+
+    # Field - Start Time
+    Start_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal") 
+    Start_Time_Text_Var = Start_Time_Text.children["!ctkframe3"].children["!ctkentry"]
+    Start_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
+
+    # Field - End Time
+    End_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal") 
+    End_Time_Text_Var = End_Time_Text.children["!ctkframe3"].children["!ctkentry"]
+    End_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
+
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Schedule_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Schedule_Add_Var.configure(text="Add", command = lambda:Add_Schedule_Event())
+    Elements.Get_ToolTip(widget=Button_Schedule_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
+
+    Button_Schedule_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_Schedule_Del_One_Var.configure(text="Del", command = lambda:Del_Schedule_Event_One())
+    Elements.Get_ToolTip(widget=Button_Schedule_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
+
+    Button_Schedule_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
+    Button_Schedule_Del_All_Var.configure(text="Del all", command = lambda:Del_Schedule_Event_All())
+    Elements.Get_ToolTip(widget=Button_Schedule_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
     # Scheduled Events table
     Skip_Event_Schedule_list = [["Project", "Activity", "Description", "Day in week", "Start Time", "End Time"]]
     Skip_Event_Schedule_dict_rows = Skip_Event_Schedules_dict.items()
@@ -1637,31 +1556,11 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Empty_Schedules_Table_Var = Frame_Empty_Schedules_Table.children["!ctktable"]
     Frame_Empty_Schedules_Table_Var.configure(wraplength=150)
 
-    # Add Button
-    Button_Schedule_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Schedule_Add.configure(text="Add", command = lambda:Add_Schedule_Event())
-    Elements.Get_ToolTip(widget=Button_Schedule_Add, message="Add selected combination into the list", ToolTip_Size="Normal")
-
-    # Del Button
-    Button_Schedule_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Schedule_Del_One.configure(text="Del", command = lambda:Del_Schedule_Event_One())
-    Elements.Get_ToolTip(widget=Button_Schedule_Del_One, message="Delete row from table based on input index.", ToolTip_Size="Normal")
-
-    # Del All Button
-    Button_Schedule_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_Schedule_Del_All.configure(text="Del all", command = lambda:Del_Schedule_Event_All())
-    Elements.Get_ToolTip(widget=Button_Schedule_Del_All, message="Delete all rows from table.", ToolTip_Size="Normal")
-
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Frame_Imput_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
-    Subject_Text.pack(side="top", padx=10, pady=(0,5))
-    Project_Option.pack(side="top", padx=10, pady=(0,5))
-    Activity_Option.pack(side="top", padx=10, pady=(0,5))
-    Start_Time_Text.pack(side="top", padx=10, pady=(0,5))
-    End_Time_Text.pack(side="top", padx=10, pady=(0,5))
+
     Week_Days_Label.pack(side="top", fill="none", expand=False, padx=10, pady=10)
     Week_Days_Frame.pack(side="top", fill="none", expand=False, padx=0, pady=0)
     Monday_Check_Frame.pack(side="left", padx=5, pady=5)
@@ -1671,10 +1570,6 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Friday_Check_Frame.pack(side="left", padx=5, pady=5)
     Saturday_Check_Frame.pack(side="left", padx=5, pady=5)
     Sunday_Check_Frame.pack(side="left", padx=5, pady=5)
-    Button_Schedule_Add.pack(side="right", padx=10, pady=(0,5))
-    Button_Schedule_Del_One.pack(side="right", padx=10, pady=(0,5))
-    Button_Schedule_Del_All.pack(side="right", padx=10, pady=(0,5))
-    Frame_Empty_Schedules_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
     return Frame_Main
 
@@ -1683,7 +1578,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------- Events - AutoFill -------------#
 def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Project_Variable = StringVar(master=Frame, value=Project_List[0])
-    Action_Variable = StringVar(master=Frame, value=Activity_All_List[0])
+    Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
     Location_Variable = StringVar(master=Frame, value=Location_List[0])
 
     # Frame - General
@@ -1699,24 +1594,24 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
 
     # Field - Subject
-    Subject_Text = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Search Text", Field_Type="Input_Normal") 
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Search Text", Field_Type="Input_Normal") 
     Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
     Subject_Text_Text_Var.configure(placeholder_text="Add new text")
 
     # Field - Project
-    Project_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
     Project_Option_Var = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var.configure(variable=Project_Variable)
     Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List)
 
     # Field - Activity --> opravdu z listu všech aktivit protože mohu nastavit pravidlo bez Projektu
-    Activity_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
+    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
     Activity_Option_Var = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Activity_Option_Var.configure(variable=Action_Variable)
+    Activity_Option_Var.configure(variable=Activity_Variable)
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var, values=Activity_All_List)
 
     # Field - Location
-    Location_Option = Elements_Groups.Get_Single_Field_Imput(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Location", Field_Type="Input_OptionMenu") 
+    Location_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Location", Field_Type="Input_OptionMenu") 
     Location_Option_Var = Location_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Location_Option_Var.configure(variable=Location_Variable)
     Elements.Get_Option_Menu_Advance(attach=Location_Option_Var, values=Location_List)
@@ -1732,33 +1627,24 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_AutoFiller_Table_Var = Frame_AutoFiller_Table.children["!ctktable"]
     Frame_AutoFiller_Table_Var.configure(wraplength=230)
 
-    # Add Button
-    Button_AutoFill_Add = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_AutoFill_Add.configure(text="Add", command = lambda:Add_AutoFill_Event())
-    Elements.Get_ToolTip(widget=Button_AutoFill_Add, message="Add selected combination into the list", ToolTip_Size="Normal")
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_AutoFill_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_AutoFill_Add_Var.configure(text="Add", command = lambda:Add_AutoFill_Event())
+    Elements.Get_ToolTip(widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
-    # Del Button
-    Button_AutoFill_Del_One = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_AutoFill_Del_One.configure(text="Del", command = lambda:Del_AutoFill_Event_One())
-    Elements.Get_ToolTip(widget=Button_AutoFill_Del_One, message="Delete row from table based on input index.", ToolTip_Size="Normal")
+    Button_AutoFill_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_AutoFill_Del_One_Var.configure(text="Del", command = lambda:Del_AutoFill_Event_One())
+    Elements.Get_ToolTip(widget=Button_AutoFill_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
-    # Del All Button
-    Button_AutoFill_Del_All = Elements.Get_Button(Frame=Frame_Imput_Area, Button_Size="Small")
-    Button_AutoFill_Del_All.configure(text="Del all", command = lambda:Del_AutoFill_Event_All())
-    Elements.Get_ToolTip(widget=Button_AutoFill_Del_All, message="Delete all rows from table.", ToolTip_Size="Normal")
+    Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
+    Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_AutoFill_Event_All())
+    Elements.Get_ToolTip(widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Imput_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
-    Subject_Text.pack(side="top", padx=10, pady=(0,5))
-    Project_Option.pack(side="top", padx=10, pady=(0,5))
-    Activity_Option.pack(side="top", padx=10, pady=(0,5))
-    Location_Option.pack(side="top", padx=10, pady=(0,5))
-    Button_AutoFill_Add.pack(side="right", padx=10, pady=(0,5))
-    Button_AutoFill_Del_One.pack(side="right", padx=10, pady=(0,5))
-    Button_AutoFill_Del_All.pack(side="right", padx=10, pady=(0,5))
-    Frame_AutoFiller_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
     return Frame_Main

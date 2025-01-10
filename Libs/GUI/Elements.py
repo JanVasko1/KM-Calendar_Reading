@@ -15,16 +15,14 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 Configuration = Defaults_Lists.Load_Configuration() 
 Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
-Accent_Color_Style_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
-
 Hover_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
-Hover_Color_Style_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
+
 
 # Accent Color
 if Accent_Color_Mode == "System":
     Accent_Color = winaccent.accent_normal
 elif Accent_Color_Mode == "Manual":
-    Accent_Color = Accent_Color_Style_Manual
+    Accent_Color = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
 elif Accent_Color_Mode == "Widget":
     Accent_Color = ""
 else:
@@ -32,8 +30,30 @@ else:
     CTkMessagebox(title="Error", message=f"Accent Color mode: {Accent_Color_Mode}, which is not supported.", icon="cancel", fade_in_duration=1)
 
 # Hover Color
-if Hover_Color_Mode == "Manual":
-    Hover_Color = Hover_Color_Style_Manual
+if Hover_Color_Mode == "System":
+    def lighten_hex_color(hex_color, percentage):
+        # Remove the hash symbol if present
+        hex_color = hex_color.lstrip('#')
+
+        # Convert hex to RGB
+        r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+
+        # Calculate the new RGB values
+        r = int(r + (255 - r) * percentage)
+        g = int(g + (255 - g) * percentage)
+        b = int(b + (255 - b) * percentage)
+
+        # Ensure the values are within the valid range
+        r = min(255, max(0, r))
+        g = min(255, max(0, g))
+        b = min(255, max(0, b))
+
+        # Convert RGB back to hex
+        return f'#{r:02x}{g:02x}{b:02x}'
+    Hover_Color = lighten_hex_color(Accent_Color, 0.2)
+
+elif Hover_Color_Mode == "Manual":
+    Hover_Color = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
 elif Hover_Color_Mode == "Widget":
     Hover_Color = ""
 else:
@@ -47,9 +67,9 @@ def Define_Color(Color_json: list|str, Global_Color: str) -> tuple|str|None:
         Selected_color = tuple(Color_json)
     else:
         if Color_json == "Global_Accent_Color":
-            Selected_color = Global_Color
+            Selected_color = tuple([Global_Color, Global_Color])
         elif Color_json == "Global_Hover_Color":
-            Selected_color = Global_Color
+            Selected_color = tuple([Global_Color, Global_Color])
         else:
             Selected_color = Color_json
     return Selected_color
@@ -421,6 +441,7 @@ def Get_Widget_Scrolable_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkScrol
 
     fg_color = Define_Color(Color_json=Configuration_Scrollable["fg_color"], Global_Color=Accent_Color)
     border_color = Define_Color(Color_json=Configuration_Scrollable["border_color"], Global_Color=Accent_Color)
+    scrollbar_button_hover_color = Define_Color(Color_json=Configuration_Scrollable["scrollbar_button_hover_color"], Global_Color=Hover_Color)
 
     Frame_Scrollable = CTkScrollableFrame(
         master = Frame,
@@ -432,7 +453,7 @@ def Get_Widget_Scrolable_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkScrol
         fg_color =fg_color,
         scrollbar_fg_color = Configuration_Scrollable["scrollbar_fg_color"],
         scrollbar_button_color = tuple(Configuration_Scrollable["scrollbar_button_color"]),
-        scrollbar_button_hover_color = tuple(Configuration_Scrollable["scrollbar_button_hover_color"]))
+        scrollbar_button_hover_color = scrollbar_button_hover_color)
     return Frame_Scrollable
 
 def Get_Widget_Frame_Body(Frame: CTk|CTkFrame, Widget_size: str) -> CTkFrame:
