@@ -1401,7 +1401,10 @@
     "ColorPicker": {
         "width": 300,
         "initial_color": "",
-        "fg_color": "#2C2C2C",
+        "fg_color": [
+            "#f7f9f9",
+            "#2C2C2C"
+        ],
         "slider_border": 1,
         "corner_radius": 10,
         "orientation": "vertical"

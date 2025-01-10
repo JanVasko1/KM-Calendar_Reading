@@ -518,12 +518,13 @@ def Page_Data(Frame: CTk|CTkFrame):
     Info_current_page = 0
     Info_Table_Rows = 20
 
-    def change_left(Table: CTkTable, Current_Rows: CTkLabel) -> None:
+    #! Dodělat --> při přechodu na druhou stránku se strati HEader a místo něj se vypíšou jednotlivé řádky (asi přidat header) a pak ještě rekalkulovat maximum a minimum
+    def change_left(Table: CTkTable, Current_Rows: CTkLabel, Events_list_len: int) -> None:
         global Info_current_page
         if Info_current_page > Info_Table_Rows:
             Info_current_page -= Info_Table_Rows
             Table.update_values(Events_List[Info_current_page - Info_Table_Rows : Info_current_page])
-            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page}")
+            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page} ({Events_list_len})")
             window.update_idletasks()
         else:
             pass
@@ -533,7 +534,7 @@ def Page_Data(Frame: CTk|CTkFrame):
         if Info_current_page < Events_list_len:
             Info_current_page += Info_Table_Rows
             Table.update_values(Events_List[Info_current_page - Info_Table_Rows : Info_current_page])
-            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page}")
+            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page} ({Events_list_len})")
             window.update_idletasks()
         else:
             pass
@@ -565,7 +566,7 @@ def Page_Data(Frame: CTk|CTkFrame):
     Events_List = [["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     for row in Events.iterrows():
         Events_List.append(row[1].to_list())
-    Events_list_len = len(Events_List)
+    Events_list_len = len(Events_List) - 1  # -1 because of header
 
     Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Values=None, Table_Size="Triple_size", Table_Columns=8, Table_Rows=Info_Table_Rows)
     Frame_Events_Table_Var = Frame_Events_Table.children["!ctktable"]
@@ -574,12 +575,12 @@ def Page_Data(Frame: CTk|CTkFrame):
     change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len)
 
     # Pre Button
-    Button_Pre = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Normal")
-    Button_Pre.configure(text="<", command = lambda: change_left(Table=Frame_Events_Table_Var, Current_Rows=Page_text))
+    Button_Pre = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_Pre.configure(text="<", command = lambda: change_left(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(widget=Button_Pre, message="Previous page", ToolTip_Size="Normal")
 
     # next Button
-    Button_Next = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Normal")
+    Button_Next = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
     Button_Next.configure(text=">", command = lambda: change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(widget=Button_Next, message="Next page", ToolTip_Size="Normal")
 
@@ -591,9 +592,9 @@ def Page_Data(Frame: CTk|CTkFrame):
     Button_Excel.grid(row=0, column=1, padx=5, pady=15, sticky="e")
 
     Frame_Events_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
-    Button_Pre.pack(side="left", expand=True, pady=10)
+    Button_Pre.pack(side="left", expand=True, padx=(600,10), pady=10)
     Page_text.pack(side="left", expand=True, pady=10)
-    Button_Next.pack(side="right", expand=True, pady=10)
+    Button_Next.pack(side="left", expand=True, padx=(10,600), pady=10)
 
 
 

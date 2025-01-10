@@ -189,9 +189,6 @@ def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry) -> None:
     Collor_Picker_window.config(background="#000001")
     Collor_Picker_window.attributes("-transparentcolor", "#000001")
 
-    pywinstyles.apply_style(window=Collor_Picker_window, style=Win_Style_Actual)
-    customtkinter.set_appearance_mode(mode_string=Theme_Actual)
-
     Colorpicker_Frame = Elements.Get_Color_Picker(Frame=Collor_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
 
     #? Build look of Widget --> must be before inset
