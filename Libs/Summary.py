@@ -175,7 +175,6 @@ KM_WH_dict = {
     }
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-#! Dodělat --> smazat fily před napočítáním --> aby se prostě po downloadu zobrazila správná a aktuální data
 def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime) -> None:
     #Update Events Dataframe
     Events["Personnel number"] = Personnel_number

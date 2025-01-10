@@ -1,11 +1,12 @@
 # Import Libraries
 from PIL import Image
 
-from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog
+from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkComboBox
 from CTkTable import CTkTable
 from CTkColorPicker import CTkColorPicker
 from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
+from Libs.GUI.CTk.ctk_scrollable_dropdown import CTkScrollableDropdown as CTkScrollableDropdown 
 
 from iconipy import IconFactory 
 import winaccent
@@ -76,7 +77,8 @@ def Get_Label(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
         text_color = tuple(Configuration_Text_Main["text_color"]),
         anchor = Configuration_Text_Main["anchor"],
         padx = Configuration_Text_Main["padx"],
-        pady = Configuration_Text_Main["pady"])
+        pady = Configuration_Text_Main["pady"],
+        wraplength = Configuration_Text_Main["wraplength"])
     return Text_Main
 
 def Get_Label_Icon(Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str, Icon_Set: str, Icon_Name: str, Icon_Size: str,) -> CTkLabel:
@@ -219,31 +221,67 @@ def Get_RadioButton_Normal(Frame: CTk|CTkFrame) -> CTkRadioButton:
     return RadioButton_Normal
 
 def Get_Option_Menu(Frame: CTk|CTkFrame) -> CTkOptionMenu:
-    Configuration_Option_Menu = Configuration["Fields"]["OptionMenu"]["Normal"]
+    # Base CTkOptionMenu
+    Configuration_Base_Option_Menu = Configuration["Fields"]["OptionMenu"]["BaseCTk"]["Normal"]
     
-    fg_color = Define_Color(Color_json=Configuration_Option_Menu["fg_color"], Global_Color=Accent_Color)
-    button_hover_color = Define_Color(Color_json=Configuration_Option_Menu["button_hover_color"], Global_Color=Hover_Color)
-    dropdown_hover_color = Define_Color(Color_json=Configuration_Option_Menu["dropdown_hover_color"], Global_Color=Hover_Color)
+    fg_color_base = Define_Color(Color_json=Configuration_Base_Option_Menu["fg_color"], Global_Color=Accent_Color)
+    button_hover_color_base = Define_Color(Color_json=Configuration_Base_Option_Menu["button_hover_color"], Global_Color=Hover_Color)
+    dropdown_hover_color_base = Define_Color(Color_json=Configuration_Base_Option_Menu["dropdown_hover_color"], Global_Color=Hover_Color)
 
-    Option_Menu = CTkOptionMenu(
+    Base_Option_Menu = CTkOptionMenu(
         master = Frame,
         font = Get_Font(Font_Size="Field_Label"),
-        width = Configuration_Option_Menu["width"],
-        height = Configuration_Option_Menu["height"],
-        corner_radius = Configuration_Option_Menu["corner_radius"],
-        bg_color = Configuration_Option_Menu["bg_color"],
-        fg_color = fg_color,
+        width = Configuration_Base_Option_Menu["width"],
+        height = Configuration_Base_Option_Menu["height"],
+        corner_radius = Configuration_Base_Option_Menu["corner_radius"],
+        bg_color = Configuration_Base_Option_Menu["bg_color"],
+        fg_color = fg_color_base,
         button_color = tuple([Accent_Color, Accent_Color]),
-        button_hover_color = button_hover_color,
-        text_color = tuple(Configuration_Option_Menu["text_color"]),
-        text_color_disabled = tuple(Configuration_Option_Menu["text_color_disabled"]),
-        dropdown_fg_color = tuple(Configuration_Option_Menu["dropdown_fg_color"]),
-        dropdown_hover_color = dropdown_hover_color,
-        dropdown_text_color = tuple(Configuration_Option_Menu["dropdown_text_color"]),
-        hover = Configuration_Option_Menu["hover"],
-        dynamic_resizing = Configuration_Option_Menu["dynamic_resizing"],
-        anchor = Configuration_Option_Menu["anchor"])
-    return Option_Menu
+        button_hover_color = button_hover_color_base,
+        text_color = tuple(Configuration_Base_Option_Menu["text_color"]),
+        text_color_disabled = tuple(Configuration_Base_Option_Menu["text_color_disabled"]),
+        dropdown_fg_color = tuple(Configuration_Base_Option_Menu["dropdown_fg_color"]),
+        dropdown_hover_color = dropdown_hover_color_base,
+        dropdown_text_color = tuple(Configuration_Base_Option_Menu["dropdown_text_color"]),
+        hover = Configuration_Base_Option_Menu["hover"],
+        dynamic_resizing = Configuration_Base_Option_Menu["dynamic_resizing"],
+        anchor = Configuration_Base_Option_Menu["anchor"])
+    
+    return Base_Option_Menu
+
+def Get_Option_Menu_Advance(attach: CTkOptionMenu|CTkComboBox|CTkLabel|CTkButton, values: list) -> CTkScrollableDropdown:
+    # Advance CTkScrollableDropdown
+    Configuration_Advance_Option_Menu = Configuration["Fields"]["OptionMenu"]["AdvancedCTk"]["Normal"]
+
+    fg_color_advance = Define_Color(Color_json=Configuration_Advance_Option_Menu["fg_color"], Global_Color=Accent_Color)
+    scrollbar_button_hover_color_advance = Define_Color(Color_json=Configuration_Advance_Option_Menu["scrollbar_button_hover_color"], Global_Color=Hover_Color)
+    hover_color_advance = Define_Color(Color_json=Configuration_Advance_Option_Menu["hover_color"], Global_Color=Hover_Color)
+
+    #! Dodělat --> výšku a šížku
+
+    Advance_Option_Menu = CTkScrollableDropdown(
+        attach = attach,
+        values = values,
+        image_values = Configuration_Advance_Option_Menu["image_values"],
+        width = Configuration_Advance_Option_Menu["width"],
+        height = Configuration_Advance_Option_Menu["height"],
+        fg_color = fg_color_advance,
+        button_color = Configuration_Advance_Option_Menu["button_color"],
+        hover_color = hover_color_advance,
+        text_color = Configuration_Advance_Option_Menu["text_color"],
+        button_height = Configuration_Advance_Option_Menu["button_height"],
+        justify = Configuration_Advance_Option_Menu["justify"],
+        frame_corner_radius = Configuration_Advance_Option_Menu["frame_corner_radius"],
+        frame_border_width = Configuration_Advance_Option_Menu["frame_border_width"],
+        frame_border_color = Configuration_Advance_Option_Menu["frame_border_color"],
+        scrollbar = Configuration_Advance_Option_Menu["scrollbar"],
+        scrollbar_button_color = Configuration_Advance_Option_Menu["scrollbar_button_color"],
+        scrollbar_button_hover_color = scrollbar_button_hover_color_advance,
+        resize = Configuration_Advance_Option_Menu["resize"],
+        autocomplete = Configuration_Advance_Option_Menu["autocomplete"],
+        alpha = Configuration_Advance_Option_Menu["alpha"])
+
+    return Advance_Option_Menu
 
 def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
     Configuration_Check_Box = Configuration["Fields"]["CheckBox"]["Normal"]

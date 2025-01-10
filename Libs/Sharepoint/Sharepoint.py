@@ -132,17 +132,47 @@ def Get_Project_and_Activity(SP_Password: str|None) -> None:
         Get_Activity()
         
 def Get_Project() -> None:
-    Projects = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Projects", usecols="A", skiprows=1, nrows=100, header=None)
-    Projects_list = Projects[0].to_list()
+    Projects_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
+    Projects_df.drop(columns=[1], inplace=True)
+    Projects_df.rename(columns={0: "Project", 2: "Project_Type"}, inplace=True)
+
+    Projects_df = Projects_df.T
+    Projects_dict = Projects_df.to_dict()
 
     # Save to Settings.json
-    Defaults_Lists.Information_Update_Settings(Area="Project", Field="Project_List",  Information=Projects_list)
+    Defaults_Lists.Information_Update_Settings(Area="Project", Field="Project_List",  Information=Projects_dict)
     
 def Get_Activity() -> None:
-    Activities = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A", skiprows=1, nrows=100, header=None)
-    Activities_list = Activities[0].to_list()
-    Empty_line_index = Activities_list.index("Activity Relations")
-    Activities_list = Activities_list[:Empty_line_index - 1]
-   
+    Activities_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
+    Column_List = Activities_df[1].to_list()
+    Empty_line_index = Column_List.index("Activity")
+    Activities_df = Activities_df.iloc[Empty_line_index + 1:]
+    Activities_df.reset_index(inplace=True)
+    Activities_df.drop(columns=["index"], inplace=True)
+    Activities_df.rename(columns={0: "Project_Type", 1: "Activity"}, inplace=True)
+
+    Activity_list = list(set(Activities_df["Activity"]))
+    Activity_list.sort()
+
+    Project_Type_list = list(set(Activities_df["Project_Type"]))
+    Project_Type_list.sort()
+
+    Activity_by_Type_dict = {}
+    Counter = 0
+
+    # Dictionary creation
+    for Project_Type in Project_Type_list:
+        mask =  Activities_df["Project_Type"] == Project_Type
+        Filtered_Df = Activities_df[mask]
+        Activity_by_Type_list = Filtered_Df["Activity"].to_list()
+        Activity_by_Type_list.sort()
+
+        Activity_by_Type_dict[Counter] = {
+            "Project_Type": Project_Type,
+            "Activity": Activity_by_Type_list
+        }
+        Counter += 1
+
     # Save to Settings.json
-    Defaults_Lists.Information_Update_Settings(Area="Activity", Field="Activity_List",  Information=Activities_list)
+    Defaults_Lists.Information_Update_Settings(Area="Activity", Field="Activity_List",  Information=Activity_list)
+    Defaults_Lists.Information_Update_Settings(Area="Activity", Field="Activity_by_Type_dict",  Information=Activity_by_Type_dict)

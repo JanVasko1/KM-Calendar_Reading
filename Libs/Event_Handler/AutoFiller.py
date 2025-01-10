@@ -4,7 +4,7 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]
+Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Events: DataFrame):

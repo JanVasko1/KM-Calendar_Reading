@@ -716,12 +716,16 @@ customtkinter.set_appearance_mode(mode_string=Theme_Actual)
 pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
 # ---------------------------------- Content ----------------------------------#
+# Background
+Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
+Frame_Background.pack(side="top", fill="none", expand=False)
+
 # SideBar
-Frame_Side_Bar = Elements.Get_Frame(Frame=window, Frame_Size="SideBar")
+Frame_Side_Bar = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="SideBar")
 Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
 # Work Area
-Frame_Work_Area = Elements.Get_Frame(Frame=window, Frame_Size="Work_Area")
+Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Area")
 Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
 Frame_Header = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Header")
