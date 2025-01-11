@@ -23,21 +23,21 @@
             ],
             "Colors": {
                 "Accent": {
-                    "Accent_Color_Mode": "System",
+                    "Accent_Color_Mode": "Windows",
                     "Accent_Color_Manual": "#e6960f",
                     "Accent_Color_List": [
-                        "System",
+                        "Windows",
                         "Manual",
-                        "Widget"
+                        "App Default"
                     ]
                 },
                 "Hover": {
-                    "Hover_Color_Mode": "System",
-                    "Hover_Color_Manual": "#e6960f",
+                    "Hover_Color_Mode": "Accent Lighter",
+                    "Hover_Color_Manual": "#e6f",
                     "Hover_Color_List": [
-                        "System",
+                        "Accent Lighter",
                         "Manual",
-                        "Widget"
+                        "App Default"
                     ]
                 }
             }
@@ -171,9 +171,15 @@
                 "#FFFFFF"
             ],
             "bg_color": "transparent",
-            "fg_color": "Global_Accent_Color",
+            "fg_color": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
             "hover": true,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center",
             "text_color": [
                 "#2C2C2C",
@@ -190,9 +196,15 @@
                 "#FFFFFF"
             ],
             "bg_color": "transparent",
-            "fg_color": "Global_Accent_Color",
+            "fg_color": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
             "hover": true,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center",
             "text_color": [
                 "#2C2C2C",
@@ -200,6 +212,10 @@
             ]
         },
         "Picture_SideBar": {
+            "Accent_Color_help": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
             "width": 30,
             "height": 30,
             "corner_radius": 10,
@@ -208,7 +224,10 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": true,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center"
         },
         "Picture_Active_SideBar": {
@@ -220,7 +239,10 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": false,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center"
         },
         "Picture_Logo": {
@@ -232,7 +254,10 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": false,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center"
         },
         "Picture_Theme": {
@@ -244,10 +269,17 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": false,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center"
         },
         "Chart_Button": {
+            "Accent_Color_help": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
             "width": 40,
             "height": 20,
             "corner_radius": 10,
@@ -256,7 +288,10 @@
             "bg_color": "transparent",
             "fg_color": "transparent",
             "hover": true,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "anchor": "center",
             "text_color": [
                 "#2C2C2C",
@@ -322,12 +357,18 @@
                 "corner_radius": 1000,
                 "border_width_unchecked": 3,
                 "border_width_checked": 6,
-                "fg_color": "Global_Accent_Color",
+                "fg_color": [
+                    "#00A9FF",
+                    "#00A9FF"
+                ],
                 "border_color": [
                     "#D0D0D0",
                     "#111219"
                 ],
-                "hover_color": "Global_Hover_Color",
+                "hover_color": [
+                    "#33BAff",
+                    "#33BAff"
+                ],
                 "hover": true
             }
         },
@@ -346,7 +387,10 @@
                         "#00A9FF",
                         "#00A9FF"
                     ],
-                    "button_hover_color": "Global_Hover_Color",
+                    "button_hover_color": [
+                        "#33BAff",
+                        "#33BAff"
+                    ],
                     "text_color": [
                         "#2C2C2C",
                         "#FFFFFF"
@@ -359,7 +403,10 @@
                         "#D0D0D0",
                         "#2C2C2C"
                     ],
-                    "dropdown_hover_color": "Global_Hover_Color",
+                    "dropdown_hover_color": [
+                        "#33BAff",
+                        "#33BAff"
+                    ],
                     "dropdown_text_color": [
                         "#2C2C2C",
                         "#FFFFFF"
@@ -382,7 +429,10 @@
                         "#FFFFFF",
                         "#111219"
                     ],
-                    "hover_color": "Global_Hover_Color",
+                    "hover_color": [
+                        "#33BAff",
+                        "#33BAff"
+                    ],
                     "button_height": 28,
                     "justify": "center",
                     "frame_corner_radius": 6,
@@ -396,7 +446,10 @@
                         "#2C2C2C",
                         "#FFFFFF"
                     ],
-                    "scrollbar_button_hover_color": "Global_Hover_Color",
+                    "scrollbar_button_hover_color": [
+                    "#33BAff",
+                    "#33BAff"
+                ],
                     "resize": true,
                     "text_color": [
                         "#2C2C2C",
@@ -413,11 +466,17 @@
                 "height": 24,
                 "checkbox_width": 24,
                 "checkbox_height": 24,
-                "corner_radius": 10,
+                "corner_radius": 6,
                 "border_width": 3,
                 "bg_color": "transparent",
-                "fg_color": "Global_Accent_Color",
-                "hover_color": "Global_Hover_Color",
+                "fg_color": [
+                    "#00A9FF",
+                    "#00A9FF"
+                ],
+                "hover_color": [
+                    "#33BAff",
+                    "#33BAff"
+                ],
                 "border_color": [
                     "#D0D0D0",
                     "#111219"
@@ -461,7 +520,10 @@
                     "#2C2C2C"
                 ],
                 "bg_color": "#000001",
-                "fg_color": "Global_Accent_Color"
+                "fg_color": [
+                    "#00A9FF",
+                    "#00A9FF"
+                ]
             },
             "SideBar_active": {
                 "width": 5,
@@ -651,6 +713,10 @@
                 },
                 "Scrollable_Frames": {
                     "Single_size": {
+                        "Accent_Color_help": [
+                            "#00A9FF",
+                            "#00A9FF"
+                        ],
                         "width": 475,
                         "corner_radius": 10,
                         "border_width": 1, 
@@ -666,9 +732,16 @@
                             "#2C2C2C",
                             "#FFFFFF"
                         ],
-                        "scrollbar_button_hover_color": "Global_Hover_Color"
+                        "scrollbar_button_hover_color": [
+                            "#33BAff",
+                            "#33BAff"
+                        ]
                     },
                     "Double_size": {
+                        "Accent_Color_help": [
+                            "#00A9FF",
+                            "#00A9FF"
+                        ],
                         "width": 1000,
                         "corner_radius": 10,
                         "border_width": 1, 
@@ -684,9 +757,16 @@
                             "#2C2C2C",
                             "#FFFFFF"
                         ],
-                        "scrollbar_button_hover_color": "Global_Hover_Color"
+                        "scrollbar_button_hover_color": [
+                            "#33BAff",
+                            "#33BAff"
+                        ]
                     },
                     "Triple_size": {
+                        "Accent_Color_help": [
+                            "#00A9FF",
+                            "#00A9FF"
+                        ],
                         "width": 1600,
                         "corner_radius": 10,
                         "border_width": 1, 
@@ -702,7 +782,10 @@
                             "#2C2C2C",
                             "#FFFFFF"
                         ],
-                        "scrollbar_button_hover_color": "Global_Hover_Color"
+                        "scrollbar_button_hover_color": [
+                            "#33BAff",
+                            "#33BAff"
+                        ]
                     }
                 }
             },
@@ -952,6 +1035,10 @@
                             ]
                         },
                         "Body_Scrollable": {
+                            "Accent_Color_help": [
+                                "#00A9FF",
+                                "#00A9FF"
+                            ],
                             "width": 560,
                             "height": 280,
                             "corner_radius": 10,
@@ -971,7 +1058,10 @@
                                 "#2C2C2C",
                                 "#FFFFFF"
                             ],
-                            "scrollbar_button_hover_color": "Global_Hover_Color"
+                            "scrollbar_button_hover_color": [
+                                "#33BAff",
+                                "#33BAff"
+                            ]
                         },
                         "Header": {
                             "width": 558,
@@ -1042,6 +1132,10 @@
                             ]
                         },
                         "Body_Scrollable": {
+                            "Accent_Color_help": [
+                                "#00A9FF",
+                                "#00A9FF"
+                            ],
                             "width": 785,
                             "height": 300,
                             "corner_radius": 10,
@@ -1061,7 +1155,10 @@
                                 "#2C2C2C",
                                 "#FFFFFF"
                             ],
-                            "scrollbar_button_hover_color": "Global_Hover_Color"
+                            "scrollbar_button_hover_color": [
+                                "#33BAff",
+                                "#33BAff"
+                            ]
                         },
                         "Header": {
                             "width": 783,
@@ -1099,6 +1196,10 @@
                             ]
                         },
                         "Body_Scrollable": {
+                            "Accent_Color_help": [
+                                "#00A9FF",
+                                "#00A9FF"
+                            ],
                             "width": 1645,
                             "height": 400,
                             "corner_radius": 10,
@@ -1118,7 +1219,10 @@
                                 "#2C2C2C",
                                 "#FFFFFF"
                             ],
-                            "scrollbar_button_hover_color": "Global_Hover_Color"
+                            "scrollbar_button_hover_color": [
+                                "#33BAff",
+                                "#33BAff"
+                            ]
                         },
                         "Header": {
                             "width": 1643,
@@ -1160,12 +1264,18 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "segmented_button_selected_hover_color": "Global_Hover_Color",
+            "segmented_button_selected_hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "segmented_button_unselected_color": [
                 "#f7f9f9",
                 "#2C2C2C"
             ],
-            "segmented_button_unselected_hover_color": "Global_Hover_Color",
+            "segmented_button_unselected_hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "text_color": [
                 "#2C2C2C",
                 "#FFFFFF"
@@ -1181,7 +1291,7 @@
         "Single_size":{
             "width": 440,
             "colors": [
-                "#111219",
+                "#d0d0d0",
                 "#2C2C2C"
             ],
             "border_width": 0,
@@ -1193,7 +1303,10 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "wraplength": 1000,
             "justify": "center",
             "anchor": "c"
@@ -1201,7 +1314,7 @@
         "Double_size":{
             "width": 970,
             "colors": [
-                "#111219",
+                "#d0d0d0",
                 "#2C2C2C"
             ],
             "border_width": 0,
@@ -1213,7 +1326,10 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "wraplength": 200,
             "justify": "center",
             "anchor": "l"
@@ -1221,7 +1337,7 @@
         "Triple_size": {
             "width": 1570,
             "colors": [
-                "#111219",
+                "#d0d0d0",
                 "#2C2C2C"
             ],
             "border_width": 0,
@@ -1233,7 +1349,10 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "wraplength": 1000,
             "justify": "center",
             "anchor": "l"
@@ -1241,7 +1360,7 @@
         "Dashboard_Project_Activity": {
             "width": 550,
             "colors": [
-                "#111219",
+                "#d0d0d0",
                 "#2C2C2C"
             ],
             "border_width": 0,
@@ -1253,7 +1372,10 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "wraplength": 120,
             "justify": "center",
             "anchor": "l"
@@ -1261,7 +1383,7 @@
         "Dashboard_WeekDays": {
             "width": 780,
             "colors": [
-                "#111219",
+                "#d0d0d0",
                 "#2C2C2C"
             ],
             "border_width": 0,
@@ -1273,7 +1395,10 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "wraplength": 110,
             "justify": "center",
             "anchor": "l"
@@ -1281,7 +1406,7 @@
         "Dashboard_Weeks": {
             "width": 780,
             "colors": [
-                "#111219",
+                "#d0d0d0",
                 "#2C2C2C"
             ],
             "border_width": 0,
@@ -1293,7 +1418,10 @@
             "orientation": "horizontal",
             "header_color": "#00A9FF",
             "corner_radius": 10,
-            "hover_color": "Global_Hover_Color",
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "wraplength": 95,
             "justify": "center",
             "anchor": "l"
@@ -1343,7 +1471,10 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "button_hover_color": "Global_Hover_Color",
+            "button_hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "button_text_color": [
                 "#2C2C2C",
                 "#FFFFFF"
@@ -1375,7 +1506,10 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
-            "button_hover_color": "Global_Hover_Color",
+            "button_hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
             "button_text_color": [
                 "#2C2C2C",
                 "#FFFFFF"
@@ -1400,7 +1534,7 @@
     },
     "ColorPicker": {
         "width": 300,
-        "initial_color": "",
+        "initial_color": "#00A9FF",
         "fg_color": [
             "#f7f9f9",
             "#2C2C2C"
@@ -1434,24 +1568,6 @@
             "font_color": [
                 "#FFFFFF",
                 "#FFFFFF"
-            ],
-            "outline_width": 0,
-            "outline_color": [
-                null,
-                null
-            ],
-            "background_color": [
-                null,
-                null
-            ],
-            "background_radius": 0
-        },
-        "Side_Bar_active": {
-            "icon_size": 40,
-            "font_size": 40,
-            "font_color": [
-                "#00A9FF",
-                "#00A9FF"
             ],
             "outline_width": 0,
             "outline_color": [

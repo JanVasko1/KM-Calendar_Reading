@@ -333,18 +333,32 @@ def Page_Download(Frame: CTk|CTkFrame):
     Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
 
     # ------------------------- Work Area -------------------------#
+    # Tab View
+    TabView = Elements.Get_Tab_View(Frame=Frame_Download_Work_Detail_Area, Tab_size="Normal")
+    TabView.pack_propagate(flag=False)
+    Tab_New = TabView.add("New")
+    Tab_New.pack_propagate(flag=False)
+    Tab_Pre = TabView.add("Past")
+    Tab_Pre.pack_propagate(flag=False)
+    TabView.set("New")
+
+    Tab_New_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
+    Tab_Pre_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
+    Elements.Get_ToolTip(widget=Tab_New_ToolTip_But, message="Used to download new data to be regsitered, or Current Period checking.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Pre_ToolTip_But, message="Used to donwload already registered date in Time Sheets --> downlaod from Sharepoint previous periods.", ToolTip_Size="Normal")
+
     # Download Method
-    Metdod_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
+    Metdod_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     
     Metdod_Text.configure(text="Step 1 - Date Range Source")
 
-    Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
+    Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"]
     Sharepoint_Whole_Period_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"]
     Sharepoint_Active_Per_Days_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"]
 
-    Manual_Widget = Widgets.Download_Manual(Frame=Frame_Download_Work_Detail_Area, Download_Date_Range_Source=Download_Date_Range_Source)
+    Manual_Widget = Widgets.Download_Manual(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
@@ -356,14 +370,14 @@ def Page_Download(Frame: CTk|CTkFrame):
     Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Whole_Period_Var=Sharepoint_Whole_Period_Var, Sharepoint_Active_Per_Days_Var=Sharepoint_Active_Per_Days_Var))
 
     # Download Source
-    Source_Text = Elements.Get_Label(Frame=Frame_Download_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
+    Source_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Download Data Source")
 
-    Exchange_Widget = Widgets.Download_Exchange(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
+    Exchange_Widget = Widgets.Download_Exchange(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
-    Outlook_Widget = Widgets.Download_Outlook(Frame=Frame_Download_Work_Detail_Area, Download_Data_Source=Download_Data_Source)
+    Outlook_Widget = Widgets.Download_Outlook(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
 
     # Disabling fields --> Download_Data_Source
@@ -385,6 +399,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     #? Build look of Widget
     Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
     
     Metdod_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Sharepoint_Widget.grid(row=1, column=0, padx=20, pady=(5, 20), sticky="n")
@@ -414,7 +429,6 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Activity_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
         WeekDays_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
         Weeks_DF = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
-        Events_DF = pandas.read_csv(f"Operational\\Events.csv", sep=";")
 
         # Total Line
         Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
@@ -470,7 +484,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
         # Day Chart Line
         Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
-        Frame_DashBoard_Chart_Frame = Widgets.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal", Events_DF=Events_DF)
+        Frame_DashBoard_Chart_Frame = Widgets.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
         Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
         #? Build look of Widget
@@ -514,27 +528,66 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
 # -------------------------------------------- Data Page -------------------------------------------- #
 def Page_Data(Frame: CTk|CTkFrame):
-    global Info_current_page, Info_Table_Rows
-    Info_current_page = 0
+    global Info_current_row, Info_Table_Rows, Events_List_Header
+    Info_current_row = 0
     Info_Table_Rows = 20
+    Events_List_Header = ["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]
 
-    #! Dodělat --> při přechodu na druhou stránku se strati HEader a místo něj se vypíšou jednotlivé řádky (asi přidat header) a pak ještě rekalkulovat maximum a minimum
+    def change_first(Table: CTkTable, Current_Rows: CTkLabel, Events_list_len: int) -> None:
+        global Info_current_row
+        if Info_current_row > Info_Table_Rows:
+            Info_current_row = Info_Table_Rows
+            Showed_events = Events_List[0 : Info_Table_Rows]
+            Showed_events.insert(0, Events_List_Header)
+            Table.update_values(Showed_events)
+            Current_Rows.configure(text=f"{0} / {Info_Table_Rows} ({Events_list_len})")
+            window.update_idletasks()
+        else:
+            pass
+
     def change_left(Table: CTkTable, Current_Rows: CTkLabel, Events_list_len: int) -> None:
-        global Info_current_page
-        if Info_current_page > Info_Table_Rows:
-            Info_current_page -= Info_Table_Rows
-            Table.update_values(Events_List[Info_current_page - Info_Table_Rows : Info_current_page])
-            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page} ({Events_list_len})")
+        global Info_current_row
+        if Info_current_row > Info_Table_Rows:
+            Info_current_row -= Info_Table_Rows
+            Start_interval = Info_current_row - Info_Table_Rows
+            End_interval = Info_current_row
+
+            if Start_interval < 0:
+                Start_interval = 0
+                End_interval = Info_Table_Rows
+            else:
+                pass
+
+            Showed_events = Events_List[Start_interval : End_interval]
+            Showed_events.insert(0, Events_List_Header)
+            Table.update_values(Showed_events)
+            Current_Rows.configure(text=f"{Start_interval} / {End_interval} ({Events_list_len})")
             window.update_idletasks()
         else:
             pass
 
     def change_right(Table: CTkTable, Current_Rows: CTkLabel, Events_list_len: int) -> None:
-        global Info_current_page
-        if Info_current_page < Events_list_len:
-            Info_current_page += Info_Table_Rows
-            Table.update_values(Events_List[Info_current_page - Info_Table_Rows : Info_current_page])
-            Current_Rows.configure(text=f"{Info_current_page - Info_Table_Rows} / {Info_current_page} ({Events_list_len})")
+        global Info_current_row
+        if Info_current_row < Events_list_len:
+            Info_current_row += Info_Table_Rows
+            Start_interval = Info_current_row - Info_Table_Rows
+            End_interval = Info_current_row
+            Showed_events = Events_List[Start_interval : Info_current_row]
+            Showed_events.insert(0, Events_List_Header)
+            Table.update_values(Showed_events)
+            Current_Rows.configure(text=f"{Start_interval} / {End_interval} ({Events_list_len})")
+            window.update_idletasks()
+        else:
+            pass
+
+    def change_last(Table: CTkTable, Current_Rows: CTkLabel, Events_list_len: int) -> None:
+        global Info_current_row
+        if Info_current_row < Events_list_len:
+            Info_current_row = Events_list_len
+            Showed_events = Events_List[Events_list_len - Info_Table_Rows : Events_list_len]
+            Showed_events.insert(0, Events_List_Header)
+            Table.update_values(Showed_events)
+            Current_Rows.configure(text=f"{Events_list_len - Info_Table_Rows} / {Events_list_len} ({Events_list_len})")
             window.update_idletasks()
         else:
             pass
@@ -560,19 +613,24 @@ def Page_Data(Frame: CTk|CTkFrame):
 
     # ------------------------- Work Area -------------------------#
     # Current Page text
-    Page_text = Elements.Get_Label(Frame=Frame_Data_Work_Detail_Area, Label_Size="Main", Font_Size="Main")
+    Page_text = Elements.Get_Label(Frame=Frame_Data_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
 
     # Data table
-    Events_List = [["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
+    Events_List = []
     for row in Events.iterrows():
         Events_List.append(row[1].to_list())
-    Events_list_len = len(Events_List) - 1  # -1 because of header
+    Events_list_len = len(Events_List)
 
-    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Values=None, Table_Size="Triple_size", Table_Columns=8, Table_Rows=Info_Table_Rows)
+    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Values=None, Table_Size="Triple_size", Table_Columns=8, Table_Rows=Info_Table_Rows + 1)
     Frame_Events_Table_Var = Frame_Events_Table.children["!ctktable"]
     Frame_Events_Table_Var.configure(wraplength=180)
     # Init values in table
     change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len)
+
+    # Begining Button
+    Button_First = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_First.configure(text="<<", command = lambda: change_first(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
+    Elements.Get_ToolTip(widget=Button_First, message="First page", ToolTip_Size="Normal")
 
     # Pre Button
     Button_Pre = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
@@ -584,6 +642,12 @@ def Page_Data(Frame: CTk|CTkFrame):
     Button_Next.configure(text=">", command = lambda: change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(widget=Button_Next, message="Next page", ToolTip_Size="Normal")
 
+    # End Button
+    Button_Last = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_Last.configure(text=">>", command = lambda: change_last(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
+    Elements.Get_ToolTip(widget=Button_Last, message="Last page", ToolTip_Size="Normal")
+
+
     #? Build look of Widget
     Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Data_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
@@ -592,9 +656,11 @@ def Page_Data(Frame: CTk|CTkFrame):
     Button_Excel.grid(row=0, column=1, padx=5, pady=15, sticky="e")
 
     Frame_Events_Table.pack(side="top", fill="both", expand=True, padx=10, pady=10)
-    Button_Pre.pack(side="left", expand=True, padx=(600,10), pady=10)
+    Button_First.pack(side="left", expand=True, padx=(600,10), pady=10)
+    Button_Pre.pack(side="left", expand=True, padx=(10,10), pady=10)
     Page_text.pack(side="left", expand=True, pady=10)
-    Button_Next.pack(side="left", expand=True, padx=(10,600), pady=10)
+    Button_Next.pack(side="left", expand=True, padx=(10,10), pady=10)
+    Button_Last.pack(side="left", expand=True, padx=(10,600), pady=10)
 
 
 
@@ -657,6 +723,19 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_A = TabView.add("Events - Rules")
     Tab_E_A.pack_propagate(flag=False)
     TabView.set("Apperance")
+
+    Tab_Ape_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
+    Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
+    Tab_Cal_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton3"]
+    Tab_E_G_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton4"]
+    Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton5"]
+    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
+    Elements.Get_ToolTip(widget=Tab_Ape_ToolTip_But, message="Application Apperance Setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Setup related to Downloadinf date.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Scheduler setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
     # Apperance
     Theme_Widget = Widgets.Settings_Aperance_Theme(Frame=Tab_Ape, window=window)
@@ -766,7 +845,7 @@ Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
 Frame_Background.pack(side="top", fill="none", expand=False)
 
 # SideBar
-Frame_Side_Bar = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="SideBar")
+Frame_Side_Bar = Elements.Get_SideBar_Frame(Frame=Frame_Background, Frame_Size="SideBar")
 Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
 # Work Area
