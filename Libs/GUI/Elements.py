@@ -562,6 +562,7 @@ def Get_Tab_View(Frame: CTk|CTkFrame, Tab_size: str) -> CTkTabview:
         border_width = Configuration_TabView_Normal["border_width"],
         border_color = tuple(Configuration_TabView_Normal["border_color"]),
         bg_color = Configuration_TabView_Normal["bg_color"],
+        fg_color = Configuration_TabView_Normal["fg_color"],
         segmented_button_fg_color = Configuration_TabView_Normal["segmented_button_fg_color"],
         segmented_button_selected_color = segmented_button_selected_color,
         segmented_button_selected_hover_color = segmented_button_selected_hover_color,

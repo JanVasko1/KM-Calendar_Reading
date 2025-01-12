@@ -252,6 +252,7 @@
             "Method": "Events",
             "Default": "Office",
             "Location_List": [
+                "",
                 "Office",
                 "Customer"
             ]
@@ -259,7 +260,7 @@
         "Events": {
             "Special_Events": {
                 "Vacation": {
-                    "Search_Text": "Dovolená",
+                    "Search Text": "Dovolená",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "Vacation_Option_List": [
@@ -268,7 +269,7 @@
                     ]
                 },
                 "HomeOffice": {
-                    "Search_Text": "Home Office",
+                    "Search Text": "Home Office",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "HomeOffice_Option_List": [
@@ -277,7 +278,7 @@
                     ]
                 },
                 "Lunch": {
-                    "Search_Text": "Lunch",
+                    "Search Text": "Lunch",
                     "All_Day": "",
                     "Part_Day": "",
                     "Lunch_Option_List": [
@@ -311,31 +312,31 @@
             },
             "Empty": {
                 "General": {
-                    "1": {
+                    "0": {
                         "Project": "Other Internal activities - BPC Brno",
                         "Activity": "Admin",
                         "Description": "Administration and Emails",
-                        "Coverage_Percentage": 50
+                        "Coverage Percentage": 50
                     },
-                    "2": {
+                    "1": {
                         "Project": "Incident handling / support - BPC Brno",
                         "Activity": "Consultancy",
                         "Description": "Support of Support Team",
-                        "Coverage_Percentage": 15
+                        "Coverage Percentage": 15
                     },
-                    "3": {
+                    "2": {
                         "Project": "NUS3 Technical Upgrade (NUS Cloud)",
                         "Activity": "Testing",
                         "Description": "General NUS Cloud Testing",
-                        "Coverage_Percentage": 35
+                        "Coverage Percentage": 35
                     }
                 },
                 "Scheduled": {
-                    "1": {
+                    "0": {
                         "Project": "Other Internal activities - BPC Brno",
                         "Activity": "Admin",
                         "Description": "Administration and Emails",
-                        "Day_of_Week_index": [
+                        "Day of Week": [
                             1,
                             2,
                             3,
@@ -352,96 +353,96 @@
                 "End": "Work - End"
             },
             "Skip": [
-                "Lunch",
-                "Private",
-                "Teambulding",
-                "Teambuilding",
-                "Home Office",
                 "Car Blocker",
-                "Grilovačka",
                 "Christmas party",
                 "Deadline pro TimeSheet",
+                "Grilovačka",
+                "Home Office",
                 "KONTROLA DOCHÁZKY",
-                "Save the date ",
+                "Lunch",
                 "On-Call Duty",
+                "Private",
+                "Save the date ",
+                "Teambuilding",
+                "Teambulding",
                 "TimeSheets - Upload"
             ],
             "Auto_Filler": {
                 "Search_Text": {
+                    "0": {
+                        "Search Text": "NAV ERP Team Meeting:",
+                        "Project": "Other Internal activities - BPC Brno",
+                        "Activity": "Admin",
+                        "Location": "Office"
+                    },
                     "1": {
-                        "Search_Text": "NAV ERP Team Meeting:",
+                        "Search Text": "TDO - Team Meeting",
                         "Project": "Other Internal activities - BPC Brno",
                         "Activity": "Admin",
                         "Location": "Office"
                     },
                     "2": {
-                        "Search_Text": "TDO - Team Meeting",
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Activity": "Admin",
-                        "Location": "Office"
-                    },
-                    "3": {
-                        "Search_Text": "NUS Cloud - Testing",
+                        "Search Text": "NUS Cloud - Testing",
                         "Project": "NUS3 Technical Upgrade (NUS Cloud)",
                         "Activity": "Testing",
                         "Location": "Office"
                     },
+                    "3": {
+                        "Search Text": "NUS Cloud - Sync call",
+                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                        "Activity": "Project Management",
+                        "Location": "Office"
+                    },
                     "4": {
-                        "Search_Text": "NUS Cloud - Sync call",
+                        "Search Text": "NUS Cloud - Integrations: Status",
                         "Project": "NUS3 Technical Upgrade (NUS Cloud)",
                         "Activity": "Project Management",
                         "Location": "Office"
                     },
                     "5": {
-                        "Search_Text": "NUS Cloud - Integrations: Status",
-                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                        "Search Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
+                        "Project": "BRO NUS Cloud Pilot",
                         "Activity": "Project Management",
                         "Location": "Office"
                     },
                     "6": {
-                        "Search_Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
-                        "Project": "BRO NUS Cloud Pilot",
-                        "Activity": "Project Management",
-                        "Location": "Office"
-                    },
-                    "7": {
-                        "Search_Text": "BRO: ",
+                        "Search Text": "BRO: ",
                         "Project": "BRO NUS Cloud Pilot",
                         "Activity": "",
                         "Location": ""
                     },
-                    "8": {
-                        "Search_Text": "BBL: ",
+                    "7": {
+                        "Search Text": "BBL: ",
                         "Project": "NUS (CE) harm.&bus. Support",
                         "Activity": "",
                         "Location": ""
                     },
-                    "9": {
-                        "Search_Text": "Product Backlog Item",
+                    "8": {
+                        "Search Text": "Product Backlog Item",
                         "Project": "",
                         "Activity": "Testing",
                         "Location": ""
                     },
-                    "10": {
-                        "Search_Text": "INC",
+                    "9": {
+                        "Search Text": "INC",
                         "Project": "Incident handling / support - BPC Brno",
                         "Activity": "Consultancy",
                         "Location": ""
                     },
-                    "11": {
-                        "Search_Text": "Travel Time",
+                    "10": {
+                        "Search Text": "Travel Time",
                         "Project": "",
                         "Activity": "Travel Time (Project)",
                         "Location": "Customer"
                     },
-                    "12": {
-                        "Search_Text": "Dovolená",
+                    "11": {
+                        "Search Text": "Dovolená",
                         "Project": "Other Internal activities - BPC Brno",
                         "Activity": "Vacation",
                         "Location": "Office"
                     },
-                    "13": {
-                        "Search_Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
+                    "12": {
+                        "Search Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
                         "Project": "BRO NUS Cloud Pilot",
                         "Activity": "Project Management",
                         "Location": "Office"

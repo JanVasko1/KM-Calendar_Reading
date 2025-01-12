@@ -156,7 +156,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             for item in Events_Empty_Scheduled.items():
                 Schedule_Event_Start_Time_dt = datetime.strptime(item[1]["Start"], Time_format)
                 Schedule_Event_End_Time_dt = datetime.strptime(item[1]["End"], Time_format)
-                Schedule_WeekDays = item[1]["Day_of_Week_index"]
+                Schedule_WeekDays = item[1]["Day of Week"]
 
                 # Scheduled event must be within Weeks Days selected
                 if Day_WeekDay in Schedule_WeekDays:

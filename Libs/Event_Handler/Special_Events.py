@@ -55,7 +55,7 @@ def Vacation(Events: DataFrame):
         Day_WeekDay_name = Day_dt.strftime("%A")
 
         # Vacation - if found as "All day" substituted for real day hours
-        Vacation_Found = Event_Subject.find(Vacation_Details["Search_Text"])
+        Vacation_Found = Event_Subject.find(Vacation_Details["Search Text"])
         if Vacation_Found == -1:
             pass
         else:
@@ -99,7 +99,7 @@ def Lunch(Events: DataFrame):
         
         # Get Lunch Conflict
         Day_Events_df = Parralel_Events.Find_Conflit_in_DF(Check_DF=Day_Events_df)
-        mask1 = Day_Events_df["Subject"] == Lunch_Details["Search_Text"]
+        mask1 = Day_Events_df["Subject"] == Lunch_Details["Search Text"]
         Lunch_df = Day_Events_df.loc[mask1]
 
         # Test if there is Lunch within Day

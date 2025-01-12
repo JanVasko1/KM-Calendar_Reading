@@ -1,5 +1,4 @@
 
-#! Dodělat --> Frames nemají "transparent" pro transparentní ale None
 # Import Libraries
 import time
 import pandas
@@ -20,7 +19,7 @@ from tkhtmlview import HTMLLabel
 
 import Libs.Defaults_Lists as Defaults_Lists
 
-#! ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Set Defaults ------------------------------------------------------------------------------------------------------------------------------------ #
 Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
 Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
@@ -32,219 +31,33 @@ Format_Date = Settings["General"]["Formats"]["Date"]
 Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
 Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
 
-#! ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Get_Current_Theme() -> str:
-    Current_Theme = customtkinter.get_appearance_mode()
-    return Current_Theme
-
-def Theme_Change():
-    Current_Theme = Get_Current_Theme() 
-    if Current_Theme == "Dark":
-        customtkinter.set_appearance_mode(mode_string="light")
-    elif Current_Theme == "Light":
-        customtkinter.set_appearance_mode(mode_string="dark")
-    elif Current_Theme == "System":
-        customtkinter.set_appearance_mode(mode_string="dark")
-    else:
-        customtkinter.set_appearance_mode(mode_string="system")
-
-#? ----------------------------------------------------- Buttons ----------------------------------------------------- #
-# -------------------------------------------- Page Listing -------------------------------------------- #
-def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
-    # Find
-    for widget in Pre_Working_Frame.winfo_children():
-        widget.destroy()
-        window.update_idletasks()
-
-def Show_Download_Page(Active_Window: CTkFrame) -> None:
-    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
-    time.sleep(0.1)
-    Page_Download(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=0, column=0, padx=(10, 2), pady=(280, 10), sticky="e")
-    window.update_idletasks()
-
-def Show_Dashboard_Page(Active_Window: CTkFrame) -> None:
-    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
-    time.sleep(0.1)
-    Page_Dashboard(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
-    window.update_idletasks()
-
-def Show_Data_Page(Active_Window: CTkFrame) -> None:
-    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
-    time.sleep(0.1)
-    Page_Data(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=2, column=0, padx=(10, 2), pady=10, sticky="e")
-    window.update_idletasks()
-
-def Show_Information_Page(Active_Window: CTkFrame) -> None:
-    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
-    time.sleep(0.1)
-    Page_Information(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=3, column=0, padx=(10, 2), pady=10, sticky="e")
-    window.update_idletasks()
-
-def Show_Settings_Page(Active_Window: CTkFrame) -> None:
-    Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
-    time.sleep(0.1)
-    Page_Settings(Frame=Frame_Work_Area_Detail)
-    Active_Window.grid(row=4, column=0, padx=(10, 2), pady=10, sticky="e")
-    window.update_idletasks()
-    
-
-    
-# -------------------------------------------- Functionss -------------------------------------------- #
-def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
-    Can_Download = True
-
-    # Actuall Values
-    Download_Date_Range_Source = Download_Date_Range_Source.get()
-    Download_Data_Source = Download_Data_Source.get()
-    SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"].get()
-    SP_Whole_Period = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"].get()
-    if SP_Whole_Period == 1:
-        SP_Whole_Period = True
-    else:
-        SP_Whole_Period = False
-    SP_End_Date_Max_Today_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
-    if SP_End_Date_Max_Today_Var == 1:
-        SP_End_Date_Max_Today_Var = True
-    else:
-        SP_End_Date_Max_Today_Var = False
-    Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
-    Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
-    Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
-
-    Input_Start_Date = Input_Start_Date.upper()
-    Input_End_Date = Input_End_Date.upper()
-
-    # Missing Data handler
-    if Download_Date_Range_Source == "Sharepoint":
-        if SP_Password == "":
-            Can_Download = False
-            CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
-        else:
-            Input_Start_Date = None
-            Input_End_Date = None
-
-    elif Download_Date_Range_Source == "Manual":
-        SP_Password = None
-        try:
-            # Test if Today is selected 
-            if Input_Start_Date == "T":
-                Input_Start_Date = datetime.now()
-                Input_Start_Date = Input_Start_Date.strftime(Format_Date)
-            else:
-                pass
-
-            if Input_End_Date == "T":
-                Input_End_Date = datetime.now()
-                Input_End_Date = Input_End_Date.strftime(Format_Date)
-            else:
-                pass
-            datetime.strptime(Input_Start_Date, Format_Date)
-            datetime.strptime(Input_End_Date, Format_Date)
-        except:
-            Can_Download = False
-            CTkMessagebox(title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1)
-    else:
-        Can_Download = False
-        CTkMessagebox(title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1)
-
-    if Can_Download == True:
-        if Download_Data_Source == "Exchange":
-            if Exchange_Password == "":
-                Can_Download = False
-                CTkMessagebox(title="Error", message="You forgot to insert Exchange password.", icon="cancel", fade_in_duration=1)
-            else:
-                pass
-        elif Download_Data_Source == "Outlook_Client":
-            Exchange_Password = None
-        else:
-            Can_Download = False
-            CTkMessagebox(title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1)
-    else:
-        pass
-
-    if Can_Download == True:
-        import Libs.Process as Process
-        Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_End_Date_Max_Today_Var=SP_End_Date_Max_Today_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
-    else:
-        CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
-
-
-def Save_Settings():
-    #! Dodělat --> uložit všechno do Settings.json
-    CTkMessagebox(title="Success", message="Changes saved to Settings.", icon="check", option_1="Thanks")
-
+# ------------------------------------------------------------------------------------------------------------------------------------ Local Functions ------------------------------------------------------------------------------------------------------------------------------------ #
 def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
     # Password required
     dialog = Elements.Get_DialogWindow(title=title, text=text, Dialog_Type=Dialog_Type)
     SP_Password = dialog.get_input()
     return SP_Password
 
-def Download_Project_Activities():
-    SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
-    
-    if SP_Password == None:
-        CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
-    else:
-        import Libs.Sharepoint.Sharepoint as Sharepoint
-        Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
-        #! Dodělat --> je potřeba aktualizovat promněné Project_Variable a Action_Variable aby byli použitelný v celém systému
-        CTkMessagebox(title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-def Data_Upload(Events: DataFrame):
-    SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
-    if SP_Password == None:
-        CTkMessagebox(title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1)
-    else:
-        import Libs.Sharepoint.Sharepoint as Sharepoint
-        Sharepoint.Upload(Events=Events, SP_Password=SP_Password)
-        CTkMessagebox(title="Success", message="Sucessfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
-
-def Data_Excel():
-    import subprocess
-    subprocess.run('start excel "Operational\\Events.csv"', shell=True, capture_output=False, text=False)
-
-def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry, Sharepoint_Whole_Period_Var: CTkCheckBox, Sharepoint_Active_Per_Days_Var: CTkCheckBox) -> None:
-    if Download_Date_Range_Source.get() == "Manual":
-        Manual_Date_From_Var.focus()
-        Manual_Date_From_Var.configure(state="normal")
-        Manual_Date_To_Var.configure(state="normal")
-
-        Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
-        Sharepoint_Password_Var.configure(state="disabled")
-        Sharepoint_Whole_Period_Var.configure(state="disabled")
-        Sharepoint_Active_Per_Days_Var.configure(state="disabled")
-    elif Download_Date_Range_Source.get() == "Sharepoint":
-        Sharepoint_Password_Var.focus()
-        Sharepoint_Password_Var.configure(state="normal")
-        Sharepoint_Whole_Period_Var.configure(state="normal")
-        Sharepoint_Active_Per_Days_Var.configure(state="normal")
-
-        Manual_Date_From_Var.delete(first_index=0, last_index=1000)
-        Manual_Date_From_Var.configure(placeholder_text="Date From")
-        Manual_Date_From_Var.configure(state="disabled")
-        Manual_Date_To_Var.delete(first_index=0, last_index=1000)
-        Manual_Date_To_Var.configure(placeholder_text="Date To")
-        Manual_Date_To_Var.configure(state="disabled")
-    else:
-        pass
-
-def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Password_Var: CTkEntry):
-    if Download_Data_Source.get() == "Exchange":
-        Exchange_Password_Var.focus()
-        Exchange_Password_Var.configure(state="normal")
-    elif Download_Data_Source.get() == "Outlook_Client":
-        Exchange_Password_Var.delete(first_index=0, last_index=1000)
-        Exchange_Password_Var.configure(state="disabled")
-    else:
-        pass
-
-#? ----------------------------------------------------- Pages ----------------------------------------------------- #
-# -------------------------------------------- Header -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
+    # ------------------------- Local Functions -------------------------#
+    def Get_Current_Theme() -> str:
+        Current_Theme = customtkinter.get_appearance_mode()
+        return Current_Theme
+
+    def Theme_Change():
+        Current_Theme = Get_Current_Theme() 
+        if Current_Theme == "Dark":
+            customtkinter.set_appearance_mode(mode_string="light")
+        elif Current_Theme == "Light":
+            customtkinter.set_appearance_mode(mode_string="dark")
+        elif Current_Theme == "System":
+            customtkinter.set_appearance_mode(mode_string="dark")
+        else:
+            customtkinter.set_appearance_mode(mode_string="system")
+
+    # ------------------------- Main Functions -------------------------#
     # Theme Change - Button
     Icon_Theme = Elements.Get_Button_Icon(Frame=Frame, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
     Icon_Theme.configure(text="")
@@ -272,10 +85,51 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_Account_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
-
-
-# -------------------------------------------- Side Bar -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
+    # ------------------------- Local Functions -------------------------#
+    def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
+        # Find
+        for widget in Pre_Working_Frame.winfo_children():
+            widget.destroy()
+            window.update_idletasks()
+
+    def Show_Download_Page(Active_Window: CTkFrame) -> None:
+        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        time.sleep(0.1)
+        Page_Download(Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=0, column=0, padx=(10, 2), pady=(280, 10), sticky="e")
+        window.update_idletasks()
+
+    def Show_Dashboard_Page(Active_Window: CTkFrame) -> None:
+        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        time.sleep(0.1)
+        Page_Dashboard(Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
+        window.update_idletasks()
+
+    def Show_Data_Page(Active_Window: CTkFrame) -> None:
+        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        time.sleep(0.1)
+        Page_Data(Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=2, column=0, padx=(10, 2), pady=10, sticky="e")
+        window.update_idletasks()
+
+    def Show_Information_Page(Active_Window: CTkFrame) -> None:
+        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        time.sleep(0.1)
+        Page_Information(Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=3, column=0, padx=(10, 2), pady=10, sticky="e")
+        window.update_idletasks()
+
+    def Show_Settings_Page(Active_Window: CTkFrame) -> None:
+        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        time.sleep(0.1)
+        Page_Settings(Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=4, column=0, padx=(10, 2), pady=10, sticky="e")
+        window.update_idletasks()
+
+    # ------------------------- Main Functions -------------------------#
     Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
     
     # Page - Downlaod
@@ -317,10 +171,124 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=10, sticky="w")
     Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=10, sticky="w")
 
-
-
-# -------------------------------------------- Downlaod Page -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Downlaod Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):
+    # ------------------------- Local Functions -------------------------#
+    def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Password_Var: CTkEntry):
+        if Download_Data_Source.get() == "Exchange":
+            Exchange_Password_Var.focus()
+            Exchange_Password_Var.configure(state="normal")
+        elif Download_Data_Source.get() == "Outlook_Client":
+            Exchange_Password_Var.delete(first_index=0, last_index=1000)
+            Exchange_Password_Var.configure(state="disabled")
+        else:
+            pass
+
+    def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry, Sharepoint_Whole_Period_Var: CTkCheckBox, Sharepoint_Active_Per_Days_Var: CTkCheckBox) -> None:
+        if Download_Date_Range_Source.get() == "Manual":
+            Manual_Date_From_Var.focus()
+            Manual_Date_From_Var.configure(state="normal")
+            Manual_Date_To_Var.configure(state="normal")
+
+            Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
+            Sharepoint_Password_Var.configure(state="disabled")
+            Sharepoint_Whole_Period_Var.configure(state="disabled")
+            Sharepoint_Active_Per_Days_Var.configure(state="disabled")
+        elif Download_Date_Range_Source.get() == "Sharepoint":
+            Sharepoint_Password_Var.focus()
+            Sharepoint_Password_Var.configure(state="normal")
+            Sharepoint_Whole_Period_Var.configure(state="normal")
+            Sharepoint_Active_Per_Days_Var.configure(state="normal")
+
+            Manual_Date_From_Var.delete(first_index=0, last_index=1000)
+            Manual_Date_From_Var.configure(placeholder_text="Date From")
+            Manual_Date_From_Var.configure(state="disabled")
+            Manual_Date_To_Var.delete(first_index=0, last_index=1000)
+            Manual_Date_To_Var.configure(placeholder_text="Date To")
+            Manual_Date_To_Var.configure(state="disabled")
+        else:
+            pass
+
+    def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
+        Can_Download = True
+
+        # Actuall Values
+        Download_Date_Range_Source = Download_Date_Range_Source.get()
+        Download_Data_Source = Download_Data_Source.get()
+        SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"].get()
+        SP_Whole_Period = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+        if SP_Whole_Period == 1:
+            SP_Whole_Period = True
+        else:
+            SP_Whole_Period = False
+        SP_End_Date_Max_Today_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+        if SP_End_Date_Max_Today_Var == 1:
+            SP_End_Date_Max_Today_Var = True
+        else:
+            SP_End_Date_Max_Today_Var = False
+        Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
+        Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+
+        Input_Start_Date = Input_Start_Date.upper()
+        Input_End_Date = Input_End_Date.upper()
+
+        # Missing Data handler
+        if Download_Date_Range_Source == "Sharepoint":
+            if SP_Password == "":
+                Can_Download = False
+                CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
+            else:
+                Input_Start_Date = None
+                Input_End_Date = None
+
+        elif Download_Date_Range_Source == "Manual":
+            SP_Password = None
+            try:
+                # Test if Today is selected 
+                if Input_Start_Date == "T":
+                    Input_Start_Date = datetime.now()
+                    Input_Start_Date = Input_Start_Date.strftime(Format_Date)
+                else:
+                    pass
+
+                if Input_End_Date == "T":
+                    Input_End_Date = datetime.now()
+                    Input_End_Date = Input_End_Date.strftime(Format_Date)
+                else:
+                    pass
+                datetime.strptime(Input_Start_Date, Format_Date)
+                datetime.strptime(Input_End_Date, Format_Date)
+            except:
+                Can_Download = False
+                CTkMessagebox(title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1)
+        else:
+            Can_Download = False
+            CTkMessagebox(title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1)
+
+        if Can_Download == True:
+            if Download_Data_Source == "Exchange":
+                if Exchange_Password == "":
+                    Can_Download = False
+                    CTkMessagebox(title="Error", message="You forgot to insert Exchange password.", icon="cancel", fade_in_duration=1)
+                else:
+                    pass
+            elif Download_Data_Source == "Outlook_Client":
+                Exchange_Password = None
+            else:
+                Can_Download = False
+                CTkMessagebox(title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+
+        if Can_Download == True:
+            import Libs.Process as Process
+            Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_End_Date_Max_Today_Var=SP_End_Date_Max_Today_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+        else:
+            CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
+
+
+    # ------------------------- Main Functions -------------------------#
     # Default
     Download_Date_Range_Source = StringVar(master=Frame, value="Sharepoint", name="Download_Date_Range_Source")
     Download_Data_Source = StringVar(master=Frame, value="Exchange", name="Download_Data_Source")
@@ -412,10 +380,9 @@ def Page_Download(Frame: CTk|CTkFrame):
     Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="e")
     Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="e")
 
-    
-
-# -------------------------------------------- Dashboadr Page -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Dashboadr Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Dashboard(Frame: CTk|CTkFrame):
+    # ------------------------- Main Functions -------------------------#
     # Define Frames
     Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
@@ -525,9 +492,9 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     except:
         CTkMessagebox(title="Error", message=f"Dashboard not all data available, pelase run Downloader first.", icon="cancel", fade_in_duration=1)
 
-
-# -------------------------------------------- Data Page -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Data Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Data(Frame: CTk|CTkFrame):
+    # ------------------------- Local Functions -------------------------#
     global Info_current_row, Info_Table_Rows, Events_List_Header
     Info_current_row = 0
     Info_Table_Rows = 20
@@ -592,6 +559,20 @@ def Page_Data(Frame: CTk|CTkFrame):
         else:
             pass
 
+    def Data_Excel():
+        import subprocess
+        subprocess.run('start excel "Operational\\Events.csv"', shell=True, capture_output=False, text=False)
+
+    def Data_Upload(Events: DataFrame):
+        SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+        if SP_Password == None:
+            CTkMessagebox(title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1)
+        else:
+            import Libs.Sharepoint.Sharepoint as Sharepoint
+            Sharepoint.Upload(Events=Events, SP_Password=SP_Password)
+            CTkMessagebox(title="Success", message="Sucessfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
     Frame_Data_Button_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
@@ -664,8 +645,9 @@ def Page_Data(Frame: CTk|CTkFrame):
 
 
 
-# -------------------------------------------- Information Page -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Information Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Information(Frame: CTk|CTkFrame):
+    # ------------------------- Main Functions -------------------------#
     Frame_Information_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Information_Work_Detail_Area.grid_propagate(flag=False)
     
@@ -687,8 +669,26 @@ def Page_Information(Frame: CTk|CTkFrame):
 
 
 
-# -------------------------------------------- Settings Page -------------------------------------------- #
+# ------------------------------------------------------------------------------------------------------------------------------------ Settings Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Settings(Frame: CTk|CTkFrame):
+    # ------------------------- Local Functions -------------------------#
+    def Save_Settings():
+        #! Dodělat --> uložit všechno do Settings.json
+        CTkMessagebox(title="Success", message="Changes saved to Settings.", icon="check", option_1="Thanks")
+
+    def Download_Project_Activities():
+        SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+        
+        if SP_Password == None:
+            CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
+        else:
+            import Libs.Sharepoint.Sharepoint as Sharepoint
+            Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
+            #! Dodělat --> je potřeba aktualizovat promněné Project_Variable a Action_Variable aby byli použitelný v celém systému
+            CTkMessagebox(title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+
+    # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
     Frame_Settings_State_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
@@ -801,8 +801,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
 
 
-#! ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-# ---------------------------------- Application window ----------------------------------#
+# -------------------------------------------------------------------------------------------------------------------------------------------------- Main Program -------------------------------------------------------------------------------------------------------------------------------------------------- #
 class Win(customtkinter.CTk):
     def __init__(self):
         super().__init__()

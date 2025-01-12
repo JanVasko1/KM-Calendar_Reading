@@ -51,21 +51,21 @@ def Load_Exchange_env() -> list[str, str, str]:
     tenant_id = os.getenv("tenant_id")
     return client_id, client_secret, tenant_id
 
-def Information_Update_Settings(Area: str, Field: str, Information: int|str|list|dict) -> None:
+def Information_Update_Settings(Structure_path: str, Information: int|str|list|dict) -> None:
     try:
         # Load Settings.json
         Settings = Load_Settings()
 
         # Update Last date in data dictionary
-        Settings["Event_Handler"][f"{Area}"][Field] = Information
-
+        exec(f"Settings{Structure_path} = {Information}")
+        
         # Save in Settings.json
         with open(f"Libs\\Settings.json", mode="wt", encoding="UTF-8", errors="ignore") as file:
             json.dump(obj=Settings, fp=file, indent=4, default=str, ensure_ascii=False)
         file.close()
 
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {Field}", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {Structure_path}", icon="cancel", fade_in_duration=1)
 
 
 def Delete_File(file_path: str) -> None:

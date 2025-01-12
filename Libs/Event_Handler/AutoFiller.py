@@ -4,7 +4,7 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]
+Details_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search Text"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Events: DataFrame):
@@ -18,7 +18,7 @@ def AutoFiller(Events: DataFrame):
         Event_Location = row_Series["Location"]
 
         for item in Details_dict.items():
-            Search_text = item[1]["Search_Text"]
+            Search_text = item[1]["Search Text"]
             Part_Found = Event_Subject.find(Search_text)
 
             if Part_Found == -1:
