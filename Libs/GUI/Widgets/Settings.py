@@ -151,14 +151,13 @@ def Update_empty_information(Check_List: list):
     return Check_List
 
 
-def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_Option_Var: CTkOptionMenu) -> None:
+def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_Option_Var: CTkOptionMenu, Project_Variable: StringVar) -> None:
     try:
+        Project_Variable.set(value=Project_Option_Var)
         # Get Selected Proejct and retrive Project Type of selected Project
-        Selected_Project = Project_Option_Var.get()
-        print(Selected_Project)
         for key, value in Project_dict.items():
             Project = value["Project"]
-            if Project == Selected_Project:
+            if Project == Project_Option_Var:
                 Project_Type = value["Project_Type"]
                 break
         for key, value in Activity_by_Type_dict.items():
@@ -175,13 +174,14 @@ def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_O
 def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Apperance_Change_Theme(Theme_Frame_Var: CTkOptionMenu) ->  None:
-        #! Dodělat --> zkusit uložit rovnou do SEttings.json po změně optionu
-        Theme_Selected = Theme_Frame_Var.get()
-        customtkinter.set_appearance_mode(mode_string=Theme_Selected)
+        Theme_Variable.set(Theme_Frame_Var)
+        customtkinter.set_appearance_mode(mode_string=Theme_Frame_Var)
+        Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Theme"], Information=Theme_Frame_Var)
 
     def Apperance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
+        Win_Style_Variable.set(Win_Style_Selected)
         pywinstyles.apply_style(window=window, style=Win_Style_Selected)
-        window.update_idletasks()
+        Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Style"], Information=Win_Style_Selected)
 
     # ------------------------- Main Functions -------------------------#
     Theme_Variable = StringVar(master=Frame, value=Theme_Actual)
@@ -195,7 +195,7 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     Theme_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Theme", Field_Type="Input_OptionMenu") 
     Theme_Frame_Var = Theme_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Theme_Frame_Var.configure(variable=Theme_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Theme_Frame_Var, values=Theme_List, command= Apperance_Change_Theme(Theme_Frame_Var=Theme_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Theme_Frame_Var, values=Theme_List, command = lambda Theme_Frame_Var: Apperance_Change_Theme(Theme_Frame_Var=Theme_Frame_Var))
 
     # Field - Windows Style
     Win_Style_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Window Style", Field_Type="Input_OptionMenu") 
@@ -212,19 +212,34 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
 
 def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
-    def Settings_Disabeling_Color_Pickers(Selected_Value: str, Entry_Field: CTkEntry, Picker_Button: CTkButton) -> None:
+    def Settings_Disabeling_Color_Pickers(Selected_Value: str, Entry_Field: CTkEntry, Picker_Button: CTkButton, Variable: StringVar, Helper: str) -> None:
+        Variable.set(value=Selected_Value)
         if Selected_Value == "Windows":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
+            # Accent only
+            Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "App Default":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
+            # Both
+            if Helper == "Accent":
+                Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+            elif Helper == "Hover":
+                Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "Accent Lighter":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
+            # Hover only
+            Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "Manual":
             Entry_Field.configure(state="normal")
             Picker_Button.configure(state="normal")
+            # Both
+            if Helper == "Accent":
+                Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+            elif Helper == "Hover":
+                Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         else:
             CTkMessagebox(title="Error", message="Accent Color Method not allowed", icon="cancel", fade_in_duration=1)
 
@@ -268,11 +283,12 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # Button - Collor Picker
     Accent_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Accent_Color_Picker_Button_Var = Accent_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
     Elements.Get_ToolTip(widget=Accent_Color_Picker_Button_Var, message="Select manualy Accent collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
-    Elements.Get_Option_Menu_Advance(attach=Accent_Color_Mode_Frame_Var, values=Accent_Color_Mode_List, command = Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var))
+    Elements.Get_Option_Menu_Advance(attach=Accent_Color_Mode_Frame_Var, values=Accent_Color_Mode_List, command = lambda Accent_Color_Mode_Frame_Var: Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode_Frame_Var, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent"))
+    Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent")
 
     # Field - Hover Color Mode
     Hover_Color_Mode_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Mode", Field_Type="Input_OptionMenu") 
@@ -291,7 +307,8 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(widget=Hover_Color_Picker_Button_Var, message="Select manualy Hover collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
-    Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda: Settings_Disabeling_Color_Pickers(Selected_Variable=Hover_Color_Mode_Variable, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var))
+    Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda Hover_Color_Mode_Frame_Var: Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode_Frame_Var, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover"))
+    Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")
 
 
     #? Build look of Widget
@@ -790,7 +807,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
             Skip_Events.remove(Header_List)
             Skip_Events.sort()
-            Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Skip"]""", Information=Skip_Events)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip"], Information=Skip_Events)
         else:
             CTkMessagebox(title="Error", message=f"Subject is already within list of skip Events.", icon="cancel", fade_in_duration=1)
 
@@ -815,7 +832,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
             Skip_Events.remove("Skip Events")
             Skip_Events.sort()
-            Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Skip"]""", Information=Skip_Events)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip"], Information=Skip_Events)
         else:
             CTkMessagebox(title="Error", message=f"Header cannot be deleted.", icon="cancel", fade_in_duration=1)
 
@@ -823,7 +840,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_Skip_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Skip_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Skip"]""", Information=[])
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip"], Information=[])
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -918,7 +935,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
                 Empty_General_Events_row_dict = dict(zip(Header_List, Empty_General_Events_row))
                 General_dict[Counter] = Empty_General_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Empty"]["General"]""", Information=General_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
         else:
             pass
     
@@ -937,7 +954,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
                 Empty_General_Events_row_dict = dict(zip(Header_List, Empty_General_Events_row))
                 General_dict[Counter] = Empty_General_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Empty"]["General"]""", Information=General_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
             Delete_One_Close()
 
         def Delete_One_Close() -> None:
@@ -1015,7 +1032,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_Empty_General_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Empty_General_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Empty"]["General"]""", Information={})
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information={})
 
     def Recalculate_Empty_Event(Header_List: list, Frame_Empty_General_Table_Var: CTkTable) -> None:
         def Recalculation_Confirm(Frame_Body: CTkFrame, Lines_No: int) -> None:
@@ -1065,7 +1082,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
                     Empty_General_Events_row_dict = dict(zip(Header_List, Empty_General_Events_row))
                     General_dict[Counter] = Empty_General_Events_row_dict
                     Counter += 1
-                Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Empty"]["General"]""", Information=General_dict)
+                Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
 
                 Recalculation_Reject()
             else:
@@ -1155,8 +1172,8 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Activity_Option_Var1 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var1.configure(variable=Activity_Variable)
 
-    #! Dodělat --> filtrovat aktivity podle Project Type!!!! --> abych zadal správnou aktivitu
-    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var1, values=Project_List, command = Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var1, Activity_Option_Var=Activity_Option_Var1))
+    # Project/Activity OptionMenu update
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var1, values=Project_List, command = lambda Project_Option_Var1: Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var1, Activity_Option_Var=Activity_Option_Var1, Project_Variable=Project_Variable))
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var1, values=[], command=None)
 
     # Field - Coverage
@@ -1277,7 +1294,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
                 Schedule_Events_row_dict = dict(zip(Header_List, Schedule_Events_row))
                 Schedule_dict[Counter] = Schedule_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Empty"]["Scheduled"]""", Information=Schedule_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information=Schedule_dict)
         else:
             pass
 
@@ -1290,7 +1307,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_Empty_Schedules_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Empty_Schedules_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Empty"]["Scheduled"]""", Information={})
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     Header_List = ["Project", "Activity", "Description", "Day of Week", "Start", "End"]
@@ -1376,8 +1393,8 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Activity_Option_Var2 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var2.configure(variable=Activity_Variable)
 
-    #! Dodělat --> filtrovat aktivity podle Project Type!!!! --> abych zadal správnou aktivitu
-    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var2, values=Project_List, command = Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var2, Activity_Option_Var=Activity_Option_Var2))
+    # Project/Activity OptionMenu update
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var2, values=Project_List, command = lambda Project_Option_Var2: Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var2, Activity_Option_Var=Activity_Option_Var2, Project_Variable=Project_Variable))
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var2, values=Activity_All_List, command=None)
 
     # Field - Start Time
@@ -1468,14 +1485,13 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
                 Auto_Fill_Events_row_row_dict = dict(zip(Header_List, Auto_Fill_Events_row))
                 Auto_Fill_dict[Counter] = Auto_Fill_Events_row_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]""", Information=Auto_Fill_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text"], Information=Auto_Fill_dict)
         else:
             pass
         
 
     def Del_AutoFill_Event_One() -> None:
         print("Del_AutoFill_Event_One")
-        #! Dodělat --> udělat popup page, ve které bude pouze jeden CTkOptionMEnu s listem SearchTExtů a tlačítko na Confirm a Reject
         #! Dodělat --> vymazat z tabulky a uložit do Json
         pass
 
@@ -1483,7 +1499,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_AutoFiller_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_AutoFiller_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]""", Information={})
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     Header_List = ["Search Text", "Project", "Activity", "Location"]

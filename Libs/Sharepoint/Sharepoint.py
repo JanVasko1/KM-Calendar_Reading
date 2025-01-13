@@ -140,7 +140,7 @@ def Get_Project() -> None:
     Projects_dict = Projects_df.to_dict()
 
     # Save to Settings.json
-    Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Project"]["Project_List"]""", Information=Projects_dict)
+    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Project", "Project_List"], Information=Projects_dict)
     
 def Get_Activity() -> None:
     Activities_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
@@ -173,5 +173,5 @@ def Get_Activity() -> None:
         Counter += 1
 
     # Save to Settings.json
-    Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Activity"]["Activity_List"]""", Information=Activity_list)
-    Defaults_Lists.Information_Update_Settings(Structure_path="""["Event_Handler"]["Activity"]["Activity_by_Type_dict"]""", Information=Activity_by_Type_dict)
+    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_List"], Information=Activity_list)
+    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_by_Type_dict"], Information=Activity_by_Type_dict)

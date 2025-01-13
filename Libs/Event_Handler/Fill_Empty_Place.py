@@ -21,7 +21,7 @@ Day_End_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:
-    Random_Num = random.randrange(start=1, stop=Gen_Event_Counter + 1, step=1)
+    Random_Num = random.randrange(start=0, stop=Gen_Event_Counter, step=1)
     General_Empty_Project = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Project"]
     General_Empty_Activity = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Activity"]
     General_Empty_Description = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Description"]
@@ -336,7 +336,7 @@ def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
         Fill_Event_desc_list.append(Fill_Events_dict[key]["Description"])
         Fill_Event_project_list.append(Fill_Events_dict[key]["Project"])
         Fill_Event_activity_list.append(Fill_Events_dict[key]["Activity"])
-        Fill_Event_cover_list.append(Fill_Events_dict[key]["Coverage_Percentage"])
+        Fill_Event_cover_list.append(Fill_Events_dict[key]["Coverage Percentage"])
 
     # Check if Coverage is 100%
     if sum(Fill_Event_cover_list) == 100:
