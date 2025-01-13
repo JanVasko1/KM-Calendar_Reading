@@ -11,7 +11,6 @@ from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CT
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
 
-import Libs.GUI.Widgets as Widgets
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 import pywinstyles
@@ -173,6 +172,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Downlaod Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):
+    import Libs.GUI.Widgets.Download as Download
     # ------------------------- Local Functions -------------------------#
     def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Password_Var: CTkEntry):
         if Download_Data_Source.get() == "Exchange":
@@ -320,13 +320,13 @@ def Page_Download(Frame: CTk|CTkFrame):
     
     Metdod_Text.configure(text="Step 1 - Date Range Source")
 
-    Sharepoint_Widget = Widgets.Download_Sharepoint(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Sharepoint_Widget = Download.Download_Sharepoint(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"]
     Sharepoint_Whole_Period_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"]
     Sharepoint_Active_Per_Days_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"]
 
-    Manual_Widget = Widgets.Download_Manual(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Manual_Widget = Download.Download_Manual(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
@@ -341,11 +341,11 @@ def Page_Download(Frame: CTk|CTkFrame):
     Source_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Download Data Source")
 
-    Exchange_Widget = Widgets.Download_Exchange(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Exchange_Widget = Download.Download_Exchange(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
-    Outlook_Widget = Widgets.Download_Outlook(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Outlook_Widget = Download.Download_Outlook(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
 
     # Disabling fields --> Download_Data_Source
@@ -382,6 +382,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Dashboadr Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Dashboard(Frame: CTk|CTkFrame):
+    import Libs.GUI.Widgets.DashBoard as DashBoard
     # ------------------------- Main Functions -------------------------#
     # Define Frames
     Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
@@ -407,51 +408,51 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
         Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
         Frame_Dashboard_Total_Line.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Counter = Widgets.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
+        Frame_DashBoard_Totals_Counter = DashBoard.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
         Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Total = Widgets.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
+        Frame_DashBoard_Totals_Total = DashBoard.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
         Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Average = Widgets.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
+        Frame_DashBoard_Totals_Average = DashBoard.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
         Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Report_Per_Util = Widgets.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
+        Frame_DashBoard_Totals_Report_Per_Util = DashBoard.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
         Frame_DashBoard_Totals_Report_Per_Util.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Active_Day_Util = Widgets.DashBoard_Totals_Active_Day_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
+        Frame_DashBoard_Totals_Active_Day_Util = DashBoard.DashBoard_Totals_Active_Day_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
         Frame_DashBoard_Totals_Active_Day_Util.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Util_by_today_surplus = Widgets.DashBoard_Totals_Utilization_Surplus_Widget(Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
+        Frame_DashBoard_Totals_Util_by_today_surplus = DashBoard.DashBoard_Totals_Utilization_Surplus_Widget(Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
         Frame_DashBoard_Totals_Util_by_today_surplus.pack_propagate(flag=False)
 
         # Project Activity Line
         Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
         Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
         Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
-        Frame_DashBoard_Project_Frame = Widgets.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Frame = DashBoard.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Projec_DF=Projec_DF)
         Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
-        Frame_DashBoard_Project_Detail1_Frame = Widgets.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail1_Frame = DashBoard.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
         Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Project_Detail2_Frame = Widgets.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail2_Frame = DashBoard.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
         Frame_DashBoard_Project_Detail2_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Project_Detail3_Frame = Widgets.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail3_Frame = DashBoard.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
         Frame_DashBoard_Project_Detail3_Frame.pack_propagate(flag=False)
 
         Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
         Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
-        Frame_DashBoard_Activity_Frame = Widgets.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Frame = DashBoard.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
         Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
-        Frame_DashBoard_Activity_Detail1_Frame = Widgets.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail1_Frame = DashBoard.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Activity_Detail2_Frame = Widgets.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail2_Frame = DashBoard.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail2_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Activity_Detail3_Frame = Widgets.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail3_Frame = DashBoard.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
 
         # WeekDay and Weeks Line
         Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
-        Frame_DashBoard_WeekDays_Frame = Widgets.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
-        Frame_DashBoard_Weeks_Frame = Widgets.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
+        Frame_DashBoard_WeekDays_Frame = DashBoard.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
+        Frame_DashBoard_Weeks_Frame = DashBoard.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
 
         # Day Chart Line
         Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
-        Frame_DashBoard_Chart_Frame = Widgets.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
+        Frame_DashBoard_Chart_Frame = DashBoard.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
         Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
         #? Build look of Widget
@@ -671,6 +672,7 @@ def Page_Information(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Settings Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Settings(Frame: CTk|CTkFrame):
+    import Libs.GUI.Widgets.Settings as Settings_Widgets
     # ------------------------- Local Functions -------------------------#
     def Save_Settings():
         #! Dodělat --> uložit všechno do Settings.json
@@ -738,34 +740,34 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
     # Apperance
-    Theme_Widget = Widgets.Settings_Aperance_Theme(Frame=Tab_Ape, window=window)
-    Color_Pallete_Widget = Widgets.Settings_Aperance_Color_Pallete(Frame=Tab_Ape)
+    Theme_Widget = Settings_Widgets.Settings_Aperance_Theme(Frame=Tab_Ape, window=window)
+    Color_Pallete_Widget = Settings_Widgets.Settings_Aperance_Color_Pallete(Frame=Tab_Ape)
 
     # General Page
-    Sharepoint_Widget = Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
-    Exchange_Widget = Widgets.Settings_General_Exchange(Frame=Tab_Gen)
-    Outlook_Widget = Widgets.Settings_General_Outlook(Frame=Tab_Gen)
-    Formats_Widget = Widgets.Settings_General_Formats(Frame=Tab_Gen)
+    Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
+    Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Frame=Tab_Gen)
+    Outlook_Widget = Settings_Widgets.Settings_General_Outlook(Frame=Tab_Gen)
+    Formats_Widget = Settings_Widgets.Settings_General_Formats(Frame=Tab_Gen)
 
     # Calendar Page
-    Calendar_Working_Widget = Widgets.Settings_Calendar_Working_Hours(Frame=Tab_Cal)
-    Calendar_Vacation_Widget = Widgets.Settings_Calendar_Vacation(Frame=Tab_Cal)
-    Calendar_Start_End_Widget = Widgets.Settings_Calendar_Start_End_Time(Frame=Tab_Cal)
+    Calendar_Working_Widget = Settings_Widgets.Settings_Calendar_Working_Hours(Frame=Tab_Cal)
+    Calendar_Vacation_Widget = Settings_Widgets.Settings_Calendar_Vacation(Frame=Tab_Cal)
+    Calendar_Start_End_Widget = Settings_Widgets.Settings_Calendar_Start_End_Time(Frame=Tab_Cal)
 
     # Event-General Page
-    Event_Lunch_Widget = Widgets.Settings_Events_General_Lunch(Frame=Tab_E_G)
-    Event_Vacation_Widget = Widgets.Settings_Events_General_Vacation(Frame=Tab_E_G)
-    Event_HomeOffice_Widget = Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_G)
-    Event_Skip_Widget = Widgets.Settings_Events_General_Skip(Frame=Tab_E_G)
-    Event_Parralel_Widget = Widgets.Settings_Parralel_events(Frame=Tab_E_G)
-    Event_Join_Widget = Widgets.Settings_Join_events(Frame=Tab_E_G)
+    Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Frame=Tab_E_G)
+    Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Frame=Tab_E_G)
+    Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_G)
+    Event_Skip_Widget = Settings_Widgets.Settings_Events_General_Skip(Frame=Tab_E_G)
+    Event_Parralel_Widget = Settings_Widgets.Settings_Parralel_events(Frame=Tab_E_G)
+    Event_Join_Widget = Settings_Widgets.Settings_Join_events(Frame=Tab_E_G)
 
     # Event-Empty Page
-    Event_Empty_General_Widget = Widgets.Settings_Events_Empty_Generaly(Frame=Tab_E_E)
-    Event_Scheduler_Widget = Widgets.Settings_Events_Empt_Schedule(Frame=Tab_E_E)
+    Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generaly(Frame=Tab_E_E)
+    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empt_Schedule(Frame=Tab_E_E)
 
     # Event-AutoFill Page
-    Event_AutoFiller_Widget = Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
+    Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
 
     #? Build look of Widget
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)

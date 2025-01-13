@@ -172,6 +172,35 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
 
     return Frame_Area
 
+def Get_Double_Label(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
+    # Build one line for two input field
+    Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
+    Frame_Area.pack_propagate(flag=False)
+    Frame_Area.pack(side="top", fill="none", expand=True, padx=10, pady=(0,5))
+
+    # Frame Label
+    Frame_Label = Elements.Get_Widget_Field_Frame_Label(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
+    Frame_Label.pack_propagate(flag=False)
+    Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
+
+    Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
+    Label_text.configure(text=f"{Label}")
+    Label_text.pack(side="right", fill="none")
+
+    # Frame Space between Label and Value
+    Frame_Space = Elements.Get_Widget_Field_Frame_Space(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
+    Frame_Space.pack(side="left", fill="none", expand=True, padx=0, pady=0)
+
+    # Frame Value1
+    Frame_Value = Elements.Get_Widget_Field_Frame_Value(Frame=Frame_Area, Field_Frame_Type=Field_Frame_Type)
+    Frame_Value.pack_propagate(flag=False)
+    Frame_Value.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+
+    Label_text = Elements.Get_Label(Frame=Frame_Value, Label_Size="Field_Label", Font_Size="Field_Label")
+    Label_text.pack(side="right", fill="none")
+
+    return Frame_Area
+
 def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
     # Build one column for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
