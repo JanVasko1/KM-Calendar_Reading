@@ -258,9 +258,13 @@
             ]
         },
         "Events": {
+            "Start_End_Events": {
+                "Start": "Work - Start",
+                "End": "Work - End"
+            },
             "Special_Events": {
                 "Vacation": {
-                    "Search Text": "Dovolená",
+                    "Search_Text": "Dovolená",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "Vacation_Option_List": [
@@ -269,7 +273,7 @@
                     ]
                 },
                 "HomeOffice": {
-                    "Search Text": "Home Office",
+                    "Search_Text": "Home Office",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "HomeOffice_Option_List": [
@@ -278,7 +282,7 @@
                     ]
                 },
                 "Lunch": {
-                    "Search Text": "Lunch",
+                    "Search_Text": "Lunch",
                     "All_Day": "",
                     "Part_Day": "",
                     "Lunch_Option_List": [
@@ -300,14 +304,14 @@
                 ]
             },
             "Join_method": {
-                "Free": "Overwrite_Empty_Default",
-                "Tentative": "Overwrite_Empty_Default",
-                "Busy": "Keep",
-                "Out of Office": "Keep",
-                "Working elsewhere": "Keep",
+                "Free": "Keep separate",
+                "Tentative": "Keep separate",
+                "Busy": "Join",
+                "Out of Office": "Join",
+                "Working elsewhere": "Join",
                 "Methods_List": [
-                    "Keep",
-                    "Overwrite_Empty_Default"
+                    "Join",
+                    "Keep separate"
                 ]
             },
             "Empty": {
@@ -348,18 +352,12 @@
                     }
                 }
             },
-            "Start_End_Events": {
-                "Start": "Work - Start",
-                "End": "Work - End"
-            },
             "Skip": [
                 "Car Blocker",
                 "Christmas party",
                 "Deadline pro TimeSheet",
                 "Grilovačka",
-                "Home Office",
                 "KONTROLA DOCHÁZKY",
-                "Lunch",
                 "On-Call Duty",
                 "Private",
                 "Save the date ",

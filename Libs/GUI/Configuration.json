@@ -1,7 +1,7 @@
 {
     "Global_Apperance": {
         "Window": {
-            "Style": "normal",
+            "Style": "dark",
             "Style_List": [
                 "dark",
                 "mica",

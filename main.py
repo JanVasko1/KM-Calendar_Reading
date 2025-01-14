@@ -25,7 +25,6 @@ Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
 Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 Format_Date = Settings["General"]["Formats"]["Date"]
-Format_Date = Settings["General"]["Formats"]["Date"]
 
 Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
 Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
