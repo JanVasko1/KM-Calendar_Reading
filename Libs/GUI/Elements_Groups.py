@@ -74,7 +74,7 @@ def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,
     Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
     Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
-    Label_text.configure(text=f"{Label}")
+    Label_text.configure(text=f"{Label}:")
     Label_text.pack(side="right", fill="none")
 
     # Frame Space between Label and Value
@@ -139,7 +139,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
     Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
-    Label_text.configure(text=f"{Label}")
+    Label_text.configure(text=f"{Label}:")
     Label_text.pack(side="right", fill="none")
 
     # Frame Space between Label and Value
@@ -184,7 +184,7 @@ def Get_Double_Label(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> 
     Frame_Label.pack(side="left", fill="x", expand=False, padx=0, pady=7)
 
     Label_text = Elements.Get_Label(Frame=Frame_Label, Label_Size="Field_Label", Font_Size="Field_Label")
-    Label_text.configure(text=f"{Label}")
+    Label_text.configure(text=f"{Label}:")
     Label_text.pack(side="right", fill="none")
 
     # Frame Space between Label and Value

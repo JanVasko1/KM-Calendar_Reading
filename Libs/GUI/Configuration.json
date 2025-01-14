@@ -1,7 +1,7 @@
 {
     "Global_Apperance": {
         "Window": {
-            "Style": "acrylic",
+            "Style": "normal",
             "Style_List": [
                 "dark",
                 "mica",
@@ -24,7 +24,7 @@
             "Colors": {
                 "Accent": {
                     "Accent_Color_Mode": "Windows",
-                    "Accent_Color_Manual": "#e6960f",
+                    "Accent_Color_Manual": "#74959b",
                     "Accent_Color_List": [
                         "Windows",
                         "Manual",
@@ -33,7 +33,7 @@
                 },
                 "Hover": {
                     "Hover_Color_Mode": "Accent Lighter",
-                    "Hover_Color_Manual": "#e6f",
+                    "Hover_Color_Manual": "#d051ff",
                     "Hover_Color_List": [
                         "Accent Lighter",
                         "Manual",

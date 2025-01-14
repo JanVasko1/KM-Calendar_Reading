@@ -168,6 +168,7 @@ def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_O
                 break
     except:
         Activity_List = [""]
+    Activity_Option_Var.set(value="")
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var, values=Activity_List, command=None)
 
 # -------------------------------------------------------------------------- Tab Apperance --------------------------------------------------------------------------#
@@ -180,6 +181,8 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
 
     def Apperance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
         Win_Style_Variable.set(Win_Style_Selected)
+        # Base Windows style setup --> always keep normal before change
+        pywinstyles.apply_style(window=window, style="normal")
         pywinstyles.apply_style(window=window, style=Win_Style_Selected)
         Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Style"], Information=Win_Style_Selected)
 
@@ -243,12 +246,16 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
         else:
             CTkMessagebox(title="Error", message="Accent Color Method not allowed", icon="cancel", fade_in_duration=1)
 
-    def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry) -> None:
+    def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry, Helper: str) -> None:
+        def Quit_Save(Helper: str):
+            Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Colorpicker_Frame.get())
+            Collor_Picker_window.destroy()
+            
         Collor_Picker_window = CTkToplevel()
         Collor_Picker_window.configure(fg_color="#000001")
         Collor_Picker_window.title("Collor Picker")
         Collor_Picker_window.geometry("295x240")
-        Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Collor_Picker_window.destroy())
+        Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Quit_Save(Helper=Helper))
         Collor_Picker_window.overrideredirect(boolean=True)
         Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Collor_Picker_window.resizable(width=False, height=False)
@@ -283,7 +290,7 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # Button - Collor Picker
     Accent_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Accent_Color_Picker_Button_Var = Accent_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var))
+    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var, Helper="Accent"))
     Elements.Get_ToolTip(widget=Accent_Color_Picker_Button_Var, message="Select manualy Accent collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
@@ -303,7 +310,7 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # Button - Collor Picker
     Hover_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Hover_Color_Picker_Button_Var = Hover_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var))
+    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var, Helper="Hover"))
     Elements.Get_ToolTip(widget=Hover_Color_Picker_Button_Var, message="Select manualy Hover collor.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
@@ -1003,16 +1010,16 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         LineNo_Option_Var.configure(variable=Line_Option_Variable)
 
         # Field - Project Label
-        Project_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Project: ") 
+        Project_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Project") 
         Project_Label_Var = Project_Label.children["!ctkframe3"].children["!ctklabel"]
         Project_Label_Var.configure(text=Frame_Empty_General_Table_Var.get(row=1, column=0))
-        Activity_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Activity: ") 
+        Activity_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Activity") 
         Activity_Label_Var = Activity_Label.children["!ctkframe3"].children["!ctklabel"]
         Activity_Label_Var.configure(text=Frame_Empty_General_Table_Var.get(row=1, column=1))
-        Description_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Description: ") 
+        Description_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Description") 
         Description_Label_Var = Description_Label.children["!ctkframe3"].children["!ctklabel"]
         Description_Label_Var.configure(text=Frame_Empty_General_Table_Var.get(row=1, column=2))
-        Coverage_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Coverage: ") 
+        Coverage_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Coverage") 
         Coverage_Label_Var = Coverage_Label.children["!ctkframe3"].children["!ctklabel"]
         Coverage_Label_Var.configure(text=Frame_Empty_General_Table_Var.get(row=1, column=3))
 
@@ -1298,10 +1305,104 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         else:
             pass
 
-    def Del_Schedule_Event_One() -> None:
-        print("Del_Schedule_Event_One")
-        #! Dodělat --> vymazat z tabulky a uložit do Json
-        pass
+    def Del_Schedule_Event_One(Header_List: list, Frame_Empty_Schedules_Table_Var: CTkTable) -> None:
+        def Delete_Schedule_Confirm(Frame_Empty_Schedules_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
+            Selected_Line_To_Del = LineNo_Option_Var.get()
+            Frame_Empty_Schedules_Table_Var.delete_row(index=Selected_Line_To_Del)
+
+            # Save to Settings.json
+            Empty_Scheduled_Events = Frame_Empty_Schedules_Table_Var.values
+            Empty_Scheduled_Events = [i for i in Empty_Scheduled_Events if i != Header_List]
+
+            Scheduled_dict = {}
+            Counter = 0
+            for Empty_Scheduled_Events_row in Empty_Scheduled_Events:
+                Empty_Scheduled_Events_row_dict = dict(zip(Header_List, Empty_Scheduled_Events_row))
+                Scheduled_dict[Counter] = Empty_Scheduled_Events_row_dict
+                Counter += 1
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information=Scheduled_dict)
+            Delete_Schedule_Close()
+
+        def Delete_Schedule_Close() -> None:
+            Delete_Scheduled_Window.destroy()
+
+        def Update_Labels_Texts(LineNo_Option_Var: int, Frame_Empty_Schedules_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, WeekDays_Label_Var: CTkLabel, Start_Label_Var: CTkLabel, End_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=LineNo_Option_Var)
+            Selected_Project = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=0)
+            Selected_Activity = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=1)
+            Selected_Description = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=2)
+            Selected_WeekDays = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=3)
+            Selected_Start = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=4)
+            Selected_End = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=5)
+
+            Project_Label_Var.configure(text=Selected_Project)
+            Activity_Label_Var.configure(text=Selected_Activity)
+            Description_Label_Var.configure(text=Selected_Description)
+            WeekDays_Label_Var.configure(text=Selected_WeekDays)
+            Start_Label_Var.configure(text=Selected_Start)
+            End_Label_Var.configure(text=Selected_End)
+
+        # callculat number of lines in table
+        Empty_Scheduled_Events = Frame_Empty_Schedules_Table_Var.values
+        Empty_Scheduled_Events = [i for i in Empty_Scheduled_Events if i != Header_List]
+        Lines_No = len(Empty_Scheduled_Events)
+        Lines_list = [x for x in range(1, Lines_No + 1)] # Must skip Headers
+        Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
+
+        # TopUp Window
+        Delete_Scheduled_Window = CTkToplevel()
+        Delete_Scheduled_Window.configure(fg_color="#000001")
+        Delete_Scheduled_Window.title("Collor Picker")
+        Delete_Scheduled_Window.geometry(f"510x400")
+        Delete_Scheduled_Window.bind(sequence="<Escape>", func=lambda evet: Delete_Scheduled_Window.destroy())
+        Delete_Scheduled_Window.overrideredirect(boolean=True)
+        Delete_Scheduled_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        Delete_Scheduled_Window.resizable(width=False, height=False)
+
+        # Rounded corners 
+        Delete_Scheduled_Window.config(background="#000001")
+        Delete_Scheduled_Window.attributes("-transparentcolor", "#000001")
+
+        # Frame - General
+        Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Delete_Scheduled_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
+        Frame_Body = Frame_Main.children["!ctkframe2"]
+    
+        # Field - Option Menu
+        LineNo_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Line No", Field_Type="Input_OptionMenu") 
+        LineNo_Option_Var = LineNo_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+        LineNo_Option_Var.configure(variable=Line_Option_Variable)
+
+        # Field - Project Label
+        Project_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Project") 
+        Project_Label_Var = Project_Label.children["!ctkframe3"].children["!ctklabel"]
+        Project_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=0))
+        Activity_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Activity") 
+        Activity_Label_Var = Activity_Label.children["!ctkframe3"].children["!ctklabel"]
+        Activity_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=1))
+        Description_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Description") 
+        Description_Label_Var = Description_Label.children["!ctkframe3"].children["!ctklabel"]
+        Description_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=2))
+        WeekDays_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Day of Week") 
+        WeekDays_Label_Var = WeekDays_Label.children["!ctkframe3"].children["!ctklabel"]
+        WeekDays_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=3))
+        Start_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Start") 
+        Start_Label_Var = Start_Label.children["!ctkframe3"].children["!ctklabel"]
+        Start_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=4))
+        End_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="End") 
+        End_Label_Var = End_Label.children["!ctkframe3"].children["!ctklabel"]
+        End_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=5))
+
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda LineNo_Option_Var: Update_Labels_Texts(Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, LineNo_Option_Var=LineNo_Option_Var, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, WeekDays_Label_Var=WeekDays_Label_Var, Start_Label_Var=Start_Label_Var, End_Label_Var=End_Label_Var)) 
+
+        # Buttons
+        Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
+        Button_Confirm_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+        Button_Confirm_Var.configure(text="Confirm", command = lambda:Delete_Schedule_Confirm(Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, LineNo_Option_Var=LineNo_Option_Var))
+        Elements.Get_ToolTip(widget=Button_Confirm_Var, message="Confirm line delete.", ToolTip_Size="Normal")
+
+        Button_Reject_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+        Button_Reject_Var.configure(text="Reject", command = lambda:Delete_Schedule_Close())
+        Elements.Get_ToolTip(widget=Button_Reject_Var, message="Dont process, closing Window.", ToolTip_Size="Normal")
 
     def Del_Schedule_Event_All(Frame_Empty_Schedules_Table_Var: CTkTable) -> None:
         Table_len = len(Frame_Empty_Schedules_Table_Var.values)
@@ -1414,7 +1515,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(widget=Button_Schedule_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     Button_Schedule_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_Schedule_Del_One_Var.configure(text="Del", command = lambda:Del_Schedule_Event_One())
+    Button_Schedule_Del_One_Var.configure(text="Del", command = lambda:Del_Schedule_Event_One(Header_List=Header_List, Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var))
     Elements.Get_ToolTip(widget=Button_Schedule_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     Button_Schedule_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
@@ -1489,11 +1590,94 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         else:
             pass
         
-
     def Del_AutoFill_Event_One() -> None:
-        print("Del_AutoFill_Event_One")
-        #! Dodělat --> vymazat z tabulky a uložit do Json
-        pass
+        def Delete_AutoFill_Confirm(Frame_AutoFiller_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
+            Selected_Line_To_Del = LineNo_Option_Var.get()
+            Frame_AutoFiller_Table_Var.delete_row(index=Selected_Line_To_Del)
+
+            # Save to Settings.json
+            AutoFill_Events = Frame_AutoFiller_Table_Var.values
+            AutoFill_Events = [i for i in AutoFill_Events if i != Header_List]
+
+            AutoFill_dict = {}
+            Counter = 0
+            for AutoFill_Events_row in AutoFill_Events:
+                AutoFill_Events_row_dict = dict(zip(Header_List, AutoFill_Events_row))
+                AutoFill_dict[Counter] = AutoFill_Events_row_dict
+                Counter += 1
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text"], Information=AutoFill_dict)
+            Delete_AutoFill_Close()
+
+        def Delete_AutoFill_Close() -> None:
+            Delete_AutoFill_Window.destroy()
+
+        def Update_Labels_Texts(LineNo_Option_Var: int, Frame_AutoFiller_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, Location_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=LineNo_Option_Var)
+            Selected_Project = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=0)
+            Selected_Activity = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=1)
+            Selected_Description = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=2)
+            Selected_Location = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=3)
+
+            Project_Label_Var.configure(text=Selected_Project)
+            Activity_Label_Var.configure(text=Selected_Activity)
+            Description_Label_Var.configure(text=Selected_Description)
+            Location_Label_Var.configure(text=Selected_Location)
+
+        # callculat number of lines in table
+        AutoFill_Events = Frame_AutoFiller_Table_Var.values
+        AutoFill_Events = [i for i in AutoFill_Events if i != Header_List]
+        Lines_No = len(AutoFill_Events)
+        Lines_list = [x for x in range(1, Lines_No + 1)] # Must skip Headers
+        Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
+
+        # TopUp Window
+        Delete_AutoFill_Window = CTkToplevel()
+        Delete_AutoFill_Window.configure(fg_color="#000001")
+        Delete_AutoFill_Window.title("Collor Picker")
+        Delete_AutoFill_Window.geometry(f"510x260")
+        Delete_AutoFill_Window.bind(sequence="<Escape>", func=lambda evet: Delete_AutoFill_Window.destroy())
+        Delete_AutoFill_Window.overrideredirect(boolean=True)
+        Delete_AutoFill_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        Delete_AutoFill_Window.resizable(width=False, height=False)
+
+        # Rounded corners 
+        Delete_AutoFill_Window.config(background="#000001")
+        Delete_AutoFill_Window.attributes("-transparentcolor", "#000001")
+
+        # Frame - General
+        Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Delete_AutoFill_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
+        Frame_Body = Frame_Main.children["!ctkframe2"]
+    
+        # Field - Option Menu
+        LineNo_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Line No", Field_Type="Input_OptionMenu") 
+        LineNo_Option_Var = LineNo_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+        LineNo_Option_Var.configure(variable=Line_Option_Variable)
+
+        # Field - Project Label
+        Project_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Project: ") 
+        Project_Label_Var = Project_Label.children["!ctkframe3"].children["!ctklabel"]
+        Project_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=0))
+        Activity_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Activity: ") 
+        Activity_Label_Var = Activity_Label.children["!ctkframe3"].children["!ctklabel"]
+        Activity_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=1))
+        Description_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Description: ") 
+        Description_Label_Var = Description_Label.children["!ctkframe3"].children["!ctklabel"]
+        Description_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=2))
+        Location_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Coverage: ") 
+        Location_Label_Var = Location_Label.children["!ctkframe3"].children["!ctklabel"]
+        Location_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=3))
+
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda LineNo_Option_Var: Update_Labels_Texts(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var, LineNo_Option_Var=LineNo_Option_Var, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, Location_Label_Var=Location_Label_Var)) 
+
+        # Buttons
+        Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
+        Button_Confirm_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+        Button_Confirm_Var.configure(text="Confirm", command = lambda:Delete_AutoFill_Confirm(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var, LineNo_Option_Var=LineNo_Option_Var))
+        Elements.Get_ToolTip(widget=Button_Confirm_Var, message="Confirm line delete.", ToolTip_Size="Normal")
+
+        Button_Reject_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+        Button_Reject_Var.configure(text="Reject", command = lambda:Delete_AutoFill_Close())
+        Elements.Get_ToolTip(widget=Button_Reject_Var, message="Dont process, closing Window.", ToolTip_Size="Normal")
 
     def Del_AutoFill_Event_All(Frame_AutoFiller_Table_Var: CTkTable) -> None:
         Table_len = len(Frame_AutoFiller_Table_Var.values)

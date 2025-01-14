@@ -837,7 +837,9 @@ window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{to
 window.config(background="#000001")
 window.attributes("-transparentcolor", "#000001")
 
+# Base Windows style setup --> always keep normal before change
 customtkinter.set_appearance_mode(mode_string=Theme_Actual)
+pywinstyles.apply_style(window=window, style="normal")
 pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
 # ---------------------------------- Content ----------------------------------#
