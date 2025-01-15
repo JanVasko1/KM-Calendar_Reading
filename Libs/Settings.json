@@ -350,6 +350,15 @@
                         "Start": "11:30",
                         "End": "12:00"
                     }
+                },
+                "Split": {
+                    "Split_Duration": 120,
+                    "Split_Method": "Do nothing",
+                    "Methods_List": [
+                        "Do nothing",
+                        "Equal Split",
+                        "Random Split"
+                    ]
                 }
             },
             "Skip": [

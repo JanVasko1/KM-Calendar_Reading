@@ -719,8 +719,10 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_Cal.pack_propagate(flag=False)
     Tab_E_G = TabView.add("Events - General")
     Tab_E_G.pack_propagate(flag=False)
-    Tab_E_E = TabView.add("Events - Empty/Scheduler")
+    Tab_E_E = TabView.add("Events - Empty")
     Tab_E_E.pack_propagate(flag=False)
+    Tab_E_S = TabView.add("Events - Empty Scheduler")
+    Tab_E_S.pack_propagate(flag=False)
     Tab_E_A = TabView.add("Events - Rules")
     Tab_E_A.pack_propagate(flag=False)
     TabView.set("Apperance")
@@ -762,8 +764,11 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_Join_Widget = Settings_Widgets.Settings_Join_events(Frame=Tab_E_G)
 
     # Event-Empty Page
+    Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Frame=Tab_E_E)
     Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generaly(Frame=Tab_E_E)
-    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empt_Schedule(Frame=Tab_E_E)
+
+    # Event-Empty Spliting Page
+    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empt_Schedule(Frame=Tab_E_S)
 
     # Event-AutoFill Page
     Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
@@ -795,8 +800,10 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_Parralel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
     Event_Join_Widget.grid(row=1, column=2, padx=5, pady=5, sticky="nw")
 
-    Event_Empty_General_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Scheduler_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Event_Split_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Event_Empty_General_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+
+    Event_Scheduler_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
     Event_AutoFiller_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 

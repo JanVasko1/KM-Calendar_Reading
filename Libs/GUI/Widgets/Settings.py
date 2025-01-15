@@ -63,11 +63,15 @@ Lunch_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["
 Lunch_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
 Lunch_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Lunch_Option_List"]
 
-# Events
-Skip_Events_list = Settings["Event_Handler"]["Events"]["Skip"]
-Skip_Event_General_dict = Settings["Event_Handler"]["Events"]["Empty"]["General"]
-Skip_Event_Schedules_dict = Settings["Event_Handler"]["Events"]["Empty"]["Scheduled"]
-Skip_AutoFill_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]
+# Events Empty
+Events_Skip_list = Settings["Event_Handler"]["Events"]["Skip"]
+Events_Empty_General_dict = Settings["Event_Handler"]["Events"]["Empty"]["General"]
+Events_Empty_Schedules_dict = Settings["Event_Handler"]["Events"]["Empty"]["Scheduled"]
+Events_AutoFill_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]
+
+Events_Empty_Split_Duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
+Events_Empty_Split_Method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
+Events_Empty_Split_list = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Methods_List"]
 
 # Calendar - Working Day
 Monday_Work_Start = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Start_Time"]
@@ -137,6 +141,21 @@ Join_OutOfOffice = Settings["Event_Handler"]["Events"]["Join_method"]["Out of Of
 Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working elsewhere"]
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
+def Entry_field_Insert(Field: CTkEntry, Value: str|int) -> None:
+    if type(Value) == str:
+        if Value != "":
+            Field.insert(index=0, string=Value)
+        else:
+            pass
+    elif type(Value) == int:
+        if Value > 0:
+            Field.insert(index=0, string=Value)
+        else:
+            pass
+    else:
+        pass
+
+
 def Update_empty_information(Check_List: list):
     Check_List_len = len(Check_List)
     for Check_List_index in range(0, Check_List_len):
@@ -335,17 +354,20 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Name
     SP_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
     SP_Name_Frame_Var = SP_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Name_Frame_Var.configure(placeholder_text=SP_Person_Name)
+    SP_Name_Frame_Var.configure(placeholder_text="Name used in Sharepoint TimeSheets")
+    Entry_field_Insert(Field=SP_Name_Frame_Var, Value=SP_Person_Name)
 
     # Field - User ID
     SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
     SP_User_ID_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_User_ID_Frame_Var.configure(placeholder_text=SP_Person_ID)
+    SP_User_ID_Frame_Var.configure(placeholder_text="Your UserID (KM ID)")
+    Entry_field_Insert(Field=SP_User_ID_Frame_Var, Value=SP_Person_ID)
 
     # Field - Path to Sharepoint
     SP_Link_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoin Address", Field_Type="Input_Normal")
     SP_Link_Frame_Var = SP_Link_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Link_Frame_Var.configure(placeholder_text=SP_Link)
+    SP_Link_Frame_Var.configure(placeholder_text="Link to Sharepoint")
+    Entry_field_Insert(Field=SP_Link_Frame_Var, Value=SP_Link)
 
     # Field - File Name 
     SP_File_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="File Name", Field_Type="Input_Normal")
@@ -356,7 +378,8 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Auth Email
     SP_Auth_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
     SP_Auth_Email_Frame_Var = SP_Auth_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Auth_Email_Frame_Var.configure(placeholder_text=SP_Auth_Email)
+    SP_Auth_Email_Frame_Var.configure(placeholder_text="Sharepoint autorisation email.")
+    Entry_field_Insert(Field=SP_Auth_Email_Frame_Var, Value=SP_Auth_Email)
 
     # Field - Auth Address
     SP_Auth_Address_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Address", Field_Type="Input_Normal")
@@ -423,7 +446,8 @@ def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Name
     Outlook_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal") 
     Outlook_Email_Frame_Var = Outlook_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Outlook_Email_Frame_Var.configure(placeholder_text=Outlook_Email)
+    Outlook_Email_Frame_Var.configure(placeholder_text="Your outlook email.")
+    Entry_field_Insert(Field=Outlook_Email_Frame_Var, Value=Outlook_Email)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -550,51 +574,66 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Monday
     Monday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
     Monday_Frame_Var1 = Monday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Monday_Frame_Var1.configure(placeholder_text=Monday_Work_Start)
+    Monday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Monday_Frame_Var1, Value=Monday_Work_Start)
     Monday_Frame_Var2 = Monday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Monday_Frame_Var2.configure(placeholder_text=Monday_Work_End)
+    Monday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Monday_Frame_Var2, Value=Monday_Work_End)
 
     # Field - Tuesday
     Tuesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
     Tuesday_Frame_Var1 = Tuesday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Tuesday_Frame_Var1.configure(placeholder_text=Tuesday_Work_Start)
+    Tuesday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Tuesday_Frame_Var1, Value=Tuesday_Work_Start)
     Tuesday_Frame_Var2 = Tuesday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Tuesday_Frame_Var2.configure(placeholder_text=Tuesday_Work_End)
+    Tuesday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Tuesday_Frame_Var2, Value=Tuesday_Work_End)
+
 
     # Field - Wednesday
     Wednesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
     Wednesday_Frame_Var1 = Wednesday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Wednesday_Frame_Var1.configure(placeholder_text=Wednesday_Work_Start)
+    Wednesday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Wednesday_Frame_Var1, Value=Wednesday_Work_Start)
     Wednesday_Frame_Var2 = Wednesday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Wednesday_Frame_Var2.configure(placeholder_text=Wednesday_Work_End)
+    Wednesday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Wednesday_Frame_Var2, Value=Wednesday_Work_End)
 
     # Field - Thursday
     Thursday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
     Thursday_Frame_Var1 = Thursday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Thursday_Frame_Var1.configure(placeholder_text=Thursday_Work_Start)
+    Thursday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Thursday_Frame_Var1, Value=Thursday_Work_Start)
     Thursday_Frame_Var2 = Thursday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Thursday_Frame_Var2.configure(placeholder_text=Thursday_Work_End)
+    Thursday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Thursday_Frame_Var2, Value=Thursday_Work_End)
 
     # Field - Friday
     Friday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
     Friday_Frame_Var1 = Friday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Friday_Frame_Var1.configure(placeholder_text=Friday_Work_Start)
+    Friday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Friday_Frame_Var1, Value=Friday_Work_Start)
     Friday_Frame_Var2 = Friday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Friday_Frame_Var2.configure(placeholder_text=Friday_Work_End)
+    Friday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Friday_Frame_Var2, Value=Friday_Work_End)
 
     # Field - Saturday
     Saturday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
     Saturday_Frame_Var1 = Saturday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Saturday_Frame_Var1.configure(placeholder_text=Saturday_Work_Start)
+    Saturday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Saturday_Frame_Var1, Value=Saturday_Work_Start)
     Saturday_Frame_Var2 = Saturday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Saturday_Frame_Var2.configure(placeholder_text=Saturday_Work_End)
+    Saturday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Saturday_Frame_Var2, Value=Saturday_Work_End)
 
     # Field - Sunday
     Sunday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
     Sunday_Frame_Var1 = Sunday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Sunday_Frame_Var1.configure(placeholder_text=Sunday_Work_Start)
+    Sunday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Sunday_Frame_Var1, Value=Sunday_Work_Start)
     Sunday_Frame_Var2 = Sunday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Sunday_Frame_Var2.configure(placeholder_text=Sunday_Work_End)
+    Sunday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Sunday_Frame_Var2, Value=Sunday_Work_End)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -610,53 +649,67 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
-    Monday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
-    Search_Text_Text_Var1 = Monday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Text_Var1.configure(placeholder_text=Monday_Vacation_Start)
-    Search_Text_Text_Var2 = Monday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Search_Text_Text_Var2.configure(placeholder_text=Monday_Vacation_End)
+    Monday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
+    Monday_Vac_Frame_Var1 = Monday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Monday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Monday_Vac_Frame_Var1, Value=Monday_Vacation_Start)
+    Monday_Vac_Frame_Var2 = Monday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Monday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Monday_Vac_Frame_Var2, Value=Monday_Vacation_End)
 
     # Field - Tuesday
-    Tuesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
-    Tuesday_Frame_Var1 = Tuesday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Tuesday_Frame_Var1.configure(placeholder_text=Tuesday_Vacation_Start)
-    Tuesday_Frame_Var2 = Tuesday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Tuesday_Frame_Var2.configure(placeholder_text=Tuesday_Vacation_End)
+    Tuesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
+    Tuesday_Vac_Frame_Var1 = Tuesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Tuesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Tuesday_Vac_Frame_Var1, Value=Tuesday_Vacation_Start)
+    Tuesday_Vac_Frame_Var2 = Tuesday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Tuesday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Tuesday_Vac_Frame_Var2, Value=Tuesday_Vacation_End)
 
     # Field - Wednesday
-    Wednesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
-    Wednesday_Frame_Var1 = Wednesday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Wednesday_Frame_Var1.configure(placeholder_text=Wednesday_Vacation_Start)
-    Wednesday_Frame_Var2 = Wednesday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Wednesday_Frame_Var2.configure(placeholder_text=Wednesday_Vacation_End)
+    Wednesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
+    Wednesday_Vac_Frame_Var1 = Wednesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Wednesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Wednesday_Vac_Frame_Var1, Value=Wednesday_Vacation_Start)
+    Wednesday_Vac_Frame_Var2 = Wednesday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Wednesday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Wednesday_Vac_Frame_Var2, Value=Wednesday_Vacation_End)
 
     # Field - Thursday
-    Thursday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
-    Thursday_Frame_Var1 = Thursday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Thursday_Frame_Var1.configure(placeholder_text=Thursday_Vacation_Start)
-    Thursday_Frame_Var2 = Thursday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Thursday_Frame_Var2.configure(placeholder_text=Thursday_Vacation_End)
+    Thursday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
+    Thursday_Vac_Frame_Var1 = Thursday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Thursday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Thursday_Vac_Frame_Var1, Value=Thursday_Vacation_Start)
+    Thursday_Vac_Frame_Var2 = Thursday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Thursday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Thursday_Vac_Frame_Var2, Value=Thursday_Vacation_End)
 
     # Field - Friday
-    Friday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
-    Friday_Frame_Var1 = Friday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Friday_Frame_Var1.configure(placeholder_text=Friday_Vacation_Start)
-    Friday_Frame_Var2 = Friday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Friday_Frame_Var2.configure(placeholder_text=Friday_Vacation_End)
+    Friday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
+    Friday_Vac_Frame_Var1 = Friday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Friday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Friday_Vac_Frame_Var1, Value=Friday_Vacation_Start)
+    Friday_Vac_Frame_Var2 = Friday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Friday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Friday_Vac_Frame_Var2, Value=Friday_Vacation_End)
 
     # Field - Saturday
-    Saturday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
-    Saturday_Frame_Var1 = Saturday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Saturday_Frame_Var1.configure(placeholder_text=Saturday_Vacation_Start)
-    Saturday_Frame_Var2 = Saturday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Saturday_Frame_Var2.configure(placeholder_text=Saturday_Vacation_End)
+    Saturday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
+    Saturday_Vac_Frame_Var1 = Saturday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Saturday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Saturday_Vac_Frame_Var1, Value=Saturday_Vacation_Start)
+    Saturday_Vac_Frame_Var2 = Saturday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Saturday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Saturday_Vac_Frame_Var2, Value=Saturday_Vacation_End)
 
     # Field - Sunday
-    Sunday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
-    Sunday_Frame_Var1 = Sunday_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Sunday_Frame_Var1.configure(placeholder_text=Sunday_Vacation_Start)
-    Sunday_Frame_Var2 = Sunday_Frame.children["!ctkframe5"].children["!ctkentry"]
-    Sunday_Frame_Var2.configure(placeholder_text=Sunday_Vacation_End)
+    Sunday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
+    Sunday_Vac_Frame_Var1 = Sunday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Sunday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Entry_field_Insert(Field=Sunday_Vac_Frame_Var1, Value=Sunday_Vacation_Start)
+    Sunday_Vac_Frame_Var2 = Sunday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
+    Sunday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Entry_field_Insert(Field=Sunday_Vac_Frame_Var2, Value=Sunday_Vacation_End)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -674,12 +727,15 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Work - Start
     Start_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - Start", Field_Type="Input_Normal") 
     Start_Event_Var = Start_Event.children["!ctkframe3"].children["!ctkentry"]
-    Start_Event_Var.configure(placeholder_text=Start_Event_json)
+    Start_Event_Var.configure(placeholder_text="Event Subject which starts day")
+    Entry_field_Insert(Field=Start_Event_Var, Value=Start_Event_json)
 
     # Field - Work - End
     End_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - End", Field_Type="Input_Normal") 
     End_Event_Var = End_Event.children["!ctkframe3"].children["!ctkentry"]
-    End_Event_Var.configure(placeholder_text=End_Event_json)
+    End_Event_Var.configure(placeholder_text="Event Subject which ends day")
+    Entry_field_Insert(Field=End_Event_Var, Value=End_Event_json)
+
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -701,7 +757,8 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Seach Text
     Search_Text_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Lunch_Var = Search_Text_Lunch.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Lunch_Var.configure(placeholder_text=Lunch_Search_Text)
+    Search_Text_Lunch_Var.configure(placeholder_text="Event Subject which defines lunch")
+    Entry_field_Insert(Field=Search_Text_Lunch_Var, Value=Lunch_Search_Text)
 
     # Field - All Day
     All_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
@@ -734,7 +791,8 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Seach Text
     Search_Text_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Vacation_Var = Search_Text_Vacation.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Vacation_Var.configure(placeholder_text=Vacation_Search_Text)
+    Search_Text_Vacation_Var.configure(placeholder_text="Event Subject which defines vacation")
+    Entry_field_Insert(Field=Search_Text_Vacation_Var, Value=Vacation_Search_Text)
 
     # Field - All Day
     All_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
@@ -767,7 +825,8 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Seach Text
     Search_Text_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_HomeOffice_Var = Search_Text_HomeOffice.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_HomeOffice_Var.configure(placeholder_text=HomeOffice_Search_Text)
+    Search_Text_HomeOffice_Var.configure(placeholder_text="Event Subject which defines homeoffice")
+    Entry_field_Insert(Field=Search_Text_HomeOffice_Var, Value=HomeOffice_Search_Text)
 
     # Field - All Day
     All_Day_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
@@ -861,11 +920,11 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # Skip Events Table
     Header_List = ["Skip Events"]
-    Show_Skip_Events_list = [Header_List]
-    for skip_Subject in Skip_Events_list:
-        Show_Skip_Events_list.append([skip_Subject])
+    Show_Events_Skip_list = [Header_List]
+    for skip_Subject in Events_Skip_list:
+        Show_Events_Skip_list.append([skip_Subject])
         
-    Frame_Skip_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Body, Table_Size="Single_size", Table_Values=Show_Skip_Events_list, Table_Columns=1, Table_Rows=len(Skip_Events_list) + 1)
+    Frame_Skip_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Body, Table_Size="Single_size", Table_Values=Show_Events_Skip_list, Table_Columns=1, Table_Rows=len(Events_Skip_list) + 1)
     Frame_Skip_Table_Var = Frame_Skip_Table.children["!ctktable"]
     Frame_Skip_Table_Var.configure(wraplength=440)
 
@@ -1155,8 +1214,8 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # Empty Events table
     Skip_Event_General_list = [Header_List]
-    Skip_Event_General_dict_rows = Skip_Event_General_dict.items()
-    for Sub_Row in Skip_Event_General_dict_rows:
+    Events_Empty_General_dict_rows = Events_Empty_General_dict.items()
+    for Sub_Row in Events_Empty_General_dict_rows:
         Sub_dict = Sub_Row[1]
         Skip_Event_General_list.append(list(Sub_dict.values()))
 
@@ -1434,7 +1493,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # Scheduled Events table
     Skip_Event_Schedule_list = [Header_List]
-    Skip_Event_Schedule_dict_rows = Skip_Event_Schedules_dict.items()
+    Skip_Event_Schedule_dict_rows = Events_Empty_Schedules_dict.items()
     for Sub_Row in Skip_Event_Schedule_dict_rows:
         Sub_dict = Sub_Row[1]
         Skip_Event_Schedule_list.append(list(Sub_dict.values()))
@@ -1540,6 +1599,29 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     return Frame_Main
 
 
+
+def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
+    Events_Empty_Split_list_Variable = StringVar(master=Frame, value=Events_Empty_Split_Method, name="Events_Empty_Split_list_Variable")
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Spliting", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Use for spliting automatically filled events by program longer than defined duration.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Subject
+    Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal") 
+    Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
+    Entry_field_Insert(Field=Split_Duration_Text_Var, Value=Events_Empty_Split_Duration)
+
+    # Field - All Day
+    Split_Method = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    Split_Method_Var = Split_Method.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Split_Method_Var.configure(variable=Events_Empty_Split_list_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Split_Method_Var, values=Events_Empty_Split_list, command=None)
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
 
 # -------------------------------------------------------------------------- Tab Events - Rules --------------------------------------------------------------------------#
 def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
@@ -1705,8 +1787,8 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # AutoFilling Table
     Skip_AutoFill_list = [Header_List]
-    Skip_AutoFill_dict_rows = Skip_AutoFill_dict.items()
-    for Sub_Row in Skip_AutoFill_dict_rows:
+    Events_AutoFill_dict_rows = Events_AutoFill_dict.items()
+    for Sub_Row in Events_AutoFill_dict_rows:
         Sub_dict = Sub_Row[1]
         Skip_AutoFill_list.append(list(Sub_dict.values()))
 
