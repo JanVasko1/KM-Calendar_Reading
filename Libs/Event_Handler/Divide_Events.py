@@ -1,6 +1,7 @@
 # Import Libraries
-from pandas import DataFrame
+from pandas import DataFrame, Series
 import pandas
+import random
 from datetime import datetime, timedelta
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -10,6 +11,10 @@ from CTkMessagebox import CTkMessagebox
 Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
+
+Split_duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
+Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
+Split_method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Change(Start_Date: str, End_Date: str, Start_Time: str, End_Time: str) -> int:
@@ -94,6 +99,75 @@ def OverMidnight_Events(Events: DataFrame):
         Events.drop(labels=[Event_index], axis=0, inplace=True)
     return Events
 
-def Too_Long_Empty_Events(Events: DataFrame):
-    #! Dodělat --> namyslet celou logiku toho jak by se to mělo splitovat, na základě nejakýho RAndom rozložení (Empty Event delší než --> splitni na 2 a záoveň to splitni nějak na random --> podle setupu a musí být na SEtup Widget)
-    return Events
+def Empty_Split_Events(Events: DataFrame):
+    def Find_Split_Events(Events: DataFrame) -> DataFrame:
+        if (Events["Event_Empty_Insert"] == True) and (Events["Event_Empty_Method"] == "General") and (Events["Duration"] >= Split_duration):
+            return True
+        else:
+            return False
+        
+    def Split_Event(Cumulated_Events: DataFrame, Row: Series) -> DataFrame:
+        init_duration = Row["Duration"]
+        if Split_method == "Equal Split":
+            first_duration = init_duration // 2
+            second_duration = init_duration - first_duration            
+        elif Split_method == "Random Split":
+            try:
+                first_duration = random.randrange(start=Split_Minimal_Time, stop=(init_duration - Split_Minimal_Time), step=1)
+                second_duration = init_duration - first_duration        
+            except:
+                CTkMessagebox(title="Error", message=f"Cannot perform split as minimal time is {Split_Minimal_Time} and split duration is {Split_duration}. You need to keep Split Duration > Minimal Time", icon="cancel", fade_in_duration=1)
+        else:
+            CTkMessagebox(title="Error", message="Not supported Split Empty Events method used.", icon="cancel", fade_in_duration=1)
+        
+        # First row
+        insert_first_row = Row.copy()
+        insert_first_row["Duration"] = first_duration        
+        time_change = timedelta(minutes=first_duration) 
+        insert_first_row["End_Time"] = insert_first_row["Start_Time"] + time_change 
+
+        # Second Row
+        insert_second_row = Row.copy()
+        insert_second_row["Duration"] = second_duration
+        insert_second_row["Start_Time"] = insert_first_row["End_Time"]
+
+        # Recursive calls
+        if first_duration >= Split_duration:
+            Cumulated_Events = Split_Event(Cumulated_Events=Cumulated_Events, Row=insert_first_row)
+        else:
+            # Add to Cumulated Events list
+            Cumulated_Events.loc[len(Cumulated_Events)] = insert_first_row.to_list()
+
+        if second_duration >= Split_duration:
+            Cumulated_Events = Split_Event(Cumulated_Events=Cumulated_Events, Row=insert_second_row)
+        else:
+            # Add to Cumulated Events list
+            Cumulated_Events.loc[len(Cumulated_Events)] = insert_second_row.to_list()
+
+        return Cumulated_Events
+
+    if Split_method == "Do nothing":
+        return Events
+    else:
+        Cumulated_Events = pandas.DataFrame()
+        Events["Empty_Split"] = Events.apply(Find_Split_Events, axis = 1)
+
+        # Defin evets to be splitted DF
+        mask1 = Events["Empty_Split"] == True
+        Events_to_Split_df = Events.loc[mask1]
+
+        # Add non-Conflict to Cumulated
+        mask1 = Events["Empty_Split"] == False
+        Non_Split_df = Events.loc[mask1]
+        Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Non_Split_df], axis=0, ignore_index=True)
+
+        if Events_to_Split_df.empty:
+            pass
+        else:
+            for row in Events_to_Split_df.iterrows():
+                row_Series = pandas.Series(row[1])
+                Cumulated_Events = Split_Event(Cumulated_Events=Cumulated_Events, Row=row_Series)
+        
+        Cumulated_Events.drop(labels=["Empty_Split"], axis=1, inplace=True)
+        return Cumulated_Events
+    
