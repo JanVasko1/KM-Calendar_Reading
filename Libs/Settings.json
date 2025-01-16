@@ -352,8 +352,9 @@
                     }
                 },
                 "Split": {
-                    "Split_Duration": 120,
-                    "Split_Method": "Do nothing",
+                    "Split_Duration": 60,
+                    "Split_Minimal_Time": 15,
+                    "Split_Method": "Random Split",
                     "Methods_List": [
                         "Do nothing",
                         "Equal Split",

@@ -44,17 +44,17 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Events = Divide_Events.OverMidnight_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Too long Empty Events") 
-        Events = Divide_Events.Too_Long_Empty_Events(Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
-
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Fill Empty") 
         Events = Fill_Empty_Place.Fill_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Too long Empty Events") 
+        Events = Divide_Events.Empty_Split_Events(Events=Events)
+        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Fill Empty Coverage") 
         Events = Fill_Empty_Place.Fill_Events_Coverage(Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True])
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Location set") 
         Events = Location_Set.Location_Set(Events=Events)
@@ -67,6 +67,7 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Skip Events") 
         Events = Skip_Events.Skip_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        print(Events)
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Parralel Events") 
         Events = Parralel_Events.Parralel_Events(Events=Events)
