@@ -233,7 +233,7 @@ def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: 
 def Get_Table_Frame(Frame: CTk|CTkFrame, Table_Size: str, Table_Values: list|None, Table_Columns: int, Table_Rows: int) -> CTkScrollableFrame:
     # Buld only one frame wich contain whole Table
     Frame_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame, Frame_Size=Table_Size)
-    Frame_Scrolable_Area.pack(side="top", fill="y", expand=True, padx=0, pady=0)
+    Frame_Scrolable_Area.pack(side="top", fill="y", expand=True, padx=10, pady=(0,5))
 
     # Table
     Skip_List_Table = Elements.Get_Table(Frame=Frame_Scrolable_Area, Table_size=Table_Size, columns=Table_Columns, rows=Table_Rows)

@@ -1,7 +1,7 @@
 {
     "Global_Apperance": {
         "Window": {
-            "Style": "dark",
+            "Style": "normal",
             "Style_List": [
                 "dark",
                 "mica",
@@ -24,7 +24,7 @@
             "Colors": {
                 "Accent": {
                     "Accent_Color_Mode": "Windows",
-                    "Accent_Color_Manual": "#74959b",
+                    "Accent_Color_Manual": "#af913b",
                     "Accent_Color_List": [
                         "Windows",
                         "Manual",
@@ -33,7 +33,7 @@
                 },
                 "Hover": {
                     "Hover_Color_Mode": "Accent Lighter",
-                    "Hover_Color_Manual": "#d051ff",
+                    "Hover_Color_Manual": "#39ff40",
                     "Hover_Color_List": [
                         "Accent Lighter",
                         "Manual",
@@ -150,8 +150,8 @@
             "height": 18,
             "fg_color": "transparent",
             "text_color": [
-                "#2C2C2C",
-                "#FFFFFF"
+                "#FF9797",
+                "#FF9797"
             ],
             "anchor": "e",
             "padx": 10,

@@ -283,8 +283,8 @@
                 },
                 "Lunch": {
                     "Search_Text": "Lunch",
-                    "All_Day": "",
-                    "Part_Day": "",
+                    "All_Day": "Calendar",
+                    "Part_Day": "Event",
                     "Lunch_Option_List": [
                         "Event",
                         "Calendar"
@@ -295,15 +295,16 @@
                 "Divide_Method": "Divide",
                 "Divide_Method_List": [
                     "Divide",
-                    "Keep_Parralel"
+                    "Keep Parralel"
                 ],
-                "Start_Method": "Use_Shorter",
+                "Start_Method": "Use Shorter",
                 "Start_Method_List": [
-                    "Use_Shorter",
-                    "Use_Longer"
+                    "Use Shorter",
+                    "Use Longer"
                 ]
             },
             "Join_method": {
+                "Use": false,
                 "Free": "Keep separate",
                 "Tentative": "Keep separate",
                 "Busy": "Join",
@@ -451,6 +452,12 @@
                     },
                     "12": {
                         "Search Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
+                        "Project": "BRO NUS Cloud Pilot",
+                        "Activity": "Project Management",
+                        "Location": "Office"
+                    },
+                    "13": {
+                        "Search Text": "BRO NUS Cloud - Internal Status",
                         "Project": "BRO NUS Cloud Pilot",
                         "Activity": "Project Management",
                         "Location": "Office"

@@ -29,6 +29,8 @@ Format_Date = Settings["General"]["Formats"]["Date"]
 Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
 Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
 
+SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]
+
 # ------------------------------------------------------------------------------------------------------------------------------------ Local Functions ------------------------------------------------------------------------------------------------------------------------------------ #
 def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
     # Password required
@@ -36,14 +38,15 @@ def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
     SP_Password = dialog.get_input()
     return SP_Password
 
+def Get_Current_Theme() -> str:
+    Current_Theme = customtkinter.get_appearance_mode()
+    return Current_Theme
+
+
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
-    def Get_Current_Theme() -> str:
-        Current_Theme = customtkinter.get_appearance_mode()
-        return Current_Theme
-
     def Theme_Change():
         Current_Theme = Get_Current_Theme() 
         if Current_Theme == "Dark":
@@ -215,16 +218,19 @@ def Page_Download(Frame: CTk|CTkFrame):
         Download_Date_Range_Source = Download_Date_Range_Source.get()
         Download_Data_Source = Download_Data_Source.get()
         SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"].get()
-        SP_Whole_Period = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"].get()
-        if SP_Whole_Period == 1:
-            SP_Whole_Period = True
-        else:
-            SP_Whole_Period = False
-        SP_End_Date_Max_Today_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+        
+        SP_End_Date_Max_Today_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"].get()
         if SP_End_Date_Max_Today_Var == 1:
             SP_End_Date_Max_Today_Var = True
         else:
             SP_End_Date_Max_Today_Var = False
+
+        SP_Whole_Period = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
+        if SP_Whole_Period == 1:
+            SP_Whole_Period = True
+        else:
+            SP_Whole_Period = False
+
         Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
         Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
         Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
@@ -647,20 +653,39 @@ def Page_Data(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Information Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Information(Frame: CTk|CTkFrame):
+    Work_Area_Detail_Background = Configuration["Frames"]["Page_Frames"]["Work_Area_Detail"]["fg_color"]
+    Work_Area_Detail_Font = Configuration["Labels"]["Main"]["text_color"]
+
     # ------------------------- Main Functions -------------------------#
     Frame_Information_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Information_Work_Detail_Area.grid_propagate(flag=False)
-    
+
+    # Get Theme --> because of background color
+    Current_Theme = Get_Current_Theme() 
+
+    if Current_Theme == "Dark":
+        HTML_Background_Color = Work_Area_Detail_Background[1]
+        HTML_Font_Color = Work_Area_Detail_Font[1]
+    elif Current_Theme == "Light":
+        HTML_Background_Color = Work_Area_Detail_Background[0]
+        HTML_Font_Color = Work_Area_Detail_Font[0]
+    elif Current_Theme == "System":
+        HTML_Background_Color = Work_Area_Detail_Background[1]
+        HTML_Font_Color = Work_Area_Detail_Font[1]
+    else:
+        HTML_Background_Color = Work_Area_Detail_Background[1]
+        HTML_Font_Color = Work_Area_Detail_Font[1]
+
     # ------------------------- Info Text Area -------------------------#
     # Description
-    #! Dodělat --> text ohledně projektu a linka na víc info na Githubu (nejlepší by bylo, kdyby to přímo přečetlo Readme.md)!!!
     Frame_Information_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
-    with open("README.md", "r", encoding="UTF-8") as file:
-        htmlmarkdown=markdown.markdown( file.read() )
+    with open("Libs\\GUI\\Information.md", "r", encoding="UTF-8") as file:
+        htmlmarkdown=markdown.markdown( file.read())
     file.close()
 
-    Information_html = HTMLLabel(Frame_Information_Scrolable_Area, html=f"{htmlmarkdown}")
+    Information_html = HTMLLabel(Frame_Information_Scrolable_Area, html=f"{htmlmarkdown}", background=HTML_Background_Color, font="Roboto", fg=HTML_Font_Color)
+    Information_html.configure(height=700)
 
     #? Build look of Widget
     Frame_Information_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
@@ -685,8 +710,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
             Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
-            #! Dodělat --> je potřeba aktualizovat promněné Project_Variable a Action_Variable aby byli použitelný v celém systému
-            CTkMessagebox(title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+            CTkMessagebox(title="warning", message="Project and Activity downloaded from Sharepoint. Restart app!!", icon="check", option_1="Thanks", fade_in_duration=1)
 
 
     # ------------------------- Main Functions -------------------------#
@@ -822,9 +846,13 @@ class Win(customtkinter.CTk):
         super().bind("<B1-Motion>", self.dragwin)
 
     def dragwin(self,event):
-        x = super().winfo_pointerx() - self._offsetx
-        y = super().winfo_pointery() - self._offsety
-        super().geometry(f"+{x}+{y}")
+        # Move only when on Side Bar
+        if (self._offsetx < SideBar_Width):
+            x = super().winfo_pointerx() - self._offsetx
+            y = super().winfo_pointery() - self._offsety
+            super().geometry(f"+{x}+{y}")
+        else:
+            pass
 
     def clickwin(self,event):
         self._offsetx = super().winfo_pointerx() - super().winfo_rootx()
