@@ -113,7 +113,7 @@ def Empty_Split_Events(Events: DataFrame):
             second_duration = init_duration - first_duration            
         elif Split_method == "Random Split":
             try:
-                first_duration = random.randrange(start=Split_Minimal_Time, stop=(init_duration - Split_Minimal_Time), step=1)
+                first_duration = random.randrange(start=Split_Minimal_Time, stop=(init_duration - Split_Minimal_Time), step=Split_Minimal_Time)
                 second_duration = init_duration - first_duration        
             except:
                 CTkMessagebox(title="Error", message=f"Cannot perform split as minimal time is {Split_Minimal_Time} and split duration is {Split_duration}. You need to keep Split Duration > Minimal Time", icon="cancel", fade_in_duration=1)

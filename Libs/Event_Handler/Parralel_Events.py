@@ -232,20 +232,24 @@ def Parralel_Events(Events: DataFrame):
                 for row in Conflict_df.iterrows():
                     # Define current row as pandas Series
                     row_Series = pandas.Series(row[1])
-                    Event_Empty_Insert = row_Series["Event_Empty_Insert"]
                     Event_Index = row[0]
+                    Event_Empty_Insert = row_Series["Event_Empty_Insert"]
                     if Event_Empty_Insert == True:
                         Event_Start_Time = row_Series["Start_Time"]
                         Event_End_Time = row_Series["End_Time"]
                         for sub_row in Conflict_df.iterrows():
                             # Define current row as pandas Series
                             Sub_row_Series = pandas.Series(sub_row[1])
+                            Sub_Event_Index = sub_row[0]
                             Sub_Event_Start_Time = Sub_row_Series["Start_Time"]
                             Sub_Event_End_Time = Sub_row_Series["End_Time"]
-                            if (Event_Start_Time >= Sub_Event_Start_Time) and (Event_End_Time <= Sub_Event_End_Time):
-                                # Delete Event inserted by Automation
-                                Empty_Index_to_Del_list.append(Event_Index)
-                                break
+                            if Event_Index != Sub_Event_Index:
+                                if (Event_Start_Time >= Sub_Event_Start_Time) and (Event_End_Time <= Sub_Event_End_Time):
+                                    # Delete Event inserted by Automation
+                                    Empty_Index_to_Del_list.append(Event_Index)
+                                    break
+                                else:
+                                    pass
                             else:
                                 pass
                     else:
@@ -326,7 +330,7 @@ def Parralel_Events(Events: DataFrame):
         # Delete helper columns
         Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)
         return Cumulated_Events
-    elif Divide_Method == "Keep_Parralel":
+    elif Divide_Method == "Keep Parralel":
         return Events
     else:
         return Events
