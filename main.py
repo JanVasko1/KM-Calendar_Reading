@@ -796,6 +796,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     # Event-AutoFill Page
     Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
+    Event_Activit_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Frame=Tab_E_A)
 
     #? Build look of Widget
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
@@ -830,6 +831,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_Scheduler_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
     Event_AutoFiller_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Event_Activit_Correction_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
 
 

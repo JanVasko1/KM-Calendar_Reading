@@ -2,7 +2,7 @@
 import pandas
 from pandas import DataFrame
 import warnings
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -10,7 +10,7 @@ import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
 from bokeh.plotting import save, figure
 from bokeh.layouts import layout
 from bokeh.io import export_svgs, export_svg, export_png
-from bokeh.models import DataRange1d, ColumnDataSource
+from bokeh.models import DataRange1d, ColumnDataSource, Span, Label
 
 from CTkMessagebox import CTkMessagebox
 
@@ -176,8 +176,6 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
         raise ValueError
     
 def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFrame):
-    #! Dodělat --> třetí křivku jako projekci kolik toho stihnu podle kalendáře
-    #! Dodělat --> křivku mých hodin vykreslit pouze za dny které jsou opravdu aktuální a né až do konce 
     warnings.filterwarnings("ignore")
 
     # Variable Defaults
@@ -272,6 +270,15 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
         Chart.legend.title = "Utilization vs reported hours"
     else:
         pass
+
+    # Today vertical-Line
+    Today = datetime.now().strftime(Date_Format)
+    Today = datetime.strptime(Today, Date_Format)
+    Today_line = Span(location=Today, dimension='height', line_color="#00A9FF", line_width=1, line_dash="dashed", line_alpha=0.8)
+    Chart.add_layout(Today_line)
+
+    fixed_label = Label(x=Today + timedelta(hours=3), y=0, text="Today", text_font_size="10pt", text_color="#00A9FF")
+    Chart.add_layout(fixed_label)
 
     # Min-Max Values
     x_values_KM, y_values_KM = Bokeh_draw_chart.Bokeh_line_Interpolation(x_values = Value_df[X_Series_Column], y_values = Value_df["KM_Cumulative_Utilization"], Interpolate = Chart_Area_Propertie.iloc[0]["Interpolation"], Format = X_Seris_Format)

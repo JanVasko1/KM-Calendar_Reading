@@ -67,7 +67,10 @@ Lunch_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["L
 Events_Skip_list = Settings["Event_Handler"]["Events"]["Skip"]
 Events_Empty_General_dict = Settings["Event_Handler"]["Events"]["Empty"]["General"]
 Events_Empty_Schedules_dict = Settings["Event_Handler"]["Events"]["Empty"]["Scheduled"]
+
+# Events Rules
 Events_AutoFill_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]
+Events_Activity_Correction_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]
 
 Events_Empty_Split_Duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
 Events_Empty_Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
@@ -119,13 +122,15 @@ for key, value in Project_dict.items():
     Project_List.append(value["Project"])
 Project_List.sort()
 
-Activity_List1 = []
-Activity_List2 = []
+Project_All_List = Project_List
+Project_All_List.insert(0, " ") # Because there might be not filled one in Calendar
+
 Activity_by_Type_dict = Settings["Event_Handler"]["Activity"]["Activity_by_Type_dict"]
 Activity_All_List = list(Settings["Event_Handler"]["Activity"]["Activity_List"])
-Activity_All_List.insert(0, "") # Because there might be not filled one in Calendar
+Activity_All_List.insert(0, " ") # Because there might be not filled one in Calendar
 Activity_All_List.sort()
 Location_List = Settings["Event_Handler"]["Location"]["Location_List"]
+Location_List.insert(0, " ") # Because there might be not filled one in Calendar
 
 # Parralle Events
 Divide_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Divide_Method"]
@@ -1027,6 +1032,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
             # Save to Settings.json
             Empty_General_Events = Frame_Empty_General_Table_Var.values
             Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
+            Empty_General_Events = Update_empty_information(Check_List=Empty_General_Events)
 
             General_dict = {}
             Counter = 0
@@ -1040,12 +1046,12 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         def Delete_One_Close() -> None:
             Delete_One_Window.destroy()
 
-        def Update_Labels_Texts(LineNo_Option_Var: int, Frame_Empty_General_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, Coverage_Label_Var: CTkLabel) -> None:
-            Line_Option_Variable.set(value=LineNo_Option_Var)
-            Selected_Project = Frame_Empty_General_Table_Var.get(row=LineNo_Option_Var, column=0)
-            Selected_Activity = Frame_Empty_General_Table_Var.get(row=LineNo_Option_Var, column=1)
-            Selected_Description = Frame_Empty_General_Table_Var.get(row=LineNo_Option_Var, column=2)
-            Selected_Coverage = Frame_Empty_General_Table_Var.get(row=LineNo_Option_Var, column=3)
+        def Update_Labels_Texts(Line_Selected: int, Frame_Empty_General_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, Coverage_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=Line_Selected)
+            Selected_Project = Frame_Empty_General_Table_Var.get(row=Line_Selected, column=0)
+            Selected_Activity = Frame_Empty_General_Table_Var.get(row=Line_Selected, column=1)
+            Selected_Description = Frame_Empty_General_Table_Var.get(row=Line_Selected, column=2)
+            Selected_Coverage = Frame_Empty_General_Table_Var.get(row=Line_Selected, column=3)
 
             Project_Label_Var.configure(text=Selected_Project)
             Activity_Label_Var.configure(text=Selected_Activity)
@@ -1096,7 +1102,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         Coverage_Label_Var = Coverage_Label.children["!ctkframe3"].children["!ctklabel"]
         Coverage_Label_Var.configure(text=Frame_Empty_General_Table_Var.get(row=1, column=3))
 
-        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda LineNo_Option_Var: Update_Labels_Texts(Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, LineNo_Option_Var=LineNo_Option_Var, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, Coverage_Label_Var=Coverage_Label_Var)) 
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda Line_Selected: Update_Labels_Texts(Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, Line_Selected=Line_Selected, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, Coverage_Label_Var=Coverage_Label_Var)) 
 
         # Buttons
         Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
@@ -1387,6 +1393,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
             # Save to Settings.json
             Empty_Scheduled_Events = Frame_Empty_Schedules_Table_Var.values
             Empty_Scheduled_Events = [i for i in Empty_Scheduled_Events if i != Header_List]
+            Empty_Scheduled_Events = Update_empty_information(Check_List=Empty_Scheduled_Events)
 
             Scheduled_dict = {}
             Counter = 0
@@ -1400,14 +1407,14 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         def Delete_Schedule_Close() -> None:
             Delete_Scheduled_Window.destroy()
 
-        def Update_Labels_Texts(LineNo_Option_Var: int, Frame_Empty_Schedules_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, WeekDays_Label_Var: CTkLabel, Start_Label_Var: CTkLabel, End_Label_Var: CTkLabel) -> None:
-            Line_Option_Variable.set(value=LineNo_Option_Var)
-            Selected_Project = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=0)
-            Selected_Activity = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=1)
-            Selected_Description = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=2)
-            Selected_WeekDays = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=3)
-            Selected_Start = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=4)
-            Selected_End = Frame_Empty_Schedules_Table_Var.get(row=LineNo_Option_Var, column=5)
+        def Update_Labels_Texts(Line_Selected: int, Frame_Empty_Schedules_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, WeekDays_Label_Var: CTkLabel, Start_Label_Var: CTkLabel, End_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=Line_Selected)
+            Selected_Project = Frame_Empty_Schedules_Table_Var.get(row=Line_Selected, column=0)
+            Selected_Activity = Frame_Empty_Schedules_Table_Var.get(row=Line_Selected, column=1)
+            Selected_Description = Frame_Empty_Schedules_Table_Var.get(row=Line_Selected, column=2)
+            Selected_WeekDays = Frame_Empty_Schedules_Table_Var.get(row=Line_Selected, column=3)
+            Selected_Start = Frame_Empty_Schedules_Table_Var.get(row=Line_Selected, column=4)
+            Selected_End = Frame_Empty_Schedules_Table_Var.get(row=Line_Selected, column=5)
 
             Project_Label_Var.configure(text=Selected_Project)
             Activity_Label_Var.configure(text=Selected_Activity)
@@ -1466,7 +1473,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         End_Label_Var = End_Label.children["!ctkframe3"].children["!ctklabel"]
         End_Label_Var.configure(text=Frame_Empty_Schedules_Table_Var.get(row=1, column=5))
 
-        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda LineNo_Option_Var: Update_Labels_Texts(Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, LineNo_Option_Var=LineNo_Option_Var, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, WeekDays_Label_Var=WeekDays_Label_Var, Start_Label_Var=Start_Label_Var, End_Label_Var=End_Label_Var)) 
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda Line_Selected: Update_Labels_Texts(Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, Line_Selected=Line_Selected, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, WeekDays_Label_Var=WeekDays_Label_Var, Start_Label_Var=Start_Label_Var, End_Label_Var=End_Label_Var)) 
 
         # Buttons
         Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
@@ -1648,7 +1655,6 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
 def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Add_AutoFill_Event(Header_List: list, Frame_AutoFiller_Table_Var: CTkTable, Subject_Text_Text_Var: CTkEntry, Project_Option_Var: CTkOptionMenu, Activity_Option_Var: CTkOptionMenu, Location_Option_Var: CTkOptionMenu) -> None:
-        #! Dodělat --> pozor na ukládání mezer při prázdným getu z tabulky
         Add_flag = True
         # Load single values
         Add_Search_Text = Subject_Text_Text_Var.get()
@@ -1703,6 +1709,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
             # Save to Settings.json
             AutoFill_Events = Frame_AutoFiller_Table_Var.values
             AutoFill_Events = [i for i in AutoFill_Events if i != Header_List]
+            AutoFill_Events = Update_empty_information(Check_List=AutoFill_Events)
 
             AutoFill_dict = {}
             Counter = 0
@@ -1716,12 +1723,12 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         def Delete_AutoFill_Close() -> None:
             Delete_AutoFill_Window.destroy()
 
-        def Update_Labels_Texts(LineNo_Option_Var: int, Frame_AutoFiller_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, Location_Label_Var: CTkLabel) -> None:
-            Line_Option_Variable.set(value=LineNo_Option_Var)
-            Selected_Project = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=0)
-            Selected_Activity = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=1)
-            Selected_Description = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=2)
-            Selected_Location = Frame_AutoFiller_Table_Var.get(row=LineNo_Option_Var, column=3)
+        def Update_Labels_Texts(Line_Selected: int, Frame_AutoFiller_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Activity_Label_Var: CTkLabel, Description_Label_Var: CTkLabel, Location_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=Line_Selected)
+            Selected_Project = Frame_AutoFiller_Table_Var.get(row=Line_Selected, column=0)
+            Selected_Activity = Frame_AutoFiller_Table_Var.get(row=Line_Selected, column=1)
+            Selected_Description = Frame_AutoFiller_Table_Var.get(row=Line_Selected, column=2)
+            Selected_Location = Frame_AutoFiller_Table_Var.get(row=Line_Selected, column=3)
 
             Project_Label_Var.configure(text=Selected_Project)
             Activity_Label_Var.configure(text=Selected_Activity)
@@ -1772,7 +1779,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Location_Label_Var = Location_Label.children["!ctkframe3"].children["!ctklabel"]
         Location_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=3))
 
-        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda LineNo_Option_Var: Update_Labels_Texts(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var, LineNo_Option_Var=LineNo_Option_Var, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, Location_Label_Var=Location_Label_Var)) 
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda Line_Selected: Update_Labels_Texts(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var, Line_Selected=Line_Selected, Project_Label_Var=Project_Label_Var, Activity_Label_Var=Activity_Label_Var, Description_Label_Var=Description_Label_Var, Location_Label_Var=Location_Label_Var)) 
 
         # Buttons
         Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
@@ -1792,7 +1799,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # ------------------------- Main Functions -------------------------#
     Header_List = ["Search Text", "Project", "Activity", "Location"]
-    Project_Variable = StringVar(master=Frame, value=Project_List[0])
+    Project_Variable = StringVar(master=Frame, value=Project_All_List[0])
     Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
     Location_Variable = StringVar(master=Frame, value=Location_List[0])
 
@@ -1830,7 +1837,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Project_Option_Var.configure(variable=Project_Variable)
     Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command=None)
 
-    # Field - Activity --> opravdu z listu všech aktivit protože mohu nastavit pravidlo bez Projektu
+    # Field - Activity --> really from list of all Activity, because rule can be without Project 
     Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
     Activity_Option_Var = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var.configure(variable=Activity_Variable)
@@ -1854,6 +1861,230 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
 
     Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
     Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_AutoFill_Event_All(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var))
+    Elements.Get_ToolTip(widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Frame_Imput_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
+
+    return Frame_Main
+
+
+def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
+    def Add_Activity_Correct_Event(Header_List: list, Frame_Activity_Correct_Table_Var: CTkTable, Project_Option_Var: CTkOptionMenu, Wrong_Activity_Option_Var: CTkOptionMenu, Correct_Activity_Option_Var: CTkOptionMenu) -> None:
+        Add_flag = True
+        # Load single values
+        Add_Project = Project_Option_Var.get()
+        Add_Wrong_Activity = Wrong_Activity_Option_Var.get()
+        Add_Correct_Activity = Correct_Activity_Option_Var.get()
+
+        Check_List = Frame_Activity_Correct_Table_Var.values
+        Check_List = Update_empty_information(Check_List=Check_List)
+        Add_row = [Add_Project, Add_Wrong_Activity, Add_Correct_Activity]
+
+        # Values checkers --> all must be inserted
+        if Add_Project == " ":
+            Add_flag = False
+            CTkMessagebox(title="Error", message=f"Project is empty please fill it first.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+
+        if Add_Wrong_Activity == " ":
+            Add_flag = False
+            CTkMessagebox(title="Error", message=f"Wrong Activity is empty please fill it first.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+
+        if Add_Correct_Activity == " ":
+            Add_flag = False
+            CTkMessagebox(title="Error", message=f"Correct Activity is empty please fill it first.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+        
+        # Not To add same line -->  consider only Search text
+        if Add_flag == True:
+            for AutoFill_Event in Check_List:
+                if AutoFill_Event != Add_row:
+                    pass
+                else:
+                    Add_flag = False
+                    CTkMessagebox(title="Error", message=f"Rule with all combination already exists with Events Corrections.", icon="cancel", fade_in_duration=1)
+
+        if Add_flag == True:
+            Frame_Activity_Correct_Table_Var.add_row(values=Add_row)
+
+            # Save to Settings.json
+            Activity_Corrections_Events = Frame_Activity_Correct_Table_Var.values
+            Activity_Corrections_Events = [i for i in Activity_Corrections_Events if i != Header_List]
+            Activity_Corrections_Events = Update_empty_information(Check_List=Activity_Corrections_Events)
+
+            Activity_Correction_dict = {}
+            Counter = 0
+            for Activity_Corrections_Events_row in Activity_Corrections_Events:
+                Activity_Corrections_Events_row_dict = dict(zip(Header_List, Activity_Corrections_Events_row))
+                Activity_Correction_dict[Counter] = Activity_Corrections_Events_row_dict
+                Counter += 1
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction"], Information=Activity_Correction_dict)
+        else:
+            pass
+
+    def Del_Activity_Correct_Event_One():
+        def Delete_Activity_Correct_Confirm(Frame_Activity_Correct_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
+            Selected_Line_To_Del = LineNo_Option_Var.get()
+            Frame_Activity_Correct_Table_Var.delete_row(index=Selected_Line_To_Del)
+
+            # Save to Settings.json
+            Activity_Corrections_Events = Frame_Activity_Correct_Table_Var.values
+            Activity_Corrections_Events = [i for i in Activity_Corrections_Events if i != Header_List]
+            Activity_Corrections_Events = Update_empty_information(Check_List=Activity_Corrections_Events)
+
+            Activity_Correction_dict = {}
+            Counter = 0
+            for Activity_Corrections_Events_row in Activity_Corrections_Events:
+                Activity_Corrections_Events_row_dict = dict(zip(Header_List, Activity_Corrections_Events_row))
+                Activity_Correction_dict[Counter] = Activity_Corrections_Events_row_dict
+                Counter += 1
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction"], Information=Activity_Correction_dict)
+            Delete_Activity_Correct_Close()
+
+        def Delete_Activity_Correct_Close() -> None:
+            Delete_Activity_Correct_Window.destroy()
+
+        def Update_Labels_Texts(Line_Selected: int, Frame_Activity_Correct_Table_Var: CTkTable, Project_Label_Var: CTkLabel, Wrong_Activity_Label_Var: CTkLabel, Correct_Activity_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=Line_Selected)
+            Selected_Project = Frame_Activity_Correct_Table_Var.get(row=Line_Selected, column=0)
+            Selected_Wrong_Activity = Frame_Activity_Correct_Table_Var.get(row=Line_Selected, column=1)
+            Selected_Correct_Activity = Frame_Activity_Correct_Table_Var.get(row=Line_Selected, column=2)
+
+            Project_Label_Var.configure(text=Selected_Project)
+            Wrong_Activity_Label_Var.configure(text=Selected_Wrong_Activity)
+            Correct_Activity_Label_Var.configure(text=Selected_Correct_Activity)
+
+        # callculat number of lines in table
+        Activity_Corrections_Events = Frame_Activity_Correct_Table_Var.values
+        Activity_Corrections_Events = [i for i in Activity_Corrections_Events if i != Header_List]
+        Lines_No = len(Activity_Corrections_Events)
+        Lines_list = [x for x in range(1, Lines_No + 1)] # Must skip Headers
+        Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
+
+        # TopUp Window
+        Delete_Activity_Correct_Window = CTkToplevel()
+        Delete_Activity_Correct_Window.configure(fg_color="#000001")
+        Delete_Activity_Correct_Window.title("Collor Picker")
+        Delete_Activity_Correct_Window.geometry(f"510x250")
+        Delete_Activity_Correct_Window.bind(sequence="<Escape>", func=lambda evet: Delete_Activity_Correct_Window.destroy())
+        Delete_Activity_Correct_Window.overrideredirect(boolean=True)
+        Delete_Activity_Correct_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        Delete_Activity_Correct_Window.resizable(width=False, height=False)
+
+        # Rounded corners 
+        Delete_Activity_Correct_Window.config(background="#000001")
+        Delete_Activity_Correct_Window.attributes("-transparentcolor", "#000001")
+
+        # Frame - General
+        Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Delete_Activity_Correct_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
+        Frame_Body = Frame_Main.children["!ctkframe2"]
+    
+        # Field - Option Menu
+        LineNo_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Line No", Field_Type="Input_OptionMenu") 
+        LineNo_Option_Var = LineNo_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+        LineNo_Option_Var.configure(variable=Line_Option_Variable)
+
+        # Field - Project Label
+        Project_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Project: ") 
+        Project_Label_Var = Project_Label.children["!ctkframe3"].children["!ctklabel"]
+        Project_Label_Var.configure(text=Frame_Activity_Correct_Table_Var.get(row=1, column=0))
+        Wrong_Activity_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Wrong Activity: ") 
+        Wrong_Activity_Label_Var = Wrong_Activity_Label.children["!ctkframe3"].children["!ctklabel"]
+        Wrong_Activity_Label_Var.configure(text=Frame_Activity_Correct_Table_Var.get(row=1, column=1))
+        Correct_Activity_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Correct Activity: ") 
+        Correct_Activity_Label_Var = Correct_Activity_Label.children["!ctkframe3"].children["!ctklabel"]
+        Correct_Activity_Label_Var.configure(text=Frame_Activity_Correct_Table_Var.get(row=1, column=2))
+
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda Line_Selected: Update_Labels_Texts(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var, Line_Selected=Line_Selected, Project_Label_Var=Project_Label_Var, Wrong_Activity_Label_Var=Wrong_Activity_Label_Var, Correct_Activity_Label_Var=Correct_Activity_Label_Var)) 
+
+        # Buttons
+        Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
+        Button_Confirm_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+        Button_Confirm_Var.configure(text="Confirm", command = lambda:Delete_Activity_Correct_Confirm(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var, LineNo_Option_Var=LineNo_Option_Var))
+        Elements.Get_ToolTip(widget=Button_Confirm_Var, message="Confirm line delete.", ToolTip_Size="Normal")
+
+        Button_Reject_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+        Button_Reject_Var.configure(text="Reject", command = lambda:Delete_Activity_Correct_Close())
+        Elements.Get_ToolTip(widget=Button_Reject_Var, message="Dont process, closing Window.", ToolTip_Size="Normal")
+
+
+
+    def Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var: CTkTable) -> None:
+        Table_len = len(Frame_Activity_Correct_Table_Var.values)
+        for Table_index in range(1, Table_len):
+            Frame_Activity_Correct_Table_Var.delete_row(index=Table_index)
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction"], Information={})
+
+    # ------------------------- Main Functions -------------------------#
+    Header_List = ["Project", "Wrong Activity", "Correct Activity"]
+    Project_Variable = StringVar(master=Frame, value=Project_List[0])
+    Wrong_Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
+    Correct_Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Activity correction", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Change Activity in the processing of Evetns, when non-proper activity for Project is selected in calendar.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Imput Field + button in one line
+    Frame_Imput_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
+
+    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
+    Frame_Imput_Area.configure(width=300)
+
+    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
+
+    # AutoFilling Table
+    Activity_Correction_list = [Header_List]
+    Events_Activity_Correction_dict_rows = Events_Activity_Correction_dict.items()
+    for Sub_Row in Events_Activity_Correction_dict_rows:
+        Sub_dict = Sub_Row[1]
+        Activity_Correction_list.append(list(Sub_dict.values()))
+
+    Frame_Activity_Correct_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Activity_Correction_list, Table_Columns=3, Table_Rows=len(Activity_Correction_list))
+    Frame_Activity_Correct_Table_Var = Frame_Activity_Correct_Table.children["!ctktable"]
+    Frame_Activity_Correct_Table_Var.configure(wraplength=310)
+
+    # Field - Project
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option_Var = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Project_Option_Var.configure(variable=Project_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command=None)
+
+    # Field - Activity --> really from list of all Activity, because rule have to be setpe with all possible activity
+    Wrong_Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Wrong Activity", Field_Type="Input_OptionMenu") 
+    Wrong_Activity_Option_Var = Wrong_Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Wrong_Activity_Option_Var.configure(variable=Wrong_Activity_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Wrong_Activity_Option_Var, values=Activity_All_List, command=None)
+
+    # Field - Activity --> placed before project because of variable to be used
+    Correct_Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Correct Activity", Field_Type="Input_OptionMenu") 
+    Correct_Activity_Option_Var = Correct_Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Correct_Activity_Option_Var.configure(variable=Correct_Activity_Variable)
+
+    # Project/Activity OptionMenu update
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command = lambda Project_Option_Var: Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var, Activity_Option_Var=Correct_Activity_Option_Var, Project_Variable=Project_Variable))
+    Elements.Get_Option_Menu_Advance(attach=Correct_Activity_Option_Var, values=Activity_All_List, command=None)
+
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_AutoFill_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_AutoFill_Add_Var.configure(text="Add", command = lambda:Add_Activity_Correct_Event(Header_List=Header_List, Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var, Project_Option_Var=Project_Option_Var, Wrong_Activity_Option_Var=Wrong_Activity_Option_Var, Correct_Activity_Option_Var=Correct_Activity_Option_Var))
+    Elements.Get_ToolTip(widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
+
+    Button_AutoFill_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_AutoFill_Del_One_Var.configure(text="Del", command = lambda:Del_Activity_Correct_Event_One())
+    Elements.Get_ToolTip(widget=Button_AutoFill_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
+
+    Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
+    Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var))
     Elements.Get_ToolTip(widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     #? Build look of Widget

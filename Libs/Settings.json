@@ -252,7 +252,6 @@
             "Method": "Events",
             "Default": "Office",
             "Location_List": [
-                "",
                 "Office",
                 "Customer"
             ]
@@ -463,7 +462,13 @@
                         "Location": "Office"
                     }
                 },
-                "Activity_Correction": {}
+                "Activity_Correction": {
+                    "0": {
+                        "Project": "BBG NUS Cloud Roll-out",
+                        "Wrong Activity": "Admin",
+                        "Correct Activity": "Analysis"
+                    }
+                }
             }
         }
     }
