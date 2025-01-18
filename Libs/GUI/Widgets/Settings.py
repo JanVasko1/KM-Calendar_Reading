@@ -1626,7 +1626,7 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Events_Empty_Split_list_Variable = StringVar(master=Frame, value=Events_Empty_Split_Method, name="Events_Empty_Split_list_Variable")
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Events Spliting", Additional_Text="Pay attention jo Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for spliting automatically filled events by program longer than defined duration. \nEffect of the split can be supress partionally / fully by Joining Events, depends on setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Events Spliting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for spliting automatically filled events by program longer than defined duration. \nEffect of the split can be supress partionally / fully by Joining Events, depends on setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Duration

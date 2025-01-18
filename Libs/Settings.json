@@ -462,13 +462,7 @@
                         "Location": "Office"
                     }
                 },
-                "Activity_Correction": {
-                    "0": {
-                        "Project": "BBG NUS Cloud Roll-out",
-                        "Wrong Activity": "Admin",
-                        "Correct Activity": "Analysis"
-                    }
-                }
+                "Activity_Correction": {}
             }
         }
     }
