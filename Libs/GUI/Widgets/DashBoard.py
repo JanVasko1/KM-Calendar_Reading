@@ -393,7 +393,7 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     Frame_Header = Frame_Whole.children["!ctkframe"]
     Frame_Body = Frame_Whole.children["!ctkframe2"]
 
-    # TODO --> dokončit Dashboard --> načtení grafů podle zvoleného buttonu do Framu
+    # TODO --> dokončit Dashboard --> načtení grafů podle zvoleného buttonu do Frame --> možná nemožný
 
     # Button --> Projects
     Button_Show_Projects = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")

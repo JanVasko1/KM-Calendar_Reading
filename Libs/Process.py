@@ -22,11 +22,15 @@ Time_format = Settings["General"]["Formats"]["Time"]
 # ---------------------------------------------------------- Local Function ---------------------------------------------------------- #
 def Progress_Bar_step(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Lable: str) -> None:
     Progress_Bar.step()
+    Progress_text.configure(text="                                                        ")
+    window.update_idletasks()
     Progress_text.configure(text=f"{Lable}")
     window.update_idletasks()
 
 def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Lable: str, value: int) -> None:
     Progress_Bar.set(value=value)
+    Progress_text.configure(text="                                                        ")
+    window.update_idletasks()
     Progress_text.configure(text=f"{Lable}")
     window.update_idletasks()
 
@@ -67,7 +71,6 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Skip Events") 
         Events = Skip_Events.Skip_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
-        print(Events)
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Parralel Events") 
         Events = Parralel_Events.Parralel_Events(Events=Events)
@@ -96,7 +99,6 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         # Sumamry Dataframes
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Summary") 
         Events = Summary.Generate_Summary(Events=Events, Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)
-        Progress_Bar.set(value=1)
 
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Done", value=1) 
         CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
