@@ -116,7 +116,7 @@ def Upload(Events: DataFrame, SP_Password: str|None) -> None:
         TimeSheets_df = Get_Table_Data(ws=TimeSpent_ws, data_boundary=data_boundary)
         A_Cell, E_Cell = Timesheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
 
-        #! Dodělat --> automatically upload to Sharepoint only to new lines "Paste as text only"
+        # TODO --> automatically upload to Sharepoint only to new lines "Paste as text only"
         CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")
         
 

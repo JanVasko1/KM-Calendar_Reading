@@ -410,7 +410,7 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Exchange_ReNew_Secret() -> None:
         print("Exchange_ReNew_Secret")
-        #! Dodělat --> Zobrazí popu form a nechá vyplnit nový SEcret ID a pouze uloží do DB
+        # TODO --> Zobrazí popu form a nechá vyplnit nový Secret ID a pouze uloží do DB
         pass
 
     # ------------------------- Main Functions -------------------------#

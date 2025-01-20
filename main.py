@@ -698,8 +698,8 @@ def Page_Information(Frame: CTk|CTkFrame):
 def Page_Settings(Frame: CTk|CTkFrame):
     import Libs.GUI.Widgets.Settings as Settings_Widgets
     # ------------------------- Local Functions -------------------------#
-    def Save_Settings():
-        #! Dodělat --> uložit všechno do Settings.json
+    def Save_Settings():  
+        # TODO --> uložit všechno do Settings.json
         CTkMessagebox(title="Success", message="Changes saved to Settings.", icon="check", option_1="Thanks")
 
     def Download_Project_Activities():
