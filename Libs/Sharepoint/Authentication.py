@@ -7,13 +7,13 @@ from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-User_Name = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
+Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
 Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Init_authentication(SP_Password: str|None) -> sharepy:
     try:
-        s_aut = sharepy.connect(site=Auth_Address, username=User_Name, password=SP_Password)
+        s_aut = sharepy.connect(site=Auth_Address, username=Auth_Email, password=SP_Password)
         s_aut.save(filename=f"Operational\\SP_Auth.pkl")
     except Exception as Error:
         CTkMessagebox(title="Error", message="It is not possible to connect and save now, try later.", icon="cancel", fade_in_duration=1)

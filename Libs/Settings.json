@@ -9,6 +9,29 @@
                     "Code": "CZ011845",
                     "Name": "Jan Vasko"
                 },
+                "Teams": {
+                    "My_Team": "NAV BPC",
+                    "Team_List": [
+                        "CRM BPL",
+                        "CRM",
+                        "Enterprice Architecture",
+                        "ITSM",
+                        "NAV BPC",
+                        "NAV MSM. PHA",
+                        "Portals B2B",
+                        "SAP AD"
+                    ],
+                    "Team_Links": {
+                        "CRM BPL": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20CRM%20BPL.xlsm",
+                        "CRM": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20CRM.xlsm",
+                        "Enterprice Architecture": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20Enterprise%20Architecture%20IT%20Europe.xlsm",
+                        "ITSM": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20ITSM.xlsm",
+                        "NAV BPC": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC.xlsm",
+                        "NAV MSM. PHA": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC_MSM%20+%20PHA.xlsm",
+                        "Portals B2B": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20Portals%20B2B.xlsm",
+                        "SAP AD": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20SAP%20AD.xlsm"
+                    }
+                },
                 "Link": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC.xlsm",
                 "File_name": "SP_TimeSheets.xlsx",
                 "Auth": {
@@ -263,6 +286,7 @@
             },
             "Special_Events": {
                 "Vacation": {
+                    "Use": true,
                     "Search_Text": "Dovolená",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
@@ -272,6 +296,7 @@
                     ]
                 },
                 "HomeOffice": {
+                    "Use": false,
                     "Search_Text": "Home Office",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
@@ -281,6 +306,7 @@
                     ]
                 },
                 "Lunch": {
+                    "Use": true,
                     "Search_Text": "Lunch",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
@@ -291,6 +317,7 @@
                 }
             },
             "Parralel_Events": {
+                "Use": true,
                 "Divide_Method": "Divide",
                 "Divide_Method_List": [
                     "Divide",
@@ -303,7 +330,7 @@
                 ]
             },
             "Join_method": {
-                "Use": false,
+                "Use": true,
                 "Free": "Keep separate",
                 "Tentative": "Keep separate",
                 "Busy": "Join",
@@ -352,117 +379,126 @@
                     }
                 },
                 "Split": {
+                    "Use": true,
                     "Split_Duration": 60,
                     "Split_Minimal_Time": 15,
                     "Split_Method": "Random Split",
                     "Methods_List": [
-                        "Do nothing",
                         "Equal Split",
                         "Random Split"
                     ]
                 }
             },
-            "Skip": [
-                "Car Blocker",
-                "Christmas party",
-                "Deadline pro TimeSheet",
-                "Grilovačka",
-                "KONTROLA DOCHÁZKY",
-                "On-Call Duty",
-                "Private",
-                "Save the date ",
-                "Teambuilding",
-                "Teambulding",
-                "TimeSheets - Upload"
-            ],
+            "Skip": {
+                "Use": true,
+                "Skip_List": [
+                    "Car Blocker",
+                    "Christmas party",
+                    "Deadline pro TimeSheet",
+                    "Grilovačka",
+                    "KONTROLA DOCHÁZKY",
+                    "On-Call Duty",
+                    "Private",
+                    "Save the date ",
+                    "Teambuilding",
+                    "Teambulding",
+                    "TimeSheets - Upload"
+                ]
+            },
             "Auto_Filler": {
                 "Search_Text": {
-                    "0": {
-                        "Search Text": "NAV ERP Team Meeting:",
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Activity": "Admin",
-                        "Location": "Office"
-                    },
-                    "1": {
-                        "Search Text": "TDO - Team Meeting",
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Activity": "Admin",
-                        "Location": "Office"
-                    },
-                    "2": {
-                        "Search Text": "NUS Cloud - Testing",
-                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Activity": "Testing",
-                        "Location": "Office"
-                    },
-                    "3": {
-                        "Search Text": "NUS Cloud - Sync call",
-                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Activity": "Project Management",
-                        "Location": "Office"
-                    },
-                    "4": {
-                        "Search Text": "NUS Cloud - Integrations: Status",
-                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Activity": "Project Management",
-                        "Location": "Office"
-                    },
-                    "5": {
-                        "Search Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
-                        "Project": "BRO NUS Cloud Pilot",
-                        "Activity": "Project Management",
-                        "Location": "Office"
-                    },
-                    "6": {
-                        "Search Text": "BRO: ",
-                        "Project": "BRO NUS Cloud Pilot",
-                        "Activity": "",
-                        "Location": ""
-                    },
-                    "7": {
-                        "Search Text": "BBL: ",
-                        "Project": "NUS (CE) harm.&bus. Support",
-                        "Activity": "",
-                        "Location": ""
-                    },
-                    "8": {
-                        "Search Text": "Product Backlog Item",
-                        "Project": "",
-                        "Activity": "Testing",
-                        "Location": ""
-                    },
-                    "9": {
-                        "Search Text": "INC",
-                        "Project": "Incident handling / support - BPC Brno",
-                        "Activity": "Consultancy",
-                        "Location": ""
-                    },
-                    "10": {
-                        "Search Text": "Travel Time",
-                        "Project": "",
-                        "Activity": "Travel Time (Project)",
-                        "Location": "Customer"
-                    },
-                    "11": {
-                        "Search Text": "Dovolená",
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Activity": "Vacation",
-                        "Location": "Office"
-                    },
-                    "12": {
-                        "Search Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
-                        "Project": "BRO NUS Cloud Pilot",
-                        "Activity": "Project Management",
-                        "Location": "Office"
-                    },
-                    "13": {
-                        "Search Text": "BRO NUS Cloud - Internal Status",
-                        "Project": "BRO NUS Cloud Pilot",
-                        "Activity": "Project Management",
-                        "Location": "Office"
+                    "Use": true,
+                    "Dictionary": {
+                        "0": {
+                            "Search Text": "NAV ERP Team Meeting:",
+                            "Project": "Other Internal activities - BPC Brno",
+                            "Activity": "Admin",
+                            "Location": "Office"
+                        },
+                        "1": {
+                            "Search Text": "TDO - Team Meeting",
+                            "Project": "Other Internal activities - BPC Brno",
+                            "Activity": "Admin",
+                            "Location": "Office"
+                        },
+                        "2": {
+                            "Search Text": "NUS Cloud - Testing",
+                            "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                            "Activity": "Testing",
+                            "Location": "Office"
+                        },
+                        "3": {
+                            "Search Text": "NUS Cloud - Sync call",
+                            "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                            "Activity": "Project Management",
+                            "Location": "Office"
+                        },
+                        "4": {
+                            "Search Text": "NUS Cloud - Integrations: Status",
+                            "Project": "NUS3 Technical Upgrade (NUS Cloud)",
+                            "Activity": "Project Management",
+                            "Location": "Office"
+                        },
+                        "5": {
+                            "Search Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
+                            "Project": "BRO NUS Cloud Pilot",
+                            "Activity": "Project Management",
+                            "Location": "Office"
+                        },
+                        "6": {
+                            "Search Text": "BRO: ",
+                            "Project": "BRO NUS Cloud Pilot",
+                            "Activity": "",
+                            "Location": ""
+                        },
+                        "7": {
+                            "Search Text": "BBL: ",
+                            "Project": "NUS (CE) harm.&bus. Support",
+                            "Activity": "",
+                            "Location": ""
+                        },
+                        "8": {
+                            "Search Text": "Product Backlog Item",
+                            "Project": "",
+                            "Activity": "Testing",
+                            "Location": ""
+                        },
+                        "9": {
+                            "Search Text": "INC",
+                            "Project": "Incident handling / support - BPC Brno",
+                            "Activity": "Consultancy",
+                            "Location": ""
+                        },
+                        "10": {
+                            "Search Text": "Travel Time",
+                            "Project": "",
+                            "Activity": "Travel Time (Project)",
+                            "Location": "Customer"
+                        },
+                        "11": {
+                            "Search Text": "Dovolená",
+                            "Project": "Other Internal activities - BPC Brno",
+                            "Activity": "Vacation",
+                            "Location": "Office"
+                        },
+                        "12": {
+                            "Search Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
+                            "Project": "BRO NUS Cloud Pilot",
+                            "Activity": "Project Management",
+                            "Location": "Office"
+                        },
+                        "13": {
+                            "Search Text": "BRO NUS Cloud - Internal Status",
+                            "Project": "BRO NUS Cloud Pilot",
+                            "Activity": "Project Management",
+                            "Location": "Office"
+                        }
                     }
                 },
-                "Activity_Correction": {}
+                "Activity_Correction": {
+                    "Use": false,
+                    "Dictionary": {}
+                }
             }
         }
     }

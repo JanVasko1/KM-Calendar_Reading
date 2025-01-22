@@ -62,7 +62,7 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
 
     return Frame_Single_Body
 
-def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str) -> CTkFrame:
+def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str, Var_Value: int|str|None = None) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -93,18 +93,18 @@ def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,
         Field_Normal = Elements.Get_Password_Normal(Frame=Frame_Value)
         Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Input_Small":
-        Field_Small = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal")
+        Field_Small = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Small")
         Frame_Area.configure(width=300)
         Field_Small.pack(side="left", fill="none")
     elif Field_Type == "Input_RadioButton":
-        RadioButton = Elements.Get_RadioButton_Normal(Frame=Frame_Value)
+        RadioButton = Elements.Get_RadioButton_Normal(Frame=Frame_Value, Var_Value=Var_Value)
         RadioButton.pack(side="left", fill="none")
     elif Field_Type == "Input_OptionMenu":
         Input_OptionMenu = Elements.Get_Option_Menu(Frame=Frame_Value)
         Input_OptionMenu.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Input_CheckBox":
-        Input_OptionMenu = Elements.Get_CheckBox(Frame=Frame_Value)
-        Input_OptionMenu.pack(side="left", fill="x", expand=True)
+        Input_CheckBoxu = Elements.Get_CheckBox(Frame=Frame_Value)
+        Input_CheckBoxu.pack(side="left", fill="x", expand=True)
     else:
         CTkMessagebox(title="Error", message=f"Field type: {Field_Type} not uspported.", icon="cancel", fade_in_duration=1)
 

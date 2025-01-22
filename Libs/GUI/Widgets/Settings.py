@@ -31,11 +31,12 @@ Hover_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Hove
 
 # Sharepoint
 SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
-SP_Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
-SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
+SP_Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]   
 SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 SP_Person_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
 SP_Person_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+SP_Teams_List = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_List"]
 
 # Outlook
 Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
@@ -46,32 +47,40 @@ Format_Time = Settings["General"]["Formats"]["Time"]
 Format_SP_DateTime = Settings["General"]["Formats"]["Exchange_DateTime"]
 
 # Vacation
+Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
 Vacation_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Search_Text"]
 Vacation_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["All_Day"]
 Vacation_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Part_Day"]
 Vacation_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Vacation_Option_List"]
 
 # HomeOffice
+HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
 HomeOffice_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Search_Text"]
 HomeOffice_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["All_Day"]
 HomeOffice_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Part_Day"]
 HomeOffice_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["HomeOffice_Option_List"]
 
 # Lunch
+Lunch_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
 Lunch_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
 Lunch_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["All_Day"]
 Lunch_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
 Lunch_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Lunch_Option_List"]
 
 # Events Empty
-Events_Skip_list = Settings["Event_Handler"]["Events"]["Skip"]
+Skip_Enabled = Settings["Event_Handler"]["Events"]["Skip"]["Use"]
+Events_Skip_list = Settings["Event_Handler"]["Events"]["Skip"]["Skip_List"]
 Events_Empty_General_dict = Settings["Event_Handler"]["Events"]["Empty"]["General"]
 Events_Empty_Schedules_dict = Settings["Event_Handler"]["Events"]["Empty"]["Scheduled"]
 
 # Events Rules
-Events_AutoFill_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]
-Events_Activity_Correction_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]
+AutoFill_Rules_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Use"]
+Events_AutoFill_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Dictionary"]
 
+Events_Activity_Correction_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Use"]
+Events_Activity_Correction_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Dictionary"]
+
+Events_Empty_Split_Enabled = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
 Events_Empty_Split_Duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
 Events_Empty_Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
 Events_Empty_Split_Method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
@@ -133,6 +142,7 @@ Location_List = Settings["Event_Handler"]["Location"]["Location_List"]
 Location_List.insert(0, " ") # Because there might be not filled one in Calendar
 
 # Parralle Events
+Parralel_Enabled = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Use"]
 Divide_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Divide_Method"]
 Divide_Method_List = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Divide_Method_List"]
 Start_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Start_Method"]
@@ -148,10 +158,12 @@ Join_OutOfOffice = Settings["Event_Handler"]["Events"]["Join_method"]["Out of Of
 Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working elsewhere"]
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
-def Option_Field_Update_Value(Variable: StringVar|IntVar|BooleanVar|None, File_Name: str, JSON_path: list, Information: int|str|list|dict) -> None:
+def Field_Update_Value(Variable: StringVar|IntVar|BooleanVar|None, File_Name: str, JSON_path: list, Information: int|str|list|dict) -> None:
     # Must be here as local function because 2 operation needs to be execuuted 
     if type(Variable) is None:
         pass
+    elif type(Variable) is BooleanVar:
+        Information = Information.get()
     else:
         Variable.set(value=Information)
     Defaults_Lists.Information_Update_Settings(File_Name=File_Name, JSON_path=JSON_path, Information=Information)
@@ -210,13 +222,13 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
     # ------------------------- Local Functions -------------------------#
     def Apperance_Change_Theme(Theme_Frame_Var: CTkOptionMenu) ->  None:
         customtkinter.set_appearance_mode(mode_string=Theme_Frame_Var)
-        Option_Field_Update_Value(Variable=Theme_Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Theme"], Information=Theme_Frame_Var)
+        Field_Update_Value(Variable=Theme_Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Theme"], Information=Theme_Frame_Var)
 
     def Apperance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
         # Base Windows style setup --> always keep normal before change
         pywinstyles.apply_style(window=window, style="normal")
         pywinstyles.apply_style(window=window, style=Win_Style_Selected)
-        Option_Field_Update_Value(Variable=Win_Style_Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Style"], Information=Win_Style_Selected)
+        Field_Update_Value(Variable=Win_Style_Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Style"], Information=Win_Style_Selected)
 
     # ------------------------- Main Functions -------------------------#
     Theme_Variable = StringVar(master=Frame, value=Theme_Actual)
@@ -252,28 +264,28 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
             # Accent only
-            Option_Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+            Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "App Default":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
             # Both
             if Helper == "Accent":
-                Option_Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
             elif Helper == "Hover":
-                Option_Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "Accent Lighter":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
             # Hover only
-            Option_Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
+            Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "Manual":
             Entry_Field.configure(state="normal")
             Picker_Button.configure(state="normal")
             # Both
             if Helper == "Accent":
-                Option_Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
             elif Helper == "Hover":
-                Option_Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         else:
             CTkMessagebox(title="Error", message="Accent Color Method not allowed", icon="cancel", fade_in_duration=1)
 
@@ -358,6 +370,7 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # -------------------------------------------------------------------------- Tab GEneral --------------------------------------------------------------------------#
 def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
+    SP_Team_Variable = StringVar(master=Frame, value=SP_Team)
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
@@ -375,11 +388,11 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     SP_User_ID_Frame_Var.configure(placeholder_text="Your UserID (KM ID)")
     Entry_field_Insert(Field=SP_User_ID_Frame_Var, Value=SP_Person_ID)
 
-    # Field - Path to Sharepoint
-    SP_Link_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoin Address", Field_Type="Input_Normal")
-    SP_Link_Frame_Var = SP_Link_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Link_Frame_Var.configure(placeholder_text="Link to Sharepoint")
-    Entry_field_Insert(Field=SP_Link_Frame_Var, Value=SP_Link)
+    # Field - Team
+    SP_Team_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Team", Field_Type="Input_OptionMenu") 
+    SP_Team_Frame_Var = SP_Team_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    SP_Team_Frame_Var.configure(variable=SP_Team_Variable)
+    Elements.Get_Option_Menu_Advance(attach=SP_Team_Frame_Var, values=SP_Teams_List, command=lambda SP_Team_Frame_Var: Field_Update_Value(Variable=SP_Team_Variable, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Teams", "My_Team"], Information=SP_Team_Frame_Var))
 
     # Field - File Name 
     SP_File_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="File Name", Field_Type="Input_Normal")
@@ -501,6 +514,7 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Parralel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
+    Parralel_Use_Variable = BooleanVar(master=Frame, value=Parralel_Enabled)
     Divide_Method_Variable = StringVar(master=Frame, value=Divide_Method)
     Start_Method_Variable = StringVar(master=Frame, value=Start_Method)
     
@@ -508,17 +522,22 @@ def Settings_Parralel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Parralel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Envents when program found that they are parrallel.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
+    # Field - Use
+    Use_Parralel_Events = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Parralel_Events_Var = Use_Parralel_Events.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Parralel_Events_Var.configure(variable=Parralel_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Parralel_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Use"], Information=Parralel_Use_Variable))
+
     # Field - Divide Method
     Divide_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Divide Method", Field_Type="Input_OptionMenu") 
     Divide_Method_Frame_Var = Divide_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Divide_Method_Frame_Var.configure(variable=Divide_Method_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Divide_Method_Frame_Var, values=Divide_Method_List, command=lambda Divide_Method_Frame_Var: Option_Field_Update_Value(Variable=Divide_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Divide_Method"], Information=Divide_Method_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Divide_Method_Frame_Var, values=Divide_Method_List, command=lambda Divide_Method_Frame_Var: Field_Update_Value(Variable=Divide_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Divide_Method"], Information=Divide_Method_Frame_Var))
 
     # Field - Start Method
     Start_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Start Method", Field_Type="Input_OptionMenu") 
     Start_Method_Frame_Var = Start_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Start_Method_Frame_Var.configure(variable=Start_Method_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Option_Field_Update_Value(Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Start_Method"], Information=Start_Method_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Field_Update_Value(Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Start_Method"], Information=Start_Method_Frame_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -543,37 +562,37 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Use
     Use_Events_Joining = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
     Use_Events_Joining_Var = Use_Events_Joining.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Events_Joining_Var.configure(variable=Join_Use_Variable, text="")
+    Use_Events_Joining_Var.configure(variable=Join_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Join_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Use"], Information=Join_Use_Variable))
 
     # Field - Join Free Events
     Join_Free_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Free", Field_Type="Input_OptionMenu") 
     Join_Free_Frame_Var = Join_Free_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Free_Frame_Var.configure(variable=Join_Free_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Join_Free_Frame_Var, values=Join_Methods_List, command=lambda Join_Free_Frame_Var: Option_Field_Update_Value(Variable=Join_Free_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Free"], Information=Join_Free_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Join_Free_Frame_Var, values=Join_Methods_List, command=lambda Join_Free_Frame_Var: Field_Update_Value(Variable=Join_Free_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Free"], Information=Join_Free_Frame_Var))
 
     # Field - Join Tentative Events
     Join_Tentative_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Tentative", Field_Type="Input_OptionMenu") 
     Join_Tentative_Frame_Var = Join_Tentative_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Tentative_Frame_Var.configure(variable=Join_Tentative_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Join_Tentative_Frame_Var, values=Join_Methods_List, command=lambda Join_Tentative_Frame_Var: Option_Field_Update_Value(Variable=Join_Tentative_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Tentative"], Information=Join_Tentative_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Join_Tentative_Frame_Var, values=Join_Methods_List, command=lambda Join_Tentative_Frame_Var: Field_Update_Value(Variable=Join_Tentative_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Tentative"], Information=Join_Tentative_Frame_Var))
 
     # Field - Join Busy Events
     Join_Busy_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Busy", Field_Type="Input_OptionMenu") 
     Join_Busy_Frame_Var = Join_Busy_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Busy_Frame_Var.configure(variable=Join_Busy_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Join_Busy_Frame_Var, values=Join_Methods_List, command=lambda Join_Busy_Frame_Var: Option_Field_Update_Value(Variable=Join_Busy_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Busy"], Information=Join_Busy_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Join_Busy_Frame_Var, values=Join_Methods_List, command=lambda Join_Busy_Frame_Var: Field_Update_Value(Variable=Join_Busy_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Busy"], Information=Join_Busy_Frame_Var))
 
     # Field - Join Out of Office Events
     Join_OutOfOffice_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Out of Office", Field_Type="Input_OptionMenu") 
     Join_OutOfOffice_Frame_Var = Join_OutOfOffice_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_OutOfOffice_Frame_Var.configure(variable=Join_OutOfOffice_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Join_OutOfOffice_Frame_Var, values=Join_Methods_List, command=lambda Join_OutOfOffice_Frame_Var: Option_Field_Update_Value(Variable=Join_OutOfOffice_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Out of Office"], Information=Join_OutOfOffice_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Join_OutOfOffice_Frame_Var, values=Join_Methods_List, command=lambda Join_OutOfOffice_Frame_Var: Field_Update_Value(Variable=Join_OutOfOffice_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Out of Office"], Information=Join_OutOfOffice_Frame_Var))
 
     # Field - Join Working ElseWhere Events
     Join_Work_ElseWhere_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Working ElseWhere", Field_Type="Input_OptionMenu") 
     Join_Work_ElseWhere_Frame_Var = Join_Work_ElseWhere_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Work_ElseWhere_Frame_Var.configure(variable=Join_Work_Else_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Join_Work_ElseWhere_Frame_Var, values=Join_Methods_List, command=lambda Join_Work_ElseWhere_Frame_Var: Option_Field_Update_Value(Variable=Join_Work_Else_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Working elsewhere"], Information=Join_Work_ElseWhere_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Join_Work_ElseWhere_Frame_Var, values=Join_Methods_List, command=lambda Join_Work_ElseWhere_Frame_Var: Field_Update_Value(Variable=Join_Work_Else_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Working elsewhere"], Information=Join_Work_ElseWhere_Frame_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -765,12 +784,18 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
 # -------------------------------------------------------------------------- Tab Events - General --------------------------------------------------------------------------#
 def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
+    Lunch_Use_Variable = BooleanVar(master=Frame, value=Lunch_Enabled)
     Lunch_All_Variable = StringVar(master=Frame, value=Lunch_All_Day)
     Lunch_Part_Variable = StringVar(master=Frame, value=Lunch_Part_Day)
 
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it. \n Lunch break will always break parralel Events.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Lunch_Var = Use_Lunch.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Lunch_Var.configure(variable=Lunch_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Lunch_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "Use"], Information=Lunch_Use_Variable))
 
     # Field - Seach Text
     Search_Text_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
@@ -782,13 +807,13 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     All_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     All_Day_Lunch_Var = All_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
     All_Day_Lunch_Var.configure(variable=Lunch_All_Variable)
-    Elements.Get_Option_Menu_Advance(attach=All_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda All_Day_Lunch_Var: Option_Field_Update_Value(Variable=Lunch_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "All_Day"], Information=All_Day_Lunch_Var))
+    Elements.Get_Option_Menu_Advance(attach=All_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda All_Day_Lunch_Var: Field_Update_Value(Variable=Lunch_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "All_Day"], Information=All_Day_Lunch_Var))
 
     # Field - Part Day
     Part_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
     Part_Day_Lunch_Var = Part_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
     Part_Day_Lunch_Var.configure(variable=Lunch_Part_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Part_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda Part_Day_Lunch_Var: Option_Field_Update_Value(Variable=Lunch_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "Part_Day"], Information=Part_Day_Lunch_Var))
+    Elements.Get_Option_Menu_Advance(attach=Part_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda Part_Day_Lunch_Var: Field_Update_Value(Variable=Lunch_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "Part_Day"], Information=Part_Day_Lunch_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -799,12 +824,18 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
+    Vacation_Use_Variable = BooleanVar(master=Frame, value=Vacation_Enabled)
     Vacation_All_Variable = StringVar(master=Frame, value=Vacation_All_Day)
     Vacation_Part_Variable = StringVar(master=Frame, value=Vacation_Part_Day)
 
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Vacation")
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Vacation_Var = Use_Vacation.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Vacation_Var.configure(variable=Vacation_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Vacation_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Use"], Information=Vacation_Use_Variable))
 
     # Field - Seach Text
     Search_Text_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
@@ -816,13 +847,13 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     All_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     All_Day_Vacation_Var = All_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
     All_Day_Vacation_Var.configure(variable=Vacation_All_Variable)
-    Elements.Get_Option_Menu_Advance(attach=All_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda All_Day_Vacation_Var: Option_Field_Update_Value(Variable=Vacation_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "All_Day"], Information=All_Day_Vacation_Var))
+    Elements.Get_Option_Menu_Advance(attach=All_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda All_Day_Vacation_Var: Field_Update_Value(Variable=Vacation_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "All_Day"], Information=All_Day_Vacation_Var))
 
     # Field - Part Day
     Part_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
     Part_Day_Vacation_Var = Part_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
     Part_Day_Vacation_Var.configure(variable=Vacation_Part_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Part_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda Part_Day_Vacation_Var: Option_Field_Update_Value(Variable=Vacation_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Part_Day"], Information=Part_Day_Vacation_Var))
+    Elements.Get_Option_Menu_Advance(attach=Part_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda Part_Day_Vacation_Var: Field_Update_Value(Variable=Vacation_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Part_Day"], Information=Part_Day_Vacation_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -833,12 +864,19 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
 
 def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
+    HomeOffice_Use_Variable = BooleanVar(master=Frame, value=HomeOffice_Enabled)
     HomeOffice_All_Variable = StringVar(master=Frame, value=HomeOffice_All_Day)
     HomeOffice_Part_Variable = StringVar(master=Frame, value=HomeOffice_Part_Day)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - HomeOffice", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of HomeOffice")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - HomeOffice", Additional_Text="In the development", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of HomeOffice")
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_HomeOffice_Var = Use_HomeOffice.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_HomeOffice_Var.configure(variable=HomeOffice_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=HomeOffice_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Use"], Information=HomeOffice_Use_Variable))
+
 
     # Field - Seach Text
     Search_Text_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
@@ -850,13 +888,13 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     All_Day_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     All_Day_HomeOffice_Var = All_Day_HomeOffice.children["!ctkframe3"].children["!ctkoptionmenu"]
     All_Day_HomeOffice_Var.configure(variable=HomeOffice_All_Variable)
-    Elements.Get_Option_Menu_Advance(attach=All_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda All_Day_HomeOffice_Var: Option_Field_Update_Value(Variable=HomeOffice_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "All_Day"], Information=All_Day_HomeOffice_Var))
+    Elements.Get_Option_Menu_Advance(attach=All_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda All_Day_HomeOffice_Var: Field_Update_Value(Variable=HomeOffice_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "All_Day"], Information=All_Day_HomeOffice_Var))
 
     # Field - Part Day
     Part_Day = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
     Part_Day_HomeOffice_Var = Part_Day.children["!ctkframe3"].children["!ctkoptionmenu"]
     Part_Day_HomeOffice_Var.configure(variable=HomeOffice_Part_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Part_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda Part_Day_HomeOffice_Var: Option_Field_Update_Value(Variable=HomeOffice_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Part_Day"], Information=Part_Day_HomeOffice_Var))
+    Elements.Get_Option_Menu_Advance(attach=Part_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda Part_Day_HomeOffice_Var: Field_Update_Value(Variable=HomeOffice_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Part_Day"], Information=Part_Day_HomeOffice_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -891,7 +929,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
             Skip_Events.remove(Header_List)
             Skip_Events.sort()
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip"], Information=Skip_Events)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=Skip_Events)
         else:
             CTkMessagebox(title="Error", message=f"Subject is already within list of skip Events.", icon="cancel", fade_in_duration=1)
 
@@ -916,7 +954,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
             Skip_Events.remove("Skip Events")
             Skip_Events.sort()
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip"], Information=Skip_Events)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=Skip_Events)
         else:
             CTkMessagebox(title="Error", message=f"Header cannot be deleted.", icon="cancel", fade_in_duration=1)
 
@@ -924,12 +962,19 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_Skip_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Skip_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip"], Information=[])
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=[])
 
     # ------------------------- Main Functions -------------------------#
+    Skip_Use_Variable = BooleanVar(master=Frame, value=Skip_Enabled)
+
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="List of text be skipped as TimeSheet Entry in the case that part of text is found in Event Subject.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_Skip_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Skip_Event_Var = Use_Skip_Event.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Skip_Event_Var.configure(variable=Skip_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Skip_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Use"], Information=Skip_Use_Variable))
 
     # Field - Subject
     Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Subject", Field_Type="Input_Normal") 
@@ -1623,11 +1668,18 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
+    Empty_Split_Use_Variable = BooleanVar(master=Frame, value=Events_Empty_Split_Enabled)
     Events_Empty_Split_list_Variable = StringVar(master=Frame, value=Events_Empty_Split_Method, name="Events_Empty_Split_list_Variable")
 
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Events Spliting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for spliting automatically filled events by program longer than defined duration. \nEffect of the split can be supress partionally / fully by Joining Events, depends on setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_Empty_Split = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Empty_Split_Var = Use_Empty_Split.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Empty_Split_Var.configure(variable=Empty_Split_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Empty_Split_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Use"], Information=Empty_Split_Use_Variable))
+
 
     # Field - Duration
     Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal") 
@@ -1644,7 +1696,7 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Split_Method = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
     Split_Method_Var = Split_Method.children["!ctkframe3"].children["!ctkoptionmenu"]
     Split_Method_Var.configure(variable=Events_Empty_Split_list_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Split_Method_Var, values=Events_Empty_Split_list, command=lambda Split_Method_Var: Option_Field_Update_Value(Variable=Events_Empty_Split_list_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Method"], Information=Split_Method_Var))
+    Elements.Get_Option_Menu_Advance(attach=Split_Method_Var, values=Events_Empty_Split_list, command=lambda Split_Method_Var: Field_Update_Value(Variable=Events_Empty_Split_list_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Method"], Information=Split_Method_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1697,7 +1749,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
                 Auto_Fill_Events_row_row_dict = dict(zip(Header_List, Auto_Fill_Events_row))
                 AutoFill_dict[Counter] = Auto_Fill_Events_row_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text"], Information=AutoFill_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information=AutoFill_dict)
         else:
             pass
         
@@ -1717,7 +1769,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
                 AutoFill_Events_row_dict = dict(zip(Header_List, AutoFill_Events_row))
                 AutoFill_dict[Counter] = AutoFill_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text"], Information=AutoFill_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information=AutoFill_dict)
             Delete_AutoFill_Close()
 
         def Delete_AutoFill_Close() -> None:
@@ -1795,10 +1847,11 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_AutoFiller_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_AutoFiller_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text"], Information={})
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     Header_List = ["Search Text", "Project", "Activity", "Location"]
+    AutoFill_Use_Variable = BooleanVar(master=Frame, value=AutoFill_Rules_Enabled)
     Project_Variable = StringVar(master=Frame, value=Project_All_List[0])
     Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
     Location_Variable = StringVar(master=Frame, value=Location_List[0])
@@ -1825,6 +1878,11 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_AutoFiller_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_AutoFill_list, Table_Columns=4, Table_Rows=len(Skip_AutoFill_list))
     Frame_AutoFiller_Table_Var = Frame_AutoFiller_Table.children["!ctktable"]
     Frame_AutoFiller_Table_Var.configure(wraplength=230)
+
+    # Field - Use
+    Use_AutoFill = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_AutoFill_Var = Use_AutoFill.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_AutoFill_Var.configure(variable=AutoFill_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=AutoFill_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Use"], Information=AutoFill_Use_Variable))
 
     # Field - Subject
     Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Search Text", Field_Type="Input_Normal") 
@@ -1926,7 +1984,7 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
                 Activity_Corrections_Events_row_dict = dict(zip(Header_List, Activity_Corrections_Events_row))
                 Activity_Correction_dict[Counter] = Activity_Corrections_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction"], Information=Activity_Correction_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information=Activity_Correction_dict)
         else:
             pass
 
@@ -1946,7 +2004,7 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
                 Activity_Corrections_Events_row_dict = dict(zip(Header_List, Activity_Corrections_Events_row))
                 Activity_Correction_dict[Counter] = Activity_Corrections_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction"], Information=Activity_Correction_dict)
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information=Activity_Correction_dict)
             Delete_Activity_Correct_Close()
 
         def Delete_Activity_Correct_Close() -> None:
@@ -2021,10 +2079,11 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
         Table_len = len(Frame_Activity_Correct_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Activity_Correct_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction"], Information={})
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     Header_List = ["Project", "Wrong Activity", "Correct Activity"]
+    Activity_Correction_Use_Variable = BooleanVar(master=Frame, value=Events_Activity_Correction_Enabled)
     Project_Variable = StringVar(master=Frame, value=Project_List[0])
     Wrong_Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
     Correct_Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
@@ -2051,6 +2110,11 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Activity_Correct_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Activity_Correction_list, Table_Columns=3, Table_Rows=len(Activity_Correction_list))
     Frame_Activity_Correct_Table_Var = Frame_Activity_Correct_Table.children["!ctktable"]
     Frame_Activity_Correct_Table_Var.configure(wraplength=310)
+
+    # Field - Use
+    Use_Activity_Correction = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Activity_Correction_Var = Use_Activity_Correction.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Activity_Correction_Var.configure(variable=Activity_Correction_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Activity_Correction_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Use"], Information=Activity_Correction_Use_Variable))
 
     # Field - Project
     Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 

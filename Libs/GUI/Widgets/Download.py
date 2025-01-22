@@ -20,13 +20,13 @@ Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint - missing dates", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Timesheets for donwload process. \n - End Date Max Toda --> Date-To = Today \n - Simulate Report period --> Dates are selected according to Sharepoint.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint - missing dates", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Timesheets for donwload process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Sharepoint = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Sharepoint = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Sharepoint") 
     Use_Sharepoint_Radio_Var = Use_Sharepoint.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Sharepoint_Radio_Var.configure(text="", variable=Download_Date_Range_Source, value="Sharepoint")
+    Use_Sharepoint_Radio_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - User ID
     User_ID = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
@@ -67,9 +67,9 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Manual = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Manual = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Manual") 
     Use_Manual_Radio_Var = Use_Manual.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Manual_Radio_Var.configure(text="", variable=Download_Date_Range_Source, value="Manual")
+    Use_Manual_Radio_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - User ID
     Date_From = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From / T", Field_Type="Input_Normal") 
@@ -95,9 +95,9 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> C
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Exchange = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Exchange = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Exchange") 
     Use_Exchange_Radio_Var = Use_Exchange.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Exchange_Radio_Var.configure(text="", variable=Download_Data_Source, value="Exchange")
+    Use_Exchange_Radio_Var.configure(text="", variable=Download_Data_Source)
 
     # Field - User ID
     Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
@@ -122,9 +122,9 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Outlook = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton") 
+    Use_Outlook = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Outlook_Client") 
     Use_Outlook_Radio_Var = Use_Outlook.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Outlook_Radio_Var.configure(text="", variable=Download_Data_Source, value="Outlook_Client")
+    Use_Outlook_Radio_Var.configure(text="", variable=Download_Data_Source)
 
     # Field - User ID
     Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")

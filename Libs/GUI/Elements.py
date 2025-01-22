@@ -218,7 +218,7 @@ def Get_Password_Normal(Frame: CTk|CTkFrame) -> CTkEntry:
         show="*")
     return Password_Normal
 
-def Get_RadioButton_Normal(Frame: CTk|CTkFrame) -> CTkRadioButton:
+def Get_RadioButton_Normal(Frame: CTk|CTkFrame, Var_Value: int|str) -> CTkRadioButton:
     Configuration_RadioButton_Normal = Configuration["Fields"]["RadioButton"]["Normal"]
     
     fg_color = Define_Accent_Color(Color_json=Configuration_RadioButton_Normal["fg_color"])
@@ -236,7 +236,8 @@ def Get_RadioButton_Normal(Frame: CTk|CTkFrame) -> CTkRadioButton:
         fg_color = fg_color,
         border_color = tuple(Configuration_RadioButton_Normal["border_color"]),
         hover_color = hover_color,
-        hover = Configuration_RadioButton_Normal["hover"])
+        hover = Configuration_RadioButton_Normal["hover"], 
+        value=Var_Value)
     return RadioButton_Normal
 
 def Get_Option_Menu(Frame: CTk|CTkFrame) -> CTkOptionMenu:
@@ -687,7 +688,7 @@ def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
         entry_fg_color = tuple(Configuration_Dialog["entry_fg_color"]),
         entry_border_color = tuple(Configuration_Dialog["entry_border_color"]),
         entry_text_color = tuple(Configuration_Dialog["entry_text_color"]),
-        password = Configuration_Dialog["password"])
+        password = Configuration_Dialog["password"])        # BUG --> asi jsem měl přepsanou knihovnu a teď to nefunguje, je potřeba aby to tam bylo
     return Dialog
 
 # ---------------------------------------------- ColorPicker ----------------------------------------------# 

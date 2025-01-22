@@ -1,7 +1,7 @@
 {
     "Global_Apperance": {
         "Window": {
-            "Style": "normal",
+            "Style": "dark",
             "Style_List": [
                 "dark",
                 "mica",
@@ -716,7 +716,7 @@
                             "#00A9FF",
                             "#00A9FF"
                         ],
-                        "width": 475,
+                        "width": 450,
                         "corner_radius": 10,
                         "border_width": 1,
                         "border_color": [
@@ -1292,7 +1292,7 @@
     },
     "Tables": {
         "Single_size": {
-            "width": 440,
+            "width": 420,
             "colors": [
                 "#d0d0d0",
                 "#2C2C2C"

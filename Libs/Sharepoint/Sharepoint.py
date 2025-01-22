@@ -10,7 +10,8 @@ from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Link"]
+SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team}"]
 SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 

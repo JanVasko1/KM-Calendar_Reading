@@ -12,6 +12,7 @@ Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
 
+Events_Empty_Split_Enabled = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
 Split_duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
 Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
 Split_method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
@@ -146,9 +147,7 @@ def Empty_Split_Events(Events: DataFrame):
 
         return Cumulated_Events
 
-    if Split_method == "Do nothing":
-        return Events
-    else:
+    if Events_Empty_Split_Enabled == True:
         Cumulated_Events = pandas.DataFrame()
         Events["Empty_Split"] = Events.apply(Find_Split_Events, axis = 1)
 
@@ -170,4 +169,5 @@ def Empty_Split_Events(Events: DataFrame):
         
         Cumulated_Events.drop(labels=["Empty_Split"], axis=1, inplace=True)
         return Cumulated_Events
-    
+    else:
+        return Events

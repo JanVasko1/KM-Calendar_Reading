@@ -176,6 +176,7 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
         raise ValueError
     
 def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFrame):
+    # BUG --> když mám omezený počet dnů, tak Utilizace zobrazuje --> asi by se tu měla do utilizace dostat jen datumy, které skutečně stahuju
     warnings.filterwarnings("ignore")
 
     # Variable Defaults

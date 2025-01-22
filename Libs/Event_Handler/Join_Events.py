@@ -1,6 +1,5 @@
 # Import Libraries
 from pandas import DataFrame
-from datetime import datetime
 import pandas
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -13,7 +12,6 @@ Join_Events_Enabled = Settings["Event_Handler"]["Events"]["Join_method"]["Use"]
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Join_Events(Events: DataFrame) -> DataFrame:
     if Join_Events_Enabled == True:
-        # BUG --> je tu problém s tím když dokde k random splitu Empty Events
         Cumulated_Events = pandas.DataFrame(columns=list(Events.columns))
         
         Pre_Index = ""

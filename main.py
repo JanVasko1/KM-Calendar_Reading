@@ -860,48 +860,49 @@ class Win(customtkinter.CTk):
         self._offsetx = super().winfo_pointerx() - super().winfo_rootx()
         self._offsety = super().winfo_pointery() - super().winfo_rooty()
 
-window = Win()
-display_widht = window.winfo_screenwidth()
-display_height = window.winfo_screenheight()
-Window_Frame_width = 1800
-Window_Frame_height = 900
-left_position = int(display_widht // 2 - Window_Frame_width // 2)
-top_position = int(display_height // 2 - Window_Frame_height // 2)
-window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
+if __name__ == "__main__":
+    window = Win()
+    display_widht = window.winfo_screenwidth()
+    display_height = window.winfo_screenheight()
+    Window_Frame_width = 1800
+    Window_Frame_height = 900
+    left_position = int(display_widht // 2 - Window_Frame_width // 2)
+    top_position = int(display_height // 2 - Window_Frame_height // 2)
+    window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
 
-# Rounded corners 
-window.config(background="#000001")
-window.attributes("-transparentcolor", "#000001")
+    # Rounded corners 
+    window.config(background="#000001")
+    window.attributes("-transparentcolor", "#000001")
 
-# Base Windows style setup --> always keep normal before change
-customtkinter.set_appearance_mode(mode_string=Theme_Actual)
-pywinstyles.apply_style(window=window, style="normal")
-pywinstyles.apply_style(window=window, style=Win_Style_Actual)
+    # Base Windows style setup --> always keep normal before change
+    customtkinter.set_appearance_mode(mode_string=Theme_Actual)
+    pywinstyles.apply_style(window=window, style="normal")
+    pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
-# ---------------------------------- Content ----------------------------------#
-# Background
-Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
-Frame_Background.pack(side="top", fill="none", expand=False)
+    # ---------------------------------- Content ----------------------------------#
+    # Background
+    Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
+    Frame_Background.pack(side="top", fill="none", expand=False)
 
-# SideBar
-Frame_Side_Bar = Elements.Get_SideBar_Frame(Frame=Frame_Background, Frame_Size="SideBar")
-Frame_Side_Bar.pack(side="left", fill="y", expand=False)
+    # SideBar
+    Frame_Side_Bar = Elements.Get_SideBar_Frame(Frame=Frame_Background, Frame_Size="SideBar")
+    Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
-# Work Area
-Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Area")
-Frame_Work_Area.pack(side="top", fill="both", expand=False)
+    # Work Area
+    Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Area")
+    Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
-Frame_Header = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Header")
-Frame_Header.pack_propagate(flag=False)
-Frame_Header.pack(side="top", fill="both", expand=False)
+    Frame_Header = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Header")
+    Frame_Header.pack_propagate(flag=False)
+    Frame_Header.pack(side="top", fill="both", expand=False)
 
-Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
-Frame_Work_Area_Detail.pack_propagate(flag=False)
-Frame_Work_Area_Detail.pack(side="left", fill="none", expand=False)
+    Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
+    Frame_Work_Area_Detail.pack_propagate(flag=False)
+    Frame_Work_Area_Detail.pack(side="left", fill="none", expand=False)
 
-Get_Side_Bar(Side_Bar_Frame=Frame_Side_Bar)
-Get_Header(Frame=Frame_Header)
-Page_Dashboard(Frame=Frame_Work_Area_Detail)
+    Get_Side_Bar(Side_Bar_Frame=Frame_Side_Bar)
+    Get_Header(Frame=Frame_Header)
+    Page_Dashboard(Frame=Frame_Work_Area_Detail)
 
-# run
-window.mainloop()
+    # run
+    window.mainloop()

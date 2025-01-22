@@ -1,7 +1,6 @@
 # Import Libraries
 from pandas import DataFrame as DataFrame
 from dotenv import load_dotenv
-import os
 import requests
 from datetime import datetime
 import Libs.Download.Outlook_Client as Outlook_Client
