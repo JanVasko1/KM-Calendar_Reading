@@ -688,7 +688,7 @@ def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
         entry_fg_color = tuple(Configuration_Dialog["entry_fg_color"]),
         entry_border_color = tuple(Configuration_Dialog["entry_border_color"]),
         entry_text_color = tuple(Configuration_Dialog["entry_text_color"]),
-        password = Configuration_Dialog["password"])        # BUG --> asi jsem měl přepsanou knihovnu a teď to nefunguje, je potřeba aby to tam bylo
+        password = Configuration_Dialog["password"])
     return Dialog
 
 # ---------------------------------------------- ColorPicker ----------------------------------------------# 
