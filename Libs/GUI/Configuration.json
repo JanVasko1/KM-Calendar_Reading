@@ -319,8 +319,8 @@
                     "#FFFFFF"
                 ],
                 "placeholder_text_color": [
-                    "#949A9F",
-                    "#949A9F"
+                    "#FF9797",
+                    "#FF9797"
                 ]
             },
             "Small": {
@@ -342,8 +342,8 @@
                     "#FFFFFF"
                 ],
                 "placeholder_text_color": [
-                    "#949A9F",
-                    "#949A9F"
+                    "#FF9797",
+                    "#FF9797"
                 ]
             }
         },

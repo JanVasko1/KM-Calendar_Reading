@@ -397,7 +397,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - File Name 
     SP_File_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="File Name", Field_Type="Input_Normal")
     SP_File_Name_Frame_Var = SP_File_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_File_Name_Frame_Var.configure(placeholder_text=SP_File_Name)
+    SP_File_Name_Frame_Var.configure(placeholder_text=SP_File_Name, placeholder_text_color="#949A9F")
     SP_File_Name_Frame_Var.configure(state="disabled")
 
     # Field - Auth Email
@@ -409,7 +409,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Auth Address
     SP_Auth_Address_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Address", Field_Type="Input_Normal")
     SP_Auth_Address_Frame_Var = SP_Auth_Address_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Auth_Address_Frame_Var.configure(placeholder_text=SP_Auth_Address)
+    SP_Auth_Address_Frame_Var.configure(placeholder_text=SP_Auth_Address, placeholder_text_color="#949A9F")
     SP_Auth_Address_Frame_Var.configure(state="disabled")
 
     #? Build look of Widget
@@ -434,20 +434,20 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Name
     EX_Client_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client ID", Field_Type="Input_Normal") 
     EX_Client_ID_Frame_Var = EX_Client_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    EX_Client_ID_Frame_Var.configure(placeholder_text=client_id)
+    EX_Client_ID_Frame_Var.configure(placeholder_text=client_id, placeholder_text_color="#949A9F")
     EX_Client_ID_Frame_Var.configure(state="disabled")
 
     # Field - User ID
     Ex_Client_Secret_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client Secret", Field_Type="Input_Normal")
     Ex_Client_Secret_Frame_Var = Ex_Client_Secret_Frame.children["!ctkframe3"].children["!ctkentry"]
     Ex_Client_Secret_Frame_Var.configure(placeholder_text=client_secret)
-    Ex_Client_Secret_Frame_Var.configure(state="disabled")
+    Ex_Client_Secret_Frame_Var.configure(state="disabled", placeholder_text_color="#949A9F")
 
     # Field - Path to Sharepoint
     EX_Tenant_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Tenant ID", Field_Type="Input_Normal")
     EX_Tenant_ID_Frame_Var = EX_Tenant_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     EX_Tenant_ID_Frame_Var.configure(placeholder_text=tenant_id)
-    EX_Tenant_ID_Frame_Var.configure(state="disabled")
+    EX_Tenant_ID_Frame_Var.configure(state="disabled", placeholder_text_color="#949A9F")
 
     # Update Secret ID Button
     Button_Update_Secret = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
@@ -490,19 +490,19 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Name
     Date_From = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date", Field_Type="Input_Normal") 
     Date_From_Text_Var = Date_From.children["!ctkframe3"].children["!ctkentry"]
-    Date_From_Text_Var.configure(placeholder_text=Format_Date)
+    Date_From_Text_Var.configure(placeholder_text=Format_Date, placeholder_text_color="#949A9F")
     Date_From_Text_Var.configure(state="disabled")
 
     # Field - User ID
     Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Time", Field_Type="Input_Normal")
     Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text=Format_Time)
+    Date_To_Text_Var.configure(placeholder_text=Format_Time, placeholder_text_color="#949A9F")
     Date_To_Text_Var.configure(state="disabled")
 
     # Field - Email
     Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
     Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text=Format_SP_DateTime)
+    Date_To_Text_Var.configure(placeholder_text=Format_SP_DateTime, placeholder_text_color="#949A9F")
     Date_To_Text_Var.configure(state="disabled")
 
     #? Build look of Widget
@@ -1680,17 +1680,17 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_Empty_Split_Var = Use_Empty_Split.children["!ctkframe3"].children["!ctkcheckbox"]
     Use_Empty_Split_Var.configure(variable=Empty_Split_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Empty_Split_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Use"], Information=Empty_Split_Use_Variable))
 
-
     # Field - Duration
     Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal") 
     Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
+    Split_Duration_Text_Var.configure(placeholder_text="Empty space duration which will be splitted.")
     Entry_field_Insert(Field=Split_Duration_Text_Var, Value=Events_Empty_Split_Duration)
 
     # Field - Minimal Time
-    Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Minimal Time", Field_Type="Input_Normal") 
-    Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
-    Split_Duration_Text_Var.configure(placeholder_text=Events_Empty_Split_Minimal_Time)
-    Split_Duration_Text_Var.configure(state="disabled")
+    Split_Min_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Minimal Time", Field_Type="Input_Normal") 
+    Split_Min_Duration_Text_Var = Split_Min_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
+    Split_Min_Duration_Text_Var.configure(placeholder_text=Events_Empty_Split_Minimal_Time, placeholder_text_color="#949A9F")
+    Split_Min_Duration_Text_Var.configure(state="disabled")
 
     # Field - All Day
     Split_Method = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 

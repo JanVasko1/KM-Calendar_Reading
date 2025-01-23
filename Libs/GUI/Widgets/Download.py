@@ -24,34 +24,36 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Sharepoint = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Sharepoint") 
-    Use_Sharepoint_Radio_Var = Use_Sharepoint.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Sharepoint_Radio_Var.configure(text="", variable=Download_Date_Range_Source)
+    Use_Sharepoint_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Sharepoint") 
+    Use_Sharepoint_Frame_Var = Use_Sharepoint_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
+    Use_Sharepoint_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - User ID
-    User_ID = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
-    User_ID_Text_Var = User_ID.children["!ctkframe3"].children["!ctkentry"]
-    User_ID_Text_Var.configure(placeholder_text=SP_Person_ID)
-    User_ID_Text_Var.configure(state="disabled")
+    SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
+    SP_User_ID_Text_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_User_ID_Text_Frame_Var.configure(placeholder_text=SP_Person_ID, placeholder_text_color="#949A9F")
+    SP_User_ID_Text_Frame_Var.configure(state="disabled")
 
     # Field - User Email
-    Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
-    Email_Text_Var.configure(placeholder_text=SP_Auth_Email)
-    Email_Text_Var.configure(state="disabled")
+    SP_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    SP_Email_Text_Frame_Var = SP_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_Email_Text_Frame_Var.configure(placeholder_text=SP_Auth_Email, placeholder_text_color="#949A9F")
+    SP_Email_Text_Frame_Var.configure(state="disabled")
 
     # Field - Password
-    Password = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    SP_Password_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    SP_Password_Frame_Var = SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
+    SP_Password_Frame_Var.configure(placeholder_text="Fill your password.")
 
     # Field - Maximal Today date
-    Max_Today_Date_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="End Date max Today", Field_Type="Input_CheckBox") 
-    Max_Today_Date_Frame_Var = Max_Today_Date_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
-    Max_Today_Date_Frame_Var.configure(text="")
+    SP_Max_Today_Date_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="End Date max Today", Field_Type="Input_CheckBox") 
+    SP_Max_Today_Date_Frame_Var = SP_Max_Today_Date_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
+    SP_Max_Today_Date_Frame_Var.configure(text="")
 
     # Field - Get whole report Period
-    Whole_Period_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Simulate report period", Field_Type="Input_CheckBox") 
-    Whole_Period_Frame_Var = Whole_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
-    Whole_Period_Frame_Var.configure(text="")
+    SP_Whole_Period_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Simulate report period", Field_Type="Input_CheckBox") 
+    SP_Whole_Period_Frame_Var = SP_Whole_Period_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
+    SP_Whole_Period_Frame_Var.configure(text="")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -67,19 +69,19 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Manual = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Manual") 
-    Use_Manual_Radio_Var = Use_Manual.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Manual_Radio_Var.configure(text="", variable=Download_Date_Range_Source)
+    Use_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Manual") 
+    Use_Manual_Frame_Var = Use_Manual_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
+    Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - User ID
-    Date_From = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From / T", Field_Type="Input_Normal") 
-    Date_From_Text_Var = Date_From.children["!ctkframe3"].children["!ctkentry"]
-    Date_From_Text_Var.configure(placeholder_text="Date From")
+    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From / T", Field_Type="Input_Normal") 
+    Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Man_Date_From_Frame_Var.configure(placeholder_text="Date From")
 
     # Field - User Email
-    Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To / T", Field_Type="Input_Normal")
-    Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text="Date To")
+    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To / T", Field_Type="Input_Normal")
+    Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Man_Date_To_Frame_Var.configure(placeholder_text="Date To")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -95,18 +97,20 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> C
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Exchange = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Exchange") 
-    Use_Exchange_Radio_Var = Use_Exchange.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Exchange_Radio_Var.configure(text="", variable=Download_Data_Source)
+    Use_Exchange_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Exchange") 
+    Use_Exchange_Frame_Var = Use_Exchange_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
+    Use_Exchange_Frame_Var.configure(text="", variable=Download_Data_Source)
 
     # Field - User ID
-    Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
-    Email_Text_Var.configure(placeholder_text=Outlook_Email)
-    Email_Text_Var.configure(state="disabled")
+    Ex_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    Ex_Email_Frame_Var = Ex_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Ex_Email_Frame_Var.configure(placeholder_text=Outlook_Email, placeholder_text_color="#949A9F")
+    Ex_Email_Frame_Var.configure(state="disabled")
 
     # Field - Password
-    Password = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    Ex_Password_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    Ex_Password_Frame_Var = Ex_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Ex_Password_Frame_Var.configure(placeholder_text="Fill your password.")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -122,15 +126,15 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Outlook = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Outlook_Client") 
-    Use_Outlook_Radio_Var = Use_Outlook.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Outlook_Radio_Var.configure(text="", variable=Download_Data_Source)
+    Use_Outlook_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Outlook_Client") 
+    Use_Outlook_Frame_Var = Use_Outlook_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
+    Use_Outlook_Frame_Var.configure(text="", variable=Download_Data_Source)
 
     # Field - User ID
-    Email = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Email_Text_Var = Email.children["!ctkframe3"].children["!ctkentry"]
-    Email_Text_Var.configure(placeholder_text=Outlook_Email)
-    Email_Text_Var.configure(state="disabled")
+    Out_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    Out_Email_Frame_Var = Out_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Out_Email_Frame_Var.configure(placeholder_text=Outlook_Email, placeholder_text_color="#949A9F")
+    Out_Email_Frame_Var.configure(state="disabled")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
