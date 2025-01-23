@@ -278,7 +278,7 @@ def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFram
     Today_line = Span(location=Today, dimension='height', line_color="#00A9FF", line_width=1, line_dash="dashed", line_alpha=0.8)
     Chart.add_layout(Today_line)
 
-    fixed_label = Label(x=Today + timedelta(hours=3), y=0, text="Today", text_font_size="10pt", text_color="#00A9FF")
+    fixed_label = Label(x=Today + timedelta(hours=3), y=0, text="Last Proces Date", text_font_size="10pt", text_color="#00A9FF")
     Chart.add_layout(fixed_label)
 
     # Min-Max Values

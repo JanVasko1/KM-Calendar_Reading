@@ -9,7 +9,7 @@ import Libs.Download.Downloader_Helpers as Downloader_Helpers
 Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
-Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
@@ -18,16 +18,6 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     # Access Outlook and get the events from the calendar
     Outlook = win32com.client.Dispatch("Outlook.Application")
     ns = Outlook.GetNamespace("MAPI")
-
-    # get only mentioned Account
-    account_name = Email
-    account = None
-    for acc in ns.Folders:
-        if acc.Name == account_name:
-            account = acc
-            break
-
-    # TODO --> připojit se pouze k jednomu Account
 
     appts = ns.GetDefaultFolder(9).Items
     appts.Sort("[Start]")
@@ -78,4 +68,5 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     Events_Process = Downloader_Helpers.Crop_edge_days_Events(Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Date_format=Date_format)
     Events_Process_df = DataFrame(data=Events_Process, columns=list(Events_Process.keys()))
     Events_Process_df = Events_Process_df.T
+    print(Events_Process_df)
     return Events_Process_df
