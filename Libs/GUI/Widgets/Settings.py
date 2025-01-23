@@ -160,7 +160,9 @@ Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working els
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def Field_Update_Value(Variable: StringVar|IntVar|BooleanVar|None, File_Name: str, JSON_path: list, Information: int|str|list|dict) -> None:
     # Must be here as local function because 2 operation needs to be execuuted 
-    if type(Variable) is None:
+    if Variable is None:
+        pass
+    elif type(Variable) is None:
         pass
     elif type(Variable) is BooleanVar:
         Information = Information.get()
@@ -328,7 +330,8 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Accent Color Manual
     Accent_Color_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Manual", Field_Type="Input_Normal") 
     Accent_Color_Manual_Frame_Var = Accent_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual)
+    Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual, placeholder_text_color="#949A9F")
+    Accent_Color_Manual_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Manual"], Information=Accent_Color_Manual_Frame_Var.get()))
 
     # Button - Collor Picker
     Accent_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
@@ -348,7 +351,8 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Hover Color Manual
     Hover_Color_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Manual", Field_Type="Input_Normal") 
     Hover_Color_Manual_Frame_Var = Hover_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Hover_Color_Manual_Frame_Var.configure(placeholder_text=Hover_Color_Manual)
+    Hover_Color_Manual_Frame_Var.configure(placeholder_text=Hover_Color_Manual, placeholder_text_color="#949A9F")
+    Hover_Color_Manual_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Manual"], Information=Hover_Color_Manual_Frame_Var.get()))
 
     # Button - Collor Picker
     Hover_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
@@ -380,12 +384,14 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     SP_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
     SP_Name_Frame_Var = SP_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Name_Frame_Var.configure(placeholder_text="Name used in Sharepoint TimeSheets")
+    SP_Name_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Person", "Name"], Information=SP_Name_Frame_Var.get()))
     Entry_field_Insert(Field=SP_Name_Frame_Var, Value=SP_Person_Name)
 
     # Field - User ID
     SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
     SP_User_ID_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_User_ID_Frame_Var.configure(placeholder_text="Your UserID (KM ID)")
+    SP_User_ID_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Person", "Code"], Information=SP_User_ID_Frame_Var.get()))
     Entry_field_Insert(Field=SP_User_ID_Frame_Var, Value=SP_Person_ID)
 
     # Field - Team
@@ -404,6 +410,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     SP_Auth_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
     SP_Auth_Email_Frame_Var = SP_Auth_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Auth_Email_Frame_Var.configure(placeholder_text="Sharepoint autorisation email.")
+    SP_Auth_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Auth", "Email"], Information=SP_Auth_Email_Frame_Var.get()))
     Entry_field_Insert(Field=SP_Auth_Email_Frame_Var, Value=SP_Auth_Email)
 
     # Field - Auth Address
@@ -472,6 +479,7 @@ def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
     Outlook_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal") 
     Outlook_Email_Frame_Var = Outlook_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
     Outlook_Email_Frame_Var.configure(placeholder_text="Your outlook email.")
+    Outlook_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Outlook", "Calendar"], Information=Outlook_Email_Frame_Var.get()))
     Entry_field_Insert(Field=Outlook_Email_Frame_Var, Value=Outlook_Email)
 
     #? Build look of Widget
@@ -612,18 +620,23 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Monday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
     Monday_Frame_Var1 = Monday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Monday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Monday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Work_Hours", "Start_Time"], Information=Monday_Frame_Var1.get()))
     Entry_field_Insert(Field=Monday_Frame_Var1, Value=Monday_Work_Start)
     Monday_Frame_Var2 = Monday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Monday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Monday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Work_Hours", "End_Time"], Information=Monday_Frame_Var2.get()))
     Entry_field_Insert(Field=Monday_Frame_Var2, Value=Monday_Work_End)
+    
 
     # Field - Tuesday
     Tuesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
     Tuesday_Frame_Var1 = Tuesday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Tuesday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Tuesday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Work_Hours", "Start_Time"], Information=Tuesday_Frame_Var1.get()))
     Entry_field_Insert(Field=Tuesday_Frame_Var1, Value=Tuesday_Work_Start)
     Tuesday_Frame_Var2 = Tuesday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Tuesday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Tuesday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Work_Hours", "End_Time"], Information=Tuesday_Frame_Var2.get()))
     Entry_field_Insert(Field=Tuesday_Frame_Var2, Value=Tuesday_Work_End)
 
 
@@ -631,45 +644,55 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Wednesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
     Wednesday_Frame_Var1 = Wednesday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Wednesday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Wednesday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Work_Hours", "Start_Time"], Information=Wednesday_Frame_Var1.get()))
     Entry_field_Insert(Field=Wednesday_Frame_Var1, Value=Wednesday_Work_Start)
     Wednesday_Frame_Var2 = Wednesday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Wednesday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Wednesday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Work_Hours", "End_Time"], Information=Wednesday_Frame_Var2.get()))
     Entry_field_Insert(Field=Wednesday_Frame_Var2, Value=Wednesday_Work_End)
 
     # Field - Thursday
     Thursday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
     Thursday_Frame_Var1 = Thursday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Thursday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Thursday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Work_Hours", "Start_Time"], Information=Thursday_Frame_Var1.get()))
     Entry_field_Insert(Field=Thursday_Frame_Var1, Value=Thursday_Work_Start)
     Thursday_Frame_Var2 = Thursday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Thursday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Thursday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Work_Hours", "End_Time"], Information=Thursday_Frame_Var2.get()))
     Entry_field_Insert(Field=Thursday_Frame_Var2, Value=Thursday_Work_End)
 
     # Field - Friday
     Friday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
     Friday_Frame_Var1 = Friday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Friday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Friday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Work_Hours", "Start_Time"], Information=Friday_Frame_Var1.get()))
     Entry_field_Insert(Field=Friday_Frame_Var1, Value=Friday_Work_Start)
     Friday_Frame_Var2 = Friday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Friday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Friday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Work_Hours", "End_Time"], Information=Friday_Frame_Var2.get()))
     Entry_field_Insert(Field=Friday_Frame_Var2, Value=Friday_Work_End)
 
     # Field - Saturday
     Saturday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
     Saturday_Frame_Var1 = Saturday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Saturday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Saturday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Work_Hours", "Start_Time"], Information=Saturday_Frame_Var1.get()))
     Entry_field_Insert(Field=Saturday_Frame_Var1, Value=Saturday_Work_Start)
     Saturday_Frame_Var2 = Saturday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Saturday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Saturday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Work_Hours", "End_Time"], Information=Saturday_Frame_Var2.get()))
     Entry_field_Insert(Field=Saturday_Frame_Var2, Value=Saturday_Work_End)
 
     # Field - Sunday
     Sunday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
     Sunday_Frame_Var1 = Sunday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sunday_Frame_Var1.configure(placeholder_text="Day start time.")
+    Sunday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "Start_Time"], Information=Sunday_Frame_Var1.get()))
     Entry_field_Insert(Field=Sunday_Frame_Var1, Value=Sunday_Work_Start)
     Sunday_Frame_Var2 = Sunday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Sunday_Frame_Var2.configure(placeholder_text="Day end time.")
+    Sunday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "End_Time"], Information=Sunday_Frame_Var2.get()))
     Entry_field_Insert(Field=Sunday_Frame_Var2, Value=Sunday_Work_End)
 
     #? Build look of Widget
@@ -689,63 +712,77 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Monday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
     Monday_Vac_Frame_Var1 = Monday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Monday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Monday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Vacation", "Start_Time"], Information=Monday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Monday_Vac_Frame_Var1, Value=Monday_Vacation_Start)
     Monday_Vac_Frame_Var2 = Monday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Monday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Monday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Vacation", "End_Time"], Information=Monday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Monday_Vac_Frame_Var2, Value=Monday_Vacation_End)
 
     # Field - Tuesday
     Tuesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
     Tuesday_Vac_Frame_Var1 = Tuesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Tuesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Tuesday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Vacation", "Start_Time"], Information=Tuesday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Tuesday_Vac_Frame_Var1, Value=Tuesday_Vacation_Start)
     Tuesday_Vac_Frame_Var2 = Tuesday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Tuesday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Tuesday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Vacation", "End_Time"], Information=Tuesday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Tuesday_Vac_Frame_Var2, Value=Tuesday_Vacation_End)
 
     # Field - Wednesday
     Wednesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
     Wednesday_Vac_Frame_Var1 = Wednesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Wednesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Wednesday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Vacation", "Start_Time"], Information=Wednesday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Wednesday_Vac_Frame_Var1, Value=Wednesday_Vacation_Start)
     Wednesday_Vac_Frame_Var2 = Wednesday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Wednesday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Wednesday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Vacation", "End_Time"], Information=Wednesday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Wednesday_Vac_Frame_Var2, Value=Wednesday_Vacation_End)
 
     # Field - Thursday
     Thursday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
     Thursday_Vac_Frame_Var1 = Thursday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Thursday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Thursday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Vacation", "Start_Time"], Information=Thursday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Thursday_Vac_Frame_Var1, Value=Thursday_Vacation_Start)
     Thursday_Vac_Frame_Var2 = Thursday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Thursday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Thursday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Vacation", "End_Time"], Information=Thursday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Thursday_Vac_Frame_Var2, Value=Thursday_Vacation_End)
 
     # Field - Friday
     Friday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
     Friday_Vac_Frame_Var1 = Friday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Friday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Friday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Vacation", "Start_Time"], Information=Friday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Friday_Vac_Frame_Var1, Value=Friday_Vacation_Start)
     Friday_Vac_Frame_Var2 = Friday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Friday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Friday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Vacation", "End_Time"], Information=Friday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Friday_Vac_Frame_Var2, Value=Friday_Vacation_End)
 
     # Field - Saturday
     Saturday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
     Saturday_Vac_Frame_Var1 = Saturday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Saturday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Saturday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Vacation", "Start_Time"], Information=Saturday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Saturday_Vac_Frame_Var1, Value=Saturday_Vacation_Start)
     Saturday_Vac_Frame_Var2 = Saturday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Saturday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Saturday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Vacation", "End_Time"], Information=Saturday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Saturday_Vac_Frame_Var2, Value=Saturday_Vacation_End)
 
     # Field - Sunday
     Sunday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
     Sunday_Vac_Frame_Var1 = Sunday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sunday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
+    Sunday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Vacation", "Start_Time"], Information=Sunday_Vac_Frame_Var1.get()))
     Entry_field_Insert(Field=Sunday_Vac_Frame_Var1, Value=Sunday_Vacation_Start)
     Sunday_Vac_Frame_Var2 = Sunday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Sunday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
+    Sunday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Vacation", "End_Time"], Information=Sunday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Sunday_Vac_Frame_Var2, Value=Sunday_Vacation_End)
 
     #? Build look of Widget
@@ -765,12 +802,14 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
     Start_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - Start", Field_Type="Input_Normal") 
     Start_Event_Var = Start_Event.children["!ctkframe3"].children["!ctkentry"]
     Start_Event_Var.configure(placeholder_text="Event Subject which starts day")
+    Start_Event_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Start_End_Events", "Start"], Information=Start_Event_Var.get()))
     Entry_field_Insert(Field=Start_Event_Var, Value=Start_Event_json)
 
     # Field - Work - End
     End_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - End", Field_Type="Input_Normal") 
     End_Event_Var = End_Event.children["!ctkframe3"].children["!ctkentry"]
     End_Event_Var.configure(placeholder_text="Event Subject which ends day")
+    End_Event_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Start_End_Events", "End"], Information=End_Event_Var.get()))
     Entry_field_Insert(Field=End_Event_Var, Value=End_Event_json)
 
 
@@ -801,6 +840,7 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     Search_Text_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Lunch_Var = Search_Text_Lunch.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_Lunch_Var.configure(placeholder_text="Event Subject which defines lunch")
+    Search_Text_Lunch_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "Search_Text"], Information=Search_Text_Lunch_Var.get()))
     Entry_field_Insert(Field=Search_Text_Lunch_Var, Value=Lunch_Search_Text)
 
     # Field - All Day
@@ -841,6 +881,7 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Search_Text_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Vacation_Var = Search_Text_Vacation.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_Vacation_Var.configure(placeholder_text="Event Subject which defines vacation")
+    Search_Text_Vacation_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Search_Text"], Information=Search_Text_Vacation_Var.get()))
     Entry_field_Insert(Field=Search_Text_Vacation_Var, Value=Vacation_Search_Text)
 
     # Field - All Day
@@ -882,6 +923,7 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     Search_Text_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_HomeOffice_Var = Search_Text_HomeOffice.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_HomeOffice_Var.configure(placeholder_text="Event Subject which defines homeoffice")
+    Search_Text_HomeOffice_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Search_Text"], Information=Search_Text_HomeOffice_Var.get()))
     Entry_field_Insert(Field=Search_Text_HomeOffice_Var, Value=HomeOffice_Search_Text)
 
     # Field - All Day
@@ -1684,6 +1726,7 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal") 
     Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
     Split_Duration_Text_Var.configure(placeholder_text="Empty space duration which will be splitted.")
+    Split_Duration_Text_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Information=int(Split_Duration_Text_Var.get())))
     Entry_field_Insert(Field=Split_Duration_Text_Var, Value=Events_Empty_Split_Duration)
 
     # Field - Minimal Time

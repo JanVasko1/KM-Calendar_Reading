@@ -698,10 +698,6 @@ def Page_Information(Frame: CTk|CTkFrame):
 def Page_Settings(Frame: CTk|CTkFrame):
     import Libs.GUI.Widgets.Settings as Settings_Widgets
     # ------------------------- Local Functions -------------------------#
-    def Save_Settings():  
-        # TODO --> uložit všechno do Settings.json
-        CTkMessagebox(title="Success", message="Changes saved to Settings.", icon="check", option_1="Thanks")
-
     def Download_Project_Activities():
         SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         
@@ -725,11 +721,6 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
     Elements.Get_ToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities.", ToolTip_Size="Normal")
-
-    # Add Button - Save Settings
-    Button_Save_Settings = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
-    Button_Save_Settings.configure(text="Save", command = lambda:Save_Settings())
-    Elements.Get_ToolTip(widget=Button_Save_Settings, message="Save settings.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Tab View
@@ -803,7 +794,6 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=15, sticky="e")
-    Button_Save_Settings.grid(row=0, column=1, padx=5, pady=15, sticky="e")
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
 
     Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
