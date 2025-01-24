@@ -132,6 +132,8 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
     # ------------------------- Main Functions -------------------------#
     Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
+
+    Konica_Logo = Elements.Get_Backgruond_Image(Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=45)
     
     # Page - Downlaod
     Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
@@ -170,7 +172,8 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Icon_Frame_Data.grid(row=2, column=1, padx=(0, 10), pady=10, sticky="w")
     Icon_Frame_Information.grid(row=3, column=1, padx=(0, 10), pady=10, sticky="w")
     Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=10, sticky="w")
-    Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=10, sticky="w")
+    Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=(10, 210), sticky="w")
+    Konica_Logo.grid(row=6, column=0, padx=(0, 0), pady=20, sticky="", columnspan=2)
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Downlaod Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):

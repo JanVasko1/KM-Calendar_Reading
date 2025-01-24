@@ -74,14 +74,14 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) 
     Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - User ID
-    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From / T", Field_Type="Input_Normal") 
+    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Input_Normal", Validation="Date") 
     Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Man_Date_From_Frame_Var.configure(placeholder_text="Date From")
+    Man_Date_From_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
 
     # Field - User Email
-    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To / T", Field_Type="Input_Normal")
+    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Input_Normal", Validation="Date")
     Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Man_Date_To_Frame_Var.configure(placeholder_text="Date To")
+    Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

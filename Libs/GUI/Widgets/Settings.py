@@ -617,7 +617,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
-    Monday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
+    Monday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday", Validation="Time") 
     Monday_Frame_Var1 = Monday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Monday_Frame_Var1.configure(placeholder_text="Day start time.")
     Monday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Work_Hours", "Start_Time"], Information=Monday_Frame_Var1.get()))
@@ -629,7 +629,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     
 
     # Field - Tuesday
-    Tuesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
+    Tuesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday", Validation="Time") 
     Tuesday_Frame_Var1 = Tuesday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Tuesday_Frame_Var1.configure(placeholder_text="Day start time.")
     Tuesday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Work_Hours", "Start_Time"], Information=Tuesday_Frame_Var1.get()))
@@ -641,7 +641,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
     # Field - Wednesday
-    Wednesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
+    Wednesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday", Validation="Time") 
     Wednesday_Frame_Var1 = Wednesday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Wednesday_Frame_Var1.configure(placeholder_text="Day start time.")
     Wednesday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Work_Hours", "Start_Time"], Information=Wednesday_Frame_Var1.get()))
@@ -652,7 +652,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Wednesday_Frame_Var2, Value=Wednesday_Work_End)
 
     # Field - Thursday
-    Thursday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
+    Thursday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday", Validation="Time") 
     Thursday_Frame_Var1 = Thursday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Thursday_Frame_Var1.configure(placeholder_text="Day start time.")
     Thursday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Work_Hours", "Start_Time"], Information=Thursday_Frame_Var1.get()))
@@ -663,7 +663,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Thursday_Frame_Var2, Value=Thursday_Work_End)
 
     # Field - Friday
-    Friday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
+    Friday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday", Validation="Time") 
     Friday_Frame_Var1 = Friday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Friday_Frame_Var1.configure(placeholder_text="Day start time.")
     Friday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Work_Hours", "Start_Time"], Information=Friday_Frame_Var1.get()))
@@ -674,7 +674,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Friday_Frame_Var2, Value=Friday_Work_End)
 
     # Field - Saturday
-    Saturday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
+    Saturday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday", Validation="Time") 
     Saturday_Frame_Var1 = Saturday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Saturday_Frame_Var1.configure(placeholder_text="Day start time.")
     Saturday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Work_Hours", "Start_Time"], Information=Saturday_Frame_Var1.get()))
@@ -685,7 +685,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Saturday_Frame_Var2, Value=Saturday_Work_End)
 
     # Field - Sunday
-    Sunday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
+    Sunday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday", Validation="Time") 
     Sunday_Frame_Var1 = Sunday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sunday_Frame_Var1.configure(placeholder_text="Day start time.")
     Sunday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "Start_Time"], Information=Sunday_Frame_Var1.get()))
@@ -709,7 +709,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
-    Monday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday") 
+    Monday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday", Validation="Time") 
     Monday_Vac_Frame_Var1 = Monday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Monday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Monday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Vacation", "Start_Time"], Information=Monday_Vac_Frame_Var1.get()))
@@ -720,7 +720,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Monday_Vac_Frame_Var2, Value=Monday_Vacation_End)
 
     # Field - Tuesday
-    Tuesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday") 
+    Tuesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday", Validation="Time") 
     Tuesday_Vac_Frame_Var1 = Tuesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Tuesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Tuesday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Vacation", "Start_Time"], Information=Tuesday_Vac_Frame_Var1.get()))
@@ -731,7 +731,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Tuesday_Vac_Frame_Var2, Value=Tuesday_Vacation_End)
 
     # Field - Wednesday
-    Wednesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday") 
+    Wednesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday", Validation="Time") 
     Wednesday_Vac_Frame_Var1 = Wednesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Wednesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Wednesday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Vacation", "Start_Time"], Information=Wednesday_Vac_Frame_Var1.get()))
@@ -742,7 +742,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Wednesday_Vac_Frame_Var2, Value=Wednesday_Vacation_End)
 
     # Field - Thursday
-    Thursday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday") 
+    Thursday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday", Validation="Time") 
     Thursday_Vac_Frame_Var1 = Thursday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Thursday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Thursday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Vacation", "Start_Time"], Information=Thursday_Vac_Frame_Var1.get()))
@@ -753,7 +753,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Thursday_Vac_Frame_Var2, Value=Thursday_Vacation_End)
 
     # Field - Friday
-    Friday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday") 
+    Friday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday", Validation="Time") 
     Friday_Vac_Frame_Var1 = Friday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Friday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Friday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Vacation", "Start_Time"], Information=Friday_Vac_Frame_Var1.get()))
@@ -764,7 +764,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Friday_Vac_Frame_Var2, Value=Friday_Vacation_End)
 
     # Field - Saturday
-    Saturday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday") 
+    Saturday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday", Validation="Time") 
     Saturday_Vac_Frame_Var1 = Saturday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Saturday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Saturday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Vacation", "Start_Time"], Information=Saturday_Vac_Frame_Var1.get()))
@@ -775,7 +775,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Saturday_Vac_Frame_Var2, Value=Saturday_Vacation_End)
 
     # Field - Sunday
-    Sunday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday") 
+    Sunday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday", Validation="Time") 
     Sunday_Vac_Frame_Var1 = Sunday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sunday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Sunday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Vacation", "Start_Time"], Information=Sunday_Vac_Frame_Var1.get()))
@@ -1290,7 +1290,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
 
         for line in range(0, Lines_No):
             # Field - Monday
-            Fields_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label=f"Line {line}") 
+            Fields_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label=f"Line {line}", Validation="Integer") 
             Var1 = Fields_Frame.children["!ctkframe3"].children["!ctkentry"]
             Var1.configure(placeholder_text=Empty_General_Events[line][3])
             Var1.configure(state="disabled")
@@ -1350,7 +1350,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var1, values=[], command=None)
 
     # Field - Coverage
-    Coverage_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Coverage", Field_Type="Input_Normal") 
+    Coverage_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Coverage", Field_Type="Input_Normal", Validation="Integer") 
     Coverage_Text_Var = Coverage_Text.children["!ctkframe3"].children["!ctkentry"]
     Coverage_Text_Var.configure(placeholder_text="Add %")
 
@@ -1667,12 +1667,12 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var2, values=Activity_All_List, command=None)
 
     # Field - Start Time
-    Start_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal") 
+    Start_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal", Validation="Time") 
     Start_Time_Text_Var = Start_Time_Text.children["!ctkframe3"].children["!ctkentry"]
     Start_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
 
     # Field - End Time
-    End_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal") 
+    End_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal", Validation="Time") 
     End_Time_Text_Var = End_Time_Text.children["!ctkframe3"].children["!ctkentry"]
     End_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
 
@@ -1723,10 +1723,10 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_Empty_Split_Var.configure(variable=Empty_Split_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Empty_Split_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Use"], Information=Empty_Split_Use_Variable))
 
     # Field - Duration
-    Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal") 
+    Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal", Validation="Integer") 
     Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
     Split_Duration_Text_Var.configure(placeholder_text="Empty space duration which will be splitted.")
-    Split_Duration_Text_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Information=int(Split_Duration_Text_Var.get())))
+    Split_Duration_Text_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Information=Split_Duration_Text_Var.get()))
     Entry_field_Insert(Field=Split_Duration_Text_Var, Value=Events_Empty_Split_Duration)
 
     # Field - Minimal Time
@@ -1870,7 +1870,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Description_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Description: ") 
         Description_Label_Var = Description_Label.children["!ctkframe3"].children["!ctklabel"]
         Description_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=2))
-        Location_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Coverage: ") 
+        Location_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Location: ") 
         Location_Label_Var = Location_Label.children["!ctkframe3"].children["!ctklabel"]
         Location_Label_Var.configure(text=Frame_AutoFiller_Table_Var.get(row=1, column=3))
 

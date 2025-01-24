@@ -62,7 +62,7 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
 
     return Frame_Single_Body
 
-def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str, Var_Value: int|str|None = None) -> CTkFrame:
+def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str, Var_Value: int|str|None = None,  Validation: str|None = None) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -87,13 +87,13 @@ def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,
     Frame_Value.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
     if Field_Type == "Input_Normal":
-        Field_Normal = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal")
+        Field_Normal = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Normal", Validation=Validation)
         Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Password_Normal":
         Field_Normal = Elements.Get_Password_Normal(Frame=Frame_Value)
         Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Input_Small":
-        Field_Small = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Small")
+        Field_Small = Elements.Get_Entry_Field(Frame=Frame_Value, Field_Size="Small", Validation=Validation)
         Frame_Area.configure(width=300)
         Field_Small.pack(side="left", fill="none")
     elif Field_Type == "Input_RadioButton":
@@ -127,7 +127,7 @@ def Get_Widget_Button_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Buttons_co
 
     return Frame_Area
 
-def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
+def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -151,7 +151,7 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Value1.pack_propagate(flag=False)
     Frame_Value1.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
-    Field_Small1 = Elements.Get_Entry_Field(Frame=Frame_Value1, Field_Size="Small")
+    Field_Small1 = Elements.Get_Entry_Field(Frame=Frame_Value1, Field_Size="Small", Validation=Validation)
     Field_Small1.pack(side="right", fill="none")
 
     # Frame Space between Label and Value
@@ -167,12 +167,12 @@ def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: st
     Frame_Value2.pack_propagate(flag=False)
     Frame_Value2.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
-    Field_Small2 = Elements.Get_Entry_Field(Frame=Frame_Value2, Field_Size="Small")
+    Field_Small2 = Elements.Get_Entry_Field(Frame=Frame_Value2, Field_Size="Small", Validation=Validation)
     Field_Small2.pack(side="left", fill="none")
 
     return Frame_Area
 
-def Get_Double_Label(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
+def Get_Double_Label(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -201,7 +201,7 @@ def Get_Double_Label(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> 
 
     return Frame_Area
 
-def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str) -> CTkFrame:
+def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one column for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)

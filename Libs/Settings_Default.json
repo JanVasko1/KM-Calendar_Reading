@@ -2,12 +2,12 @@
     "General": {
         "Downloader": {
             "Outlook": {
-                "Calendar": "Jan.Vasko@konicaminolta.eu"
+                "Calendar": ""
             },
             "Sharepoint": {
                 "Person": {
-                    "Code": "CZ011845",
-                    "Name": "Jan Vasko"
+                    "Code": "",
+                    "Name": ""
                 },
                 "Teams": {
                     "My_Team": "NAV BPC",
@@ -34,7 +34,7 @@
                 },
                 "File_name": "SP_TimeSheets.xlsx",
                 "Auth": {
-                    "Email": "Jan.Vasko@konicaminolta.eu",
+                    "Email": "",
                     "Auth_Address": "https://connectkonicaminolta.sharepoint.com"
                 }
             }
@@ -48,56 +48,56 @@
             "Monday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "6:30",
-                    "End_Time": "18:00"
+                    "Start_Time": "",
+                    "End_Time": ""
                 },
                 "Vacation": {
-                    "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 }
             },
             "Tuesday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "6:30",
-                    "End_Time": "17:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 },
                 "Vacation": {
-                    "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 }
             },
             "Wednesday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "6:30",
-                    "End_Time": "15:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 },
                 "Vacation": {
-                    "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 }
             },
             "Thursday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "8:00",
-                    "End_Time": "15:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 },
                 "Vacation": {
-                    "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "Start_Time": "",
+                    "End_Time": ""
                 }
             },
             "Friday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "8:00",
-                    "End_Time": "15:00"
+                    "Start_Time": "",
+                    "End_Time": ""
                 },
                 "Vacation": {
-                    "Start_Time": "8:00",
-                    "End_Time": "14:00"
+                    "Start_Time": "",
+                    "End_Time": ""
                 }
             },
             "Saturday": {
@@ -280,13 +280,13 @@
         },
         "Events": {
             "Start_End_Events": {
-                "Start": "Work - Start",
-                "End": "Work - End"
+                "Start": "",
+                "End": ""
             },
             "Special_Events": {
                 "Vacation": {
-                    "Use": true,
-                    "Search_Text": "Dovolená",
+                    "Use": false,
+                    "Search_Text": "",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "Vacation_Option_List": [
@@ -296,7 +296,7 @@
                 },
                 "HomeOffice": {
                     "Use": false,
-                    "Search_Text": "Home Office",
+                    "Search_Text": "",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "HomeOffice_Option_List": [
@@ -305,8 +305,8 @@
                     ]
                 },
                 "Lunch": {
-                    "Use": true,
-                    "Search_Text": "Lunch",
+                    "Use": false,
+                    "Search_Text": "",
                     "All_Day": "Calendar",
                     "Part_Day": "Event",
                     "Lunch_Option_List": [
@@ -316,7 +316,7 @@
                 }
             },
             "Parralel_Events": {
-                "Use": true,
+                "Use": false,
                 "Divide_Method": "Divide",
                 "Divide_Method_List": [
                     "Divide",
@@ -329,7 +329,7 @@
                 ]
             },
             "Join_method": {
-                "Use": true,
+                "Use": false,
                 "Free": "Keep separate",
                 "Tentative": "Keep separate",
                 "Busy": "Join",
@@ -341,45 +341,11 @@
                 ]
             },
             "Empty": {
-                "General": {
-                    "0": {
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Activity": "Admin",
-                        "Description": "Administration and Emails",
-                        "Coverage Percentage": 50
-                    },
-                    "1": {
-                        "Project": "Incident handling / support - BPC Brno",
-                        "Activity": "Consultancy",
-                        "Description": "Support of Support Team",
-                        "Coverage Percentage": 15
-                    },
-                    "2": {
-                        "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                        "Activity": "Testing",
-                        "Description": "General NUS Cloud Testing",
-                        "Coverage Percentage": 35
-                    }
-                },
-                "Scheduled": {
-                    "0": {
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Activity": "Admin",
-                        "Description": "Administration and Emails",
-                        "Day of Week": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5
-                        ],
-                        "Start": "11:30",
-                        "End": "12:00"
-                    }
-                },
+                "General": {},
+                "Scheduled": {},
                 "Split": {
-                    "Use": true,
-                    "Split_Duration": "60",
+                    "Use": false,
+                    "Split_Duration": 480,
                     "Split_Minimal_Time": 15,
                     "Split_Method": "Random Split",
                     "Methods_List": [
@@ -389,110 +355,13 @@
                 }
             },
             "Skip": {
-                "Use": true,
-                "Skip_List": [
-                    "Car Blocker",
-                    "Christmas party",
-                    "Deadline pro TimeSheet",
-                    "Grilovačka",
-                    "KONTROLA DOCHÁZKY",
-                    "On-Call Duty",
-                    "Private",
-                    "Save the date ",
-                    "Teambuilding",
-                    "Teambulding",
-                    "TimeSheets - Upload"
-                ]
+                "Use": false,
+                "Skip_List": []
             },
             "Auto_Filler": {
                 "Search_Text": {
-                    "Use": true,
-                    "Dictionary": {
-                        "0": {
-                            "Search Text": "NAV ERP Team Meeting:",
-                            "Project": "Other Internal activities - BPC Brno",
-                            "Activity": "Admin",
-                            "Location": "Office"
-                        },
-                        "1": {
-                            "Search Text": "TDO - Team Meeting",
-                            "Project": "Other Internal activities - BPC Brno",
-                            "Activity": "Admin",
-                            "Location": "Office"
-                        },
-                        "2": {
-                            "Search Text": "NUS Cloud - Testing",
-                            "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                            "Activity": "Testing",
-                            "Location": "Office"
-                        },
-                        "3": {
-                            "Search Text": "NUS Cloud - Sync call",
-                            "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "4": {
-                            "Search Text": "NUS Cloud - Integrations: Status",
-                            "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "5": {
-                            "Search Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "6": {
-                            "Search Text": "BRO: ",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "",
-                            "Location": ""
-                        },
-                        "7": {
-                            "Search Text": "BBL: ",
-                            "Project": "NUS (CE) harm.&bus. Support",
-                            "Activity": "",
-                            "Location": ""
-                        },
-                        "8": {
-                            "Search Text": "Product Backlog Item",
-                            "Project": "",
-                            "Activity": "Testing",
-                            "Location": ""
-                        },
-                        "9": {
-                            "Search Text": "INC",
-                            "Project": "Incident handling / support - BPC Brno",
-                            "Activity": "Consultancy",
-                            "Location": ""
-                        },
-                        "10": {
-                            "Search Text": "Travel Time",
-                            "Project": "",
-                            "Activity": "Travel Time (Project)",
-                            "Location": "Customer"
-                        },
-                        "11": {
-                            "Search Text": "Dovolená",
-                            "Project": "Other Internal activities - BPC Brno",
-                            "Activity": "Vacation",
-                            "Location": "Office"
-                        },
-                        "12": {
-                            "Search Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "13": {
-                            "Search Text": "BRO NUS Cloud - Internal Status",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        }
-                    }
+                    "Use": false,
+                    "Dictionary": {}
                 },
                 "Activity_Correction": {
                     "Use": false,

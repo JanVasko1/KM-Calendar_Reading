@@ -1,5 +1,6 @@
 # Import Libraries
 from PIL import Image
+from datetime import datetime
 
 import customtkinter
 from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkComboBox
@@ -14,6 +15,7 @@ import winaccent
 
 import Libs.Defaults_Lists as Defaults_Lists
 
+Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
 Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
 Accent_Color_Windows = winaccent.accent_normal
@@ -22,8 +24,36 @@ Accent_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Acc
 Hover_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
 Hover_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
 
+Date_Format = Settings["General"]["Formats"]["Date"]
+Time_Format = Settings["General"]["Formats"]["Time"]
+
 
 # ---------------------------------------------- Local Functions ----------------------------------------------# 
+def Time_Validate(Value: str) -> None:
+    try:
+        datetime.strptime(Value, Time_Format)
+    except:
+        CTkMessagebox(title="Error", message=f"Value: {Value} in not proper Time format, should be: HH:MM.", icon="cancel", fade_in_duration=1)
+
+def Date_Validate(Value: str) -> None:
+    try:
+        datetime.strptime(Value, Date_Format)
+    except:
+        CTkMessagebox(title="Error", message=f"Value: {Value} in not in proper Date format, should be: YYYY-MM-DD.", icon="cancel", fade_in_duration=1)
+
+def Int_Validate(Value: str) -> None:
+    try:
+        int(Value)
+    except:
+        CTkMessagebox(title="Error", message=f"Value: {Value} in not whole number.", icon="cancel", fade_in_duration=1)
+
+def Float_Validate(Value: str) -> None:
+    try:
+        float(Value)
+    except:
+        CTkMessagebox(title="Error", message=f"Value: {Value} in not float number.", icon="cancel", fade_in_duration=1)
+
+
 def lighten_hex_color(hex_color, percentage):
     # Remove the hash symbol if present
     hex_color = hex_color.lstrip('#')
@@ -183,7 +213,7 @@ def Get_Button_Chart(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
     return Frame_Button
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
-def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str) -> CTkEntry:
+def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
     Configuration_Field = Configuration["Fields"]["Entry"][f"{Field_Size}"]
 
     Field = CTkEntry(
@@ -197,7 +227,20 @@ def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str) -> CTkEntry:
         bg_color = Configuration_Field["bg_color"],
         fg_color = tuple(Configuration_Field["fg_color"]),
         text_color = tuple(Configuration_Field["text_color"]),
-        placeholder_text_color = tuple(Configuration_Field["placeholder_text_color"]))
+        placeholder_text_color = tuple(Configuration_Field["placeholder_text_color"]),
+        validate="focusout")
+    
+    if Validation == "Time":
+        Field.configure(validatecommand=lambda: Time_Validate(Value=Field.get()))
+    elif Validation == "Date":
+        Field.configure(validatecommand=lambda: Date_Validate(Value=Field.get()))
+    elif Validation == "Integer":
+        Field.configure(validatecommand=lambda: Int_Validate(Value=Field.get()))
+    elif Validation == "Float":
+        Field.configure(validatecommand=lambda: Float_Validate(Value=Field.get()))
+    else:
+        pass
+
     return Field
 
 def Get_Password_Normal(Frame: CTk|CTkFrame) -> CTkEntry:
