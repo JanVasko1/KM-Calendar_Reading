@@ -1669,12 +1669,12 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Start Time
     Start_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal", Validation="Time") 
     Start_Time_Text_Var = Start_Time_Text.children["!ctkframe3"].children["!ctkentry"]
-    Start_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
+    Start_Time_Text_Var.configure(placeholder_text="HH:MM")
 
     # Field - End Time
     End_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal", Validation="Time") 
     End_Time_Text_Var = End_Time_Text.children["!ctkframe3"].children["!ctkentry"]
-    End_Time_Text_Var.configure(placeholder_text=f"{Format_Time}")
+    End_Time_Text_Var.configure(placeholder_text="HH:MM")
 
     # Buttons
     Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
