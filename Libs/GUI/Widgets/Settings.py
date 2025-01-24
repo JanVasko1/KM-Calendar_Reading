@@ -1726,7 +1726,7 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal", Validation="Integer") 
     Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
     Split_Duration_Text_Var.configure(placeholder_text="Empty space duration which will be splitted.")
-    Split_Duration_Text_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Information=Split_Duration_Text_Var.get()))
+    Split_Duration_Text_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Information=int(Split_Duration_Text_Var.get())))
     Entry_field_Insert(Field=Split_Duration_Text_Var, Value=Events_Empty_Split_Duration)
 
     # Field - Minimal Time

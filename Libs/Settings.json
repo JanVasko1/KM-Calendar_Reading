@@ -379,7 +379,7 @@
                 },
                 "Split": {
                     "Use": true,
-                    "Split_Duration": "60",
+                    "Split_Duration": 60,
                     "Split_Minimal_Time": 15,
                     "Split_Method": "Random Split",
                     "Methods_List": [
