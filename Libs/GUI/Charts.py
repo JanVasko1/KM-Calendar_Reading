@@ -10,15 +10,33 @@ import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
 from bokeh.plotting import save, figure
 from bokeh.layouts import layout
 from bokeh.io import export_svgs, export_svg, export_png
-from bokeh.models import DataRange1d, ColumnDataSource, Span, Label
+from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block
 
 from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
 Date_Format = Settings["General"]["Formats"]["Date"]
+Time_Format = Settings["General"]["Formats"]["Time"]
 
 # ---------------------------------------------------------- Local Functions---------------------------------------------------------- #
+def Load_DataFrame(Name: str) -> DataFrame:
+    try:
+        Loaded_df = pandas.read_csv(f"Operational\\{Name}.csv", sep=";")
+    except:
+        # When didnt found file
+        Loaded_df = pandas.DataFrame()
+    return Loaded_df
+
+def Define_Event_Duration(row) -> int:
+    Start_Time = row["Start Time"]
+    End_Time = row["End Time"]
+    Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
+    End_Time_dt = datetime.strptime(End_Time, Time_Format)
+    Duration_dt = End_Time_dt - Start_Time_dt
+    Duration = Duration_dt.seconds // 60
+    return Duration
+
 def Chart_update_html(Chart: str, color: str, opacity: float):
     with open(file=f"{Chart}", mode="r") as file:
         lines = file.readlines()
@@ -61,11 +79,11 @@ def Chart_update_html(Chart: str, color: str, opacity: float):
 
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> None:
+def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_End: datetime|None) -> None:
     warnings.filterwarnings("ignore")
 
     # Variable Defaults
-    X_Series_Column = "Start_Date"  
+    X_Series_Column = "Date"  
 
     # General information about Game
     if theme == "Light" or theme == "Dark":
@@ -96,15 +114,20 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
     Range_Tool_Properties.Name = "Range_Tool_Properties"
 
     # Process Data
-    Events_GR = Events.loc[:, ["Start_Date", f"{Category}", "Duration_H"]]
-    Value_df = Events_GR.groupby(["Start_Date", f"{Category}"]).sum()
+    Cumulated_Events = pandas.concat(objs=[Events_Registered_df, Events], axis=0)
+    Cumulated_Events["Duration"] = Cumulated_Events.apply(Define_Event_Duration, axis = 1)
+    Cumulated_Events["Duration_H"] = Cumulated_Events["Duration"].map(lambda x: round(x/60, 2))
+    Cumulated_Events.rename(columns={"Network Description": "Project"}, inplace=True)
+    Cumulated_Events_GR = Cumulated_Events.loc[:, ["Date", f"{Category}", "Duration_H"]]
+
+    Value_df = Cumulated_Events_GR.groupby(["Date", f"{Category}"]).sum()
     Value_df.sort_index(ascending=True, inplace=True)
     Value_df.reset_index(inplace=True)
     Colum_list = Value_df[f"{Category}"].tolist()
     Colum_list = list(set(Colum_list))
     Colum_list.sort()
 
-    Value_df = Value_df.pivot(index="Start_Date", columns=f"{Category}", values="Duration_H")
+    Value_df = Value_df.pivot(index="Date", columns=f"{Category}", values="Duration_H")
     Value_df.fillna(value=0, inplace=True)
     Value_df.reset_index(inplace=True)
     
@@ -112,10 +135,11 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
     Active_Area_indented = round((int(Active_Area_size) / 100) * int(Chart_Area_Propertie.iloc[0]["Active_Area_indented_percent"]),0)
 
     Value_df["Date"] = pandas.to_datetime(Value_df[X_Series_Column], format=Date_Format)
-    Value_df.drop(labels=[f"{X_Series_Column}"], axis=1,inplace=True)
+    #Value_df.drop(labels=[f"{X_Series_Column}"], axis=1,inplace=True)
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
     # ToolTip
+    # TODO --> dodělat tooltip aby byl v jednom jediném poli!!!!, pak pařenýst i do pomocných grafů
     ToolTip = [
         ("Date", "@Date{%F}"), 
         (f"{Category}", "$name"), 
@@ -158,6 +182,49 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
     else:
         pass
 
+    # REctangles --> Processed data + Forecast
+    # Y max coordinance for rectangle
+    Value_df["Line_Sum"] = Value_df.iloc[:,1:].sum(axis=1)
+    Y_Max_Coordinates = max(Value_df["Line_Sum"])
+    Value_df.drop(labels=["Line_Sum"], axis=1, inplace=True)
+
+    # Registered Area
+    if Events_Registered_df.empty:
+        pass
+    else:
+        # BUG --> Hover ukazuje i glyph --> musím ho excludnout
+        Event_Registerd_Min_Data = min(Events_Registered_df["Date"])
+        Event_Registerd_Min_Data_dt = datetime.strptime(Event_Registerd_Min_Data, Date_Format)
+        Event_Registerd_Min_Data_ts = (datetime.timestamp(Event_Registerd_Min_Data_dt)) * 1000
+        Event_Registerd_Max_Date = max(Events_Registered_df["Date"])
+        Event_Registerd_Max_Data_dt = datetime.strptime(Event_Registerd_Max_Date, Date_Format)
+        Event_Registerd_Max_Data_ts = (datetime.timestamp(Event_Registerd_Max_Data_dt))  * 1000
+        Registered_Block_width = Event_Registerd_Max_Data_ts - Event_Registerd_Min_Data_ts + 50000000
+
+        glyph = Block(x=Event_Registerd_Min_Data_ts - 25000000, y=0, width=Registered_Block_width, height=Y_Max_Coordinates, fill_color="#25c887", fill_alpha=0.1, line_width=0)
+        Chart.add_glyph(glyph)
+
+        fixed_label = Label(x=Event_Registerd_Min_Data_ts, y=Y_Max_Coordinates, text="Aready regsitered", text_font_size="10pt", text_color="#25c887")
+        Chart.add_layout(fixed_label)
+
+    # ForeCast
+    if Report_Period_End == None:
+        pass
+    else:
+        # BUG --> Hover ukazuje i glyph --> musím ho excludnout
+        Today_dt = datetime.now()
+        Today_str = datetime.strftime(Today_dt, Date_Format)
+        Today_dt = datetime.strptime(Today_str, Date_Format)
+        Today_ts = (datetime.timestamp(Today_dt)) * 1000
+        Report_Period_End_ts = (datetime.timestamp(Report_Period_End))  * 1000
+        Forecast_Block_width = Report_Period_End_ts - Today_ts
+
+        glyph = Block(x=Today_ts + 50000000, y=0, width=Forecast_Block_width, height=Y_Max_Coordinates, fill_color="#ef8135", fill_alpha=0.1, line_width=0)
+        Chart.add_glyph(glyph)
+
+        fixed_label = Label(x=Today_ts + 50000000, y=Y_Max_Coordinates, text="Forcast period", text_font_size="10pt", text_color="#ef8135")
+        Chart.add_layout(fixed_label)
+
     # Chart
     DataSource = ColumnDataSource(data = Value_df)
     if Legend_Properties.iloc[0]["Legend_Title_Visible"] == True:
@@ -176,7 +243,6 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame) -> 
         raise ValueError
     
 def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFrame):
-    # BUG --> když mám omezený počet dnů, tak Utilizace zobrazuje --> asi by se tu měla do utilizace dostat jen datumy, které skutečně stahuju
     warnings.filterwarnings("ignore")
 
     # Variable Defaults

@@ -33,7 +33,7 @@
                 },
                 "Hover": {
                     "Hover_Color_Mode": "Accent Lighter",
-                    "Hover_Color_Manual": "#39ff40",
+                    "Hover_Color_Manual": "#ffe344",
                     "Hover_Color_List": [
                         "Accent Lighter",
                         "Manual",
@@ -324,7 +324,7 @@
                 ]
             },
             "Small": {
-                "width": 150,
+                "width": 125,
                 "height": 28,
                 "corner_radius": 10,
                 "border_width": 0,
@@ -807,7 +807,7 @@
                         "fg_color": "transparent"
                     },
                     "Space": {
-                        "width": 20,
+                        "width": 30,
                         "height": 28,
                         "corner_radius": 0,
                         "border_width": 0,
@@ -833,7 +833,7 @@
                         "fg_color": "transparent"
                     },
                     "Label": {
-                        "width": 120,
+                        "width": 160,
                         "height": 28,
                         "corner_radius": 0,
                         "border_width": 0,
@@ -849,7 +849,7 @@
                         "fg_color": "transparent"
                     },
                     "Value": {
-                        "width": 160,
+                        "width": 120,
                         "height": 28,
                         "corner_radius": 0,
                         "border_width": 0,

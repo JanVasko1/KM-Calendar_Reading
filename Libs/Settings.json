@@ -32,6 +32,23 @@
                         "SAP AD": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20SAP%20AD.xlsm"
                     }
                 },
+                "Download_Options": {
+                    "Date_From": {
+                        "Date_From_Method": "Last Registered Date",
+                        "Date_From_Method_List": [
+                            "Last Registered Date",
+                            "First Report Day"
+                        ]
+                    },
+                    "Date_To": {
+                        "Date_To_Method": "Today",
+                        "Date_To_Method_List": [
+                            "Today",
+                            "Manual",
+                            "Last Report Day"
+                        ]
+                    }
+                },
                 "File_name": "SP_TimeSheets.xlsx",
                 "Auth": {
                     "Email": "Jan.Vasko@konicaminolta.eu",
@@ -42,85 +59,106 @@
         "Formats": {
             "Date": "%Y-%m-%d",
             "Time": "%H:%M",
-            "Exchange_DateTime": "%Y-%m-%dT%H:%M:%S"
+            "Exchange_DateTime": "%Y-%m-%dT%H:%M:%S",
+            "Sharepoint_Time": "%H:%M:%S",
+            "Sharepoint_DateTime": "%Y-%m-%d %H:%M:%S"
         },
         "Calendar": {
+            "Lunch_Brake_Dur": 30,
             "Monday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "6:30",
-                    "End_Time": "18:00"
+                    "Start_Time": "7:00",
+                    "End_Time": "18:00",
+                    "Day_Duration": 630
                 },
                 "Vacation": {
                     "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "End_Time": "16:30",
+                    "Day_Duration": 510
                 }
             },
             "Tuesday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "6:30",
-                    "End_Time": "17:30"
+                    "Start_Time": "7:00",
+                    "End_Time": "17:00",
+                    "Day_Duration": 570
                 },
                 "Vacation": {
                     "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "End_Time": "16:30",
+                    "Day_Duration": 510
                 }
             },
             "Wednesday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "6:30",
-                    "End_Time": "15:30"
+                    "Start_Time": "8:00",
+                    "End_Time": "15:30",
+                    "Day_Duration": 420
                 },
                 "Vacation": {
                     "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "End_Time": "16:30",
+                    "Day_Duration": 510
                 }
             },
             "Thursday": {
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "8:00",
-                    "End_Time": "15:30"
+                    "End_Time": "15:30",
+                    "Day_Duration": 420
                 },
                 "Vacation": {
                     "Start_Time": "8:00",
-                    "End_Time": "16:30"
+                    "End_Time": "16:30",
+                    "Day_Duration": 510
                 }
             },
             "Friday": {
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "8:00",
-                    "End_Time": "15:00"
+                    "End_Time": "15:00",
+                    "Day_Duration": 390
                 },
                 "Vacation": {
                     "Start_Time": "8:00",
-                    "End_Time": "14:00"
+                    "End_Time": "14:00",
+                    "Day_Duration": 360
                 }
             },
             "Saturday": {
                 "Working_Day": false,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Sunday": {
                 "Working_Day": false,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
+            },
+            "Totals": {
+                "Work": "40:30",
+                "Vacation": "40:00"
             }
         }
     },

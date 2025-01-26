@@ -1,4 +1,6 @@
 # Import Libraries
+from datetime import datetime
+
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
@@ -44,7 +46,9 @@ Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 # Formats
 Format_Date = Settings["General"]["Formats"]["Date"]
 Format_Time = Settings["General"]["Formats"]["Time"]
-Format_SP_DateTime = Settings["General"]["Formats"]["Exchange_DateTime"]
+Format_Exchange_DateTime = Settings["General"]["Formats"]["Exchange_DateTime"]
+Fromat_Sharepoint_Time = Settings["General"]["Formats"]["Sharepoint_Time"]
+Fromat_Sharepoint_DateTime = Settings["General"]["Formats"]["Sharepoint_DateTime"]
 
 # Vacation
 Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
@@ -87,6 +91,8 @@ Events_Empty_Split_Method = Settings["Event_Handler"]["Events"]["Empty"]["Split"
 Events_Empty_Split_list = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Methods_List"]
 
 # Calendar - Working Day
+Lunch_Brake_Duration =  Settings["General"]["Calendar"]["Lunch_Brake_Dur"]
+
 Monday_Work_Start = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Start_Time"]
 Tuesday_Work_Start = Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Start_Time"]
 Wednesday_Work_Start = Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Start_Time"]
@@ -102,6 +108,16 @@ Thursday_Work_End = Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["E
 Friday_Work_End = Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["End_Time"]
 Saturday_Work_End = Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["End_Time"]
 Sunday_Work_End = Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["End_Time"]
+
+Monday_Workinday = Settings["General"]["Calendar"]["Monday"]["Working_Day"]
+Tuesday_Workinday = Settings["General"]["Calendar"]["Tuesday"]["Working_Day"]
+Wednesday_Workinday = Settings["General"]["Calendar"]["Wednesday"]["Working_Day"]
+Thursday_Workinday = Settings["General"]["Calendar"]["Thursday"]["Working_Day"]
+Friday_Workinday = Settings["General"]["Calendar"]["Friday"]["Working_Day"]
+Saturday_Workinday = Settings["General"]["Calendar"]["Saturday"]["Working_Day"]
+Sunday_Workinday = Settings["General"]["Calendar"]["Sunday"]["Working_Day"]
+
+Total_Work_Duration =  Settings["General"]["Calendar"]["Totals"]["Work"]
 
 # Calendar - Vacation
 Monday_Vacation_Start = Settings["General"]["Calendar"]["Monday"]["Vacation"]["Start_Time"]
@@ -119,6 +135,8 @@ Thursday_Vacation_End = Settings["General"]["Calendar"]["Thursday"]["Vacation"][
 Friday_Vacation_End = Settings["General"]["Calendar"]["Friday"]["Vacation"]["End_Time"]
 Saturday_Vacation_End = Settings["General"]["Calendar"]["Saturday"]["Vacation"]["End_Time"]
 Sunday_Vacation_End = Settings["General"]["Calendar"]["Sunday"]["Vacation"]["End_Time"]
+
+Total_Vacation_Duration =  Settings["General"]["Calendar"]["Totals"]["Vacation"]
 
 # Calendar - Work Start and End 
 Start_Event_json = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
@@ -173,11 +191,13 @@ def Field_Update_Value(Variable: StringVar|IntVar|BooleanVar|None, File_Name: st
 def Entry_field_Insert(Field: CTkEntry, Value: str|int) -> None:
     if type(Value) == str:
         if Value != "":
+            Field.delete(first_index=0, last_index=1000)
             Field.insert(index=0, string=Value)
         else:
             pass
     elif type(Value) == int:
         if Value > 0:
+            Field.delete(first_index=0, last_index=1000)
             Field.insert(index=0, string=Value)
         else:
             pass
@@ -218,6 +238,60 @@ def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_O
         Activity_List = [""]
     Activity_Option_Var.set(value="")
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var, values=Activity_List, command=None)
+
+def Calculate_duration(Entry_Field: CTkEntry, Lunch_Brake_Duration_Frame_Var: int, Calendar_Type: str, Monday_Start: CTkEntry, Monday_End: CTkEntry, Tuesday_Start: CTkEntry, Tuesday_End: CTkEntry, Wednesday_Start: CTkEntry, Wednesday_End: CTkEntry, Thursday_Start: CTkEntry, Thursday_End: CTkEntry, Friday_Start: CTkEntry, Friday_End: CTkEntry, Saturday_Start: CTkEntry, Saturday_End: CTkEntry, Sunday_Start: CTkEntry, Sunday_End: CTkEntry) -> None:
+    def Calculate_day_duration(Start_Time: str, End_Time: str, Week_Day: str, Calendar_Type: str, Working_Day: bool) -> int:
+        if (Start_Time == "") or (End_Time == ""):
+            Duration = 0
+        else:
+            Start_Time_dt = datetime.strptime(Start_Time, Format_Time)
+            End_Time_dt = datetime.strptime(End_Time, Format_Time)
+            Duration_dt = End_Time_dt - Start_Time_dt
+            Duration = int(Duration_dt.total_seconds() / 60)
+
+            # Substract Lunch break for Working Calendar
+            if (Working_Day == True) and (Calendar_Type == "Work_Hours"):
+                Duration = Duration - Lunch_Brake_Duration_Frame_Var
+            else:
+                pass
+
+        Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", f"{Week_Day}", f"{Calendar_Type}", "Day_Duration"], Information=Duration)
+        return Duration
+    
+    Cumulated_Duration = 0
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Monday_Start.get(), End_Time=Monday_End.get(), Week_Day="Monday", Calendar_Type=Calendar_Type, Working_Day=Monday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Tuesday_Start.get(), End_Time=Tuesday_End.get(), Week_Day="Tuesday", Calendar_Type=Calendar_Type, Working_Day=Tuesday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Wednesday_Start.get(), End_Time=Wednesday_End.get(), Week_Day="Wednesday", Calendar_Type=Calendar_Type, Working_Day=Wednesday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Thursday_Start.get(), End_Time=Thursday_End.get(), Week_Day="Thursday", Calendar_Type=Calendar_Type, Working_Day=Thursday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Friday_Start.get(), End_Time=Friday_End.get(), Week_Day="Friday", Calendar_Type=Calendar_Type, Working_Day=Friday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Saturday_Start.get(), End_Time=Saturday_End.get(), Week_Day="Saturday", Calendar_Type=Calendar_Type, Working_Day=Saturday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Sunday_Start.get(), End_Time=Sunday_End.get(), Week_Day="Sunday", Calendar_Type=Calendar_Type, Working_Day=Sunday_Workinday)
+
+    Hours = Cumulated_Duration // 60
+    Minutes = Cumulated_Duration - (Hours * 60) 
+    if Hours < 10:
+        Hours = f"0{Hours}"
+    else:
+        Hours = f"{Hours}"
+
+    if Minutes < 10: 
+        Minutes = f"0{Minutes}"
+    else:
+        Minutes = f"{Minutes}"
+    Total_Duration = f"{Hours}:{Minutes}"
+
+    # Update Value in field
+    Entry_Field.configure(state="normal")
+    Entry_Field.configure(placeholder_text=Total_Duration)
+    Entry_Field.configure(state="disabled")
+
+    # Save to json
+    if Calendar_Type == "Work_Hours":
+        Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Totals", "Work"], Information=Total_Duration)
+    elif Calendar_Type == "Vacation":
+        Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Totals", "Vacation"], Information=Total_Duration)
+    else:
+        CTkMessagebox(title="Error", message="Calendar Type not allowed", icon="cancel", fade_in_duration=1)
 
 # -------------------------------------------------------------------------- Tab Apperance --------------------------------------------------------------------------#
 def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
@@ -295,12 +369,24 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
         def Quit_Save(Helper: str):
             Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Colorpicker_Frame.get())
             Collor_Picker_window.destroy()
+
+        def dragwin():
+            x = Collor_Picker_window.winfo_pointerx() - Collor_Picker_window._offsetx
+            y = Collor_Picker_window.winfo_pointery() - Collor_Picker_window._offsety
+            Collor_Picker_window.geometry(f"+{x}+{y}")
+
+        def clickwin():
+            Collor_Picker_window._offsetx = Collor_Picker_window.winfo_pointerx() - Collor_Picker_window.winfo_rootx()
+            Collor_Picker_window._offsety = Collor_Picker_window.winfo_pointery() - Collor_Picker_window.winfo_rooty()
+
             
         Collor_Picker_window = CTkToplevel()
         Collor_Picker_window.configure(fg_color="#000001")
         Collor_Picker_window.title("Collor Picker")
         Collor_Picker_window.geometry("295x240")
         Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Quit_Save(Helper=Helper))
+        Collor_Picker_window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        Collor_Picker_window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
         Collor_Picker_window.overrideredirect(boolean=True)
         Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Collor_Picker_window.resizable(width=False, height=False)
@@ -341,7 +427,7 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # Disabling fields --> Accent_Color_Mode_Variable
     Elements.Get_Option_Menu_Advance(attach=Accent_Color_Mode_Frame_Var, values=Accent_Color_Mode_List, command = lambda Accent_Color_Mode_Frame_Var: Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode_Frame_Var, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent"))
-    Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent")
+    Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent")  # Must be here because of initial value
 
     # Field - Hover Color Mode
     Hover_Color_Mode_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Mode", Field_Type="Input_OptionMenu") 
@@ -362,7 +448,7 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # Disabling fields --> Accent_Color_Mode_Variable
     Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda Hover_Color_Mode_Frame_Var: Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode_Frame_Var, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover"))
-    Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")
+    Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")   # Must be here because of initial value
 
 
     #? Build look of Widget
@@ -495,23 +581,35 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Formats", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Dates formats used in program - non-changable.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Field - Name
-    Date_From = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date", Field_Type="Input_Normal") 
-    Date_From_Text_Var = Date_From.children["!ctkframe3"].children["!ctkentry"]
-    Date_From_Text_Var.configure(placeholder_text=Format_Date, placeholder_text_color="#949A9F")
-    Date_From_Text_Var.configure(state="disabled")
+    # Field - Program Date Format
+    Program_Date_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date", Field_Type="Input_Normal") 
+    Program_Date_Frame_Var = Program_Date_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Program_Date_Frame_Var.configure(placeholder_text=Format_Date, placeholder_text_color="#949A9F")
+    Program_Date_Frame_Var.configure(state="disabled")
 
-    # Field - User ID
-    Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Time", Field_Type="Input_Normal")
-    Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text=Format_Time, placeholder_text_color="#949A9F")
-    Date_To_Text_Var.configure(state="disabled")
+    # Field - Program Time Format
+    Program_Time_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Time", Field_Type="Input_Normal")
+    Program_Time_Frame_Var = Program_Time_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Program_Time_Frame_Var.configure(placeholder_text=Format_Time, placeholder_text_color="#949A9F")
+    Program_Time_Frame_Var.configure(state="disabled")
 
-    # Field - Email
-    Date_To = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
-    Date_To_Text_Var = Date_To.children["!ctkframe3"].children["!ctkentry"]
-    Date_To_Text_Var.configure(placeholder_text=Format_SP_DateTime, placeholder_text_color="#949A9F")
-    Date_To_Text_Var.configure(state="disabled")
+    # Field - Exchange DateTime Format
+    Excahnge_DateTime_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
+    Excahnge_DateTime_Frame_Var = Excahnge_DateTime_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Excahnge_DateTime_Frame_Var.configure(placeholder_text=Format_Exchange_DateTime, placeholder_text_color="#949A9F")
+    Excahnge_DateTime_Frame_Var.configure(state="disabled")
+
+    # Field - Sharepoint Time Format
+    Sharepoint_Time_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Time", Field_Type="Input_Normal")
+    Sharepoint_Time_Frame_Var = Sharepoint_Time_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Sharepoint_Time_Frame_Var.configure(placeholder_text=Fromat_Sharepoint_Time, placeholder_text_color="#949A9F")
+    Sharepoint_Time_Frame_Var.configure(state="disabled")
+
+    # Field - Sharepoint Time Format
+    Sharepoint_DateTime_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint DateTime", Field_Type="Input_Normal")
+    Sharepoint_DateTime_Frame_Var = Sharepoint_DateTime_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Sharepoint_DateTime_Frame_Var.configure(placeholder_text=Fromat_Sharepoint_DateTime, placeholder_text_color="#949A9F")
+    Sharepoint_DateTime_Frame_Var.configure(state="disabled")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -573,31 +671,31 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_Events_Joining_Var.configure(variable=Join_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Join_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Use"], Information=Join_Use_Variable))
 
     # Field - Join Free Events
-    Join_Free_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Free", Field_Type="Input_OptionMenu") 
+    Join_Free_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Free", Field_Type="Input_OptionMenu") 
     Join_Free_Frame_Var = Join_Free_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Free_Frame_Var.configure(variable=Join_Free_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Free_Frame_Var, values=Join_Methods_List, command=lambda Join_Free_Frame_Var: Field_Update_Value(Variable=Join_Free_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Free"], Information=Join_Free_Frame_Var))
 
     # Field - Join Tentative Events
-    Join_Tentative_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Tentative", Field_Type="Input_OptionMenu") 
+    Join_Tentative_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Tentative", Field_Type="Input_OptionMenu") 
     Join_Tentative_Frame_Var = Join_Tentative_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Tentative_Frame_Var.configure(variable=Join_Tentative_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Tentative_Frame_Var, values=Join_Methods_List, command=lambda Join_Tentative_Frame_Var: Field_Update_Value(Variable=Join_Tentative_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Tentative"], Information=Join_Tentative_Frame_Var))
 
     # Field - Join Busy Events
-    Join_Busy_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Busy", Field_Type="Input_OptionMenu") 
+    Join_Busy_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Busy", Field_Type="Input_OptionMenu") 
     Join_Busy_Frame_Var = Join_Busy_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Busy_Frame_Var.configure(variable=Join_Busy_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Busy_Frame_Var, values=Join_Methods_List, command=lambda Join_Busy_Frame_Var: Field_Update_Value(Variable=Join_Busy_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Busy"], Information=Join_Busy_Frame_Var))
 
     # Field - Join Out of Office Events
-    Join_OutOfOffice_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Out of Office", Field_Type="Input_OptionMenu") 
+    Join_OutOfOffice_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Out of Office", Field_Type="Input_OptionMenu") 
     Join_OutOfOffice_Frame_Var = Join_OutOfOffice_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_OutOfOffice_Frame_Var.configure(variable=Join_OutOfOffice_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_OutOfOffice_Frame_Var, values=Join_Methods_List, command=lambda Join_OutOfOffice_Frame_Var: Field_Update_Value(Variable=Join_OutOfOffice_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Out of Office"], Information=Join_OutOfOffice_Frame_Var))
 
     # Field - Join Working ElseWhere Events
-    Join_Work_ElseWhere_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Events - Working ElseWhere", Field_Type="Input_OptionMenu") 
+    Join_Work_ElseWhere_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Working ElseWhere", Field_Type="Input_OptionMenu") 
     Join_Work_ElseWhere_Frame_Var = Join_Work_ElseWhere_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Join_Work_ElseWhere_Frame_Var.configure(variable=Join_Work_Else_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Work_ElseWhere_Frame_Var, values=Join_Methods_List, command=lambda Join_Work_ElseWhere_Frame_Var: Field_Update_Value(Variable=Join_Work_Else_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Working elsewhere"], Information=Join_Work_ElseWhere_Frame_Var))
@@ -613,7 +711,7 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
 def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have. Used for projected Utilization.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have. Used for Utilization forecast. Lunch brake automaticall subtracted.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
@@ -694,6 +792,24 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Sunday_Frame_Var2.configure(placeholder_text="Day end time.")
     Sunday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "End_Time"], Information=Sunday_Frame_Var2.get()))
     Entry_field_Insert(Field=Sunday_Frame_Var2, Value=Sunday_Work_End)
+
+    # Field - Lunch Breate duration
+    Lunch_Brake_Duration_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Lunch brake duration", Field_Type="Input_Normal", Validation="Integer")
+    Lunch_Brake_Duration_Frame_Var = Lunch_Brake_Duration_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Lunch_Brake_Duration_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Lunch_Brake_Dur"], Information=int(Lunch_Brake_Duration_Frame_Var.get())))
+    Entry_field_Insert(Field=Lunch_Brake_Duration_Frame_Var, Value=Lunch_Brake_Duration)
+
+    # Field - Total Time
+    Work_Callendar_Total = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Total Time", Field_Type="Input_Normal")
+    Work_Callendar_Total_Var = Work_Callendar_Total.children["!ctkframe3"].children["!ctkentry"]
+    Work_Callendar_Total_Var.configure(placeholder_text=Total_Work_Duration, placeholder_text_color="#949A9F")
+    Work_Callendar_Total_Var.configure(state="disabled")
+
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
+    Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Work_Callendar_Total_Var, Lunch_Brake_Duration_Frame_Var=int(Lunch_Brake_Duration_Frame_Var.get()), Calendar_Type="Work_Hours", Monday_Start=Monday_Frame_Var1, Monday_End=Monday_Frame_Var2, Tuesday_Start=Tuesday_Frame_Var1, Tuesday_End=Tuesday_Frame_Var2, Wednesday_Start=Wednesday_Frame_Var1, Wednesday_End=Wednesday_Frame_Var2, Thursday_Start=Thursday_Frame_Var1, Thursday_End=Thursday_Frame_Var2, Friday_Start=Friday_Frame_Var1, Friday_End=Friday_Frame_Var2, Saturday_Start=Saturday_Frame_Var1, Saturday_End=Saturday_Frame_Var2, Sunday_Start=Sunday_Frame_Var1, Sunday_End=Sunday_Frame_Var2))
+    Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Calculate total week duration.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -784,6 +900,18 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Sunday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
     Sunday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Vacation", "End_Time"], Information=Sunday_Vac_Frame_Var2.get()))
     Entry_field_Insert(Field=Sunday_Vac_Frame_Var2, Value=Sunday_Vacation_End)
+
+    # Field - Total Time
+    Vacation_Callendar_Total = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Total Time", Field_Type="Input_Normal")
+    Vacation_Callendar_Total_Var = Vacation_Callendar_Total.children["!ctkframe3"].children["!ctkentry"]
+    Vacation_Callendar_Total_Var.configure(placeholder_text=Total_Vacation_Duration, placeholder_text_color="#949A9F")
+    Vacation_Callendar_Total_Var.configure(state="disabled")
+
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
+    Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Vacation_Callendar_Total_Var, Lunch_Brake_Duration_Frame_Var=0, Calendar_Type="Vacation", Monday_Start=Monday_Vac_Frame_Var1, Monday_End=Monday_Vac_Frame_Var2, Tuesday_Start=Tuesday_Vac_Frame_Var1, Tuesday_End=Tuesday_Vac_Frame_Var2, Wednesday_Start=Wednesday_Vac_Frame_Var1, Wednesday_End=Wednesday_Vac_Frame_Var2, Thursday_Start=Thursday_Vac_Frame_Var1, Thursday_End=Thursday_Vac_Frame_Var2, Friday_Start=Friday_Vac_Frame_Var1, Friday_End=Friday_Vac_Frame_Var2, Saturday_Start=Saturday_Vac_Frame_Var1, Saturday_End=Saturday_Vac_Frame_Var2, Sunday_Start=Sunday_Vac_Frame_Var1, Sunday_End=Sunday_Vac_Frame_Var2))
+    Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Calculate total week Vacation duration.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1145,6 +1273,15 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
             Description_Label_Var.configure(text=Selected_Description)
             Coverage_Label_Var.configure(text=Selected_Coverage)
 
+        def dragwin():
+            x = Delete_One_Window.winfo_pointerx() - Delete_One_Window._offsetx
+            y = Delete_One_Window.winfo_pointery() - Delete_One_Window._offsety
+            Delete_One_Window.geometry(f"+{x}+{y}")
+
+        def clickwin():
+            Delete_One_Window._offsetx = Delete_One_Window.winfo_pointerx() - Delete_One_Window.winfo_rootx()
+            Delete_One_Window._offsety = Delete_One_Window.winfo_pointery() - Delete_One_Window.winfo_rooty()
+
         # callculat number of lines in table
         Empty_General_Events = Frame_Empty_General_Table_Var.values
         Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
@@ -1158,6 +1295,8 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         Delete_One_Window.title("Collor Picker")
         Delete_One_Window.geometry(f"510x260")
         Delete_One_Window.bind(sequence="<Escape>", func=lambda evet: Delete_One_Window.destroy())
+        Delete_One_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        Delete_One_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
         Delete_One_Window.overrideredirect(boolean=True)
         Delete_One_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_One_Window.resizable(width=False, height=False)
@@ -1264,6 +1403,16 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         def Recalculation_Reject() -> None:
             Recalculate_window.destroy()
 
+        def dragwin():
+            x = Recalculate_window.winfo_pointerx() - Recalculate_window._offsetx
+            y = Recalculate_window.winfo_pointery() - Recalculate_window._offsety
+            Recalculate_window.geometry(f"+{x}+{y}")
+
+        def clickwin():
+            Recalculate_window._offsetx = Recalculate_window.winfo_pointerx() - Recalculate_window.winfo_rootx()
+            Recalculate_window._offsety = Recalculate_window.winfo_pointery() - Recalculate_window.winfo_rooty()
+
+
         # callculat number of lines in table
         Empty_General_Events = Frame_Empty_General_Table_Var.values
         Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
@@ -1276,6 +1425,8 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         Recalculate_window.title("Collor Picker")
         Recalculate_window.geometry(f"510x{Recalculate_window_height}")
         Recalculate_window.bind(sequence="<Escape>", func=lambda evet: Recalculate_window.destroy())
+        Recalculate_window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        Recalculate_window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
         Recalculate_window.overrideredirect(boolean=True)
         Recalculate_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Recalculate_window.resizable(width=False, height=False)
@@ -1510,6 +1661,16 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
             Start_Label_Var.configure(text=Selected_Start)
             End_Label_Var.configure(text=Selected_End)
 
+        def dragwin():
+            x = Delete_Scheduled_Window.winfo_pointerx() - Delete_Scheduled_Window._offsetx
+            y = Delete_Scheduled_Window.winfo_pointery() - Delete_Scheduled_Window._offsety
+            Delete_Scheduled_Window.geometry(f"+{x}+{y}")
+
+        def clickwin():
+            Delete_Scheduled_Window._offsetx = Delete_Scheduled_Window.winfo_pointerx() - Delete_Scheduled_Window.winfo_rootx()
+            Delete_Scheduled_Window._offsety = Delete_Scheduled_Window.winfo_pointery() - Delete_Scheduled_Window.winfo_rooty()
+
+
         # callculat number of lines in table
         Empty_Scheduled_Events = Frame_Empty_Schedules_Table_Var.values
         Empty_Scheduled_Events = [i for i in Empty_Scheduled_Events if i != Header_List]
@@ -1523,6 +1684,8 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         Delete_Scheduled_Window.title("Collor Picker")
         Delete_Scheduled_Window.geometry(f"510x400")
         Delete_Scheduled_Window.bind(sequence="<Escape>", func=lambda evet: Delete_Scheduled_Window.destroy())
+        Delete_Scheduled_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        Delete_Scheduled_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
         Delete_Scheduled_Window.overrideredirect(boolean=True)
         Delete_Scheduled_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_Scheduled_Window.resizable(width=False, height=False)
@@ -1830,6 +1993,16 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
             Description_Label_Var.configure(text=Selected_Description)
             Location_Label_Var.configure(text=Selected_Location)
 
+        def dragwin():
+            x = Delete_AutoFill_Window.winfo_pointerx() - Delete_AutoFill_Window._offsetx
+            y = Delete_AutoFill_Window.winfo_pointery() - Delete_AutoFill_Window._offsety
+            Delete_AutoFill_Window.geometry(f"+{x}+{y}")
+
+        def clickwin():
+            Delete_AutoFill_Window._offsetx = Delete_AutoFill_Window.winfo_pointerx() - Delete_AutoFill_Window.winfo_rootx()
+            Delete_AutoFill_Window._offsety = Delete_AutoFill_Window.winfo_pointery() - Delete_AutoFill_Window.winfo_rooty()
+
+
         # callculat number of lines in table
         AutoFill_Events = Frame_AutoFiller_Table_Var.values
         AutoFill_Events = [i for i in AutoFill_Events if i != Header_List]
@@ -1843,6 +2016,8 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Delete_AutoFill_Window.title("Collor Picker")
         Delete_AutoFill_Window.geometry(f"510x260")
         Delete_AutoFill_Window.bind(sequence="<Escape>", func=lambda evet: Delete_AutoFill_Window.destroy())
+        Delete_AutoFill_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        Delete_AutoFill_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
         Delete_AutoFill_Window.overrideredirect(boolean=True)
         Delete_AutoFill_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_AutoFill_Window.resizable(width=False, height=False)
@@ -2063,6 +2238,15 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
             Wrong_Activity_Label_Var.configure(text=Selected_Wrong_Activity)
             Correct_Activity_Label_Var.configure(text=Selected_Correct_Activity)
 
+        def dragwin():
+            x = Delete_Activity_Correct_Window.winfo_pointerx() - Delete_Activity_Correct_Window._offsetx
+            y = Delete_Activity_Correct_Window.winfo_pointery() - Delete_Activity_Correct_Window._offsety
+            Delete_Activity_Correct_Window.geometry(f"+{x}+{y}")
+
+        def clickwin():
+            Delete_Activity_Correct_Window._offsetx = Delete_Activity_Correct_Window.winfo_pointerx() - Delete_Activity_Correct_Window.winfo_rootx()
+            Delete_Activity_Correct_Window._offsety = Delete_Activity_Correct_Window.winfo_pointery() - Delete_Activity_Correct_Window.winfo_rooty()
+
         # callculat number of lines in table
         Activity_Corrections_Events = Frame_Activity_Correct_Table_Var.values
         Activity_Corrections_Events = [i for i in Activity_Corrections_Events if i != Header_List]
@@ -2076,6 +2260,8 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
         Delete_Activity_Correct_Window.title("Collor Picker")
         Delete_Activity_Correct_Window.geometry(f"510x250")
         Delete_Activity_Correct_Window.bind(sequence="<Escape>", func=lambda evet: Delete_Activity_Correct_Window.destroy())
+        Delete_Activity_Correct_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        Delete_Activity_Correct_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
         Delete_Activity_Correct_Window.overrideredirect(boolean=True)
         Delete_Activity_Correct_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_Activity_Correct_Window.resizable(width=False, height=False)

@@ -7,7 +7,7 @@ from pandas import DataFrame
 from datetime import datetime
 
 import customtkinter
-from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkCheckBox
+from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkOptionMenu
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
 
@@ -189,7 +189,7 @@ def Page_Download(Frame: CTk|CTkFrame):
         else:
             pass
 
-    def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry, Sharepoint_Whole_Period_Var: CTkCheckBox, Sharepoint_Active_Per_Days_Var: CTkCheckBox) -> None:
+    def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry, Sharepoint_Date_From_Option_Var: CTkOptionMenu, Sharepoint_Date_To_Option_Var: CTkOptionMenu, Sharepoint_Man_Date_To_Var: CTkEntry) -> None:
         if Download_Date_Range_Source.get() == "Manual":
             Manual_Date_From_Var.focus()
             Manual_Date_From_Var.configure(state="normal")
@@ -197,13 +197,15 @@ def Page_Download(Frame: CTk|CTkFrame):
 
             Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
             Sharepoint_Password_Var.configure(state="disabled")
-            Sharepoint_Whole_Period_Var.configure(state="disabled")
-            Sharepoint_Active_Per_Days_Var.configure(state="disabled")
+            Sharepoint_Date_From_Option_Var.configure(state="disabled")
+            Sharepoint_Date_To_Option_Var.configure(state="disabled")
+            Sharepoint_Man_Date_To_Var.configure(state="disabled")
         elif Download_Date_Range_Source.get() == "Sharepoint":
             Sharepoint_Password_Var.focus()
             Sharepoint_Password_Var.configure(state="normal")
-            Sharepoint_Whole_Period_Var.configure(state="normal")
-            Sharepoint_Active_Per_Days_Var.configure(state="normal")
+            Sharepoint_Date_From_Option_Var.configure(state="normal")
+            Sharepoint_Date_To_Option_Var.configure(state="normal")
+            Sharepoint_Man_Date_To_Var.configure(state="normal")
 
             Manual_Date_From_Var.delete(first_index=0, last_index=1000)
             Manual_Date_From_Var.configure(placeholder_text="Date From")
@@ -217,31 +219,27 @@ def Page_Download(Frame: CTk|CTkFrame):
     def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
         Can_Download = True
 
-        # Actuall Values
+        # -------------- Actuall Values  -------------- #
         Download_Date_Range_Source = Download_Date_Range_Source.get()
         Download_Data_Source = Download_Data_Source.get()
-        SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"].get()
-        
-        SP_End_Date_Max_Today_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"].get()
-        if SP_End_Date_Max_Today_Var == 1:
-            SP_End_Date_Max_Today_Var = True
-        else:
-            SP_End_Date_Max_Today_Var = False
 
-        SP_Whole_Period = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"].get()
-        if SP_Whole_Period == 1:
-            SP_Whole_Period = True
-        else:
-            SP_Whole_Period = False
+        # Sharepoint
+        SP_Date_From_Method = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        SP_Date_To_Method = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        SP_Man_Date_To = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"].get()
+        SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"].get()
 
-        Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        # Manual
         Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
         Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
-
         Input_Start_Date = Input_Start_Date.upper()
         Input_End_Date = Input_End_Date.upper()
+        
+        # Exchange
+        Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
 
-        # Missing Data handler
+        # -------------- Missing Data handler  -------------- #
+        # Date Range Source
         if Download_Date_Range_Source == "Sharepoint":
             if SP_Password == "":
                 Can_Download = False
@@ -274,6 +272,7 @@ def Page_Download(Frame: CTk|CTkFrame):
             Can_Download = False
             CTkMessagebox(title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1)
 
+        # Data source
         if Can_Download == True:
             if Download_Data_Source == "Exchange":
                 if Exchange_Password == "":
@@ -289,9 +288,10 @@ def Page_Download(Frame: CTk|CTkFrame):
         else:
             pass
 
+        # -------------- Download  -------------- #
         if Can_Download == True:
             import Libs.Process as Process
-            Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_End_Date_Max_Today_Var=SP_End_Date_Max_Today_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+            Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
         else:
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
@@ -325,15 +325,15 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     # Download Method
     Metdod_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
-    
     Metdod_Text.configure(text="Step 1 - Date Range Source")
 
     Sharepoint_Widget = Download.Download_Sharepoint(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"]
-    Sharepoint_Whole_Period_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkcheckbox"]
-    Sharepoint_Active_Per_Days_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkcheckbox"]
-
+    Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
+    Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
+    Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
+    Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
+    
     Manual_Widget = Download.Download_Manual(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
@@ -342,8 +342,8 @@ def Page_Download(Frame: CTk|CTkFrame):
     Manual_Date_To_Var.configure(state="disabled")
 
     # Disabling fields --> Download_Date_Range_Source
-    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Whole_Period_Var=Sharepoint_Whole_Period_Var, Sharepoint_Active_Per_Days_Var=Sharepoint_Active_Per_Days_Var))
-    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Whole_Period_Var=Sharepoint_Whole_Period_Var, Sharepoint_Active_Per_Days_Var=Sharepoint_Active_Per_Days_Var))
+    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Date_From_Option_Var=Sharepoint_Date_From_Option_Var, Sharepoint_Date_To_Option_Var=Sharepoint_Date_To_Option_Var, Sharepoint_Man_Date_To_Var=Sharepoint_Man_Date_To_Var))
+    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Date_From_Option_Var=Sharepoint_Date_From_Option_Var, Sharepoint_Date_To_Option_Var=Sharepoint_Date_To_Option_Var, Sharepoint_Man_Date_To_Var=Sharepoint_Man_Date_To_Var))
 
     # Download Source
     Source_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
@@ -837,7 +837,7 @@ class Win(customtkinter.CTk):
         super().iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         self._offsetx = 0
         self._offsety = 0
-        super().bind("<Button-1>" ,self.clickwin)
+        super().bind("<Button-1>",self.clickwin)
         super().bind("<B1-Motion>", self.dragwin)
 
     def dragwin(self,event):

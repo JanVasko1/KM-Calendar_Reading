@@ -49,78 +49,96 @@
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Tuesday": {
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Wednesday": {
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Thursday": {
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Friday": {
                 "Working_Day": true,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Saturday": {
                 "Working_Day": false,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
             },
             "Sunday": {
                 "Working_Day": false,
                 "Work_Hours": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 },
                 "Vacation": {
                     "Start_Time": "",
-                    "End_Time": ""
+                    "End_Time": "",
+                    "Day_Duration": 0
                 }
+            },
+            "Totals": {
+                "Work": "00:00",
+                "Vacation": "00:00"
             }
         }
     },

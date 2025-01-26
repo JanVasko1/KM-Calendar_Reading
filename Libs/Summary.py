@@ -12,12 +12,22 @@ Settings = Defaults_Lists.Load_Settings()
 Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 Date_Format = Settings["General"]["Formats"]["Date"]
 Time_Format = Settings["General"]["Formats"]["Time"]
+Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def DataFrame_WeekDay(row) -> str:
     x_dt = datetime.strptime(row, Date_Format)
     WeekDay = x_dt.strftime("%A")
     return WeekDay
+
+def Define_Event_Duration(row) -> int:
+    Start_Time = row["Start Time"]
+    End_Time = row["End Time"]
+    Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
+    End_Time_dt = datetime.strptime(End_Time, Time_Format)
+    Duration_dt = End_Time_dt - Start_Time_dt
+    Duration = Duration_dt.seconds // 60
+    return Duration
 
 def DataFrame_Week(row) -> str:
     x_dt = datetime.strptime(row, Date_Format)
@@ -28,17 +38,6 @@ def DataFrame_Week(row) -> str:
 
     X_Week = f"{Year}-{Week}"
     return X_Week
-
-def Duration_Couter(Time1: str, Time2: str) -> float:
-    try:
-        # Count duration between 2 strings in fload
-        Time2_dt = datetime.strptime(Time2, Time_Format)
-        Time1_dt = datetime.strptime(Time1, Time_Format)
-        Duration_dt = Time2_dt - Time1_dt
-        Duration = Duration_dt.total_seconds() // 60 / 60
-    except:
-        Duration = 0
-    return round(Duration, 2)
 
 def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, Report_Period_End: datetime) -> DataFrame:
     Czech_Holidays = holidays.country_holidays("CZ")
@@ -86,7 +85,7 @@ def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, R
         except:
             Reported_Cumulative_Time = Reported_Cumulative_Time
     	
-        #Add to calendar
+        # Add to calendar
         Utilization_Calendar_df.loc[f"{Check_Date_str}"] = [Working_day, KM_Cumulative_Utilization, Day_Total_Time, Reported_Cumulative_Time]
 
         # Check End of Report Period
@@ -100,31 +99,31 @@ def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, R
 # ---------------------------------------------------------- Local Variables ---------------------------------------------------------- #
 My_Monday_Start_WH = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Start_Time"]
 My_Monday_End_WH = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["End_Time"]
-My_Monday_WH = Duration_Couter(Time1=My_Monday_Start_WH, Time2=My_Monday_End_WH)
+My_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_Tuesday_Start_WH = Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Start_Time"]
 My_Tuesday_End_WH = Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["End_Time"]
-My_Tuesday_WH = Duration_Couter(Time1=My_Tuesday_Start_WH, Time2=My_Tuesday_End_WH)
+My_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_Wednesday_Start_WH = Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Start_Time"]
 My_Wednesday_End_WH = Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["End_Time"]
-My_Wednesday_WH = Duration_Couter(Time1=My_Wednesday_Start_WH, Time2=My_Wednesday_End_WH)
+My_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_Thursday_Start_WH = Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["Start_Time"]
 My_Thursday_End_WH = Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["End_Time"]
-My_Thursday_WH = Duration_Couter(Time1=My_Thursday_Start_WH, Time2=My_Thursday_End_WH)
+My_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_Friday_Start_WH = Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["Start_Time"]
 My_Friday_End_WH = Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["End_Time"]
-My_Friday_WH = Duration_Couter(Time1=My_Friday_Start_WH, Time2=My_Friday_End_WH)
+My_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_Saturday_Start_WH = Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["Start_Time"]
 My_Saturday_End_WH = Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["End_Time"]
-My_Saturday_WH = Duration_Couter(Time1=My_Saturday_Start_WH, Time2=My_Saturday_End_WH)
+My_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_Sunday_Start_WH = Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["Start_Time"]
 My_Sunday_End_WH = Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["End_Time"]
-My_Sunday_WH = Duration_Couter(Time1=My_Sunday_Start_WH, Time2=My_Sunday_End_WH)
+My_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["Day_Duration"]) / 60
 
 My_WH_dict = {
     "Monday": My_Monday_WH,
@@ -138,31 +137,31 @@ My_WH_dict = {
 
 KM_Monday_Start_WH = Settings["General"]["Calendar"]["Monday"]["Vacation"]["Start_Time"]
 KM_Monday_End_WH = Settings["General"]["Calendar"]["Monday"]["Vacation"]["End_Time"]
-KM_Monday_WH = Duration_Couter(Time1=KM_Monday_Start_WH, Time2=KM_Monday_End_WH)
+KM_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_Tuesday_Start_WH = Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Start_Time"]
 KM_Tuesday_End_WH = Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["End_Time"]
-KM_Tuesday_WH = Duration_Couter(Time1=KM_Tuesday_Start_WH, Time2=KM_Tuesday_End_WH)
+KM_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_Wednesday_Start_WH = Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Start_Time"]
 KM_Wednesday_End_WH = Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["End_Time"]
-KM_Wednesday_WH = Duration_Couter(Time1=KM_Wednesday_Start_WH, Time2=KM_Wednesday_End_WH)
+KM_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_Thursday_Start_WH = Settings["General"]["Calendar"]["Thursday"]["Vacation"]["Start_Time"]
 KM_Thursday_End_WH = Settings["General"]["Calendar"]["Thursday"]["Vacation"]["End_Time"]
-KM_Thursday_WH = Duration_Couter(Time1=KM_Thursday_Start_WH, Time2=KM_Thursday_End_WH)
+KM_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_Friday_Start_WH = Settings["General"]["Calendar"]["Friday"]["Vacation"]["Start_Time"]
 KM_Friday_End_WH = Settings["General"]["Calendar"]["Friday"]["Vacation"]["End_Time"]
-KM_Friday_WH = Duration_Couter(Time1=KM_Friday_Start_WH, Time2=KM_Friday_End_WH)
+KM_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_Saturday_Start_WH = Settings["General"]["Calendar"]["Saturday"]["Vacation"]["Start_Time"]
 KM_Saturday_End_WH = Settings["General"]["Calendar"]["Saturday"]["Vacation"]["End_Time"]
-KM_Saturday_WH = Duration_Couter(Time1=KM_Saturday_Start_WH, Time2=KM_Saturday_End_WH)
+KM_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_Sunday_Start_WH = Settings["General"]["Calendar"]["Sunday"]["Vacation"]["Start_Time"]
 KM_Sunday_End_WH = Settings["General"]["Calendar"]["Sunday"]["Vacation"]["End_Time"]
-KM_Sunday_WH = Duration_Couter(Time1=KM_Sunday_Start_WH, Time2=KM_Sunday_End_WH)
+KM_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Vacation"]["Day_Duration"]) / 60
 
 KM_WH_dict = {
     "Monday": KM_Monday_WH,
@@ -175,7 +174,7 @@ KM_WH_dict = {
     }
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime) -> None:
+def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None) -> None:
     #Update Events Dataframe
     Events["Personnel number"] = Personnel_number
     Events["Start_Time"] = Events["Start_Time"].astype(str)
@@ -398,8 +397,6 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
     # Delete File before generation
     Defaults_Lists.Delete_File(file_path="Operational\\Events_Totals.csv")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Utilization_Light.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Utilization_Dark.html")
 
     # Calculation
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
@@ -410,21 +407,17 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     # Reporting Period Utilization
     if type(Report_Period_Active_Days) is int:
         Period_Utilization = Report_Period_Active_Days * 8
-        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
 
-        # Utilization suprlust calculation
-        if type(Report_Period_End) is datetime:
-            Utilization_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
-            Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
-            KM_Cumulative_Util_by_Date = Utilization_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
-            Reported_Cumulative_Time_by_Date = Utilization_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
-            Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
+        # Load alread registered Events to sum with totals
+        try:
+            Events_Registered_df["Duration"] = Events_Registered_df.apply(Define_Event_Duration, axis = 1)
+            Events_Registered_df["Duration_H"] = Events_Registered_df["Duration"].map(lambda x: round(x/60, 2))
+            Total_Duration_hours_regsitered = round(Events_Registered_df["Duration_H"].sum(), 2)
+        except:
+            Total_Duration_hours_regsitered = 0
 
-            # Prepare Chart
-            Charts.Gen_Chart_Calendar_Utilization(theme="Dark", Utilization_Calendar_df=Utilization_Calendar_df)
-            Charts.Gen_Chart_Calendar_Utilization(theme="Light", Utilization_Calendar_df=Utilization_Calendar_df)
-        else:
-            pass
+
+        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours + Total_Duration_hours_regsitered, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
     else:
         # Cannot divide by 0
         Reporting_Period_Utilization = None
@@ -441,18 +434,6 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
     Totals_df.to_csv(path_or_buf=f"Operational\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
-    # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Project_Light.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Project_Dark.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Activity_Light.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Activity_Dark.html")
-
-    # Generate charts
-    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Dark", Events=Events)
-    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events)
-    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events)
-    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events)
 
     # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
     # Delete File before generation
@@ -462,8 +443,38 @@ def Generate_Summary(Events: DataFrame, Report_Period_Active_Days: int|None, Rep
     Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
     Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]
+    Events["Start Time"] = pandas.to_datetime(arg=Events["Start Time"], format=Sharepoint_Time_Format)
+    Events["End Time"] = pandas.to_datetime(arg=Events["End Time"], format=Sharepoint_Time_Format)
+    Events["Start Time"] = Events["Start Time"].dt.strftime(Time_Format)
+    Events["End Time"] = Events["End Time"].dt.strftime(Time_Format)
 
     Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-    pandas.set_option("display.max_rows", None)
     Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
     Events.to_csv(path_or_buf=f"Operational\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+
+    # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Project_Light.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Project_Dark.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Activity_Light.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Activity_Dark.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Utilization_Light.html")
+    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard_Utilization_Dark.html")
+
+    # Generate charts - Project And Activity
+    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+
+    # Utilization
+    # TODO -> Dodělat
+    """Utilization_Event_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
+    Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
+    KM_Cumulative_Util_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
+    Reported_Cumulative_Time_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
+    Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
+
+    Charts.Gen_Chart_Calendar_Utilization(theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df)
+    Charts.Gen_Chart_Calendar_Utilization(theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df)
+    """

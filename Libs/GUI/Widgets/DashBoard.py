@@ -15,6 +15,52 @@ def Get_Current_Theme() -> str:
     Current_Theme = customtkinter.get_appearance_mode()
     return Current_Theme
 
+def DashBoard_Project():
+    Theme = Get_Current_Theme()
+    if Theme == "System":
+        Theme = "Dark"
+    else:
+        pass
+
+    Chart_path = f"Operational\\DashBoard_Project_{Theme}.html"
+    Chart_Exist = os.path.isfile(Chart_path)
+    if Chart_Exist == True:
+        webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
+        webview.start()
+    else:
+        CTkMessagebox(title="Error", message=f"Chart of Project not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
+
+def DashBoard_Activity():
+    Theme = Get_Current_Theme()
+    if Theme == "System":
+        Theme = "Dark"
+    else:
+        pass
+
+    Chart_path = f"Operational\\DashBoard_Activity_{Theme}.html"
+    Chart_Exist = os.path.isfile(Chart_path)
+    if Chart_Exist == True:
+        webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
+        webview.start()
+    else:
+        CTkMessagebox(title="Error", message=f"Chart of Activity not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
+
+def DashBoard_Utilization():
+    Theme = Get_Current_Theme()
+    if Theme == "System":
+        Theme = "Dark"
+    else:
+        pass
+
+    Chart_path = f"Operational\\DashBoard_Utilization_{Theme}.html"
+    Chart_Exist = os.path.isfile(Chart_path)
+    if Chart_Exist == True:
+        webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
+        webview.start()
+    else:
+        CTkMessagebox(title="Error", message=f"Chart of Utilization not avvailable, please download data first from Sharepoint.", icon="cancel", fade_in_duration=1)
+
+
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Dashboard Page Widgets -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
@@ -141,7 +187,13 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
 
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Shows Projects Details.", Scrollable=True) 
+    Frame_Header = Frame_Main.children["!ctkframe"]
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Button --> Projects
+    Button_Show_Projects = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Projects.configure(text="Detail", command = lambda:DashBoard_Project())
+    Elements.Get_ToolTip(widget=Button_Show_Projects, message="Shows project chart.", ToolTip_Size="Normal")
 
     # Table
     Project_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Project_Activity", columns=4, rows=Projec_DF.shape[0] + 1)
@@ -149,6 +201,7 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
+    Button_Show_Projects.pack(side="right")
     Project_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Main
@@ -223,7 +276,13 @@ def DashBoard_Activity_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
     
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Shows Activity Details.", Scrollable=True) 
+    Frame_Header = Frame_Main.children["!ctkframe"]
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Button --> Activities
+    Button_Show_Activities = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Activities.configure(text="Detail", command = lambda:DashBoard_Activity())
+    Elements.Get_ToolTip(widget=Button_Show_Activities, message="Shows activity chart.", ToolTip_Size="Normal")
 
     # Table
     Activity_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Project_Activity", columns=4, rows=Activity_Df.shape[0] + 1)
@@ -231,6 +290,7 @@ def DashBoard_Activity_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
+    Button_Show_Activities.pack(side="right")
     Activity_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Main
@@ -340,58 +400,11 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     return Frame_Main
 
 def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str) -> CTkFrame:
-    # ------------------------- Local Functions -------------------------#
-    def DashBoard_Project():
-        Theme = Get_Current_Theme()
-        if Theme == "System":
-            Theme = "Dark"
-        else:
-            pass
-
-        Chart_path = f"Operational\\DashBoard_Project_{Theme}.html"
-        Chart_Exist = os.path.isfile(Chart_path)
-        if Chart_Exist == True:
-            webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True) 
-            webview.start()
-        else:
-            CTkMessagebox(title="Error", message=f"Chart of Project not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
-
-    def DashBoard_Activity():
-        Theme = Get_Current_Theme()
-        if Theme == "System":
-            Theme = "Dark"
-        else:
-            pass
-
-        Chart_path = f"Operational\\DashBoard_Activity_{Theme}.html"
-        Chart_Exist = os.path.isfile(Chart_path)
-        if Chart_Exist == True:
-            webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True) 
-            webview.start()
-        else:
-            CTkMessagebox(title="Error", message=f"Chart of Activity not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
-
-    def DashBoard_Utilization():
-        Theme = Get_Current_Theme()
-        if Theme == "System":
-            Theme = "Dark"
-        else:
-            pass
-
-        Chart_path = f"Operational\\DashBoard_Utilization_{Theme}.html"
-        Chart_Exist = os.path.isfile(Chart_path)
-        if Chart_Exist == True:
-            webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True) 
-            webview.start()
-        else:
-            CTkMessagebox(title="Error", message=f"Chart of Utilization not avvailable, please download data first from Sharepoint.", icon="cancel", fade_in_duration=1)
-
-
     # ------------------------- Main Functions -------------------------#
     # Field - Use
-    Frame_Whole = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
-    Frame_Header = Frame_Whole.children["!ctkframe"]
-    Frame_Body = Frame_Whole.children["!ctkframe2"]
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail day Project / Activity distribution.", Scrollable=False) 
+    Frame_Header = Frame_Main.children["!ctkframe"]
+    Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # TODO --> dokončit Dashboard --> načtení grafů podle zvoleného buttonu do Frame --> možná nemožný
 
@@ -411,9 +424,9 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     Elements.Get_ToolTip(widget=Button_Show_Utilization, message="Show utilization chart", ToolTip_Size="Normal")
 
     #? Build look of Widget
-    Frame_Whole.pack(side="top", padx=15, pady=15)
+    Frame_Main.pack(side="top", padx=15, pady=15)
     Button_Show_Utilization.pack(side="right")
     Button_Show_Activities.pack(side="right")
     Button_Show_Projects.pack(side="right")
     
-    return Frame_Whole
+    return Frame_Main

@@ -35,10 +35,10 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
     window.update_idletasks()
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Password: str|None, SP_Whole_Period:bool|None, SP_End_Date_Max_Today_Var: bool|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None):
+def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None):
     # Download Events 
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Downloading", value=0) 
-    Events, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Input_Start_Date_dt, Input_End_Date_dt, Download_canceled = Downloader.Download_Events(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Password=SP_Password, SP_Whole_Period=SP_Whole_Period, SP_End_Date_Max_Today_Var=SP_End_Date_Max_Today_Var, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+    Events, Events_Registered_df, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Download_canceled = Downloader.Download_Events(Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     
     if Download_canceled == False:
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -98,7 +98,7 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
 
         # Sumamry Dataframes
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Summary") 
-        Events = Summary.Generate_Summary(Events=Events, Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)
+        Events = Summary.Generate_Summary(Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
 
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Lable="Done", value=1) 
         CTkMessagebox(title="Success", message="Sucessfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
