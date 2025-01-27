@@ -46,7 +46,7 @@ def Days_Handler(Event_Start_Date: str, Event_End_Date: str) -> list:
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def OverMidnight_Events(Events: DataFrame):
-    # Handle Meetings wchich are for more days / over midnight --> splits them
+    # Handle Meetings which are for more days / over midnight --> splits them
     Event_Indexes = []
     for row in Events.iterrows():
         row_Series = pandas.Series(row[1])
@@ -151,7 +151,7 @@ def Empty_Split_Events(Events: DataFrame):
         Cumulated_Events = pandas.DataFrame()
         Events["Empty_Split"] = Events.apply(Find_Split_Events, axis = 1)
 
-        # Defin evets to be splitted DF
+        # Define events to be splitted DF
         mask1 = Events["Empty_Split"] == True
         Events_to_Split_df = Events.loc[mask1]
 

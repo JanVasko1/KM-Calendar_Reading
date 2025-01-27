@@ -28,7 +28,7 @@ def DashBoard_Project():
         webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
         webview.start()
     else:
-        CTkMessagebox(title="Error", message=f"Chart of Project not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Chart of Project not available, please download data first.", icon="cancel", fade_in_duration=1)
 
 def DashBoard_Activity():
     Theme = Get_Current_Theme()
@@ -43,7 +43,7 @@ def DashBoard_Activity():
         webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
         webview.start()
     else:
-        CTkMessagebox(title="Error", message=f"Chart of Activity not avvailable, please download data first.", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Chart of Activity not available, please download data first.", icon="cancel", fade_in_duration=1)
 
 def DashBoard_Utilization():
     Theme = Get_Current_Theme()
@@ -58,7 +58,7 @@ def DashBoard_Utilization():
         webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
         webview.start()
     else:
-        CTkMessagebox(title="Error", message=f"Chart of Utilization not avvailable, please download data first from Sharepoint.", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Chart of Utilization not available, please download data first from Sharepoint.", icon="cancel", fade_in_duration=1)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Dashboard Page Widgets -------------------------------------------------------------------------------------------------------------------------------------------------- #
@@ -84,7 +84,7 @@ def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:s
 def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: float) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="clock-arrow-up", Widget_Label_Tooltip="Shows Averate hours per Event.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="clock-arrow-up", Widget_Label_Tooltip="Shows Average hours per Event.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Average_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -141,7 +141,7 @@ def DashBoard_Totals_Report_Period_Util_Widget(Frame: CTk|CTkFrame, Label: str, 
 def DashBoard_Totals_Active_Day_Util_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="activity", Widget_Label_Tooltip="Shows utilization in realtion to my calendar and for active days only.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="activity", Widget_Label_Tooltip="Shows utilization in relation to my calendar and for active days only.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -160,7 +160,7 @@ def DashBoard_Totals_Active_Day_Util_Widget(Frame: CTk|CTkFrame, Label: str, Wid
 def DashBoard_Totals_Utilization_Surplus_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="message-square-diff", Widget_Label_Tooltip="Shows hours if Im surplus againts KM actual day utilization for Imput End Date.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="message-square-diff", Widget_Label_Tooltip="Shows hours if Im surplus against KM actual day utilization for Input End Date.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Day_Average_Coverage_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Main", Font_Size="Main")
@@ -177,11 +177,11 @@ def DashBoard_Totals_Utilization_Surplus_Widget(Frame: CTk|CTkFrame, Label: str,
     return Frame_Main
 
 
-def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Projec_DF: DataFrame) -> CTkFrame:
+def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Project_DF: DataFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Data preparation
     Table_Values = [["Project", "Count", "Total [H]", "Average [H]"]]
-    Table_Data_List = Projec_DF.values.tolist()
+    Table_Data_List = Project_DF.values.tolist()
     for data_list in Table_Data_List:
         Table_Values.append(data_list)
 
@@ -196,7 +196,7 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
     Elements.Get_ToolTip(widget=Button_Show_Projects, message="Shows project chart.", ToolTip_Size="Normal")
 
     # Table
-    Project_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Project_Activity", columns=4, rows=Projec_DF.shape[0] + 1)
+    Project_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Project_Activity", columns=4, rows=Project_DF.shape[0] + 1)
     Project_Table.configure(values=Table_Values)
 
     #? Build look of Widget
@@ -206,19 +206,19 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
 
     return Frame_Main
 
-def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Projec_DF: DataFrame) -> CTkFrame:
+def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Project_DF: DataFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Data preparation
-    Projec_DF = Projec_DF.head(-1)
-    Most_Occurence_ID =  Projec_DF["Count"].idxmax()
-    Most_Occurence_Project = Projec_DF.iloc[Most_Occurence_ID]["Project"]
+    Project_DF = Project_DF.head(-1)
+    Most_Occurrence_ID =  Project_DF["Count"].idxmax()
+    Most_Occurrence_Project = Project_DF.iloc[Most_Occurrence_ID]["Project"]
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Most Occcurence", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Most Occurrence", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Project_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
-    Project_Count_text.configure(text=f"{Most_Occurence_Project}")
+    Project_Count_text.configure(text=f"{Most_Occurrence_Project}")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -226,12 +226,12 @@ def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
 
     return Frame_Main
 
-def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Projec_DF: DataFrame) -> CTkFrame:
+def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Project_DF: DataFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Data preparation
-    Projec_DF = Projec_DF.head(-1)
-    Most_Hours_ID =  Projec_DF["Total[H]"].idxmax()
-    Most_Project_Hours = Projec_DF.iloc[Most_Hours_ID]["Project"]
+    Project_DF = Project_DF.head(-1)
+    Most_Hours_ID =  Project_DF["Total[H]"].idxmax()
+    Most_Project_Hours = Project_DF.iloc[Most_Hours_ID]["Project"]
     
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Most Hours", Scrollable=False) 
@@ -246,12 +246,12 @@ def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
 
     return Frame_Main
 
-def DashBoard_Project_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Projec_DF: DataFrame) -> CTkFrame:
+def DashBoard_Project_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Project_DF: DataFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Data preparation
-    Projec_DF = Projec_DF.head(-1)
-    Most_Hours_ID =  Projec_DF["Average[H]"].idxmax()
-    Most_Project_Avg_Hours = Projec_DF.iloc[Most_Hours_ID]["Project"]
+    Project_DF = Project_DF.head(-1)
+    Most_Hours_ID =  Project_DF["Average[H]"].idxmax()
+    Most_Project_Avg_Hours = Project_DF.iloc[Most_Hours_ID]["Project"]
     
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Projects Average Time.", Scrollable=False) 
@@ -299,15 +299,15 @@ def DashBoard_Activity_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     # ------------------------- Main Functions -------------------------#
     # Data preparation
     Activity_Df = Activity_Df.head(-1)
-    Most_Occurence_ID =  Activity_Df["Count"].idxmax()
-    Most_Occurence_Activity = Activity_Df.iloc[Most_Occurence_ID]["Activity"]
+    Most_Occurrence_ID =  Activity_Df["Count"].idxmax()
+    Most_Occurrence_Activity = Activity_Df.iloc[Most_Occurrence_ID]["Activity"]
     
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Events Count.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Activity_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
-    Activity_Count_text.configure(text=f"{Most_Occurence_Activity}")
+    Activity_Count_text.configure(text=f"{Most_Occurrence_Activity}")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -364,7 +364,7 @@ def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
         Table_Values.append(data_list)
     
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detal WeekDay Summary.", Scrollable=True) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail WeekDay Summary.", Scrollable=True) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Table

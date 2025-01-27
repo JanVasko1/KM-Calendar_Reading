@@ -18,18 +18,18 @@ client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
 Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
 
-# Apperance
-Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
-Theme_List = list(Configuration["Global_Apperance"]["Window"]["Theme_List"])
-Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
-Win_Style_List = list(Configuration["Global_Apperance"]["Window"]["Style_List"])
-Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
-Accent_Color_Mode_List = list(Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_List"])
-Accent_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
+# Appearance
+Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
+Theme_List = list(Configuration["Global_Appearance"]["Window"]["Theme_List"])
+Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
+Win_Style_List = list(Configuration["Global_Appearance"]["Window"]["Style_List"])
+Accent_Color_Mode = Configuration["Global_Appearance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
+Accent_Color_Mode_List = list(Configuration["Global_Appearance"]["Window"]["Colors"]["Accent"]["Accent_Color_List"])
+Accent_Color_Manual = Configuration["Global_Appearance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
 
-Hover_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
-Hover_Color_Mode_List = list(Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_List"])
-Hover_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
+Hover_Color_Mode = Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
+Hover_Color_Mode_List = list(Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_List"])
+Hover_Color_Manual = Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
 
 # Sharepoint
 SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
@@ -47,8 +47,8 @@ Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 Format_Date = Settings["General"]["Formats"]["Date"]
 Format_Time = Settings["General"]["Formats"]["Time"]
 Format_Exchange_DateTime = Settings["General"]["Formats"]["Exchange_DateTime"]
-Fromat_Sharepoint_Time = Settings["General"]["Formats"]["Sharepoint_Time"]
-Fromat_Sharepoint_DateTime = Settings["General"]["Formats"]["Sharepoint_DateTime"]
+Format_Sharepoint_Time = Settings["General"]["Formats"]["Sharepoint_Time"]
+Format_Sharepoint_DateTime = Settings["General"]["Formats"]["Sharepoint_DateTime"]
 
 # Vacation
 Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
@@ -109,13 +109,13 @@ Friday_Work_End = Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["End_T
 Saturday_Work_End = Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["End_Time"]
 Sunday_Work_End = Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["End_Time"]
 
-Monday_Workinday = Settings["General"]["Calendar"]["Monday"]["Working_Day"]
-Tuesday_Workinday = Settings["General"]["Calendar"]["Tuesday"]["Working_Day"]
-Wednesday_Workinday = Settings["General"]["Calendar"]["Wednesday"]["Working_Day"]
-Thursday_Workinday = Settings["General"]["Calendar"]["Thursday"]["Working_Day"]
-Friday_Workinday = Settings["General"]["Calendar"]["Friday"]["Working_Day"]
-Saturday_Workinday = Settings["General"]["Calendar"]["Saturday"]["Working_Day"]
-Sunday_Workinday = Settings["General"]["Calendar"]["Sunday"]["Working_Day"]
+Monday_Working_day = Settings["General"]["Calendar"]["Monday"]["Working_Day"]
+Tuesday_Working_day = Settings["General"]["Calendar"]["Tuesday"]["Working_Day"]
+Wednesday_Working_day = Settings["General"]["Calendar"]["Wednesday"]["Working_Day"]
+Thursday_Working_day = Settings["General"]["Calendar"]["Thursday"]["Working_Day"]
+Friday_Working_day = Settings["General"]["Calendar"]["Friday"]["Working_Day"]
+Saturday_Working_day = Settings["General"]["Calendar"]["Saturday"]["Working_Day"]
+Sunday_Working_day = Settings["General"]["Calendar"]["Sunday"]["Working_Day"]
 
 Total_Work_Duration =  Settings["General"]["Calendar"]["Totals"]["Work"]
 
@@ -159,14 +159,14 @@ Activity_All_List.sort()
 Location_List = Settings["Event_Handler"]["Location"]["Location_List"]
 Location_List.insert(0, " ") # Because there might be not filled one in Calendar
 
-# Parralle Events
-Parralel_Enabled = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Use"]
-Divide_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Divide_Method"]
-Divide_Method_List = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Divide_Method_List"]
-Start_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Start_Method"]
-Start_Method_List = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Start_Method_List"]
+# Parallel Events
+Parallel_Enabled = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
+Divide_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Divide_Method"]
+Divide_Method_List = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Divide_Method_List"]
+Start_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
+Start_Method_List = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method_List"]
 
-# Joinin Methods
+# Joining Methods
 Join_Events_Enabled = Settings["Event_Handler"]["Events"]["Join_method"]["Use"]
 Join_Methods_List = list(Settings["Event_Handler"]["Events"]["Join_method"]["Methods_List"])
 Join_Free = Settings["Event_Handler"]["Events"]["Join_method"]["Free"]
@@ -177,7 +177,7 @@ Join_Work_Else = Settings["Event_Handler"]["Events"]["Join_method"]["Working els
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def Field_Update_Value(Variable: StringVar|IntVar|BooleanVar|None, File_Name: str, JSON_path: list, Information: int|str|list|dict) -> None:
-    # Must be here as local function because 2 operation needs to be execuuted 
+    # Must be here as local function because 2 operation needs to be executed 
     if Variable is None:
         pass
     elif type(Variable) is None:
@@ -219,10 +219,10 @@ def Update_empty_information(Check_List: list):
     return Check_List
 
 
-def Retrive_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_Option_Var: CTkOptionMenu, Project_Variable: StringVar) -> None:
+def Retrieve_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_Option_Var: CTkOptionMenu, Project_Variable: StringVar) -> None:
     try:
         Project_Variable.set(value=Project_Option_Var)
-        # Get Selected Proejct and retrive Project Type of selected Project
+        # Get Selected Project and retrieve Project Type of selected Project
         for key, value in Project_dict.items():
             Project = value["Project"]
             if Project == Project_Option_Var:
@@ -249,7 +249,7 @@ def Calculate_duration(Entry_Field: CTkEntry, Lunch_Brake_Duration_Frame_Var: in
             Duration_dt = End_Time_dt - Start_Time_dt
             Duration = int(Duration_dt.total_seconds() / 60)
 
-            # Substract Lunch break for Working Calendar
+            # Subtract Lunch break for Working Calendar
             if (Working_Day == True) and (Calendar_Type == "Work_Hours"):
                 Duration = Duration - Lunch_Brake_Duration_Frame_Var
             else:
@@ -259,13 +259,13 @@ def Calculate_duration(Entry_Field: CTkEntry, Lunch_Brake_Duration_Frame_Var: in
         return Duration
     
     Cumulated_Duration = 0
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Monday_Start.get(), End_Time=Monday_End.get(), Week_Day="Monday", Calendar_Type=Calendar_Type, Working_Day=Monday_Workinday)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Tuesday_Start.get(), End_Time=Tuesday_End.get(), Week_Day="Tuesday", Calendar_Type=Calendar_Type, Working_Day=Tuesday_Workinday)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Wednesday_Start.get(), End_Time=Wednesday_End.get(), Week_Day="Wednesday", Calendar_Type=Calendar_Type, Working_Day=Wednesday_Workinday)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Thursday_Start.get(), End_Time=Thursday_End.get(), Week_Day="Thursday", Calendar_Type=Calendar_Type, Working_Day=Thursday_Workinday)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Friday_Start.get(), End_Time=Friday_End.get(), Week_Day="Friday", Calendar_Type=Calendar_Type, Working_Day=Friday_Workinday)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Saturday_Start.get(), End_Time=Saturday_End.get(), Week_Day="Saturday", Calendar_Type=Calendar_Type, Working_Day=Saturday_Workinday)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Sunday_Start.get(), End_Time=Sunday_End.get(), Week_Day="Sunday", Calendar_Type=Calendar_Type, Working_Day=Sunday_Workinday)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Monday_Start.get(), End_Time=Monday_End.get(), Week_Day="Monday", Calendar_Type=Calendar_Type, Working_Day=Monday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Tuesday_Start.get(), End_Time=Tuesday_End.get(), Week_Day="Tuesday", Calendar_Type=Calendar_Type, Working_Day=Tuesday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Wednesday_Start.get(), End_Time=Wednesday_End.get(), Week_Day="Wednesday", Calendar_Type=Calendar_Type, Working_Day=Wednesday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Thursday_Start.get(), End_Time=Thursday_End.get(), Week_Day="Thursday", Calendar_Type=Calendar_Type, Working_Day=Thursday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Friday_Start.get(), End_Time=Friday_End.get(), Week_Day="Friday", Calendar_Type=Calendar_Type, Working_Day=Friday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Saturday_Start.get(), End_Time=Saturday_End.get(), Week_Day="Saturday", Calendar_Type=Calendar_Type, Working_Day=Saturday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Sunday_Start.get(), End_Time=Sunday_End.get(), Week_Day="Sunday", Calendar_Type=Calendar_Type, Working_Day=Sunday_Working_day)
 
     Hours = Cumulated_Duration // 60
     Minutes = Cumulated_Duration - (Hours * 60) 
@@ -293,38 +293,38 @@ def Calculate_duration(Entry_Field: CTkEntry, Lunch_Brake_Duration_Frame_Var: in
     else:
         CTkMessagebox(title="Error", message="Calendar Type not allowed", icon="cancel", fade_in_duration=1)
 
-# -------------------------------------------------------------------------- Tab Apperance --------------------------------------------------------------------------#
-def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
+# -------------------------------------------------------------------------- Tab Appearance --------------------------------------------------------------------------#
+def Settings_Appearance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
-    def Apperance_Change_Theme(Theme_Frame_Var: CTkOptionMenu) ->  None:
+    def Appearance_Change_Theme(Theme_Frame_Var: CTkOptionMenu) ->  None:
         customtkinter.set_appearance_mode(mode_string=Theme_Frame_Var)
-        Field_Update_Value(Variable=Theme_Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Theme"], Information=Theme_Frame_Var)
+        Field_Update_Value(Variable=Theme_Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Theme"], Information=Theme_Frame_Var)
 
-    def Apperance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
+    def Appearance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
         # Base Windows style setup --> always keep normal before change
         pywinstyles.apply_style(window=window, style="normal")
         pywinstyles.apply_style(window=window, style=Win_Style_Selected)
-        Field_Update_Value(Variable=Win_Style_Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Style"], Information=Win_Style_Selected)
+        Field_Update_Value(Variable=Win_Style_Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Style"], Information=Win_Style_Selected)
 
     # ------------------------- Main Functions -------------------------#
     Theme_Variable = StringVar(master=Frame, value=Theme_Actual)
     Win_Style_Variable = StringVar(master=Frame, value=Win_Style_Actual)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="General Apperance", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="GEnerall apperance settings.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="General Appearance", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="General Appearance settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Theme
     Theme_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Theme", Field_Type="Input_OptionMenu") 
     Theme_Frame_Var = Theme_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Theme_Frame_Var.configure(variable=Theme_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Theme_Frame_Var, values=Theme_List, command = lambda Theme_Frame_Var: Apperance_Change_Theme(Theme_Frame_Var=Theme_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Theme_Frame_Var, values=Theme_List, command = lambda Theme_Frame_Var: Appearance_Change_Theme(Theme_Frame_Var=Theme_Frame_Var))
 
     # Field - Windows Style
     Win_Style_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Window Style", Field_Type="Input_OptionMenu") 
     Win_Style_Frame_Var = Win_Style_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Win_Style_Frame_Var.configure(variable=Win_Style_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Win_Style_Frame_Var, values=Win_Style_List, command= lambda Win_Style_Selected: Apperance_Change_Win_Style(Win_Style_Selected=Win_Style_Selected, window=window))
+    Elements.Get_Option_Menu_Advance(attach=Win_Style_Frame_Var, values=Win_Style_List, command= lambda Win_Style_Selected: Appearance_Change_Win_Style(Win_Style_Selected=Win_Style_Selected, window=window))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -333,79 +333,79 @@ def Settings_Aperance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFra
 
 
 
-def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_Appearance_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
-    def Settings_Disabeling_Color_Pickers(Selected_Value: str, Entry_Field: CTkEntry, Picker_Button: CTkButton, Variable: StringVar, Helper: str) -> None:
+    def Settings_Disabling_Color_Pickers(Selected_Value: str, Entry_Field: CTkEntry, Picker_Button: CTkButton, Variable: StringVar, Helper: str) -> None:
         if Selected_Value == "Windows":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
             # Accent only
-            Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+            Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "App Default":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
             # Both
             if Helper == "Accent":
-                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
             elif Helper == "Hover":
-                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "Accent Lighter":
             Entry_Field.configure(state="disabled")
             Picker_Button.configure(state="disabled")
             # Hover only
-            Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
+            Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         elif Selected_Value == "Manual":
             Entry_Field.configure(state="normal")
             Picker_Button.configure(state="normal")
             # Both
             if Helper == "Accent":
-                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Information=Selected_Value)
             elif Helper == "Hover":
-                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
+                Field_Update_Value(Variable=Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Information=Selected_Value)
         else:
             CTkMessagebox(title="Error", message="Accent Color Method not allowed", icon="cancel", fade_in_duration=1)
 
-    def Apperance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry, Helper: str) -> None:
+    def Appearance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry, Helper: str) -> None:
         def Quit_Save(Helper: str):
-            Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Colorpicker_Frame.get())
-            Collor_Picker_window.destroy()
+            Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Color_Picker_Frame.get())
+            Color_Picker_window.destroy()
 
-        def dragwin():
-            x = Collor_Picker_window.winfo_pointerx() - Collor_Picker_window._offsetx
-            y = Collor_Picker_window.winfo_pointery() - Collor_Picker_window._offsety
-            Collor_Picker_window.geometry(f"+{x}+{y}")
+        def drag_win():
+            x = Color_Picker_window.winfo_pointerx() - Color_Picker_window._offsetx
+            y = Color_Picker_window.winfo_pointery() - Color_Picker_window._offsety
+            Color_Picker_window.geometry(f"+{x}+{y}")
 
-        def clickwin():
-            Collor_Picker_window._offsetx = Collor_Picker_window.winfo_pointerx() - Collor_Picker_window.winfo_rootx()
-            Collor_Picker_window._offsety = Collor_Picker_window.winfo_pointery() - Collor_Picker_window.winfo_rooty()
+        def click_win():
+            Color_Picker_window._offsetx = Color_Picker_window.winfo_pointerx() - Color_Picker_window.winfo_rootx()
+            Color_Picker_window._offsety = Color_Picker_window.winfo_pointery() - Color_Picker_window.winfo_rooty()
 
             
-        Collor_Picker_window = CTkToplevel()
-        #Collor_Picker_window.configure(fg_color="#000001")
-        Collor_Picker_window.title("Collor Picker")
-        Collor_Picker_window.geometry("295x240")
-        Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Quit_Save(Helper=Helper))
-        #Collor_Picker_window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        #Collor_Picker_window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
-        #Collor_Picker_window.overrideredirect(boolean=True)
-        Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Collor_Picker_window.resizable(width=False, height=False)
+        Color_Picker_window = CTkToplevel()
+        #Color_Picker_window.configure(fg_color="#000001")
+        Color_Picker_window.title("Color Picker")
+        Color_Picker_window.geometry("295x240")
+        Color_Picker_window.bind(sequence="<Escape>", func=lambda event: Quit_Save(Helper=Helper))
+        #Color_Picker_window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        #Color_Picker_window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
+        #Color_Picker_window.overrideredirect(boolean=True)
+        Color_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        Color_Picker_window.resizable(width=False, height=False)
 
         # Rounded corners 
-        #Collor_Picker_window.config(background="#000001")
-        #Collor_Picker_window.attributes("-transparentcolor", "#000001")
+        #Color_Picker_window.config(background="#000001")
+        #Color_Picker_window.attributes("-transparentcolor", "#000001")
 
-        Colorpicker_Frame = Elements.Get_Color_Picker(Frame=Collor_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
+        Color_Picker_Frame = Elements.Get_Color_Picker(Frame=Color_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
 
         #? Build look of Widget --> must be before inset
-        Colorpicker_Frame.pack(padx=0, pady=0) 
+        Color_Picker_Frame.pack(padx=0, pady=0) 
 
     # ------------------------- Main Functions -------------------------#
     Accent_Color_Mode_Variable = StringVar(master=Frame, value=Accent_Color_Mode)
     Hover_Color_Mode_Variable = StringVar(master=Frame, value=Hover_Color_Mode)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palletes", Additional_Text="Applied after restart.", Widget_size="Single_size", Widget_Label_Tooltip="Colors")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palettes", Additional_Text="Applied after restart.", Widget_size="Single_size", Widget_Label_Tooltip="Colors")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Accent Color Mode
@@ -417,17 +417,17 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     Accent_Color_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Accent Color Manual", Field_Type="Input_Normal") 
     Accent_Color_Manual_Frame_Var = Accent_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
     Accent_Color_Manual_Frame_Var.configure(placeholder_text=Accent_Color_Manual, placeholder_text_color="#949A9F")
-    Accent_Color_Manual_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Accent", "Accent_Color_Manual"], Information=Accent_Color_Manual_Frame_Var.get()))
+    Accent_Color_Manual_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Manual"], Information=Accent_Color_Manual_Frame_Var.get()))
 
-    # Button - Collor Picker
+    # Button - Color Picker
     Accent_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Accent_Color_Picker_Button_Var = Accent_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var, Helper="Accent"))
-    Elements.Get_ToolTip(widget=Accent_Color_Picker_Button_Var, message="Select manualy Accent collor.", ToolTip_Size="Normal")
+    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Appearance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var, Helper="Accent"))
+    Elements.Get_ToolTip(widget=Accent_Color_Picker_Button_Var, message="Select manually Accent color.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
-    Elements.Get_Option_Menu_Advance(attach=Accent_Color_Mode_Frame_Var, values=Accent_Color_Mode_List, command = lambda Accent_Color_Mode_Frame_Var: Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode_Frame_Var, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent"))
-    Settings_Disabeling_Color_Pickers(Selected_Value=Accent_Color_Mode, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent")  # Must be here because of initial value
+    Elements.Get_Option_Menu_Advance(attach=Accent_Color_Mode_Frame_Var, values=Accent_Color_Mode_List, command = lambda Accent_Color_Mode_Frame_Var: Settings_Disabling_Color_Pickers(Selected_Value=Accent_Color_Mode_Frame_Var, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent"))
+    Settings_Disabling_Color_Pickers(Selected_Value=Accent_Color_Mode, Entry_Field=Accent_Color_Manual_Frame_Var, Picker_Button=Accent_Color_Picker_Button_Var, Variable=Accent_Color_Mode_Variable, Helper="Accent")  # Must be here because of initial value
 
     # Field - Hover Color Mode
     Hover_Color_Mode_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Mode", Field_Type="Input_OptionMenu") 
@@ -438,17 +438,17 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
     Hover_Color_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Hover Color Manual", Field_Type="Input_Normal") 
     Hover_Color_Manual_Frame_Var = Hover_Color_Manual_Frame.children["!ctkframe3"].children["!ctkentry"]
     Hover_Color_Manual_Frame_Var.configure(placeholder_text=Hover_Color_Manual, placeholder_text_color="#949A9F")
-    Hover_Color_Manual_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Configuration", JSON_path=["Global_Apperance", "Window", "Colors", "Hover", "Hover_Color_Manual"], Information=Hover_Color_Manual_Frame_Var.get()))
+    Hover_Color_Manual_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Manual"], Information=Hover_Color_Manual_Frame_Var.get()))
 
-    # Button - Collor Picker
+    # Button - Color Picker
     Hover_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Hover_Color_Picker_Button_Var = Hover_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Apperance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var, Helper="Hover"))
-    Elements.Get_ToolTip(widget=Hover_Color_Picker_Button_Var, message="Select manualy Hover collor.", ToolTip_Size="Normal")
+    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Appearance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var, Helper="Hover"))
+    Elements.Get_ToolTip(widget=Hover_Color_Picker_Button_Var, message="Select manually Hover Color.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
-    Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda Hover_Color_Mode_Frame_Var: Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode_Frame_Var, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover"))
-    Settings_Disabeling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")   # Must be here because of initial value
+    Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda Hover_Color_Mode_Frame_Var: Settings_Disabling_Color_Pickers(Selected_Value=Hover_Color_Mode_Frame_Var, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover"))
+    Settings_Disabling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")   # Must be here because of initial value
 
 
     #? Build look of Widget
@@ -495,7 +495,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # Field - Auth Email
     SP_Auth_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
     SP_Auth_Email_Frame_Var = SP_Auth_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Auth_Email_Frame_Var.configure(placeholder_text="Sharepoint autorisation email.")
+    SP_Auth_Email_Frame_Var.configure(placeholder_text="Sharepoint authorization email.")
     SP_Auth_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Auth", "Email"], Information=SP_Auth_Email_Frame_Var.get()))
     Entry_field_Insert(Field=SP_Auth_Email_Frame_Var, Value=SP_Auth_Email)
 
@@ -578,7 +578,7 @@ def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
 def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Formats", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Dates formats used in program - non-changable.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Formats", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Dates formats used in program - non-changeable.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Program Date Format
@@ -594,21 +594,21 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     Program_Time_Frame_Var.configure(state="disabled")
 
     # Field - Exchange DateTime Format
-    Excahnge_DateTime_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
-    Excahnge_DateTime_Frame_Var = Excahnge_DateTime_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Excahnge_DateTime_Frame_Var.configure(placeholder_text=Format_Exchange_DateTime, placeholder_text_color="#949A9F")
-    Excahnge_DateTime_Frame_Var.configure(state="disabled")
+    Exchange_DateTime_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Exchange DateTime", Field_Type="Input_Normal")
+    Exchange_DateTime_Frame_Var = Exchange_DateTime_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Exchange_DateTime_Frame_Var.configure(placeholder_text=Format_Exchange_DateTime, placeholder_text_color="#949A9F")
+    Exchange_DateTime_Frame_Var.configure(state="disabled")
 
     # Field - Sharepoint Time Format
     Sharepoint_Time_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Time", Field_Type="Input_Normal")
     Sharepoint_Time_Frame_Var = Sharepoint_Time_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Sharepoint_Time_Frame_Var.configure(placeholder_text=Fromat_Sharepoint_Time, placeholder_text_color="#949A9F")
+    Sharepoint_Time_Frame_Var.configure(placeholder_text=Format_Sharepoint_Time, placeholder_text_color="#949A9F")
     Sharepoint_Time_Frame_Var.configure(state="disabled")
 
     # Field - Sharepoint Time Format
     Sharepoint_DateTime_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint DateTime", Field_Type="Input_Normal")
     Sharepoint_DateTime_Frame_Var = Sharepoint_DateTime_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Sharepoint_DateTime_Frame_Var.configure(placeholder_text=Fromat_Sharepoint_DateTime, placeholder_text_color="#949A9F")
+    Sharepoint_DateTime_Frame_Var.configure(placeholder_text=Format_Sharepoint_DateTime, placeholder_text_color="#949A9F")
     Sharepoint_DateTime_Frame_Var.configure(state="disabled")
 
     #? Build look of Widget
@@ -618,32 +618,32 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 
-def Settings_Parralel_events(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_Parallel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
-    Parralel_Use_Variable = BooleanVar(master=Frame, value=Parralel_Enabled)
+    Parallel_Use_Variable = BooleanVar(master=Frame, value=Parallel_Enabled)
     Divide_Method_Variable = StringVar(master=Frame, value=Divide_Method)
     Start_Method_Variable = StringVar(master=Frame, value=Start_Method)
     
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Parralel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Envents when program found that they are parrallel.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Parallel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Events when program found that they are parallel.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
-    Use_Parralel_Events = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Parralel_Events_Var = Use_Parralel_Events.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Parralel_Events_Var.configure(variable=Parralel_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Parralel_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Use"], Information=Parralel_Use_Variable))
+    Use_Parallel_Events = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Parallel_Events_Var = Use_Parallel_Events.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Parallel_Events_Var.configure(variable=Parallel_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Parallel_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Use"], Information=Parallel_Use_Variable))
 
     # Field - Divide Method
     Divide_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Divide Method", Field_Type="Input_OptionMenu") 
     Divide_Method_Frame_Var = Divide_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Divide_Method_Frame_Var.configure(variable=Divide_Method_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Divide_Method_Frame_Var, values=Divide_Method_List, command=lambda Divide_Method_Frame_Var: Field_Update_Value(Variable=Divide_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Divide_Method"], Information=Divide_Method_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Divide_Method_Frame_Var, values=Divide_Method_List, command=lambda Divide_Method_Frame_Var: Field_Update_Value(Variable=Divide_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Divide_Method"], Information=Divide_Method_Frame_Var))
 
     # Field - Start Method
     Start_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Start Method", Field_Type="Input_OptionMenu") 
     Start_Method_Frame_Var = Start_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Start_Method_Frame_Var.configure(variable=Start_Method_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Field_Update_Value(Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parralel_Events", "Start_Method"], Information=Start_Method_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Field_Update_Value(Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Start_Method"], Information=Start_Method_Frame_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -711,11 +711,11 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
 def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have. Used for Utilization forecast. Lunch brake automaticall subtracted.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have. Used for Utilization forecast. Lunch brake automatically subtracted.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
-    Monday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday", Validation="Time") 
+    Monday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday", Validation="Time") 
     Monday_Frame_Var1 = Monday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Monday_Frame_Var1.configure(placeholder_text="Day start time.")
     Monday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Work_Hours", "Start_Time"], Information=Monday_Frame_Var1.get()))
@@ -727,7 +727,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     
 
     # Field - Tuesday
-    Tuesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday", Validation="Time") 
+    Tuesday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday", Validation="Time") 
     Tuesday_Frame_Var1 = Tuesday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Tuesday_Frame_Var1.configure(placeholder_text="Day start time.")
     Tuesday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Work_Hours", "Start_Time"], Information=Tuesday_Frame_Var1.get()))
@@ -739,7 +739,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
     # Field - Wednesday
-    Wednesday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday", Validation="Time") 
+    Wednesday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday", Validation="Time") 
     Wednesday_Frame_Var1 = Wednesday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Wednesday_Frame_Var1.configure(placeholder_text="Day start time.")
     Wednesday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Work_Hours", "Start_Time"], Information=Wednesday_Frame_Var1.get()))
@@ -750,7 +750,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Wednesday_Frame_Var2, Value=Wednesday_Work_End)
 
     # Field - Thursday
-    Thursday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday", Validation="Time") 
+    Thursday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday", Validation="Time") 
     Thursday_Frame_Var1 = Thursday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Thursday_Frame_Var1.configure(placeholder_text="Day start time.")
     Thursday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Work_Hours", "Start_Time"], Information=Thursday_Frame_Var1.get()))
@@ -761,7 +761,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Thursday_Frame_Var2, Value=Thursday_Work_End)
 
     # Field - Friday
-    Friday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday", Validation="Time") 
+    Friday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday", Validation="Time") 
     Friday_Frame_Var1 = Friday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Friday_Frame_Var1.configure(placeholder_text="Day start time.")
     Friday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Work_Hours", "Start_Time"], Information=Friday_Frame_Var1.get()))
@@ -772,7 +772,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Friday_Frame_Var2, Value=Friday_Work_End)
 
     # Field - Saturday
-    Saturday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday", Validation="Time") 
+    Saturday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday", Validation="Time") 
     Saturday_Frame_Var1 = Saturday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Saturday_Frame_Var1.configure(placeholder_text="Day start time.")
     Saturday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Work_Hours", "Start_Time"], Information=Saturday_Frame_Var1.get()))
@@ -783,7 +783,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Saturday_Frame_Var2, Value=Saturday_Work_End)
 
     # Field - Sunday
-    Sunday_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday", Validation="Time") 
+    Sunday_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday", Validation="Time") 
     Sunday_Frame_Var1 = Sunday_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sunday_Frame_Var1.configure(placeholder_text="Day start time.")
     Sunday_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "Start_Time"], Information=Sunday_Frame_Var1.get()))
@@ -793,22 +793,22 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Sunday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "End_Time"], Information=Sunday_Frame_Var2.get()))
     Entry_field_Insert(Field=Sunday_Frame_Var2, Value=Sunday_Work_End)
 
-    # Field - Lunch Breate duration
+    # Field - Lunch Break duration
     Lunch_Brake_Duration_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Lunch brake duration", Field_Type="Input_Normal", Validation="Integer")
     Lunch_Brake_Duration_Frame_Var = Lunch_Brake_Duration_Frame.children["!ctkframe3"].children["!ctkentry"]
     Lunch_Brake_Duration_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Lunch_Brake_Dur"], Information=int(Lunch_Brake_Duration_Frame_Var.get())))
     Entry_field_Insert(Field=Lunch_Brake_Duration_Frame_Var, Value=Lunch_Brake_Duration)
 
     # Field - Total Time
-    Work_Callendar_Total = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Total Time", Field_Type="Input_Normal")
-    Work_Callendar_Total_Var = Work_Callendar_Total.children["!ctkframe3"].children["!ctkentry"]
-    Work_Callendar_Total_Var.configure(placeholder_text=Total_Work_Duration, placeholder_text_color="#949A9F")
-    Work_Callendar_Total_Var.configure(state="disabled")
+    Work_Calendar_Total = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Total Time", Field_Type="Input_Normal")
+    Work_Calendar_Total_Var = Work_Calendar_Total.children["!ctkframe3"].children["!ctkentry"]
+    Work_Calendar_Total_Var.configure(placeholder_text=Total_Work_Duration, placeholder_text_color="#949A9F")
+    Work_Calendar_Total_Var.configure(state="disabled")
 
     # Buttons
     Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
-    Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Work_Callendar_Total_Var, Lunch_Brake_Duration_Frame_Var=int(Lunch_Brake_Duration_Frame_Var.get()), Calendar_Type="Work_Hours", Monday_Start=Monday_Frame_Var1, Monday_End=Monday_Frame_Var2, Tuesday_Start=Tuesday_Frame_Var1, Tuesday_End=Tuesday_Frame_Var2, Wednesday_Start=Wednesday_Frame_Var1, Wednesday_End=Wednesday_Frame_Var2, Thursday_Start=Thursday_Frame_Var1, Thursday_End=Thursday_Frame_Var2, Friday_Start=Friday_Frame_Var1, Friday_End=Friday_Frame_Var2, Saturday_Start=Saturday_Frame_Var1, Saturday_End=Saturday_Frame_Var2, Sunday_Start=Sunday_Frame_Var1, Sunday_End=Sunday_Frame_Var2))
+    Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Work_Calendar_Total_Var, Lunch_Brake_Duration_Frame_Var=int(Lunch_Brake_Duration_Frame_Var.get()), Calendar_Type="Work_Hours", Monday_Start=Monday_Frame_Var1, Monday_End=Monday_Frame_Var2, Tuesday_Start=Tuesday_Frame_Var1, Tuesday_End=Tuesday_Frame_Var2, Wednesday_Start=Wednesday_Frame_Var1, Wednesday_End=Wednesday_Frame_Var2, Thursday_Start=Thursday_Frame_Var1, Thursday_End=Thursday_Frame_Var2, Friday_Start=Friday_Frame_Var1, Friday_End=Friday_Frame_Var2, Saturday_Start=Saturday_Frame_Var1, Saturday_End=Saturday_Frame_Var2, Sunday_Start=Sunday_Frame_Var1, Sunday_End=Sunday_Frame_Var2))
     Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Calculate total week duration.", ToolTip_Size="Normal")
 
     #? Build look of Widget
@@ -825,7 +825,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
-    Monday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday", Validation="Time") 
+    Monday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Monday", Validation="Time") 
     Monday_Vac_Frame_Var1 = Monday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Monday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Monday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Vacation", "Start_Time"], Information=Monday_Vac_Frame_Var1.get()))
@@ -836,7 +836,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Monday_Vac_Frame_Var2, Value=Monday_Vacation_End)
 
     # Field - Tuesday
-    Tuesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday", Validation="Time") 
+    Tuesday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Tuesday", Validation="Time") 
     Tuesday_Vac_Frame_Var1 = Tuesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Tuesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Tuesday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Vacation", "Start_Time"], Information=Tuesday_Vac_Frame_Var1.get()))
@@ -847,7 +847,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Tuesday_Vac_Frame_Var2, Value=Tuesday_Vacation_End)
 
     # Field - Wednesday
-    Wednesday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday", Validation="Time") 
+    Wednesday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Wednesday", Validation="Time") 
     Wednesday_Vac_Frame_Var1 = Wednesday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Wednesday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Wednesday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Vacation", "Start_Time"], Information=Wednesday_Vac_Frame_Var1.get()))
@@ -858,7 +858,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Wednesday_Vac_Frame_Var2, Value=Wednesday_Vacation_End)
 
     # Field - Thursday
-    Thursday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday", Validation="Time") 
+    Thursday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Thursday", Validation="Time") 
     Thursday_Vac_Frame_Var1 = Thursday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Thursday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Thursday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Vacation", "Start_Time"], Information=Thursday_Vac_Frame_Var1.get()))
@@ -869,7 +869,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Thursday_Vac_Frame_Var2, Value=Thursday_Vacation_End)
 
     # Field - Friday
-    Friday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday", Validation="Time") 
+    Friday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Friday", Validation="Time") 
     Friday_Vac_Frame_Var1 = Friday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Friday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Friday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Vacation", "Start_Time"], Information=Friday_Vac_Frame_Var1.get()))
@@ -880,7 +880,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Friday_Vac_Frame_Var2, Value=Friday_Vacation_End)
 
     # Field - Saturday
-    Saturday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday", Validation="Time") 
+    Saturday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Saturday", Validation="Time") 
     Saturday_Vac_Frame_Var1 = Saturday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Saturday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Saturday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Vacation", "Start_Time"], Information=Saturday_Vac_Frame_Var1.get()))
@@ -891,7 +891,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Saturday_Vac_Frame_Var2, Value=Saturday_Vacation_End)
 
     # Field - Sunday
-    Sunday_Vac_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday", Validation="Time") 
+    Sunday_Vac_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label="Sunday", Validation="Time") 
     Sunday_Vac_Frame_Var1 = Sunday_Vac_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sunday_Vac_Frame_Var1.configure(placeholder_text="Day start time.")
     Sunday_Vac_Frame_Var1.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Vacation", "Start_Time"], Information=Sunday_Vac_Frame_Var1.get()))
@@ -902,15 +902,15 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Sunday_Vac_Frame_Var2, Value=Sunday_Vacation_End)
 
     # Field - Total Time
-    Vacation_Callendar_Total = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Total Time", Field_Type="Input_Normal")
-    Vacation_Callendar_Total_Var = Vacation_Callendar_Total.children["!ctkframe3"].children["!ctkentry"]
-    Vacation_Callendar_Total_Var.configure(placeholder_text=Total_Vacation_Duration, placeholder_text_color="#949A9F")
-    Vacation_Callendar_Total_Var.configure(state="disabled")
+    Vacation_Calendar_Total = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Total Time", Field_Type="Input_Normal")
+    Vacation_Calendar_Total_Var = Vacation_Calendar_Total.children["!ctkframe3"].children["!ctkentry"]
+    Vacation_Calendar_Total_Var.configure(placeholder_text=Total_Vacation_Duration, placeholder_text_color="#949A9F")
+    Vacation_Calendar_Total_Var.configure(state="disabled")
 
     # Buttons
     Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
-    Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Vacation_Callendar_Total_Var, Lunch_Brake_Duration_Frame_Var=0, Calendar_Type="Vacation", Monday_Start=Monday_Vac_Frame_Var1, Monday_End=Monday_Vac_Frame_Var2, Tuesday_Start=Tuesday_Vac_Frame_Var1, Tuesday_End=Tuesday_Vac_Frame_Var2, Wednesday_Start=Wednesday_Vac_Frame_Var1, Wednesday_End=Wednesday_Vac_Frame_Var2, Thursday_Start=Thursday_Vac_Frame_Var1, Thursday_End=Thursday_Vac_Frame_Var2, Friday_Start=Friday_Vac_Frame_Var1, Friday_End=Friday_Vac_Frame_Var2, Saturday_Start=Saturday_Vac_Frame_Var1, Saturday_End=Saturday_Vac_Frame_Var2, Sunday_Start=Sunday_Vac_Frame_Var1, Sunday_End=Sunday_Vac_Frame_Var2))
+    Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Vacation_Calendar_Total_Var, Lunch_Brake_Duration_Frame_Var=0, Calendar_Type="Vacation", Monday_Start=Monday_Vac_Frame_Var1, Monday_End=Monday_Vac_Frame_Var2, Tuesday_Start=Tuesday_Vac_Frame_Var1, Tuesday_End=Tuesday_Vac_Frame_Var2, Wednesday_Start=Wednesday_Vac_Frame_Var1, Wednesday_End=Wednesday_Vac_Frame_Var2, Thursday_Start=Thursday_Vac_Frame_Var1, Thursday_End=Thursday_Vac_Frame_Var2, Friday_Start=Friday_Vac_Frame_Var1, Friday_End=Friday_Vac_Frame_Var2, Saturday_Start=Saturday_Vac_Frame_Var1, Saturday_End=Saturday_Vac_Frame_Var2, Sunday_Start=Sunday_Vac_Frame_Var1, Sunday_End=Sunday_Vac_Frame_Var2))
     Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Calculate total week Vacation duration.", ToolTip_Size="Normal")
 
     #? Build look of Widget
@@ -956,7 +956,7 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     Lunch_Part_Variable = StringVar(master=Frame, value=Lunch_Part_Day)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it. \n Lunch break will always break parralel Events.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it. \n Lunch break will always break Parallel Events.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -964,7 +964,7 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_Lunch_Var = Use_Lunch.children["!ctkframe3"].children["!ctkcheckbox"]
     Use_Lunch_Var.configure(variable=Lunch_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Lunch_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "Use"], Information=Lunch_Use_Variable))
 
-    # Field - Seach Text
+    # Field - Search Text
     Search_Text_Lunch = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Lunch_Var = Search_Text_Lunch.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_Lunch_Var.configure(placeholder_text="Event Subject which defines lunch")
@@ -1005,7 +1005,7 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_Vacation_Var = Use_Vacation.children["!ctkframe3"].children["!ctkcheckbox"]
     Use_Vacation_Var.configure(variable=Vacation_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Vacation_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Use"], Information=Vacation_Use_Variable))
 
-    # Field - Seach Text
+    # Field - Search Text
     Search_Text_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_Vacation_Var = Search_Text_Vacation.children["!ctkframe3"].children["!ctkentry"]
     Search_Text_Vacation_Var.configure(placeholder_text="Event Subject which defines vacation")
@@ -1047,10 +1047,10 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_HomeOffice_Var.configure(variable=HomeOffice_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=HomeOffice_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Use"], Information=HomeOffice_Use_Variable))
 
 
-    # Field - Seach Text
+    # Field - Search Text
     Search_Text_HomeOffice = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
     Search_Text_HomeOffice_Var = Search_Text_HomeOffice.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_HomeOffice_Var.configure(placeholder_text="Event Subject which defines homeoffice")
+    Search_Text_HomeOffice_Var.configure(placeholder_text="Event Subject which defines home office")
     Search_Text_HomeOffice_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Search_Text"], Information=Search_Text_HomeOffice_Var.get()))
     Entry_field_Insert(Field=Search_Text_HomeOffice_Var, Value=HomeOffice_Search_Text)
 
@@ -1118,7 +1118,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
                 else:
                     pass
             if Deleted_flag == False:
-                CTkMessagebox(title="Error", message=f"Subject not found, pelase check spelling.", icon="cancel", fade_in_duration=1)
+                CTkMessagebox(title="Error", message=f"Subject not found, please check spelling.", icon="cancel", fade_in_duration=1)
             else:
                 pass
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
@@ -1165,7 +1165,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
     Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Skip_Add_Var.configure(text="Add", command = lambda:Add_Skip_Event(Header_List=Header_List, Subject_Text_Text_Var=Subject_Text_Text_Var, Frame_Skip_Table_Var=Frame_Skip_Table_Var))
-    Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Add selected subejct to skip list", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Add selected subject to skip list", ToolTip_Size="Normal")
 
     Button_Skip_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
     Button_Skip_Del_One_Var.configure(text="Del", command = lambda:Del_Skip_Event_one(Subject_Text_Text_Var=Subject_Text_Text_Var, Frame_Skip_Table_Var=Frame_Skip_Table_Var))
@@ -1184,7 +1184,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 # -------------------------------------------------------------------------- Tab Events - Empty --------------------------------------------------------------------------#
-def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Add_Empty_Event(Header_List: list, Frame_Empty_General_Table_Var: CTkTable, Subject_Text_Text_Var: CTkEntry, Project_Option_Var1: CTkOptionMenu, Activity_Option_Var1: CTkOptionMenu, Coverage_Text_Var: CTkEntry) -> None:
         Add_flag = True
@@ -1273,16 +1273,16 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
             Description_Label_Var.configure(text=Selected_Description)
             Coverage_Label_Var.configure(text=Selected_Coverage)
 
-        def dragwin():
+        def drag_win():
             x = Delete_One_Window.winfo_pointerx() - Delete_One_Window._offsetx
             y = Delete_One_Window.winfo_pointery() - Delete_One_Window._offsety
             Delete_One_Window.geometry(f"+{x}+{y}")
 
-        def clickwin():
+        def click_win():
             Delete_One_Window._offsetx = Delete_One_Window.winfo_pointerx() - Delete_One_Window.winfo_rootx()
             Delete_One_Window._offsety = Delete_One_Window.winfo_pointery() - Delete_One_Window.winfo_rooty()
 
-        # callculat number of lines in table
+        # calculate number of lines in table
         Empty_General_Events = Frame_Empty_General_Table_Var.values
         Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
         Lines_No = len(Empty_General_Events)
@@ -1292,11 +1292,11 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         # TopUp Window
         Delete_One_Window = CTkToplevel()
         Delete_One_Window.configure(fg_color="#000001")
-        Delete_One_Window.title("Collor Picker")
+        Delete_One_Window.title("Color Picker")
         Delete_One_Window.geometry(f"510x260")
-        Delete_One_Window.bind(sequence="<Escape>", func=lambda evet: Delete_One_Window.destroy())
-        Delete_One_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        Delete_One_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
+        Delete_One_Window.bind(sequence="<Escape>", func=lambda event: Delete_One_Window.destroy())
+        Delete_One_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Delete_One_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
         Delete_One_Window.overrideredirect(boolean=True)
         Delete_One_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_One_Window.resizable(width=False, height=False)
@@ -1376,7 +1376,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
                     pass
                 else:
                     Add_flag = False
-                    CTkMessagebox(title="Error", message=f"Sum of all lines not equal 100, pelase check.", icon="cancel", fade_in_duration=1)
+                    CTkMessagebox(title="Error", message=f"Sum of all lines not equal 100, please check.", icon="cancel", fade_in_duration=1)
             else:
                 pass
 
@@ -1403,17 +1403,17 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
         def Recalculation_Reject() -> None:
             Recalculate_window.destroy()
 
-        def dragwin():
+        def drag_win():
             x = Recalculate_window.winfo_pointerx() - Recalculate_window._offsetx
             y = Recalculate_window.winfo_pointery() - Recalculate_window._offsety
             Recalculate_window.geometry(f"+{x}+{y}")
 
-        def clickwin():
+        def click_win():
             Recalculate_window._offsetx = Recalculate_window.winfo_pointerx() - Recalculate_window.winfo_rootx()
             Recalculate_window._offsety = Recalculate_window.winfo_pointery() - Recalculate_window.winfo_rooty()
 
 
-        # callculat number of lines in table
+        # calculate number of lines in table
         Empty_General_Events = Frame_Empty_General_Table_Var.values
         Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
         Lines_No = len(Empty_General_Events)
@@ -1422,11 +1422,11 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
 
         Recalculate_window = CTkToplevel()
         Recalculate_window.configure(fg_color="#000001")
-        Recalculate_window.title("Collor Picker")
+        Recalculate_window.title("Color Picker")
         Recalculate_window.geometry(f"510x{Recalculate_window_height}")
-        Recalculate_window.bind(sequence="<Escape>", func=lambda evet: Recalculate_window.destroy())
-        Recalculate_window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        Recalculate_window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
+        Recalculate_window.bind(sequence="<Escape>", func=lambda event: Recalculate_window.destroy())
+        Recalculate_window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Recalculate_window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
         Recalculate_window.overrideredirect(boolean=True)
         Recalculate_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Recalculate_window.resizable(width=False, height=False)
@@ -1441,7 +1441,7 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
 
         for line in range(0, Lines_No):
             # Field - Monday
-            Fields_Frame = Elements_Groups.Get_Double_Field_Imput(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label=f"Line {line}", Validation="Integer") 
+            Fields_Frame = Elements_Groups.Get_Double_Field_Input(Frame=Frame_Body, Field_Frame_Type="Double_Column" , Label=f"Line {line}", Validation="Integer") 
             Var1 = Fields_Frame.children["!ctkframe3"].children["!ctkentry"]
             Var1.configure(placeholder_text=Empty_General_Events[line][3])
             Var1.configure(state="disabled")
@@ -1462,11 +1462,11 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Evets", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For emty space (between Events in calendar) program use fill them by this setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Events", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For empty space (between Events in calendar) program use fill them by this setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
-    Frame_Imput_Area.configure(width=300)
+    Frame_Input_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
+    Frame_Input_Area.configure(width=300)
 
     Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
 
@@ -1482,34 +1482,34 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Empty_General_Table_Var.configure(wraplength=230)
 
     # Field - Subject
-    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
     Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
     Subject_Text_Text_Var.configure(placeholder_text="Add new text")
 
     # Field - Project
-    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
     Project_Option_Var1 = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var1.configure(variable=Project_Variable)
 
     # Field - Activity --> placed before project because of variable to be used
-    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
+    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
     Activity_Option_Var1 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var1.configure(variable=Activity_Variable)
 
     # Project/Activity OptionMenu update
-    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var1, values=Project_List, command = lambda Project_Option_Var1: Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var1, Activity_Option_Var=Activity_Option_Var1, Project_Variable=Project_Variable))
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var1, values=Project_List, command = lambda Project_Option_Var1: Retrieve_Activity_based_on_Type(Project_Option_Var=Project_Option_Var1, Activity_Option_Var=Activity_Option_Var1, Project_Variable=Project_Variable))
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var1, values=[], command=None)
 
     # Field - Coverage
-    Coverage_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Coverage", Field_Type="Input_Normal", Validation="Integer") 
+    Coverage_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Coverage", Field_Type="Input_Normal", Validation="Integer") 
     Coverage_Text_Var = Coverage_Text.children["!ctkframe3"].children["!ctkentry"]
     Coverage_Text_Var.configure(placeholder_text="Add %")
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=4, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=4, Button_Size="Small") 
     Button_Empty_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Empty_Add_Var.configure(text="Add", command = lambda:Add_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var1=Project_Option_Var1, Activity_Option_Var1=Activity_Option_Var1, Coverage_Text_Var=Coverage_Text_Var))
-    Elements.Get_ToolTip(widget=Button_Empty_Add_Var, message="Add selected subejct to skip list", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Button_Empty_Add_Var, message="Add selected subject to skip list", ToolTip_Size="Normal")
 
     Button_Empty_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
     Button_Empty_Del_One_Var.configure(text="Del", command = lambda:Del_Empty_Event_One(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
@@ -1519,20 +1519,20 @@ def Settings_Events_Empty_Generaly(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Empty_Del_All_Var.configure(text="Del all", command = lambda:Del_Empty_Event_All(Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
     Elements.Get_ToolTip(widget=Button_Empty_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    Button_Empty_Recal_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
-    Button_Empty_Recal_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
-    Elements.Get_ToolTip(widget=Button_Empty_Recal_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
+    Button_Empty_Recalculate_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Empty_Recalculate_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
+    Elements.Get_ToolTip(widget=Button_Empty_Recalculate_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="none", expand=True, padx=0, pady=0)
 
     return Frame_Main
 
 
 
-def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_Events_Empty_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Get_Selected_Day_Week(Monday_Check_Frame_Var: CTkCheckBox, Tuesday_Check_Frame_Var: CTkCheckBox, Wednesday_Check_Frame_Var: CTkCheckBox, Thursday_Check_Frame_Var: CTkCheckBox, Friday_Check_Frame_Var: CTkCheckBox, Saturday_Check_Frame_Var: CTkCheckBox, Sunday_Check_Frame_Var: CTkCheckBox) -> list:
         Add_Monday = Monday_Check_Frame_Var.get()
@@ -1575,7 +1575,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
             pass
         else:
             Add_flag = False
-            CTkMessagebox(title="Error", message=f"You didnt select any day of week, pelase update.", icon="cancel", fade_in_duration=1)
+            CTkMessagebox(title="Error", message=f"You didnt select any day of week, please update.", icon="cancel", fade_in_duration=1)
 
         # Time Checkers
         if Add_flag == True:
@@ -1587,7 +1587,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
                     pass
                 else:
                     Add_flag = False
-                    CTkMessagebox(title="Error", message=f"End Time is before/equal to Start Time, pelase correct", icon="cancel", fade_in_duration=1)
+                    CTkMessagebox(title="Error", message=f"End Time is before/equal to Start Time, please correct", icon="cancel", fade_in_duration=1)
             except:
                 Add_flag = False
                 CTkMessagebox(title="Error", message=f"One of the time is not actually time, please correct", icon="cancel", fade_in_duration=1)
@@ -1661,17 +1661,17 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
             Start_Label_Var.configure(text=Selected_Start)
             End_Label_Var.configure(text=Selected_End)
 
-        def dragwin():
+        def drag_win():
             x = Delete_Scheduled_Window.winfo_pointerx() - Delete_Scheduled_Window._offsetx
             y = Delete_Scheduled_Window.winfo_pointery() - Delete_Scheduled_Window._offsety
             Delete_Scheduled_Window.geometry(f"+{x}+{y}")
 
-        def clickwin():
+        def click_win():
             Delete_Scheduled_Window._offsetx = Delete_Scheduled_Window.winfo_pointerx() - Delete_Scheduled_Window.winfo_rootx()
             Delete_Scheduled_Window._offsety = Delete_Scheduled_Window.winfo_pointery() - Delete_Scheduled_Window.winfo_rooty()
 
 
-        # callculat number of lines in table
+        # calculate number of lines in table
         Empty_Scheduled_Events = Frame_Empty_Schedules_Table_Var.values
         Empty_Scheduled_Events = [i for i in Empty_Scheduled_Events if i != Header_List]
         Lines_No = len(Empty_Scheduled_Events)
@@ -1681,11 +1681,11 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         # TopUp Window
         Delete_Scheduled_Window = CTkToplevel()
         Delete_Scheduled_Window.configure(fg_color="#000001")
-        Delete_Scheduled_Window.title("Collor Picker")
+        Delete_Scheduled_Window.title("Color Picker")
         Delete_Scheduled_Window.geometry(f"510x400")
-        Delete_Scheduled_Window.bind(sequence="<Escape>", func=lambda evet: Delete_Scheduled_Window.destroy())
-        Delete_Scheduled_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        Delete_Scheduled_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
+        Delete_Scheduled_Window.bind(sequence="<Escape>", func=lambda event: Delete_Scheduled_Window.destroy())
+        Delete_Scheduled_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Delete_Scheduled_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
         Delete_Scheduled_Window.overrideredirect(boolean=True)
         Delete_Scheduled_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_Scheduled_Window.resizable(width=False, height=False)
@@ -1755,11 +1755,11 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Sun_Var = IntVar(master=Frame, value=0)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Evets Scheduler", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Events Scheduler", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
-    Frame_Imput_Area.configure(width=300)
+    Frame_Input_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
+    Frame_Input_Area.configure(width=300)
 
     Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
 
@@ -1775,72 +1775,72 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Empty_Schedules_Table_Var.configure(wraplength=150)
 
     # Field - Week Days
-    Week_Days_Label = Elements.Get_Label(Frame=Frame_Imput_Area, Label_Size="Column_Header", Font_Size="Column_Header")
+    Week_Days_Label = Elements.Get_Label(Frame=Frame_Input_Area, Label_Size="Column_Header", Font_Size="Column_Header")
     Week_Days_Label.configure(text="Week Days")
     Week_Days_Label.pack_propagate(flag=False)
 
-    Week_Days_Frame = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column")
+    Week_Days_Frame = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column")
     Week_Days_Frame.configure(width=300)
 
-    Monday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Mon") 
+    Monday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Mon") 
     Monday_Check_Frame_Var = Monday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Monday_Check_Frame_Var.configure(variable=Mon_Var, text="")
 
-    Tuesday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Tue") 
+    Tuesday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Tue") 
     Tuesday_Check_Frame_Var = Tuesday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Tuesday_Check_Frame_Var.configure(variable=Tue_Var, text="")
 
-    Wednesday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Wed") 
+    Wednesday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Wed") 
     Wednesday_Check_Frame_Var = Wednesday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Wednesday_Check_Frame_Var.configure(variable=Wed_Var, text="")
 
-    Thursday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Thu") 
+    Thursday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Thu") 
     Thursday_Check_Frame_Var = Thursday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Thursday_Check_Frame_Var.configure(variable=Thu_Var, text="")
 
-    Friday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Fri") 
+    Friday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Fri") 
     Friday_Check_Frame_Var = Friday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Friday_Check_Frame_Var.configure(variable=Fri_Var, text="")
 
-    Saturday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Sat") 
+    Saturday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Sat") 
     Saturday_Check_Frame_Var = Saturday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Saturday_Check_Frame_Var.configure(variable=Sat_Var, text="")
 
-    Sunday_Check_Frame = Elements_Groups.Get_Vertical_Field_Imput(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Sun") 
+    Sunday_Check_Frame = Elements_Groups.Get_Vertical_Field_Input(Frame=Week_Days_Frame, Field_Frame_Type="Vertical_CheckBox" , Label="Sun") 
     Sunday_Check_Frame_Var = Sunday_Check_Frame.children["!ctkframe3"].children["!ctkcheckbox"]
     Sunday_Check_Frame_Var.configure(variable=Sun_Var, text="")
 
     # Field - Subject
-    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Description", Field_Type="Input_Normal") 
     Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
     Subject_Text_Text_Var.configure(placeholder_text="Add new text")
 
     # Field - Project
-    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
     Project_Option_Var2 = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var2.configure(variable=Project_Variable)
     
     # Field - Activity --> placed before project because of variable to be used
-    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
+    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
     Activity_Option_Var2 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var2.configure(variable=Activity_Variable)
 
     # Project/Activity OptionMenu update
-    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var2, values=Project_List, command = lambda Project_Option_Var2: Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var2, Activity_Option_Var=Activity_Option_Var2, Project_Variable=Project_Variable))
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var2, values=Project_List, command = lambda Project_Option_Var2: Retrieve_Activity_based_on_Type(Project_Option_Var=Project_Option_Var2, Activity_Option_Var=Activity_Option_Var2, Project_Variable=Project_Variable))
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var2, values=Activity_All_List, command=None)
 
     # Field - Start Time
-    Start_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal", Validation="Time") 
+    Start_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Start Time", Field_Type="Input_Normal", Validation="Time") 
     Start_Time_Text_Var = Start_Time_Text.children["!ctkframe3"].children["!ctkentry"]
     Start_Time_Text_Var.configure(placeholder_text="HH:MM")
 
     # Field - End Time
-    End_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal", Validation="Time") 
+    End_Time_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="End Time", Field_Type="Input_Normal", Validation="Time") 
     End_Time_Text_Var = End_Time_Text.children["!ctkframe3"].children["!ctkentry"]
     End_Time_Text_Var.configure(placeholder_text="HH:MM")
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
     Button_Schedule_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Schedule_Add_Var.configure(text="Add", command = lambda:Add_Schedule_Event(Header_List=Header_List, Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var2=Project_Option_Var2, Activity_Option_Var2=Activity_Option_Var2, Start_Time_Text_Var=Start_Time_Text_Var, End_Time_Text_Var=End_Time_Text_Var, Monday_Check_Frame_Var=Monday_Check_Frame_Var, Tuesday_Check_Frame_Var=Tuesday_Check_Frame_Var, Wednesday_Check_Frame_Var=Wednesday_Check_Frame_Var, Thursday_Check_Frame_Var=Thursday_Check_Frame_Var, Friday_Check_Frame_Var=Friday_Check_Frame_Var, Saturday_Check_Frame_Var=Saturday_Check_Frame_Var, Sunday_Check_Frame_Var=Sunday_Check_Frame_Var))
     Elements.Get_ToolTip(widget=Button_Schedule_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
@@ -1855,7 +1855,7 @@ def Settings_Events_Empt_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
 
     Week_Days_Label.pack(side="top", fill="none", expand=False, padx=10, pady=10)
@@ -1877,7 +1877,7 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Events_Empty_Split_list_Variable = StringVar(master=Frame, value=Events_Empty_Split_Method, name="Events_Empty_Split_list_Variable")
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Events Spliting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for spliting automatically filled events by program longer than defined duration. \nEffect of the split can be supress partionally / fully by Joining Events, depends on setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Events Splitting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for splitting automatically filled events by program longer than defined duration. \nEffect of the split can be suppress partially / fully by Joining Events, depends on setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -1939,7 +1939,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
                     pass
                 else:
                     Add_flag = False
-                    CTkMessagebox(title="Error", message=f"Rule with Search text already exists with Autofiller.", icon="cancel", fade_in_duration=1)
+                    CTkMessagebox(title="Error", message=f"Rule with Search text already exists with Auto-filler.", icon="cancel", fade_in_duration=1)
 
         if Add_flag == True:
             Frame_AutoFiller_Table_Var.add_row(values=Add_row)
@@ -1993,17 +1993,17 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
             Description_Label_Var.configure(text=Selected_Description)
             Location_Label_Var.configure(text=Selected_Location)
 
-        def dragwin():
+        def drag_win():
             x = Delete_AutoFill_Window.winfo_pointerx() - Delete_AutoFill_Window._offsetx
             y = Delete_AutoFill_Window.winfo_pointery() - Delete_AutoFill_Window._offsety
             Delete_AutoFill_Window.geometry(f"+{x}+{y}")
 
-        def clickwin():
+        def click_win():
             Delete_AutoFill_Window._offsetx = Delete_AutoFill_Window.winfo_pointerx() - Delete_AutoFill_Window.winfo_rootx()
             Delete_AutoFill_Window._offsety = Delete_AutoFill_Window.winfo_pointery() - Delete_AutoFill_Window.winfo_rooty()
 
 
-        # callculat number of lines in table
+        # calculate number of lines in table
         AutoFill_Events = Frame_AutoFiller_Table_Var.values
         AutoFill_Events = [i for i in AutoFill_Events if i != Header_List]
         Lines_No = len(AutoFill_Events)
@@ -2013,11 +2013,11 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         # TopUp Window
         Delete_AutoFill_Window = CTkToplevel()
         Delete_AutoFill_Window.configure(fg_color="#000001")
-        Delete_AutoFill_Window.title("Collor Picker")
+        Delete_AutoFill_Window.title("Color Picker")
         Delete_AutoFill_Window.geometry(f"510x260")
-        Delete_AutoFill_Window.bind(sequence="<Escape>", func=lambda evet: Delete_AutoFill_Window.destroy())
-        Delete_AutoFill_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        Delete_AutoFill_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
+        Delete_AutoFill_Window.bind(sequence="<Escape>", func=lambda event: Delete_AutoFill_Window.destroy())
+        Delete_AutoFill_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Delete_AutoFill_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
         Delete_AutoFill_Window.overrideredirect(boolean=True)
         Delete_AutoFill_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_AutoFill_Window.resizable(width=False, height=False)
@@ -2078,13 +2078,13 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="AutoFill rules", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple rules applied on TimeSheet Entry if part/whole Search Text is found in Subject. If empty then do not fill it or overwrite it.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Imput Field + button in one line
-    Frame_Imput_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
+    # Input Field + button in one line
+    Frame_Input_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
 
-    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
-    Frame_Imput_Area.configure(width=300)
+    Frame_Input_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Total, Field_Frame_Type="Single_Column")
+    Frame_Input_Area.configure(width=300)
 
-    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
+    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Total, Field_Frame_Type="Single_Column")
 
     # AutoFilling Table
     Skip_AutoFill_list = [Header_List]
@@ -2099,35 +2099,35 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_AutoFiller_Table_Var.configure(wraplength=230)
 
     # Field - Use
-    Use_AutoFill = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_AutoFill = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
     Use_AutoFill_Var = Use_AutoFill.children["!ctkframe3"].children["!ctkcheckbox"]
     Use_AutoFill_Var.configure(variable=AutoFill_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=AutoFill_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Use"], Information=AutoFill_Use_Variable))
 
     # Field - Subject
-    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Search Text", Field_Type="Input_Normal") 
+    Subject_Text = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Search Text", Field_Type="Input_Normal") 
     Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
     Subject_Text_Text_Var.configure(placeholder_text="Add new text")
 
     # Field - Project
-    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
     Project_Option_Var = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var.configure(variable=Project_Variable)
     Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command=None)
 
     # Field - Activity --> really from list of all Activity, because rule can be without Project 
-    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
+    Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
     Activity_Option_Var = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var.configure(variable=Activity_Variable)
     Elements.Get_Option_Menu_Advance(attach=Activity_Option_Var, values=Activity_All_List, command=None)
 
     # Field - Location
-    Location_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Location", Field_Type="Input_OptionMenu") 
+    Location_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Location", Field_Type="Input_OptionMenu") 
     Location_Option_Var = Location_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Location_Option_Var.configure(variable=Location_Variable)
     Elements.Get_Option_Menu_Advance(attach=Location_Option_Var, values=Location_List, command=None)
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
     Button_AutoFill_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_AutoFill_Add_Var.configure(text="Add", command = lambda:Add_AutoFill_Event(Header_List=Header_List, Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var=Project_Option_Var, Activity_Option_Var=Activity_Option_Var, Location_Option_Var=Location_Option_Var))
     Elements.Get_ToolTip(widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
@@ -2142,8 +2142,8 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Frame_Imput_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
-    Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Input_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
 
     return Frame_Main
@@ -2239,16 +2239,16 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
             Wrong_Activity_Label_Var.configure(text=Selected_Wrong_Activity)
             Correct_Activity_Label_Var.configure(text=Selected_Correct_Activity)
 
-        def dragwin():
+        def drag_win():
             x = Delete_Activity_Correct_Window.winfo_pointerx() - Delete_Activity_Correct_Window._offsetx
             y = Delete_Activity_Correct_Window.winfo_pointery() - Delete_Activity_Correct_Window._offsety
             Delete_Activity_Correct_Window.geometry(f"+{x}+{y}")
 
-        def clickwin():
+        def click_win():
             Delete_Activity_Correct_Window._offsetx = Delete_Activity_Correct_Window.winfo_pointerx() - Delete_Activity_Correct_Window.winfo_rootx()
             Delete_Activity_Correct_Window._offsety = Delete_Activity_Correct_Window.winfo_pointery() - Delete_Activity_Correct_Window.winfo_rooty()
 
-        # callculat number of lines in table
+        # calculate number of lines in table
         Activity_Corrections_Events = Frame_Activity_Correct_Table_Var.values
         Activity_Corrections_Events = [i for i in Activity_Corrections_Events if i != Header_List]
         Lines_No = len(Activity_Corrections_Events)
@@ -2258,11 +2258,11 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
         # TopUp Window
         Delete_Activity_Correct_Window = CTkToplevel()
         Delete_Activity_Correct_Window.configure(fg_color="#000001")
-        Delete_Activity_Correct_Window.title("Collor Picker")
+        Delete_Activity_Correct_Window.title("Color Picker")
         Delete_Activity_Correct_Window.geometry(f"510x250")
-        Delete_Activity_Correct_Window.bind(sequence="<Escape>", func=lambda evet: Delete_Activity_Correct_Window.destroy())
-        Delete_Activity_Correct_Window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        Delete_Activity_Correct_Window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
+        Delete_Activity_Correct_Window.bind(sequence="<Escape>", func=lambda event: Delete_Activity_Correct_Window.destroy())
+        Delete_Activity_Correct_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Delete_Activity_Correct_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
         Delete_Activity_Correct_Window.overrideredirect(boolean=True)
         Delete_Activity_Correct_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Delete_Activity_Correct_Window.resizable(width=False, height=False)
@@ -2319,16 +2319,16 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
     Correct_Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Activity correction", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Change Activity in the processing of Evetns, when non-proper activity for Project is selected in calendar.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Activity correction", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Change Activity in the processing of Events, when non-proper activity for Project is selected in calendar.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Imput Field + button in one line
-    Frame_Imput_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
+    # Input Field + button in one line
+    Frame_Input_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
 
-    Frame_Imput_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
-    Frame_Imput_Area.configure(width=300)
+    Frame_Input_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Total, Field_Frame_Type="Single_Column")
+    Frame_Input_Area.configure(width=300)
 
-    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Imput_Total, Field_Frame_Type="Single_Column")
+    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Total, Field_Frame_Type="Single_Column")
 
     # AutoFilling Table
     Activity_Correction_list = [Header_List]
@@ -2342,33 +2342,33 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Activity_Correct_Table_Var.configure(wraplength=310)
 
     # Field - Use
-    Use_Activity_Correction = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Activity_Correction = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
     Use_Activity_Correction_Var = Use_Activity_Correction.children["!ctkframe3"].children["!ctkcheckbox"]
     Use_Activity_Correction_Var.configure(variable=Activity_Correction_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Activity_Correction_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Use"], Information=Activity_Correction_Use_Variable))
 
     # Field - Project
-    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
+    Project_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Project", Field_Type="Input_OptionMenu") 
     Project_Option_Var = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var.configure(variable=Project_Variable)
     Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command=None)
 
-    # Field - Activity --> really from list of all Activity, because rule have to be setpe with all possible activity
-    Wrong_Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Wrong Activity", Field_Type="Input_OptionMenu") 
+    # Field - Activity --> really from list of all Activity, because rule have to be set per with all possible activity
+    Wrong_Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Wrong Activity", Field_Type="Input_OptionMenu") 
     Wrong_Activity_Option_Var = Wrong_Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Wrong_Activity_Option_Var.configure(variable=Wrong_Activity_Variable)
     Elements.Get_Option_Menu_Advance(attach=Wrong_Activity_Option_Var, values=Activity_All_List, command=None)
 
     # Field - Activity --> placed before project because of variable to be used
-    Correct_Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Label="Correct Activity", Field_Type="Input_OptionMenu") 
+    Correct_Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Correct Activity", Field_Type="Input_OptionMenu") 
     Correct_Activity_Option_Var = Correct_Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Correct_Activity_Option_Var.configure(variable=Correct_Activity_Variable)
 
     # Project/Activity OptionMenu update
-    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command = lambda Project_Option_Var: Retrive_Activity_based_on_Type(Project_Option_Var=Project_Option_Var, Activity_Option_Var=Correct_Activity_Option_Var, Project_Variable=Project_Variable))
+    Elements.Get_Option_Menu_Advance(attach=Project_Option_Var, values=Project_List, command = lambda Project_Option_Var: Retrieve_Activity_based_on_Type(Project_Option_Var=Project_Option_Var, Activity_Option_Var=Correct_Activity_Option_Var, Project_Variable=Project_Variable))
     Elements.Get_Option_Menu_Advance(attach=Correct_Activity_Option_Var, values=Activity_All_List, command=None)
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Imput_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
     Button_AutoFill_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_AutoFill_Add_Var.configure(text="Add", command = lambda:Add_Activity_Correct_Event(Header_List=Header_List, Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var, Project_Option_Var=Project_Option_Var, Wrong_Activity_Option_Var=Wrong_Activity_Option_Var, Correct_Activity_Option_Var=Correct_Activity_Option_Var))
     Elements.Get_ToolTip(widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
@@ -2383,8 +2383,8 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Frame_Imput_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
-    Frame_Imput_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Input_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
 
     return Frame_Main

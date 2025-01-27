@@ -56,8 +56,8 @@ def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, R
         Working_day = True
 
         # Working Day
-        Holliday_day = Czech_Holidays.get(key=Check_Date_str)
-        if Holliday_day == None:
+        Holiday_day = Czech_Holidays.get(key=Check_Date_str)
+        if Holiday_day == None:
             Weekend_Day = Report_Period_Start.weekday()
             if Weekend_Day < 5:
                 pass
@@ -199,16 +199,16 @@ def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_
     Events_Project_Mean["Average[H]"] = Events_Project_Mean["Average[H]"].map(lambda x: round(x, 2))
     Events_Project_Count = Events_Project_GR.groupby(["Project"]).count()
     Events_Project_Count.rename(columns={"Duration_H": "Count"}, inplace=True)
-    Events_Project_Concanet = pandas.concat(objs=[Events_Project_Count, Events_Project_Sum, Events_Project_Mean], axis=1, join="inner")
+    Events_Project_Concat = pandas.concat(objs=[Events_Project_Count, Events_Project_Sum, Events_Project_Mean], axis=1, join="inner")
 
     # Summary line
-    Project_Count_Sumary = Events_Project_Concanet["Count"].sum()
-    Project_TotalH_Sumary = round(Events_Project_Concanet["Total[H]"].sum(), 2)
-    Project_AverageH_Sumary = round(Project_TotalH_Sumary / Project_Count_Sumary, 2)
-    Events_Project_Concanet.loc["Summary"] = [Project_Count_Sumary, Project_TotalH_Sumary, Project_AverageH_Sumary]
-    Events_Project_Concanet["Count"] = Events_Project_Concanet["Count"].astype(int)
-    Events_Project_Concanet = Events_Project_Concanet.reset_index().rename(columns={"index": "Project"})		
-    Events_Project_Concanet.to_csv(path_or_buf=f"Operational\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Project_Count_Summary = Events_Project_Concat["Count"].sum()
+    Project_TotalH_Summary = round(Events_Project_Concat["Total[H]"].sum(), 2)
+    Project_AverageH_Summary = round(Project_TotalH_Summary / Project_Count_Summary, 2)
+    Events_Project_Concat.loc["Summary"] = [Project_Count_Summary, Project_TotalH_Summary, Project_AverageH_Summary]
+    Events_Project_Concat["Count"] = Events_Project_Concat["Count"].astype(int)
+    Events_Project_Concat = Events_Project_Concat.reset_index().rename(columns={"index": "Project"})		
+    Events_Project_Concat.to_csv(path_or_buf=f"Operational\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Activity ---------------------------------------------------------------------------------- #
     # Delete File before generation
@@ -224,16 +224,16 @@ def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_
     Events_Activity_Mean["Average[H]"] = Events_Activity_Mean["Average[H]"].map(lambda x: round(x, 2))
     Events_Activity_Count = Events_Activity_GR.groupby(["Activity"]).count()
     Events_Activity_Count.rename(columns={"Duration_H": "Count"}, inplace=True)
-    Events_Activity_Concanet = pandas.concat(objs=[Events_Activity_Count, Events_Activity_Sum, Events_Activity_Mean], axis=1, join="inner")
+    Events_Activity_Concat = pandas.concat(objs=[Events_Activity_Count, Events_Activity_Sum, Events_Activity_Mean], axis=1, join="inner")
 
     # Summary line
-    Activity_Count_Sumary = Events_Activity_Concanet["Count"].sum()
-    Activity_TotalH_Sumary = round(Events_Activity_Concanet["Total[H]"].sum(), 2)
-    Activity_AverageH_Sumary = round(Activity_TotalH_Sumary / Activity_Count_Sumary, 2)
-    Events_Activity_Concanet.loc["Summary"] = [Activity_Count_Sumary, Activity_TotalH_Sumary, Activity_AverageH_Sumary]
-    Events_Activity_Concanet["Count"] = Events_Activity_Concanet["Count"].astype(int)
-    Events_Activity_Concanet = Events_Activity_Concanet.reset_index().rename(columns={"index": "Activity"})		
-    Events_Activity_Concanet.to_csv(path_or_buf=f"Operational\\Events_Activity.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Activity_Count_Summary = Events_Activity_Concat["Count"].sum()
+    Activity_TotalH_Summary = round(Events_Activity_Concat["Total[H]"].sum(), 2)
+    Activity_AverageH_Summary = round(Activity_TotalH_Summary / Activity_Count_Summary, 2)
+    Events_Activity_Concat.loc["Summary"] = [Activity_Count_Summary, Activity_TotalH_Summary, Activity_AverageH_Summary]
+    Events_Activity_Concat["Count"] = Events_Activity_Concat["Count"].astype(int)
+    Events_Activity_Concat = Events_Activity_Concat.reset_index().rename(columns={"index": "Activity"})		
+    Events_Activity_Concat.to_csv(path_or_buf=f"Operational\\Events_Activity.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
 
     # ---------------------------------------------------------------------------------- Weekday ---------------------------------------------------------------------------------- #
@@ -262,7 +262,7 @@ def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_
         if Filtered_Df.empty:
             pass
         else:
-            Used_Days += 1  # Počet průchodů --> kvůli Utilization
+            Used_Days += 1  # Number of path because of utilization
             if (WeekDay == "Saturday") or (WeekDay == "Sunday"):
                 pass
             else:
@@ -408,16 +408,16 @@ def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_
     if type(Report_Period_Active_Days) is int:
         Period_Utilization = Report_Period_Active_Days * 8
 
-        # Load alread registered Events to sum with totals
+        # Load already registered Events to sum with totals
         try:
             Events_Registered_df["Duration"] = Events_Registered_df.apply(Define_Event_Duration, axis = 1)
             Events_Registered_df["Duration_H"] = Events_Registered_df["Duration"].map(lambda x: round(x/60, 2))
-            Total_Duration_hours_regsitered = round(Events_Registered_df["Duration_H"].sum(), 2)
+            Total_Duration_hours_registered = round(Events_Registered_df["Duration_H"].sum(), 2)
         except:
-            Total_Duration_hours_regsitered = 0
+            Total_Duration_hours_registered = 0
 
 
-        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours + Total_Duration_hours_regsitered, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
+        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours + Total_Duration_hours_registered, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
     else:
         # Cannot divide by 0
         Reporting_Period_Utilization = None

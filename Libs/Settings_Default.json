@@ -333,12 +333,12 @@
                     ]
                 }
             },
-            "Parralel_Events": {
+            "Parallel_Events": {
                 "Use": false,
                 "Divide_Method": "Divide",
                 "Divide_Method_List": [
                     "Divide",
-                    "Keep Parralel"
+                    "Keep Parallel"
                 ],
                 "Start_Method": "Use Shorter",
                 "Start_Method_List": [

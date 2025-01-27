@@ -23,7 +23,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     appts.Sort("[Start]")
     appts.IncludeRecurrences = True
 
-    # download Events within interval or thoes which thin day + Event which are bigger than interval, Event which starts before and finish in interval, and Events which Start within interval, but finish after interval
+    # download Events within interval or those which thin day + Event which are bigger than interval, Event which starts before and finish in interval, and Events which Start within interval, but finish after interval
     appts = appts.Restrict(f"""
         ([Start] >= '{Filter_Start_Date}' AND [END] <= '{Filter_End_Date}') OR 
         ([Start] < '{Filter_Start_Date}' AND [END] > '{Filter_End_Date}') OR
@@ -43,8 +43,8 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         Duration = int(Event.duration)
         Project = str(Event.Categories)
         Recurring = Event.IsRecurring
-        Busyindex = int(Event.BusyStatus)
-        Busy_Status = BusyStatus_List[Busyindex]
+        Busy_index = int(Event.BusyStatus)
+        Busy_Status = BusyStatus_List[Busy_index]
         Location = str(Event.Location)
         All_Day_Event = Event.AllDayEvent
         Body = Event.Body
@@ -58,7 +58,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         # Location --> Get only Meeting Room
         Location = Downloader_Helpers.Location_handler(Location=Location)
 
-        # Udpate End_Date for all Day Event and split them to every day event
+        # Update End_Date for all Day Event and split them to every day event
         Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
 
     # Close Outlook

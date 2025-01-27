@@ -15,7 +15,7 @@ This program was developed to make TimeSheet administration easier and harmonize
 - red --> manual steps
 - green --> automatic steps
 
-### Outlook Callendar - Pre-Requisit
+### Outlook Calendar - Pre-Requisit
 There must be special Events created for each day and special behavior must be followed
 
 - **Work Start** --> tells program when is particular working day starts
@@ -89,16 +89,16 @@ Show processed data, ready to be applied. It can directly upload to Sharepoint o
 
 ![Overnight Events](Libs\\Readme\\OverNight.png)
 
-## Apperance
+## Appearance
 
-### General Apperance
-Base apperance setup for 2 parts of system
+### General Appearance
+Base Appearance setup for 2 parts of system
 
 - Theme
 - Style
 
 
-### Color Palletes
+### Color Palettes
 Setup for Color paletes for charts and Accent color and Hover Color
 
 - Accent Color Methods 
@@ -153,20 +153,20 @@ Show processed data, ready to be applied. It can directly upload to Sharepoint o
 - Text is compared with Event subject and if a part of subject contain text then is recognized and event is not considerate for Time Sheets
 
 
-### Parralel Events
+### Parallel Events
 - This handler helps to process Events which might be in parallelly set in Calendar
 - **Methods**
     - **Divide** --> will divide Parralle Events based on logic (eveerytime takes as separator the begining of Event)
-    - **Keep Parralel** --> will keep both parallel events for TimeSheet
+    - **Keep Parallel** --> will keep both parallel events for TimeSheet
     
 **Divide:**<br>
-![Parralel 1](Libs\\Readme\\Parralel1.png)
+![Parallel 1](Libs\\Readme\\Parallel1.png)
 
 **Divide and Use Shorter:**<br>
-![Parralel 2](Libs\\Readme\\Parralel2.png)
+![Parallel 2](Libs\\Readme\\Parallel2.png)
 
-**Keep parralel:**<br>
-![Parralel Keep](Libs\\Readme\\Parralel_keep.png)
+**Keep Parallel:**<br>
+![Parallel Keep](Libs\\Readme\\Parallel_keep.png)
 
 - has 2 methods for Events start at the same time:
     - **Use Shorter** --> will consider the shortest event as first pick
@@ -238,7 +238,7 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 
 
 
-### Parralel Events
+### Parallel Events
 
 ### AutoFiller
 

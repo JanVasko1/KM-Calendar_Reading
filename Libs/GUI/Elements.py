@@ -17,12 +17,12 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
-Accent_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
+Accent_Color_Mode = Configuration["Global_Appearance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
 Accent_Color_Windows = winaccent.accent_normal
-Accent_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
+Accent_Color_Manual = Configuration["Global_Appearance"]["Window"]["Colors"]["Accent"]["Accent_Color_Manual"]
 
-Hover_Color_Mode = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
-Hover_Color_Manual = Configuration["Global_Apperance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
+Hover_Color_Mode = Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
+Hover_Color_Manual = Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
 
 Date_Format = Settings["General"]["Formats"]["Date"]
 Time_Format = Settings["General"]["Formats"]["Time"]
@@ -383,11 +383,11 @@ def Get_CheckBox(Frame: CTk|CTkFrame) -> CTkCheckBox:
 
 
 # ---------------------------------------------- Frames ----------------------------------------------# 
-# NonScrolable
+# NonScrollable
 def Get_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
     Configuration_NonScrollable = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
 
-    Frame_NonScrolable = CTkFrame(
+    Frame_NonScrollable = CTkFrame(
         master = Frame,
         width = Configuration_NonScrollable["width"],
         height = Configuration_NonScrollable["height"],
@@ -396,14 +396,14 @@ def Get_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
         border_color = tuple(Configuration_NonScrollable["border_color"]),
         bg_color = Configuration_NonScrollable["bg_color"],
         fg_color = Configuration_NonScrollable["fg_color"])
-    return Frame_NonScrolable
+    return Frame_NonScrollable
 
 def Get_SideBar_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
     Configuration_SideBar = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
 
     fg_color = Define_Accent_Color(Color_json=Configuration_SideBar["fg_color"])
 
-    Frame_NonScrolable = CTkFrame(
+    Frame_NonScrollable = CTkFrame(
         master = Frame,
         width = Configuration_SideBar["width"],
         height = Configuration_SideBar["height"],
@@ -412,12 +412,12 @@ def Get_SideBar_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
         border_color = tuple(Configuration_SideBar["border_color"]),
         bg_color = Configuration_SideBar["bg_color"],
         fg_color = fg_color)
-    return Frame_NonScrolable
+    return Frame_NonScrollable
 
 def Get_Dashboards_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
-    Configuration_Dashboard = Configuration["Frames"]["Dashboard"]["Backbround_Frames"][f"{Frame_Size}"]
+    Configuration_Dashboard = Configuration["Frames"]["Dashboard"]["Background_Frames"][f"{Frame_Size}"]
 
-    Frame_NonScrolable = CTkFrame(
+    Frame_NonScrollable = CTkFrame(
         master = Frame,
         width = Configuration_Dashboard["width"],
         height = Configuration_Dashboard["height"],
@@ -426,7 +426,7 @@ def Get_Dashboards_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
         border_color = tuple(Configuration_Dashboard["border_color"]),
         bg_color = Configuration_Dashboard["bg_color"],
         fg_color = Configuration_Dashboard["fg_color"])
-    return Frame_NonScrolable
+    return Frame_NonScrollable
 
 # ------------------------------------------------------------------------------------------------------------ Widgets  ------------------------------------------------------------------------------------------------------------ #
 # ------------------------------------------ Dashboards Widgets Frames ------------------------------------------#
@@ -491,8 +491,8 @@ def Get_Dashboard_Widget_Frame_Area(Frame: CTk|CTkFrame, Widget_Line: str, Widge
     return Frame_Area
 
 # ------------------------------------------ Widget Frames ------------------------------------------#
-# Scrolable --> Frames For tables
-def Get_Widget_Scrolable_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkScrollableFrame:
+# Scrollable --> Frames For tables
+def Get_Widget_Scrollable_Frame(Frame: CTk|CTkFrame, Frame_Size: str) -> CTkScrollableFrame:
     Configuration_Scrollable = Configuration["Frames"]["Widgets"]["Widget_Frames"]["Scrollable_Frames"][f"{Frame_Size}"]
 
     Accent_Color_help = Define_Accent_Color(Color_json=Configuration_Scrollable["Accent_Color_help"])
@@ -632,7 +632,7 @@ def Get_Tab_View(Frame: CTk|CTkFrame, Tab_size: str) -> CTkTabview:
 # ---------------------------------------------- Tables ----------------------------------------------# 
 def Get_Table(Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> CTkTable:
     def Colors_Theme_change(colors_rows: list) -> tuple:
-        # Will be obsolette if Table will inplement Light/Dark colors
+        # Will be obsolete if Table will implement Light/Dark colors
         Current_Theme = customtkinter.get_appearance_mode()
         if Current_Theme == "Light":
             color1 = colors_rows[0]
@@ -694,7 +694,7 @@ def Get_CTk_Icon(Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
         size = (Icon_Size_px, Icon_Size_px))
     return Picture
 
-def Get_Backgruond_Image(Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
+def Get_Background_Image(Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
     Picture = CTkImage(
         light_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}"),
         dark_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}"),
@@ -746,14 +746,14 @@ def Get_DialogWindow(text: str, title: str, Dialog_Type: str) -> CTkInputDialog:
         password = Configuration_Dialog["password"])
     return Dialog
 
-# ---------------------------------------------- ColorPicker ----------------------------------------------# 
+# ---------------------------------------------- Color_Picker ----------------------------------------------# 
 def Get_Color_Picker(Frame: CTk|CTkFrame, Color_Manual_Frame_Var: CTkEntry) -> CTkColorPicker:
     def Change_Entry_Information(color: str) -> None:
         Color_Manual_Frame_Var.delete(first_index=0, last_index=8)
         Color_Manual_Frame_Var.insert(index=0, string=color)
 
     def Color_Picker_fg_change(fg_color: list|str) -> str:
-        # Will be obsolette if CTkColorPicker will inplement Light/Dark colors
+        # Will be obsolete if CTkColor_Picker will implement Light/Dark colors
         Current_Theme = customtkinter.get_appearance_mode()
         if type(fg_color) is list:
             if Current_Theme == "Light":
@@ -764,20 +764,20 @@ def Get_Color_Picker(Frame: CTk|CTkFrame, Color_Manual_Frame_Var: CTkEntry) -> C
             fg_color = fg_color
         return fg_color
             
-    Configuration_ColorPicker = Configuration["ColorPicker"]
+    Configuration_Color_Picker = Configuration["Color_Picker"]
 
-    fg_color = Configuration_ColorPicker["fg_color"]
+    fg_color = Configuration_Color_Picker["fg_color"]
     fg_color = Color_Picker_fg_change(fg_color=fg_color)
 
     Color_Picker = CTkColorPicker(
         master = Frame,
-        width = Configuration_ColorPicker["width"],
-        initial_color = Configuration_ColorPicker["initial_color"],
+        width = Configuration_Color_Picker["width"],
+        initial_color = Configuration_Color_Picker["initial_color"],
         fg_color = fg_color,
-        slider_border = Configuration_ColorPicker["slider_border"],
-        corner_radius = Configuration_ColorPicker["corner_radius"],
+        slider_border = Configuration_Color_Picker["slider_border"],
+        corner_radius = Configuration_Color_Picker["corner_radius"],
         command = lambda color: Change_Entry_Information(color=color),
-        orientation = Configuration_ColorPicker["orientation"])
+        orientation = Configuration_Color_Picker["orientation"])
     return Color_Picker
 
 # ---------------------------------------------- CTkToolTip ----------------------------------------------# 

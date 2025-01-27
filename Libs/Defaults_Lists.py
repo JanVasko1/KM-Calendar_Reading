@@ -25,17 +25,17 @@ def Load_Figures(Theme:str) -> dict:
     return Configuration
 
 def Busy_Status_List() -> list[str]:
-    Busy_Stuses = ["Free", "Tentative", "Busy", "Out of Office", "Working elsewhere"]
-    return Busy_Stuses
+    Busy_Statuses = ["Free", "Tentative", "Busy", "Out of Office", "Working elsewhere"]
+    return Busy_Statuses
 
 def Exchange_Busy_Status_List() -> list[str]:
-    Busy_Stuses = ["free", "tentative", "busy", "oof", "workingElsewhere", "unknown"]
-    return Busy_Stuses
+    Busy_Statuses = ["free", "tentative", "busy", "oof", "workingElsewhere", "unknown"]
+    return Busy_Statuses
 
 def Busy_Status_Priorities_List() -> list[str]:
     # Smaller Index = Higher priority
-    Busy_Stuses_Priorities = ["Busy", "Working elsewhere", "Tentative", "Free", "Out of Office"]
-    return Busy_Stuses_Priorities
+    Busy_Statuses_Priorities = ["Busy", "Working elsewhere", "Tentative", "Free", "Out of Office"]
+    return Busy_Statuses_Priorities
 
 def Dataframe_sort(Sort_Dataframe: DataFrame, Columns_list: list, Accenting_list: list) -> None:
     # Sort Dataframe and reindex 
@@ -83,7 +83,7 @@ def Information_Update_Settings(File_Name: str, JSON_path: list, Information: in
             pass
             
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to udpate {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
 
 def Delete_File(file_path: str) -> None:
     # Delete File before generation

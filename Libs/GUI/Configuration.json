@@ -1,5 +1,5 @@
 {
-    "Global_Apperance": {
+    "Global_Appearance": {
         "Window": {
             "Style": "dark",
             "Style_List": [
@@ -16,7 +16,7 @@
                 "light",
                 "normal"
             ],
-            "Theme": "Light",
+            "Theme": "Dark",
             "Theme_List": [
                 "Dark",
                 "Light"
@@ -897,7 +897,7 @@
             }
         },
         "Dashboard": {
-            "Backbround_Frames": {
+            "Background_Frames": {
                 "Totals_Line": {
                     "width": 1600,
                     "height": 100,
@@ -1534,7 +1534,7 @@
         }
     },
     "Sliders": {},
-    "ColorPicker": {
+    "Color_Picker": {
         "width": 300,
         "initial_color": "#00A9FF",
         "fg_color": [

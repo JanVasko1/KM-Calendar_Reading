@@ -1,5 +1,5 @@
 # Import Libraries
-import Libs.Event_Handler.Parralel_Events as Parralel_Events
+import Libs.Event_Handler.Parallel_Events as Parallel_Events
 import Libs.Defaults_Lists as Defaults_Lists
 from pandas import DataFrame
 import pandas
@@ -19,8 +19,8 @@ HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Home
 Lunch_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
-    # Count duration between 2 datetime in minues
+def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
+    # Count duration between 2 datetime in minutes
     Duration_dt = Time2 - Time1
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
@@ -35,7 +35,7 @@ def Delete_Event_during_Vacation_Day(Dataframe: DataFrame, Event_Day: str, Vacat
     Event_Indexes = To_Delete_df.index.values.tolist() 
     Event_Indexes.remove(Vacation_Index)
 
-    # Delete according to indexex
+    # Delete according to index
     for Event_index in Event_Indexes:
         Dataframe.drop(labels=[Event_index], axis=0, inplace=True)
 
@@ -74,7 +74,7 @@ def Vacation(Events: DataFrame):
                     Vacation_End_Time_dt = datetime.strptime(Calendar_End_Time, Time_format)
                     Events.at[row_index, "Start_Time"] = Vacation_Start_Time_dt
                     Events.at[row_index, "End_Time"] = Vacation_End_Time_dt
-                    Events.at[row_index, "Duration"] = Duration_Couter(Time1=Vacation_Start_Time_dt, Time2=Vacation_End_Time_dt)
+                    Events.at[row_index, "Duration"] = Duration_Counter(Time1=Vacation_Start_Time_dt, Time2=Vacation_End_Time_dt)
 
                     # Delete all meetings of that day and within the Event time
                     Delete_Event_during_Vacation_Day(Dataframe=Events, Event_Day=Event_Day, Vacation_Start_Time_dt=Vacation_Start_Time_dt, Vacation_End_Time_dt=Vacation_End_Time_dt, Vacation_Index=row_index)
@@ -89,7 +89,7 @@ def Vacation(Events: DataFrame):
 # Home Office
 def HomeOffice(Events: DataFrame):
     if HomeOffice_Enabled == True:
-        # Možná ani nebude potřeba, pokud se nemá měnit lookace
+        # Can potentially be needed when location should not be changed
         return Events
     else:
         return Events
@@ -109,7 +109,7 @@ def Lunch(Events: DataFrame):
             Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             
             # Get Lunch Conflict
-            Day_Events_df = Parralel_Events.Find_Conflit_in_DF(Check_DF=Day_Events_df)
+            Day_Events_df = Parallel_Events.Find_Conflict_in_DF(Check_DF=Day_Events_df)
             mask1 = Day_Events_df["Subject"] == Lunch_Details["Search_Text"]
             Lunch_df = Day_Events_df.loc[mask1]
 
@@ -132,23 +132,23 @@ def Lunch(Events: DataFrame):
 
                     # ------------ Split Event ------------ #
                     # Event End will be cut by SubEvent
-                    Parralel_Events.Event_End_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                    Parallel_Events.Event_End_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
                     
                     # Event Start will be cut by SubEvent
-                    Parralel_Events.Event_Start_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                    Parallel_Events.Event_Start_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
                     
                     # Event Start will be cut by SubEvent
-                    Parralel_Events.Event_Start_Cut_Lunch(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                    Parallel_Events.Event_Start_Cut_Lunch(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
 
-                    # SubEvent is inside totaly of Event no borders
-                    Parralel_Events.Event_Middle_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Data=Event_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                    # SubEvent is inside totally of Event no borders
+                    Parallel_Events.Event_Middle_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Data=Event_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
 
             Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             for row in Day_Events_df.iterrows():
                 row_Series = pandas.Series(row[1])
                 Event_Start_Time = row_Series["Start_Time"]
                 Event_End_Time = row_Series["End_Time"]
-                Day_Events_df.at[row[0], "Duration"] = Duration_Couter(Time1=Event_Start_Time, Time2=Event_End_Time)
+                Day_Events_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
             
             # Add to Cumulated
             Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)

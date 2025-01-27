@@ -14,7 +14,7 @@ This program was developed to make TimeSheet administration easier and harmonize
 - red --> manual steps<br>
 - green --> automatic steps
 
-### Outlook Callendar - Pre-Requisit
+### Outlook Calendar - Pre-Requisit
 There must be special Events created for each day and special behavior must be followed<br>
 1. **Work Start** --> tells program when is particular working day starts<br>
     - must be 0 minutes duration <br>
@@ -122,22 +122,22 @@ Here are steps which process the downloaded date into the shape suitable for Tim
 - This is the list of evens which should be skiped from registering them into TimeSheets
 - Text is compared with Event subject and if a part of subject contain text then is recognized and event is not considerate for Time Sheets
 
-### Parralel Events
+### Parallel Events
 - This handler helps to process Events which might be in parallelly set in Calendar
 - has 2 modes only one can be selected
     - **Divide** --> will divide Parralle Events based on logic (eveerytime takes as separator the begining of Event)
-    - **Keep Parralel** --> will keep both parallel events for TimeSheet
+    - **Keep Parallel** --> will keep both parallel events for TimeSheet
     
 **Divide:**<br>
-![Parralel 1](Libs\\Readme\\Parralel1.png)<br>
+![Parallel 1](Libs\\Readme\\Parallel1.png)<br>
 
 
 **Divide and Use Shorter:**<br>
-![Parralel 2](Libs\\Readme\\Parralel2.png)<br>
+![Parallel 2](Libs\\Readme\\Parallel2.png)<br>
 
 
-**Keep parralel:**<br>
-![Parralel Keep](Libs\\Readme\\Parralel_keep.png)<br>
+**Keep Parallel:**<br>
+![Parallel Keep](Libs\\Readme\\Parallel_keep.png)<br>
 
 - has 2 methods for Events start at the same time:
     - **Use Shorter** --> will consider the shortest event as first pick

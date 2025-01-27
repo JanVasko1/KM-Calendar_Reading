@@ -24,7 +24,7 @@ def Delete_Authentication() -> None:
     try:
         os.remove(filename=f"Operational\\SP_Auth.pkl")
     except:
-        CTkMessagebox(title="Info", message="Sharepoint authentification file already deleted", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Info", message="Sharepoint authentication file already deleted", icon="cancel", fade_in_duration=1)
 
 def Authentication(SP_Password: str|None) -> sharepy:
     while True:

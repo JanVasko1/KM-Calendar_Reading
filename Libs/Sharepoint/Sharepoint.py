@@ -45,7 +45,7 @@ def Get_Tables_on_Worksheet(Sheet) -> list:
     return Table_list
     
 
-def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
+def Time_sheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     # Reorder lines
     TimeSheets_df2 = TimeSheets_df.sort_index(ascending=False)
 
@@ -75,7 +75,7 @@ def Timesheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
             if (Row_Personnel_number == "None") and (Row_Date == "None") and (Row_Network_Description == "None") and (Row_Activity == "None") and (Row_Activity_description == "None") and (Row_Start_Time == "None") and (Row_End_Time == "None"):
                 Excel_row_No = Row_Index
             else:
-                Excel_row_No += 2   # add 2 because of that program works with indexes (start from 0) and find first occurence of values
+                Excel_row_No += 2   # add 2 because of that program works with indexes (start from 0) and find first occurrence of values
                 break
 
         Pre_Row_Personnel_number = Row_Personnel_number
@@ -115,7 +115,7 @@ def Upload(Events: DataFrame, SP_Password: str|None) -> None:
         data_boundary = Table_list[0][1]
         data_boundary = data_boundary.replace("O", "J")
         TimeSheets_df = Get_Table_Data(ws=TimeSpent_ws, data_boundary=data_boundary)
-        A_Cell, E_Cell = Timesheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
+        A_Cell, E_Cell = Time_sheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
 
         # TODO --> automatically upload to Sharepoint only to new lines "Paste as text only"
         CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")

@@ -103,10 +103,10 @@ def Get_Widget_Input_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,
         Input_OptionMenu = Elements.Get_Option_Menu(Frame=Frame_Value)
         Input_OptionMenu.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Input_CheckBox":
-        Input_CheckBoxu = Elements.Get_CheckBox(Frame=Frame_Value)
-        Input_CheckBoxu.pack(side="left", fill="x", expand=True)
+        Input_Check_Box = Elements.Get_CheckBox(Frame=Frame_Value)
+        Input_Check_Box.pack(side="left", fill="x", expand=True)
     else:
-        CTkMessagebox(title="Error", message=f"Field type: {Field_Type} not uspported.", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Field type: {Field_Type} not supported.", icon="cancel", fade_in_duration=1)
 
     return Frame_Area
 
@@ -127,7 +127,7 @@ def Get_Widget_Button_row(Frame: CTk|CTkFrame, Field_Frame_Type: str, Buttons_co
 
     return Frame_Area
 
-def Get_Double_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
+def Get_Double_Field_Input(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -201,7 +201,7 @@ def Get_Double_Label(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Va
 
     return Frame_Area
 
-def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
+def Get_Vertical_Field_Input(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one column for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -231,16 +231,16 @@ def Get_Vertical_Field_Imput(Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: 
     return Frame_Area
 
 def Get_Table_Frame(Frame: CTk|CTkFrame, Table_Size: str, Table_Values: list|None, Table_Columns: int, Table_Rows: int) -> CTkScrollableFrame:
-    # Buld only one frame wich contain whole Table
-    Frame_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame, Frame_Size=Table_Size)
-    Frame_Scrolable_Area.pack(side="top", fill="y", expand=True, padx=10, pady=(0,5))
+    # Build only one frame which contain whole Table
+    Frame_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Frame=Frame, Frame_Size=Table_Size)
+    Frame_Scrollable_Area.pack(side="top", fill="y", expand=True, padx=10, pady=(0,5))
 
     # Table
-    Skip_List_Table = Elements.Get_Table(Frame=Frame_Scrolable_Area, Table_size=Table_Size, columns=Table_Columns, rows=Table_Rows)
+    Skip_List_Table = Elements.Get_Table(Frame=Frame_Scrollable_Area, Table_size=Table_Size, columns=Table_Columns, rows=Table_Rows)
     if Table_Values == None:
         pass
     else:
         Skip_List_Table.configure(values=Table_Values)
     Skip_List_Table.pack(side="top", fill="y", expand=True, padx=10, pady=10)
 
-    return Frame_Scrolable_Area
+    return Frame_Scrollable_Area

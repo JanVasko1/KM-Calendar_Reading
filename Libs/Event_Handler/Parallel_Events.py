@@ -9,13 +9,13 @@ Settings = Defaults_Lists.Load_Settings()
 Date_format = Settings["General"]["Formats"]["Date"]
 Time_format = Settings["General"]["Formats"]["Time"]
 
-Parralel_Enabled = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Use"]
-Divide_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Divide_Method"]
-Start_Method = Settings["Event_Handler"]["Events"]["Parralel_Events"]["Start_Method"]
+Parallel_Enabled = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
+Divide_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Divide_Method"]
+Start_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
-    # Count duration between 2 datetime in minues
+def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
+    # Count duration between 2 datetime in minutes
     Duration_dt = Time2 - Time1
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
@@ -32,7 +32,7 @@ def Add_Start_END_Indexes(Checked_Event_Index: int, Event_Start_with_indexes: li
     else:
         pass
 
-def Find_Conflit_in_DF(Check_DF: DataFrame) -> DataFrame:
+def Find_Conflict_in_DF(Check_DF: DataFrame) -> DataFrame:
     Check_DF["Conflict"] = False
     Check_DF["Conflict_indexes"] = ""
     Check_DF["Start_with_Event"] = ""
@@ -56,7 +56,7 @@ def Find_Conflit_in_DF(Check_DF: DataFrame) -> DataFrame:
             Checked_Event_Start_time = Checked_Event_Series["Start_Time"]
             Checked_Event_End_time = Checked_Event_Series["End_Time"]  
 
-            # Check if Event is overlaped by another event
+            # Check if Event is overlapped by another event
             if Event_Index != Checked_Event_Index:
                 # Checked_Event starts before/same but ends sooner (Group=1)
                 if (Checked_Event_Start_time <= Event_Start_time) and (Checked_Event_Start_time < Event_End_time) and (Checked_Event_End_time > Event_Start_time) and (Checked_Event_End_time <= Event_End_time):
@@ -147,26 +147,26 @@ def Event_Half_Cut(Conflict_df: DataFrame, Event_Index: int, Event_Start_Time: d
         return False
 
 def Event_Middle_Cut(Conflict_df: DataFrame, Event_Index: int, Data: Series, Event_Start_Time: datetime, Event_End_Time: datetime, Sub_Event_Start_Time: datetime, Sub_Event_End_Time: datetime) -> bool:
-    # SubEvent is inside totaly of Event no borders
+    # SubEvent is inside totally of Event no borders
     if (Event_Start_Time < Sub_Event_Start_Time) and (Event_Start_Time < Sub_Event_End_Time) and (Event_End_Time > Sub_Event_Start_Time) and (Event_End_Time > Sub_Event_End_Time):
         # Event 1
         Conflict_df.at[Event_Index, "Start_Time"] = Event_Start_Time
         Conflict_df.at[Event_Index, "End_Time"] = Sub_Event_Start_Time
 
         # Event 1
-        Inser_Index = Conflict_df.shape[0]
-        Conflict_df.loc[Inser_Index] = Data
-        Conflict_df.at[Inser_Index, "Start_Time"] = Sub_Event_End_Time
-        Conflict_df.at[Inser_Index, "End_Time"] = Event_End_Time
+        Insert_Index = Conflict_df.shape[0]
+        Conflict_df.loc[Insert_Index] = Data
+        Conflict_df.at[Insert_Index, "Start_Time"] = Sub_Event_End_Time
+        Conflict_df.at[Insert_Index, "End_Time"] = Event_End_Time
         
         Event_End_Time = Sub_Event_Start_Time
         return True
     else:
         return False
 
-def Parralel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
+def Parallel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
     Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[False, False]) 
-    Rerutn = False
+    Return = False
     for row in Conflict_df.iterrows():
         # Define current row as pandas Series
         row_Series = pandas.Series(row[1])
@@ -184,27 +184,27 @@ def Parralel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
             # Split larger event
             if Event_Index != Sub_Event_Index:
                 # Event End will be cut by SubEvent
-                Rerutn = Event_End_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                Return = Event_End_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
                 
                 # Event Start will be cut by SubEvent
-                Rerutn = Event_Start_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                Return = Event_Start_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
                 
                 # Event = SubEvent
-                Rerutn = Event_Half_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                Return = Event_Half_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
             
-                # SubEvent is inside totaly of Event no borders
-                Rerutn = Event_Middle_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Data=row_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                # SubEvent is inside totally of Event no borders
+                Return = Event_Middle_Cut(Conflict_df=Conflict_df, Event_Index=Event_Index, Data=row_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
 
-            if Rerutn == True:
-                # if one change is done then return to main Parralel handler to process again --> because it is better 
+            if Return == True:
+                # if one change is done then return to main Parallel handler to process again --> because it is better 
                 return Conflict_df
             else:
                 pass
     return Conflict_df
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Parralel_Events(Events: DataFrame):
-    if Parralel_Enabled == True:
+def Parallel_Events(Events: DataFrame):
+    if Parallel_Enabled == True:
         if Divide_Method == "Divide":
             Cumulated_Events = pandas.DataFrame()
             #Get Days details from Events
@@ -215,7 +215,7 @@ def Parralel_Events(Events: DataFrame):
                 Day_Events_df = Events.loc[mask1]
 
                 # Define Conflict within the day
-                Day_Events_df = Find_Conflit_in_DF(Check_DF=Day_Events_df)
+                Day_Events_df = Find_Conflict_in_DF(Check_DF=Day_Events_df)
 
                 # Add non-Conflict to Cumulated
                 mask1 = Day_Events_df["Conflict"] == False
@@ -261,7 +261,7 @@ def Parralel_Events(Events: DataFrame):
                     for Empty_Index_to_Del in Empty_Index_to_Del_list:
                         Conflict_df.drop(labels=[Empty_Index_to_Del], axis=0, inplace=True)
 
-                    # Udpate Conflict_df values
+                    # Update Conflict_df values
                     for Empty_Index_to_Del in Empty_Index_to_Del_list:
                         for row in Conflict_df.iterrows():
                             # Define current row as pandas Series
@@ -301,12 +301,12 @@ def Parralel_Events(Events: DataFrame):
                     mask1 = Conflict_df["Conflict"] == True
                     Conflict_df = Conflict_df.loc[mask1]
 
-                    # ------------------------------ Parralel Events Handler ------------------------------ #
+                    # ------------------------------ Parallel Events Handler ------------------------------ #
                     while True:
                         if Conflict_df.empty:
                             break
                         else:
-                            Conflict_df = Parralel_Events_Handler(Conflict_df=Conflict_df)
+                            Conflict_df = Parallel_Events_Handler(Conflict_df=Conflict_df)
                                     
                             # Duration change
                             Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -314,9 +314,9 @@ def Parralel_Events(Events: DataFrame):
                                 row_Series = pandas.Series(row[1])
                                 Event_Start_Time = row_Series["Start_Time"]
                                 Event_End_Time = row_Series["End_Time"]
-                                Conflict_df.at[row[0], "Duration"] = Duration_Couter(Time1=Event_Start_Time, Time2=Event_End_Time)
+                                Conflict_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
 
-                            Conflict_df = Find_Conflit_in_DF(Check_DF=Conflict_df)
+                            Conflict_df = Find_Conflict_in_DF(Check_DF=Conflict_df)
 
                             mask1 = Conflict_df["Conflict"] == False
                             Non_Conflict_df = Conflict_df.loc[mask1]
@@ -332,7 +332,7 @@ def Parralel_Events(Events: DataFrame):
             # Delete helper columns
             Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)
             return Cumulated_Events
-        elif Divide_Method == "Keep Parralel":
+        elif Divide_Method == "Keep Parallel":
             return Events
         else:
             return Events

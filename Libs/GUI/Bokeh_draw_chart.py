@@ -8,13 +8,13 @@ from math import sin, cos, pi
 from bokeh.models import LinearColorMapper, LogColorMapper, GlobalInlineStyleSheet, Arrow, NormalHead
 from bokeh.transform import transform
 
-def Hex_Tile_Coordinance(x_values):
-    Coordinance_count = len(x_values)
-    Square_ratio = [1, Coordinance_count]
-    Pre_Numbers_dif = Coordinance_count - 1
+def Hex_Tile_Coordinates(x_values):
+    Coordinates_count = len(x_values)
+    Square_ratio = [1, Coordinates_count]
+    Pre_Numbers_dif = Coordinates_count - 1
 
-    for First_Number in range(1, Coordinance_count):
-        Second_Number = math.ceil(Coordinance_count / First_Number)
+    for First_Number in range(1, Coordinates_count):
+        Second_Number = math.ceil(Coordinates_count / First_Number)
         Numbers_dif = abs(First_Number - Second_Number)
 
         if Pre_Numbers_dif < Numbers_dif:
@@ -31,8 +31,8 @@ def Hex_Tile_Coordinance(x_values):
         Square_ratio[0] = Square_ratio[1]
         Square_ratio[1] = Helper
 
-    Coordinance_x = []
-    Coordinance_y = []
+    Coordinates_x = []
+    Coordinates_y = []
 
     Increment = 0
     y = 0
@@ -40,26 +40,26 @@ def Hex_Tile_Coordinance(x_values):
         if x %2 != 0:
             Increment += 1
         for y in range(0, Square_ratio[1]):
-            Coordinance_x.append(-x)
-            Coordinance_y.append(y + Increment)
+            Coordinates_x.append(-x)
+            Coordinates_y.append(y + Increment)
         else:
             pass
             
-    if (Square_ratio[0] * Square_ratio[1]) > Coordinance_count:
-        Place_to_Del = (Square_ratio[0] * Square_ratio[1]) - Coordinance_count
-        Coordinance_x = Coordinance_x[:-Place_to_Del]
-        Coordinance_y = Coordinance_y[:-Place_to_Del]
+    if (Square_ratio[0] * Square_ratio[1]) > Coordinates_count:
+        Place_to_Del = (Square_ratio[0] * Square_ratio[1]) - Coordinates_count
+        Coordinates_x = Coordinates_x[:-Place_to_Del]
+        Coordinates_y = Coordinates_y[:-Place_to_Del]
 
-    Coordinance_x = numpy.array(Coordinance_x)
-    Coordinance_y = numpy.array(Coordinance_y)
-    return Coordinance_x, Coordinance_y
+    Coordinates_x = numpy.array(Coordinates_x)
+    Coordinates_y = numpy.array(Coordinates_y)
+    return Coordinates_x, Coordinates_y
 
-def Bokeh_line_Interpolation(x_values, y_values, Interpolate, Format, mutiplicator = 15):
+def Bokeh_line_Interpolation(x_values, y_values, Interpolate, Format, multiplication = 15):
     if Interpolate == True:
         # Library Imports
         from scipy.interpolate import PchipInterpolator
 
-        Interpolate_range = int(x_values.shape[0]) * mutiplicator
+        Interpolate_range = int(x_values.shape[0]) * multiplication
         if Format == "linear":
             x_vals = numpy.linspace(1, int(x_values.shape[0]), Interpolate_range)
             x_vals = x_vals + int(x_values.iloc[0]) - 1
@@ -79,32 +79,32 @@ def Bokeh_line_Interpolation(x_values, y_values, Interpolate, Format, mutiplicat
     else:
         return x_values, y_values
 
-def Get_Color_pallete(HEX_Color1, HEX_Color2, Pallete_steps) -> list:
+def Get_Color_Palette(HEX_Color1, HEX_Color2, Palette_steps) -> list:
     def rgb2hex(r, g, b):
         return "#{:02x}{:02x}{:02x}".format(r, g, b)
 
-    Color_Pallete = []
+    Color_Palette = []
 
     # Convert Colors HEX --> RGB
     RGB_Color1 = ImageColor.getrgb(str(HEX_Color1))
     RGB_Color2 = ImageColor.getrgb(str(HEX_Color2))
 
-    R_Step = abs(RGB_Color1[0] - RGB_Color2[0])/Pallete_steps
-    G_Step = abs(RGB_Color1[1] - RGB_Color2[1])/Pallete_steps
-    B_Step = abs(RGB_Color1[2] - RGB_Color2[2])/Pallete_steps
+    R_Step = abs(RGB_Color1[0] - RGB_Color2[0])/Palette_steps
+    G_Step = abs(RGB_Color1[1] - RGB_Color2[1])/Palette_steps
+    B_Step = abs(RGB_Color1[2] - RGB_Color2[2])/Palette_steps
 
     R_color = RGB_Color1[0]
     G_color = RGB_Color1[1]
     B_color = RGB_Color1[2]
 
-    # Create Colorpallete in HEX
-    for Pallete_step in range(0, Pallete_steps):
-        if Pallete_step == 0:
-            # Interval begining
-            Color_Pallete.append(HEX_Color1)
-        elif Pallete_step == Pallete_steps - 1:
+    # Create ColorPalette in HEX
+    for Palette_step in range(0, Palette_steps):
+        if Palette_step == 0:
+            # Interval beginning
+            Color_Palette.append(HEX_Color1)
+        elif Palette_step == Palette_steps - 1:
             # Interval end
-            Color_Pallete.append(HEX_Color2)
+            Color_Palette.append(HEX_Color2)
         else:
             # Interval Middle
             # Red
@@ -137,31 +137,31 @@ def Get_Color_pallete(HEX_Color1, HEX_Color2, Pallete_steps) -> list:
             else:
                 B_Export = int(RGB_Color1[2])
 
-            Color_Pallete.append(rgb2hex(R_Export,G_Export,B_Export))
+            Color_Palette.append(rgb2hex(R_Export,G_Export,B_Export))
 
-    return Color_Pallete
+    return Color_Palette
 
-def Color_Pallete_Fix():
-    Color_Pallete = ["#FC181C", "#FC18A5", "#CB18FC", "#4218FC", "#1877FC", "#18FCF8", "#18FC6F", "#49FC18", "#D2FC18", "#FC9D18"]
-    return Color_Pallete
+def Color_Palette_Fix():
+    Color_Palette = ["#FC181C", "#FC18A5", "#CB18FC", "#4218FC", "#1877FC", "#18FCF8", "#18FC6F", "#49FC18", "#D2FC18", "#FC9D18"]
+    return Color_Palette
 
-def Color_Mapper_Linear(Color_Pallete, Max, Min):
-    Color_Map = LinearColorMapper(palette=Color_Pallete, high=Max, low=Min)
+def Color_Mapper_Linear(Color_Palette, Max, Min):
+    Color_Map = LinearColorMapper(palette=Color_Palette, high=Max, low=Min)
     return Color_Map
  
-def Color_Mapper_Log(Color_Pallete, Max, Min):
-    Color_Map = LogColorMapper(palette=Color_Pallete, high=Max, low=Min)
+def Color_Mapper_Log(Color_Palette, Max, Min):
+    Color_Map = LogColorMapper(palette=Color_Palette, high=Max, low=Min)
     return Color_Map
 
-def Color_Pallete_Transform(Color_Pallete, Name):
-    Color_Map = transform(field_name=Name, transform=Color_Pallete)
+def Color_Palette_Transform(Color_Palette, Name):
+    Color_Map = transform(field_name=Name, transform=Color_Palette)
     return Color_Map
 
-def x_coordinace(radius, angle):
+def x_coordinates(radius, angle):
     x = radius * cos(angle)
     return x
 
-def y_coordinace(radius, angle):
+def y_coordinates(radius, angle):
     y = radius * sin(angle)
     return y
 
@@ -170,7 +170,7 @@ def round_percentage(item):
     item = str(f"{item}%")
     return item
 
-def text_possition(Start_rad, Stop_rad):
+def text_Position(Start_rad, Stop_rad):
     text_angle = ((Stop_rad - Start_rad) / 2 ) + Start_rad
     return text_angle
 
@@ -179,28 +179,28 @@ def Text_angle(angle):
     return angle2
 
 
-def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Properties, Y_Axis_Properties, Color_Bar_Properties, Legend_Properties, Tool_Properties, Range_Tool_Properties, ToolTip_list, ToolTip_list_count, ToolTip_Format, Color_Map, theme, Legend_n_cols = 1):
+def Chart_General_Setup(Chart, Chart_Area_Properties, Grid_properties, X_Axis_Properties, Y_Axis_Properties, Color_Bar_Properties, Legend_Properties, Tool_Properties, Range_Tool_Properties, ToolTip_list, ToolTip_list_count, ToolTip_Format, Color_Map, theme, Legend_n_cols = 1):
     #----------------------------------- General -----------------------------------#
     # Font Download 
     stylesheet = GlobalInlineStyleSheet(css="""@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap')""")
     Chart.stylesheets.append(stylesheet)
 
     # BackGround Colors
-    Chart.background_fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
-    Chart.background_fill_alpha = float(Chart_Area_Propertie.iloc[0]["Background_opacity"])
+    Chart.background_fill_color = Chart_Area_Properties.iloc[0]["Background_Color"]
+    Chart.background_fill_alpha = float(Chart_Area_Properties.iloc[0]["Background_opacity"])
     
     # Outline
-    Chart.outline_line_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
-    Chart.outline_line_alpha = float(Chart_Area_Propertie.iloc[0]["Background_opacity"])
+    Chart.outline_line_color = Chart_Area_Properties.iloc[0]["Background_Color"]
+    Chart.outline_line_alpha = float(Chart_Area_Properties.iloc[0]["Background_opacity"])
     #Chart.outline_line_width = 0
 
     # Borders
-    Chart.border_fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
-    Chart.border_fill_alpha = float(Chart_Area_Propertie.iloc[0]["Background_opacity"])
-    Chart.min_border_left = int(Chart_Area_Propertie.iloc[0]["Border_left"])
-    Chart.min_border_right = int(Chart_Area_Propertie.iloc[0]["Border_right"])
-    Chart.min_border_top = int(Chart_Area_Propertie.iloc[0]["Border_top"])
-    Chart.min_border_bottom = int(Chart_Area_Propertie.iloc[0]["Border_bottom"])
+    Chart.border_fill_color = Chart_Area_Properties.iloc[0]["Background_Color"]
+    Chart.border_fill_alpha = float(Chart_Area_Properties.iloc[0]["Background_opacity"])
+    Chart.min_border_left = int(Chart_Area_Properties.iloc[0]["Border_left"])
+    Chart.min_border_right = int(Chart_Area_Properties.iloc[0]["Border_right"])
+    Chart.min_border_top = int(Chart_Area_Properties.iloc[0]["Border_top"])
+    Chart.min_border_bottom = int(Chart_Area_Properties.iloc[0]["Border_bottom"])
 
     # Axis - X
     if X_Axis_Properties.iloc[0]["X_Axis_Visible"] == True:
@@ -210,7 +210,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         Chart.xaxis.major_label_text_font = X_Axis_Properties.iloc[0]["X_Axis_Font"]
         Chart.xaxis.major_label_text_font_size = str(X_Axis_Properties.iloc[0]["X_Axis_Font_Size"])+"px"
 
-        Chart.xaxis.axis_line_width = int(X_Axis_Properties.iloc[0]["X_Axis_Line_Thiknes"])
+        Chart.xaxis.axis_line_width = int(X_Axis_Properties.iloc[0]["X_Axis_Line_Thickness"])
         Chart.xaxis.axis_line_color = X_Axis_Properties.iloc[0]["X_Axis_Line_Color"]
         Chart.xaxis.axis_line_alpha = float(X_Axis_Properties.iloc[0]["X_Axis_Line_Opacity"])
         Chart.xaxis.major_tick_line_color  = X_Axis_Properties.iloc[0]["X_Axis_Major_Tic_Color"]
@@ -228,7 +228,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         Chart.yaxis.major_label_text_font = Y_Axis_Properties.iloc[0]["Y_Axis_Font"]
         Chart.yaxis.major_label_text_font_size = str(Y_Axis_Properties.iloc[0]["Y_Axis_Font_Size"])+"px"
 
-        Chart.yaxis.axis_line_width = int(Y_Axis_Properties.iloc[0]["Y_Axis_Line_Thiknes"])
+        Chart.yaxis.axis_line_width = int(Y_Axis_Properties.iloc[0]["Y_Axis_Line_Thickness"])
         Chart.yaxis.axis_line_color = Y_Axis_Properties.iloc[0]["Y_Axis_Line_Color"]
         Chart.yaxis.axis_line_alpha = float(Y_Axis_Properties.iloc[0]["Y_Axis_Line_Opacity"])
         Chart.yaxis.major_tick_line_color = Y_Axis_Properties.iloc[0]["Y_Axis_Major_Tic_Color"]
@@ -242,7 +242,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
     if Grid_properties.iloc[0]["X_Grid_Line"] == True:
         Chart.xgrid.visible = Grid_properties.iloc[0]["X_Grid_Line"]
         Chart.xgrid.grid_line_color = Grid_properties.iloc[0]["X_Grid_Line_Color"]
-        Chart.xgrid.grid_line_width = int(Grid_properties.iloc[0]["X_Grid_Line_Thiknes"])
+        Chart.xgrid.grid_line_width = int(Grid_properties.iloc[0]["X_Grid_Line_Thickness"])
         if Grid_properties.iloc[0]["X_Grid_Line_Style"] == "dash":
             Chart.xgrid.grid_line_dash = Grid_properties.iloc[0]["X_Grid_Line_Dash_Ration"]
         Chart.xgrid.grid_line_alpha = float(Grid_properties.iloc[0]["X_Grid_Line_Color_Opacity"])
@@ -252,7 +252,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
     if Grid_properties.iloc[0]["Y_Grid_Line"] == True:
         Chart.ygrid.visible = Grid_properties.iloc[0]["Y_Grid_Line"]
         Chart.ygrid.grid_line_color = Grid_properties.iloc[0]["Y_Grid_Line_Color"]
-        Chart.ygrid.grid_line_width = int(Grid_properties.iloc[0]["Y_Grid_Line_Thiknes"])
+        Chart.ygrid.grid_line_width = int(Grid_properties.iloc[0]["Y_Grid_Line_Thickness"])
         if Grid_properties.iloc[0]["Y_Grid_Line_Style"] == "dash":
             Chart.ygrid.grid_line_dash = Grid_properties.iloc[0]["Y_Grid_Line_Dash_Ration"]
         Chart.ygrid.grid_line_alpha = float(Grid_properties.iloc[0]["Y_Grid_Line_Color_Opacity"])
@@ -268,20 +268,20 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
     # CrosshairTool
     if Tool_Properties.iloc[0]["CrosshairTool_Visible"] == True:
         Cross_Line_Color = Tool_Properties.iloc[0]["CrosshairTool_Color"]
-        Cross_Line_thiknes = int(Tool_Properties.iloc[0]["CrosshairTool_Thiknes"])
+        Cross_Line_Thickness = int(Tool_Properties.iloc[0]["CrosshairTool_Thickness"])
         # Library Imports
         from bokeh.models import CrosshairTool, Span
 
         # Individual
         if Tool_Properties.iloc[0]["CrosshairTool_Mode"] == "vline":
-            Span_height = Span(dimension="height", line_dash="dashed", line_width=Cross_Line_thiknes, line_color=Cross_Line_Color)
+            Span_height = Span(dimension="height", line_dash="dashed", line_width=Cross_Line_Thickness, line_color=Cross_Line_Color)
             Crosshair_Tool = CrosshairTool(overlay=Span_height)
         elif Tool_Properties.iloc[0]["CrosshairTool_Mode"] == "hline":
-            Span_width = Span(dimension="width", line_dash="dashed", line_width=Cross_Line_thiknes, line_color=Cross_Line_Color)
+            Span_width = Span(dimension="width", line_dash="dashed", line_width=Cross_Line_Thickness, line_color=Cross_Line_Color)
             Crosshair_Tool = CrosshairTool(overlay=Span_width)
         elif Tool_Properties.iloc[0]["CrosshairTool_Mode"] == "both":
-            Span_width = Span(dimension="width", line_dash="dashed", line_width=Cross_Line_thiknes, line_color=Cross_Line_Color)
-            Span_height = Span(dimension="height", line_dash="dashed", line_width=Cross_Line_thiknes, line_color=Cross_Line_Color)
+            Span_width = Span(dimension="width", line_dash="dashed", line_width=Cross_Line_Thickness, line_color=Cross_Line_Color)
+            Span_height = Span(dimension="height", line_dash="dashed", line_width=Cross_Line_Thickness, line_color=Cross_Line_Color)
             Crosshair_Tool = CrosshairTool(overlay=[Span_width, Span_height])
         else:
             Crosshair_Tool = CrosshairTool()
@@ -323,7 +323,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
             exec(f"""Hover_Tool{i} = HoverTool()""")
             exec(f"""Hover_Tool{i}.tooltips = ToolTip_list[i]""")
             exec(f"""Hover_Tool{i}.muted_policy = Tool_Properties.iloc[0]["HoverTool_mute_policy"]""")
-            #exec(f"""Hover_Tool{i}.tooltips.backgroundColor = Chart_Area_Propertie.iloc[0]["Background_Color"]""")
+            #exec(f"""Hover_Tool{i}.tooltips.backgroundColor = Chart_Area_Properties.iloc[0]["Background_Color"]""")
             exec(f"""Hover_Tool{i}.formatters = ToolTip_Format""")
             if Tool_Properties.iloc[0]["HoverTool_mode"] != "":
                 exec(f"""Hover_Tool{i}.mode = Tool_Properties.iloc[0]["HoverTool_mode"]""")
@@ -387,7 +387,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         pass
 
     # ZoomOutTool
-    if Tool_Properties.iloc[0]["ZoomOutTool_Visbile"] == True:
+    if Tool_Properties.iloc[0]["ZoomOutTool_Visible"] == True:
         # Library Imports
         from bokeh.models import ZoomOutTool
 
@@ -397,7 +397,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         pass
 
     # BoxZoomTool
-    if Tool_Properties.iloc[0]["BoxZoomTool_Visbile"] == True:
+    if Tool_Properties.iloc[0]["BoxZoomTool_Visible"] == True:
         # Library Imports
         from bokeh.models import BoxZoomTool
 
@@ -434,7 +434,7 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         from bokeh.models import HelpTool
 
         Help_Tool = HelpTool()
-        Help_Tool.description = "Learn more about Chart content and gain knowlede."
+        Help_Tool.description = "Learn more about Chart content and gain knowledge."
         Chart.add_tools(Help_Tool)
     else:
         pass
@@ -449,13 +449,13 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         from bokeh.models import ColorBar
 
         color_bar = ColorBar(color_mapper=Color_Map)
-        color_bar.background_fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
+        color_bar.background_fill_color = Chart_Area_Properties.iloc[0]["Background_Color"]
         color_bar.background_fill_alpha = 0
         color_bar.major_tick_line_color = Color_Bar_Properties.iloc[0]["Color_Bar_Tick_Line_Color"]
         color_bar.major_label_text_font = Color_Bar_Properties.iloc[0]["Color_Bar_Font"]
         color_bar.major_label_text_font_size = str(Color_Bar_Properties.iloc[0]["Color_Bar_Font_Size"])+"px"
         color_bar.major_label_text_color = Color_Bar_Properties.iloc[0]["Color_Bar_Font_Color"]
-        Chart.add_layout(color_bar, Color_Bar_Properties.iloc[0]["Color_Bar_Possition"])
+        Chart.add_layout(color_bar, Color_Bar_Properties.iloc[0]["Color_Bar_Position"])
     else:
         pass
 
@@ -468,29 +468,29 @@ def Chart_General_Setup(Chart, Chart_Area_Propertie, Grid_properties, X_Axis_Pro
         Chart_Legend = Legend()
         Chart_Legend.ncols = Legend_n_cols
 
-        # Possition
-        if Legend_Properties.iloc[0]["Legend_Layer_Possition"] == "Outher":
-            Chart.add_layout(Chart_Legend, Legend_Properties.iloc[0]["Legend_Possition"])   # "right", "left", "above", "below", "center"
-        elif Legend_Properties.iloc[0]["Legend_Layer_Possition"] == "Inner":
-            Chart.add_layout(Chart_Legend, Legend_Properties.iloc[0]["Legend_Possition"])   #"top_left", "top_center", "top_right", "center_right", "bottom_right", "bottom_center", "bottom_left", "center_left", "center"
+        # Position
+        if Legend_Properties.iloc[0]["Legend_Layer_Position"] == "Outher":
+            Chart.add_layout(Chart_Legend, Legend_Properties.iloc[0]["Legend_Position"])   # "right", "left", "above", "below", "center"
+        elif Legend_Properties.iloc[0]["Legend_Layer_Position"] == "Inner":
+            Chart.add_layout(Chart_Legend, Legend_Properties.iloc[0]["Legend_Position"])   #"top_left", "top_center", "top_right", "center_right", "bottom_right", "bottom_center", "bottom_left", "center_left", "center"
         else:
-            Chart.add_layout(Chart_Legend, Legend_Properties.iloc[0]["Legend_Possition"])  
+            Chart.add_layout(Chart_Legend, Legend_Properties.iloc[0]["Legend_Position"])  
 
         # Background
-        Chart_Legend.background_fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
+        Chart_Legend.background_fill_color = Chart_Area_Properties.iloc[0]["Background_Color"]
         Chart_Legend.background_fill_alpha = 0
 
         # Border
         Chart_Legend.border_line_width = 0
         Chart_Legend.border_line_alpha = 0
-        Chart_Legend.border_line_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
+        Chart_Legend.border_line_color = Chart_Area_Properties.iloc[0]["Background_Color"]
 
         # Inactive
-        Chart_Legend.inactive_fill_color = Chart_Area_Propertie.iloc[0]["Background_Color"]
+        Chart_Legend.inactive_fill_color = Chart_Area_Properties.iloc[0]["Background_Color"]
         Chart_Legend.inactive_fill_alpha = 0.7
 
         Chart_Legend.click_policy = Legend_Properties.iloc[0]["Legend_Click_Policy"]
-        Chart_Legend.location = Legend_Properties.iloc[0]["Legend_Possition"]
+        Chart_Legend.location = Legend_Properties.iloc[0]["Legend_Position"]
         
         # Label Texts
         Chart_Legend.label_text_font = Legend_Properties.iloc[0]["Legend_Font"]

@@ -35,7 +35,7 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
     Today = datetime.today()
     Today = Today.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # -------------- Shmarepoint  -------------- #
+    # -------------- Sharepoint  -------------- #
     if Download_Date_Range_Source == "Sharepoint":
         # Authentication
         s_aut = Authentication.Authentication(SP_Password=SP_Password)
@@ -73,7 +73,7 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
             Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
             
             if Events_Registered_df.empty:
-                # Starepoint doesnt contain any my data
+                # Sharepoint doesn't contain any my data
                 My_Last_Day_dt = Report_Period_Start 
             else:
                 My_Last_Day = max(Events_Registered_df["Date"])
@@ -102,9 +102,9 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
             elif SP_Date_To_Method == "Manual":
                 Input_End_Date_dt = datetime.strptime(SP_Man_Date_To, Date_Format)
 
-                # Check if Manual date is smaller than Repeort End Date
+                # Check if Manual date is smaller than Report End Date
                 if Input_End_Date_dt > Report_Period_End:
-                    Question_Message = CTkMessagebox(title="Information", message=f"Manual Date you entered {Input_End_Date_dt} is after Period End date {Report_Period_End}, will be automatically switched to Repoert End date. Do you agree?", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
+                    Question_Message = CTkMessagebox(title="Information", message=f"Manual Date you entered {Input_End_Date_dt} is after Period End date {Report_Period_End}, will be automatically switched to Report End date. Do you agree?", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
                     response = Question_Message.get()
                     if response == "Confirm":
                         Input_End_Date_dt = Report_Period_End
@@ -124,7 +124,7 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
             else:
                 CTkMessagebox(title="Error", message=f"Cannot define End date as not know method selected. Method: {SP_Date_To_Method}", icon="cancel", fade_in_duration=1)
         else:
-            CTkMessagebox(title="Error", message="It was not possible to automatically dowload the master data from Sharepoint, please select Start Date and End Date manually.", icon="cancel", fade_in_duration=1)
+            CTkMessagebox(title="Error", message="It was not possible to automatically download the master data from Sharepoint, please select Start Date and End Date manually.", icon="cancel", fade_in_duration=1)
             raise ValueError
 
         # Date check
@@ -175,7 +175,7 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
         elif Download_Data_Source == "Exchange":
             Events = Exchange.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
         else:
-            CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_clasic, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
+            CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_Client, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
             raise ValueError
     else:
         pass

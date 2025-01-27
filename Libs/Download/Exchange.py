@@ -18,8 +18,8 @@ Exchange_Busy_Status_List = Defaults_Lists.Exchange_Busy_Status_List()
 Busy_Status_List = Defaults_Lists.Busy_Status_List()
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
-    # Count duration between 2 datetime in minues
+def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
+    # Count duration between 2 datetime in minuets
     Duration_dt = Time2 - Time1
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
@@ -37,7 +37,7 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
         End_Date_dt = datetime.strptime(End_Date_correction[0], Exchange_DateTime_format)
         End_Date = End_Date_dt.strftime(Date_format)
         End_Time = End_Date_dt.strftime(Time_format)
-        Duration = Duration_Couter(Time1=Start_Date_dt, Time2=End_Date_dt)
+        Duration = Duration_Counter(Time1=Start_Date_dt, Time2=End_Date_dt)
         Project_list = Event["categories"]
         if len(Project_list) == 0:
             Project = ""
@@ -49,8 +49,8 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
         else:
             Recurring = True
         Busy_Status = Event["showAs"]
-        Busyindex = Exchange_Busy_Status_List.index(Busy_Status)
-        Busy_Status = Busy_Status_List[Busyindex]
+        Busy_index = Exchange_Busy_Status_List.index(Busy_Status)
+        Busy_Status = Busy_Status_List[Busy_index]
         Location = Event["location"]["displayName"]
         All_Day_Event = Event["isAllDay"]
         Body = Event["bodyPreview"]
@@ -64,7 +64,7 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
         # Location --> Get only Meeting Room
         Location = Downloader_Helpers.Location_handler(Location=Location)
 
-        # Udpate End_Date for all Day Event and split them to every day event
+        # Update End_Date for all Day Event and split them to every day event
         Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
 
     return Counter
@@ -72,7 +72,7 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
     import getpass
-    # Laod OAuth2 info
+    # Load OAuth2 info
     client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
     username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
@@ -86,7 +86,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         CTkMessagebox(title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
         raise ValueError()
 
-    # OAuth2 authentification at KM Azure
+    # OAuth2 authentication at KM Azure
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
     payload = {
         "grant_type": "client_credentials",
@@ -134,7 +134,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
                 Events = response.json()
                 Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
     else:
-        CTkMessagebox(title="Info", message=f"Not possible to download from Excange (Response Code: {response.status_code}), will try to download from Outlook Clasic Client.", fade_in_duration=1)
+        CTkMessagebox(title="Info", message=f"Not possible to download from Exchange (Response Code: {response.status_code}), will try to download from Outlook Classic Client.", fade_in_duration=1)
         Events_downloaded = {}
         Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 

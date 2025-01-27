@@ -26,7 +26,7 @@ Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Download Page Widgets -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
-    def Sharepoint_Disabeling_Man_Date_To(Selected_Value: str, Entry_Field: CTkEntry, Variable: StringVar) -> None:
+    def Sharepoint_Disabling_Man_Date_To(Selected_Value: str, Entry_Field: CTkEntry, Variable: StringVar) -> None:
         Variable.set(value=Selected_Value)
         if (Selected_Value == "Today") or (Selected_Value == "Last Report Day"):
             Entry_Field.delete(first_index=0, last_index=1000)
@@ -36,14 +36,14 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
             Entry_Field.configure(state="normal")
             Entry_Field.configure(placeholder_text="YYYY-MM-DD")
         else:
-            CTkMessagebox(title="Error", message="Downlaod To Method not allowed.", icon="cancel", fade_in_duration=1)
+            CTkMessagebox(title="Error", message="Download To Method not allowed.", icon="cancel", fade_in_duration=1)
 
     SP_Date_From_Variable = StringVar(master=Frame, value=SP_Date_From_Method)
     SP_Date_To_Variable = StringVar(master=Frame, value=SP_Date_To_Method)
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint - missing dates", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Timesheets for donwload process.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint - missing dates", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Time-sheets for download process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -78,9 +78,9 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="Input_Normal", Validation="Date") 
     SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
 
-    # Disabling fields --> Manula Date To 
-    Elements.Get_Option_Menu_Advance(attach=SP_Date_To_Option_Var, values=SP_Date_To_Method_list, command = lambda SP_Date_To_Option_Var: Sharepoint_Disabeling_Man_Date_To(Selected_Value=SP_Date_To_Option_Var, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable))
-    Sharepoint_Disabeling_Man_Date_To(Selected_Value=SP_Date_To_Method, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable)    # Must be here because of initial value
+    # Disabling fields --> Manual Date To 
+    Elements.Get_Option_Menu_Advance(attach=SP_Date_To_Option_Var, values=SP_Date_To_Method_list, command = lambda SP_Date_To_Option_Var: Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Option_Var, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable))
+    Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Method, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable)    # Must be here because of initial value
     
 
     # Field - Password
@@ -98,7 +98,7 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
 def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for downlaod process. Format YYYY-MM-DD")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for download process. Format YYYY-MM-DD")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -155,7 +155,7 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> C
 def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook Classic Client", Additional_Text="Must be updated befor download", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Windows installtion of Outlook Classic client.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook Classic Client", Additional_Text="Must be updated before download", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Windows installation of Outlook Classic client.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -188,7 +188,7 @@ def Per_Period_Selection(Frame: CTk|CTkFrame) -> CTkFrame:
     Month_To_Variable = IntVar(master=Frame, value=Current_month)
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Previoust Periods range", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define Which periods should be downloaded from TimeSheet History. Included.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Previous Periods range", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define Which periods should be downloaded from TimeSheet History. Included.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Year From

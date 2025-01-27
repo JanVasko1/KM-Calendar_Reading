@@ -27,8 +27,8 @@ Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
 Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
 Format_Date = Settings["General"]["Formats"]["Date"]
 
-Win_Style_Actual = Configuration["Global_Apperance"]["Window"]["Style"]
-Theme_Actual = Configuration["Global_Apperance"]["Window"]["Theme"]
+Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
+Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
 
 SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]
 
@@ -134,9 +134,9 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
 
-    Konica_Logo = Elements.Get_Backgruond_Image(Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=45)
+    Konica_Logo = Elements.Get_Background_Image(Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=45)
     
-    # Page - Downlaod
+    # Page - Download
     Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window))    
     Elements.Get_ToolTip(widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal")
@@ -161,7 +161,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window))
     Elements.Get_ToolTip(widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal")
 
-    # Close Aplication
+    # Close Application
     Icon_Frame_Close = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
     Icon_Frame_Close.configure(command = lambda: window.quit())
     Elements.Get_ToolTip(widget=Icon_Frame_Close, message="Close.", ToolTip_Size="Normal")
@@ -176,7 +176,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=(10, 210), sticky="w")
     Konica_Logo.grid(row=6, column=0, padx=(0, 0), pady=20, sticky="", columnspan=2)
 
-# ------------------------------------------------------------------------------------------------------------------------------------ Downlaod Page ------------------------------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------------------------------ Download Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):
     import Libs.GUI.Widgets.Download as Download
     # ------------------------- Local Functions -------------------------#
@@ -220,7 +220,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
         Can_Download = True
 
-        # -------------- Actuall Values  -------------- #
+        # -------------- Actual Values  -------------- #
         Download_Date_Range_Source = Download_Date_Range_Source.get()
         Download_Data_Source = Download_Data_Source.get()
 
@@ -325,13 +325,13 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     Tab_New_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
     Tab_Pre_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
-    Elements.Get_ToolTip(widget=Tab_New_ToolTip_But, message="Used to download new data to be regsitered, or Current Period checking.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_Pre_ToolTip_But, message="Used to donwload already registered date in Time Sheets --> downlaod from Sharepoint previous periods.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_New_ToolTip_But, message="Used to download new data to be registered, or Current Period checking.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Pre_ToolTip_But, message="Used to download already registered date in Time Sheets --> download from Sharepoint previous periods.", ToolTip_Size="Normal")
 
-    # ---------- New Downoad ---------- #
+    # ---------- New Download ---------- #
     # Download Method
-    Metdod_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
-    Metdod_Text.configure(text="Step 1 - Date Range Source")
+    Method_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Method_Text.configure(text="Step 1 - Date Range Source")
 
     Sharepoint_Widget = Download.Download_Sharepoint(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
@@ -403,7 +403,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
     
-    Metdod_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Method_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Sharepoint_Widget.grid(row=1, column=0, padx=20, pady=(5, 20), sticky="n")
     Manual_Widget.grid(row=1, column=1, padx=20, pady=(5, 20), sticky="n")
     Source_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
@@ -420,7 +420,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="w")
     Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="w")
     
-# ------------------------------------------------------------------------------------------------------------------------------------ Dashboadr Page ------------------------------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------------------------------ Dashboard Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Dashboard(Frame: CTk|CTkFrame):
     import Libs.GUI.Widgets.DashBoard as DashBoard
     # ------------------------- Main Functions -------------------------#
@@ -428,12 +428,12 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
 
-    Frame_DashBoard_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
+    Frame_DashBoard_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
         Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
-        Projec_DF = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
+        Project_DF = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
         Activity_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
         WeekDays_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
         Weeks_DF = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
@@ -446,7 +446,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
         Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
-        Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Totals_Line")
+        Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Totals_Line")
         Frame_Dashboard_Total_Line.pack_propagate(flag=False)
         Frame_DashBoard_Totals_Counter = DashBoard.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
         Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
@@ -462,23 +462,23 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Frame_DashBoard_Totals_Util_by_today_surplus.pack_propagate(flag=False)
 
         # Project Activity Line
-        Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Project_Activity_Line")
+        Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Project_Activity_Line")
         Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
         Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
-        Frame_DashBoard_Project_Frame = DashBoard.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Frame = DashBoard.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Project_DF=Project_DF)
         Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
-        Frame_DashBoard_Project_Detail1_Frame = DashBoard.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail1_Frame = DashBoard.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
         Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Project_Detail2_Frame = DashBoard.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail2_Frame = DashBoard.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
         Frame_DashBoard_Project_Detail2_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Project_Detail3_Frame = DashBoard.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Projec_DF=Projec_DF)
+        Frame_DashBoard_Project_Detail3_Frame = DashBoard.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
         Frame_DashBoard_Project_Detail3_Frame.pack_propagate(flag=False)
 
         Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
         Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
         Frame_DashBoard_Activity_Frame = DashBoard.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
         Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
-        Frame_DashBoard_Activity_Detail1_Frame = DashBoard.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occcurence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail1_Frame = DashBoard.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
         Frame_DashBoard_Activity_Detail2_Frame = DashBoard.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail2_Frame.pack_propagate(flag=False)
@@ -486,18 +486,18 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
 
         # WeekDay and Weeks Line
-        Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="WeekDay_Weeks_Line")
+        Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="WeekDay_Weeks_Line")
         Frame_DashBoard_WeekDays_Frame = DashBoard.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
         Frame_DashBoard_Weeks_Frame = DashBoard.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
 
         # Day Chart Line
-        Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrolable_Area, Frame_Size="Day_Chart_Line")
+        Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Day_Chart_Line")
         Frame_DashBoard_Chart_Frame = DashBoard.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
         Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
         #? Build look of Widget
         Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
-        Frame_DashBoard_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+        Frame_DashBoard_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
         Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
@@ -531,7 +531,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
     except:
-        CTkMessagebox(title="Error", message=f"Dashboard not all data available, pelase run Downloader first.", icon="cancel", fade_in_duration=1)
+        CTkMessagebox(title="Error", message=f"Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1)
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Data Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Data(Frame: CTk|CTkFrame):
@@ -611,7 +611,7 @@ def Page_Data(Frame: CTk|CTkFrame):
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
             Sharepoint.Upload(Events=Events, SP_Password=SP_Password)
-            CTkMessagebox(title="Success", message="Sucessfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+            CTkMessagebox(title="Success", message="Successfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
 
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
@@ -649,7 +649,7 @@ def Page_Data(Frame: CTk|CTkFrame):
     # Init values in table
     change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len)
 
-    # Begining Button
+    # Beginning Button
     Button_First = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
     Button_First.configure(text="<<", command = lambda: change_first(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(widget=Button_First, message="First page", ToolTip_Size="Normal")
@@ -688,7 +688,8 @@ def Page_Data(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Information Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Information(Frame: CTk|CTkFrame):
-    Work_Area_Detail_Background = Configuration["Frames"]["Page_Frames"]["Work_Area_Detail"]["fg_color"]
+    Work_Area_Detail_Background = Configuration["Frames"]["Widgets"]["Widget_Frames"]["Scrollable_Frames"]["Triple_size"]["fg_color"]
+    
     Work_Area_Detail_Font = Configuration["Labels"]["Main"]["text_color"]
 
     # ------------------------- Main Functions -------------------------#
@@ -713,18 +714,18 @@ def Page_Information(Frame: CTk|CTkFrame):
 
     # ------------------------- Info Text Area -------------------------#
     # Description
-    Frame_Information_Scrolable_Area = Elements.Get_Widget_Scrolable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
+    Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
     with open("Libs\\GUI\\Information.md", "r", encoding="UTF-8") as file:
-        htmlmarkdown=markdown.markdown( file.read())
+        html_markdown=markdown.markdown( file.read())
     file.close()
 
-    Information_html = HTMLLabel(Frame_Information_Scrolable_Area, html=f"{htmlmarkdown}", background=HTML_Background_Color, font="Roboto", fg=HTML_Font_Color)
+    Information_html = HTMLLabel(Frame_Information_Scrollable_Area, html=f"{html_markdown}", background=HTML_Background_Color, font="Roboto", fg=HTML_Font_Color)
     Information_html.configure(height=700)
 
     #? Build look of Widget
     Frame_Information_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
-    Frame_Information_Scrolable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+    Frame_Information_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
     Information_html.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
 
@@ -754,7 +755,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Frame_Settings_Work_Detail_Area.grid_propagate(flag=False)
 
     # ------------------------- State Area -------------------------#
-    # Add Button - Downlaod New Project and Activities
+    # Add Button - Download New Project and Activities
     Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
     Elements.Get_ToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities.", ToolTip_Size="Normal")
@@ -763,7 +764,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # Tab View
     TabView = Elements.Get_Tab_View(Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
     TabView.pack_propagate(flag=False)
-    Tab_Ape = TabView.add("Apperance")
+    Tab_Ape = TabView.add("Appearance")
     Tab_Ape.pack_propagate(flag=False)
     Tab_Gen = TabView.add("Data Source")
     Tab_Gen.pack_propagate(flag=False)
@@ -777,7 +778,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_S.pack_propagate(flag=False)
     Tab_E_A = TabView.add("Events - Rules")
     Tab_E_A.pack_propagate(flag=False)
-    TabView.set("Apperance")
+    TabView.set("Appearance")
 
     Tab_Ape_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
     Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
@@ -785,16 +786,16 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_G_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton4"]
     Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton5"]
     Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
-    Elements.Get_ToolTip(widget=Tab_Ape_ToolTip_But, message="Application Apperance Setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Setup related to Downloadinf date.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Ape_ToolTip_But, message="Application Appearance Setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Scheduler setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
-    # Apperance
-    Theme_Widget = Settings_Widgets.Settings_Aperance_Theme(Frame=Tab_Ape, window=window)
-    Color_Pallete_Widget = Settings_Widgets.Settings_Aperance_Color_Pallete(Frame=Tab_Ape)
+    # Appearance
+    Theme_Widget = Settings_Widgets.Settings_Appearance_Theme(Frame=Tab_Ape, window=window)
+    Color_Palette_Widget = Settings_Widgets.Settings_Appearance_Color_Palette(Frame=Tab_Ape)
 
     # General Page
     Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
@@ -812,19 +813,19 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Frame=Tab_E_G)
     Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_G)
     Event_Skip_Widget = Settings_Widgets.Settings_Events_General_Skip(Frame=Tab_E_G)
-    Event_Parralel_Widget = Settings_Widgets.Settings_Parralel_events(Frame=Tab_E_G)
+    Event_Parallel_Widget = Settings_Widgets.Settings_Parallel_events(Frame=Tab_E_G)
     Event_Join_Widget = Settings_Widgets.Settings_Join_events(Frame=Tab_E_G)
 
     # Event-Empty Page
     Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Frame=Tab_E_E)
-    Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generaly(Frame=Tab_E_E)
+    Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generally(Frame=Tab_E_E)
 
-    # Event-Empty Spliting Page
-    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empt_Schedule(Frame=Tab_E_S)
+    # Event-Empty Splitting Page
+    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empty_Schedule(Frame=Tab_E_S)
 
     # Event-AutoFill Page
     Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
-    Event_Activit_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Frame=Tab_E_A)
+    Event_Activity_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Frame=Tab_E_A)
 
     #? Build look of Widget
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
@@ -834,7 +835,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
 
     Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Color_Pallete_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
+    Color_Palette_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
 
     Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
@@ -849,7 +850,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
     Event_HomeOffice_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
     Event_Skip_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-    Event_Parralel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
+    Event_Parallel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
     Event_Join_Widget.grid(row=1, column=2, padx=5, pady=5, sticky="nw")
 
     Event_Split_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
@@ -858,7 +859,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_Scheduler_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
     Event_AutoFiller_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Activit_Correction_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Event_Activity_Correction_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
 
 
@@ -889,11 +890,11 @@ class Win(customtkinter.CTk):
 
 if __name__ == "__main__":
     window = Win()
-    display_widht = window.winfo_screenwidth()
+    display_width = window.winfo_screenwidth()
     display_height = window.winfo_screenheight()
     Window_Frame_width = 1800
     Window_Frame_height = 900
-    left_position = int(display_widht // 2 - Window_Frame_width // 2)
+    left_position = int(display_width // 2 - Window_Frame_width // 2)
     top_position = int(display_height // 2 - Window_Frame_height // 2)
     window.geometry(f"{Window_Frame_width}x{Window_Frame_height}+{left_position}+{top_position}")
 

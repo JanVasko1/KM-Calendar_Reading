@@ -73,11 +73,11 @@ def Find_Close_Sub_Event(Day_Events_df: DataFrame, General_Empty_df: DataFrame, 
             DF_Index = Sub_event_DF_Index_list[Duration_Index]
             End_Time = General_Empty_df.iloc[DF_Index]["Start_Time"]
             Dataframe_add_line(Dataframe=Day_Events_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="General", Within_Working_Hours=True, Location="Office")
-            # Must add  also to General_Emtpy because inserted line might be updated by diffferent line calculation and newly create line would miss and cause double insert
+            # Must add  also to General_Empty because inserted line might be updated by different line calculation and newly create line would miss and cause double insert
             Dataframe_add_line(Dataframe=General_Empty_df, Subject=General_Empty_Description, Start_Date=Day, End_Date=Day, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=General_Empty_Project, Activity=General_Empty_Activity, Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="General", Within_Working_Hours=True, Location="Office")
    
-def Defin_Event_within_Working_Hours(Dataframe: DataFrame, Day_Start_Time_dt: datetime, Day_End_Time_dt: datetime) -> None:
-    # Marks row which are at least with some part of event within wotrking hours
+def Define_Event_within_Working_Hours(Dataframe: DataFrame, Day_Start_Time_dt: datetime, Day_End_Time_dt: datetime) -> None:
+    # Marks row which are at least with some part of event within working hours
     for row in Dataframe.iterrows():
         row_Series = pandas.Series(row[1])
         Event_Start_time = row_Series["Start_Time"]
@@ -96,8 +96,8 @@ def Defin_Event_within_Working_Hours(Dataframe: DataFrame, Day_Start_Time_dt: da
         else:
             continue
 
-def Duration_Couter(Time1: datetime, Time2: datetime) -> int:
-    # Count duration between 2 datetime in minues
+def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
+    # Count duration between 2 datetime in minutes
     Duration_dt = Time2 - Time1
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
@@ -152,7 +152,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             Day_dt = datetime.strptime(Day, Date_format)
             Day_WeekDay = Day_dt.weekday() + 1
 
-            #! Inser Scheduled  - between Day_Start_Time, Day_End_Time
+            #! Insert Scheduled  - between Day_Start_Time, Day_End_Time
             for item in Events_Empty_Scheduled.items():
                 Schedule_Event_Start_Time_dt = datetime.strptime(item[1]["Start"], Time_format)
                 Schedule_Event_End_Time_dt = datetime.strptime(item[1]["End"], Time_format)
@@ -160,7 +160,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
 
                 # Scheduled event must be within Weeks Days selected
                 if Day_WeekDay in Schedule_WeekDays:
-                    # Scheduled event must be within the day working time at leas partionally
+                    # Scheduled event must be within the day working time at leas partially
                     if Schedule_Event_Start_Time_dt > Day_End_Time_dt:
                         continue
                     elif Schedule_Event_End_Time_dt < Day_Start_Time_dt:
@@ -168,16 +168,16 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
                     else:
                         # Check how Schedule meeting is within Working Hours for that day
                         if (Schedule_Event_Start_Time_dt >= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt <= Day_End_Time_dt):
-                            Duration = Duration_Couter(Time1=Schedule_Event_Start_Time_dt, Time2=Schedule_Event_End_Time_dt)
+                            Duration = Duration_Counter(Time1=Schedule_Event_Start_Time_dt, Time2=Schedule_Event_End_Time_dt)
                             Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=item[1]["Start"], End_Time=item[1]["End"], Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         elif (Schedule_Event_Start_Time_dt >= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt >= Day_End_Time_dt):
-                            Duration = Duration_Couter(Time1=Schedule_Event_Start_Time_dt, Time2=Day_End_Time_dt)
+                            Duration = Duration_Counter(Time1=Schedule_Event_Start_Time_dt, Time2=Day_End_Time_dt)
                             Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=item[1]["Start"], End_Time=Day_End_Time, Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         elif (Schedule_Event_Start_Time_dt <= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt <= Day_End_Time_dt):
-                            Duration = Duration_Couter(Time1=Day_Start_Time_dt, Time2=Schedule_Event_End_Time_dt)
+                            Duration = Duration_Counter(Time1=Day_Start_Time_dt, Time2=Schedule_Event_End_Time_dt)
                             Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time, End_Time=item[1]["End"], Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         elif (Schedule_Event_Start_Time_dt <= Day_Start_Time_dt) and (Schedule_Event_End_Time_dt >= Day_End_Time_dt):
-                            Duration = Duration_Couter(Time1=Day_Start_Time_dt, Time2=Day_End_Time_dt)
+                            Duration = Duration_Counter(Time1=Day_Start_Time_dt, Time2=Day_End_Time_dt)
                             Dataframe_add_line(Dataframe=Day_Events_df, Subject=item[1]["Description"], Start_Date=Day, End_Date=Day, Start_Time=Day_Start_Time, End_Time=Day_End_Time, Duration=Duration, Project=item[1]["Project"], Activity=item[1]["Activity"], Recurring=False, Busy_Status="Busy", Meeting_Room="", All_Day_Event=False, Event_Empty_Insert=True, Event_Empty_Method="Scheduled", Within_Working_Hours=False, Location="Office")
                         else:
                             pass
@@ -190,7 +190,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
             #! Insert General - only between Day_Start_Time, Day_End_Time
             Day_Events_df["Start_Time"] = pandas.to_datetime(Day_Events_df["Start_Time"], format=Time_format)
             Day_Events_df["End_Time"] = pandas.to_datetime(Day_Events_df["End_Time"], format=Time_format)
-            Defin_Event_within_Working_Hours(Dataframe=Day_Events_df, Day_Start_Time_dt=Day_Start_Time_dt, Day_End_Time_dt=Day_End_Time_dt)
+            Define_Event_within_Working_Hours(Dataframe=Day_Events_df, Day_Start_Time_dt=Day_Start_Time_dt, Day_End_Time_dt=Day_End_Time_dt)
             mask1 = Day_Events_df["Within_Working_Hours"] == True
             mask2 = Day_Events_df["All_Day_Event"] == False
             mask3 = Day_Events_df["Subject"] != Day_Start_Subject
@@ -401,7 +401,7 @@ def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
                 General_Sub_Index_list = list(General_Sub_df.index.values)
                 Change_Row_Index = random.choice(General_Sub_Index_list)
 
-                # Find the Fill Event with maximal differenc between "Fill_Event_counted_duration_list" and "Fill_Event_actual_duration_list" --> where the number is positive (not to overshoot)
+                # Find the Fill Event with maximal difference between "Fill_Event_counted_duration_list" and "Fill_Event_actual_duration_list" --> where the number is positive (not to overshoot)
                 Fill_Event_difference_duration_list = list(map(operator.sub, Fill_Event_counted_duration_list, Fill_Event_actual_duration_list))
                 for i in range(len(Fill_Event_difference_duration_list)):
                     if Fill_Event_difference_duration_list[i] < 0:
