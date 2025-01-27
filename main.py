@@ -6,8 +6,9 @@ import markdown
 from pandas import DataFrame
 from datetime import datetime
 
+from tkinter import ttk
 import customtkinter
-from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkOptionMenu
+from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkOptionMenu, CTkLabel
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
 
@@ -295,6 +296,10 @@ def Page_Download(Frame: CTk|CTkFrame):
         else:
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
+    def Pre_Download_Data() -> None:
+        # TODO --> Dodělat
+        pass
+
 
     # ------------------------- Main Functions -------------------------#
     # Default
@@ -323,6 +328,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Elements.Get_ToolTip(widget=Tab_New_ToolTip_But, message="Used to download new data to be regsitered, or Current Period checking.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_Pre_ToolTip_But, message="Used to donwload already registered date in Time Sheets --> downlaod from Sharepoint previous periods.", ToolTip_Size="Normal")
 
+    # ---------- New Downoad ---------- #
     # Download Method
     Metdod_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Metdod_Text.configure(text="Step 1 - Date Range Source")
@@ -360,18 +366,38 @@ def Page_Download(Frame: CTk|CTkFrame):
     Exchange_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
     Outlook_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
 
+    # Download button
+    Download_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Download_Text.configure(text="Step 3 - Download and process")
+
+    Button_Download = Elements.Get_Button(Frame=Tab_New, Button_Size="Normal")
+    Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
+    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
+    
+    # ---------- Previous periods ---------- #
+    Previous_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Previous_Text.configure(text="Step 1 - Define previous periods")
+
+    Previous_Period_Def_Widget = Download.Per_Period_Selection(Frame=Tab_Pre)
+
+    # Download button
+    Pre_Download_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Pre_Download_Text.configure(text="Step 2 - Download and process")
+
+    Pre_Button_Download = Elements.Get_Button(Frame=Tab_Pre, Button_Size="Normal")
+    Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data())
+    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
+    
+
     # ------------------------- State Area -------------------------#
     # Progress Bar
     Progress_Bar = Elements.Get_ProgressBar(Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process")
     Progress_Bar.set(value=0)
 
     Progress_text = Elements.Get_Label(Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
-    Progress_text.configure(text=f"", width=200)
+    Progress_text.configure(text=f"Download progress", width=200)
 
-    Button_Download = Elements.Get_Button(Frame=Frame_Download_State_Area, Button_Size="Normal")
-    Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
-    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
-    
+
     #? Build look of Widget
     Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
@@ -383,11 +409,17 @@ def Page_Download(Frame: CTk|CTkFrame):
     Source_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
     Exchange_Widget.grid(row=3, column=0, padx=20, pady=(5, 20), sticky="n")
     Outlook_Widget.grid(row=3, column=1, padx=20, pady=(5, 20), sticky="n")
+    Download_Text.grid(row=4, column=0, padx=5, pady=5, sticky="nw")
+    Button_Download.grid(row=5, column=0, padx=5, pady=15, sticky="nw")
+    
+    Previous_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Previous_Period_Def_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Pre_Download_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
+    Pre_Button_Download.grid(row=3, column=0, padx=5, pady=15, sticky="nw")
 
-    Button_Download.grid(row=0, column=0, padx=5, pady=15, sticky="e")
-    Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="e")
-    Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="e")
-
+    Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="w")
+    Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="w")
+    
 # ------------------------------------------------------------------------------------------------------------------------------------ Dashboadr Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Dashboard(Frame: CTk|CTkFrame):
     import Libs.GUI.Widgets.DashBoard as DashBoard
@@ -710,6 +742,8 @@ def Page_Settings(Frame: CTk|CTkFrame):
             import Libs.Sharepoint.Sharepoint as Sharepoint
             Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
             CTkMessagebox(title="warning", message="Project and Activity downloaded from Sharepoint. Restart app!!", icon="check", option_1="Thanks", fade_in_duration=1)
+
+            # TODO --> automaticky poslat i do Outlooku abych měl správně list a kategorie v Outlooku
 
 
     # ------------------------- Main Functions -------------------------#

@@ -16,7 +16,7 @@
                 "light",
                 "normal"
             ],
-            "Theme": "Dark",
+            "Theme": "Light",
             "Theme_List": [
                 "Dark",
                 "Light"
@@ -774,7 +774,10 @@
                             "#FFFFFF"
                         ],
                         "bg_color": "transparent",
-                        "fg_color": "transparent",
+                        "fg_color": [
+                            "#d0d0d0",
+                            "#2C2C2C"
+                        ],
                         "orientation": "vertical",
                         "scrollbar_fg_color": "transparent",
                         "scrollbar_button_color": [
@@ -994,7 +997,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ]
                         },
@@ -1029,7 +1032,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ]
                         },
@@ -1048,7 +1051,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ],
                             "orientation": "vertical",
@@ -1091,7 +1094,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ]
                         },
@@ -1126,7 +1129,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ]
                         },
@@ -1145,7 +1148,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ],
                             "orientation": "vertical",
@@ -1190,7 +1193,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ]
                         },
@@ -1209,7 +1212,7 @@
                             ],
                             "bg_color": "transparent",
                             "fg_color": [
-                                "#f7f9f9",
+                                "#DBDBDB",
                                 "#2C2C2C"
                             ],
                             "orientation": "vertical",
@@ -1246,7 +1249,7 @@
     },
     "TabView": {
         "Normal": {
-            "width": 1670,
+            "width": 1700,
             "height": 10,
             "corner_radius": 10,
             "border_width": 1,
@@ -1433,8 +1436,8 @@
     "ProgressBar": {
         "Horizontal": {
             "Download_Process": {
-                "width": 1300,
-                "height": 10,
+                "width": 1490,
+                "height": 15,
                 "border_width": 1,
                 "border_color": [
                     "#2C2C2C",

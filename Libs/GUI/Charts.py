@@ -10,7 +10,7 @@ import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
 from bokeh.plotting import save, figure
 from bokeh.layouts import layout
 from bokeh.io import export_svgs, export_svg, export_png
-from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block
+from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block, HoverTool
 
 from CTkMessagebox import CTkMessagebox
 
@@ -135,7 +135,6 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
     Active_Area_indented = round((int(Active_Area_size) / 100) * int(Chart_Area_Propertie.iloc[0]["Active_Area_indented_percent"]),0)
 
     Value_df["Date"] = pandas.to_datetime(Value_df[X_Series_Column], format=Date_Format)
-    #Value_df.drop(labels=[f"{X_Series_Column}"], axis=1,inplace=True)
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
     # ToolTip
@@ -182,17 +181,24 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
     else:
         pass
 
-    # REctangles --> Processed data + Forecast
+    # ---------------------------- Background Rctangles ---------------------------- #
     # Y max coordinance for rectangle
     Value_df["Line_Sum"] = Value_df.iloc[:,1:].sum(axis=1)
     Y_Max_Coordinates = max(Value_df["Line_Sum"])
     Value_df.drop(labels=["Line_Sum"], axis=1, inplace=True)
 
+    # Forecast availability
+    Value_df_Max_Date_ = max(Value_df["Date"])
+    Today_dt = datetime.now()
+    if Today_dt < Value_df_Max_Date_:
+        Crate_Forecast = True
+    else:
+        Crate_Forecast = False
+
     # Registered Area
     if Events_Registered_df.empty:
         pass
     else:
-        # BUG --> Hover ukazuje i glyph --> musím ho excludnout
         Event_Registerd_Min_Data = min(Events_Registered_df["Date"])
         Event_Registerd_Min_Data_dt = datetime.strptime(Event_Registerd_Min_Data, Date_Format)
         Event_Registerd_Min_Data_ts = (datetime.timestamp(Event_Registerd_Min_Data_dt)) * 1000
@@ -208,11 +214,9 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
         Chart.add_layout(fixed_label)
 
     # ForeCast
-    if Report_Period_End == None:
+    if (Report_Period_End == None) or (Crate_Forecast == False):
         pass
     else:
-        # BUG --> Hover ukazuje i glyph --> musím ho excludnout
-        Today_dt = datetime.now()
         Today_str = datetime.strftime(Today_dt, Date_Format)
         Today_dt = datetime.strptime(Today_str, Date_Format)
         Today_ts = (datetime.timestamp(Today_dt)) * 1000
@@ -228,10 +232,16 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
     # Chart
     DataSource = ColumnDataSource(data = Value_df)
     if Legend_Properties.iloc[0]["Legend_Title_Visible"] == True:
-        Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, line_color=None, color=Colors_pallete, source=DataSource, legend_label=Colum_list, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
+        Glyph_vbar_stack = Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, line_color=None, color=Colors_pallete, source=DataSource, legend_label=Colum_list, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
     else:
-        Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, line_color=None, color=Colors_pallete, source=DataSource, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
+        Glyph_vbar_stack = Chart.vbar_stack(stackers=Colum_list, x="Date", width=50000000, line_color=None, color=Colors_pallete, source=DataSource, border_radius = 6, muted_alpha=0.2, hover_color=Chart_Area_Propertie.iloc[0]["Column_Color_Single"])
 
+    # ToolTip update Rendereds --> update
+    Glyph_vbar_stack_list = []
+    for Glyph in Glyph_vbar_stack:
+        Glyph_vbar_stack_list.append(Glyph)
+    Chart.hover.renderers = Glyph_vbar_stack_list
+    
     Chart_Layout = layout(children=[Chart],sizing_mode="stretch_width")
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"

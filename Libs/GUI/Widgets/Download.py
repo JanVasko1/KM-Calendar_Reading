@@ -1,9 +1,10 @@
 # Import Libraries
+from datetime import datetime
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 
-from customtkinter import CTk, CTkFrame, StringVar, CTkEntry
+from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar
 from CTkMessagebox import CTkMessagebox
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Set Defaults -------------------------------------------------------------------------------------------------------------------------------------------------- #
@@ -167,6 +168,52 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
     Out_Email_Frame_Var = Out_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
     Out_Email_Frame_Var.configure(placeholder_text=Outlook_Email, placeholder_text_color="#949A9F")
     Out_Email_Frame_Var.configure(state="disabled")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+
+def Per_Period_Selection(Frame: CTk|CTkFrame) -> CTkFrame:
+    Today = datetime.now()
+    Current_year = Today.year
+    Current_month = Today.month
+    Year_list = [Current_year - x for x in range(0, 5)]
+    Month_list = [x for x in range(1, 13)]
+
+    Year_From_Variable = IntVar(master=Frame, value=Current_year)
+    Month_From_Variable = IntVar(master=Frame, value=Current_month)
+    Year_To_Variable = IntVar(master=Frame, value=Current_year)
+    Month_To_Variable = IntVar(master=Frame, value=Current_month)
+    # ------------------------- Main Functions -------------------------#
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Previoust Periods range", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define Which periods should be downloaded from TimeSheet History. Included.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Year From
+    Past_Year_From_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Year", Field_Type="Input_OptionMenu") 
+    Past_Year_From_Frame_Var = Past_Year_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Past_Year_From_Frame_Var.configure(variable=Year_From_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Past_Year_From_Frame_Var, values=Year_list, command=None)
+
+    # Field - Month From
+    Past_Month_From_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Month", Field_Type="Input_OptionMenu") 
+    Past_Month_From_Frame_Var = Past_Month_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Past_Month_From_Frame_Var.configure(variable=Month_From_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Past_Month_From_Frame_Var, values=Month_list, command=None)
+
+    # Field - Year To
+    Past_Year_To_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Year", Field_Type="Input_OptionMenu") 
+    Past_Year_To_Frame_Var = Past_Year_To_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Past_Year_To_Frame_Var.configure(variable=Year_To_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Past_Year_To_Frame_Var, values=Year_list, command=None)
+
+    # Field - Month To
+    Past_Month_To_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Month", Field_Type="Input_OptionMenu") 
+    Past_Month_To_Frame_Var = Past_Month_To_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Past_Month_To_Frame_Var.configure(variable=Month_To_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Past_Month_To_Frame_Var, values=Month_list, command=None)
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

@@ -381,19 +381,19 @@ def Settings_Aperance_Color_Pallete(Frame: CTk|CTkFrame) -> CTkFrame:
 
             
         Collor_Picker_window = CTkToplevel()
-        Collor_Picker_window.configure(fg_color="#000001")
+        #Collor_Picker_window.configure(fg_color="#000001")
         Collor_Picker_window.title("Collor Picker")
         Collor_Picker_window.geometry("295x240")
         Collor_Picker_window.bind(sequence="<Escape>", func=lambda evet: Quit_Save(Helper=Helper))
-        Collor_Picker_window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
-        Collor_Picker_window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
-        Collor_Picker_window.overrideredirect(boolean=True)
+        #Collor_Picker_window.bind(sequence="<Button-1>", func=lambda evet:clickwin())
+        #Collor_Picker_window.bind(sequence="<B1-Motion>", func=lambda evet:dragwin())
+        #Collor_Picker_window.overrideredirect(boolean=True)
         Collor_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         Collor_Picker_window.resizable(width=False, height=False)
 
         # Rounded corners 
-        Collor_Picker_window.config(background="#000001")
-        Collor_Picker_window.attributes("-transparentcolor", "#000001")
+        #Collor_Picker_window.config(background="#000001")
+        #Collor_Picker_window.attributes("-transparentcolor", "#000001")
 
         Colorpicker_Frame = Elements.Get_Color_Picker(Frame=Collor_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
 
@@ -2093,6 +2093,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Sub_dict = Sub_Row[1]
         Skip_AutoFill_list.append(list(Sub_dict.values()))
 
+    # BUG --> tabulka se načte pouze první sloupec a až po skrolování se dočte zbytek sloupců
     Frame_AutoFiller_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_AutoFill_list, Table_Columns=4, Table_Rows=len(Skip_AutoFill_list))
     Frame_AutoFiller_Table_Var = Frame_AutoFiller_Table.children["!ctktable"]
     Frame_AutoFiller_Table_Var.configure(wraplength=230)
