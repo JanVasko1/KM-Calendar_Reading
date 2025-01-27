@@ -380,6 +380,11 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     Previous_Period_Def_Widget = Download.Per_Period_Selection(Frame=Tab_Pre)
 
+    Pre_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
+
+    Previous_Sharepoint_Widget = Download.Per_Download_Sharepoint(Frame=Tab_Pre)
+
     # Download button
     Pre_Download_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Pre_Download_Text.configure(text="Step 2 - Download and process")
@@ -414,8 +419,10 @@ def Page_Download(Frame: CTk|CTkFrame):
     
     Previous_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Previous_Period_Def_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-    Pre_Download_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
-    Pre_Button_Download.grid(row=3, column=0, padx=5, pady=15, sticky="nw")
+    Pre_Sharepoint_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
+    Previous_Sharepoint_Widget.grid(row=3, column=0, padx=5, pady=5, sticky="nw")
+    Pre_Download_Text.grid(row=4, column=0, padx=5, pady=5, sticky="nw")
+    Pre_Button_Download.grid(row=5, column=0, padx=5, pady=15, sticky="nw")
 
     Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="w")
     Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="w")
@@ -872,10 +879,10 @@ class Win(customtkinter.CTk):
         super().iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         self._offsetx = 0
         self._offsety = 0
-        super().bind("<Button-1>",self.clickwin)
-        super().bind("<B1-Motion>", self.dragwin)
+        super().bind("<Button-1>",self.click_win)
+        super().bind("<B1-Motion>", self.drag_win)
 
-    def dragwin(self,event):
+    def drag_win(self,event):
         # Move only when on Side Bar
         if (self._offsetx < SideBar_Width):
             x = super().winfo_pointerx() - self._offsetx
@@ -884,7 +891,7 @@ class Win(customtkinter.CTk):
         else:
             pass
 
-    def clickwin(self,event):
+    def click_win(self,event):
         self._offsetx = super().winfo_pointerx() - super().winfo_rootx()
         self._offsety = super().winfo_pointery() - super().winfo_rooty()
 

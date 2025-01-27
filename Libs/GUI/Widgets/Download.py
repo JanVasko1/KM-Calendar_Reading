@@ -219,3 +219,32 @@ def Per_Period_Selection(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
+
+
+def Per_Download_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
+    # ------------------------- Main Functions -------------------------#
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint - authenticate", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Used for Sharepoint authentication to download data.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - User ID
+    Past_SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
+    Past_SP_User_ID_Text_Frame_Var = Past_SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Past_SP_User_ID_Text_Frame_Var.configure(placeholder_text=SP_Person_ID, placeholder_text_color="#949A9F")
+    Past_SP_User_ID_Text_Frame_Var.configure(state="disabled")
+
+    # Field - User Email
+    Past_SP_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
+    Past_SP_Email_Text_Frame_Var = Past_SP_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Past_SP_Email_Text_Frame_Var.configure(placeholder_text=SP_Auth_Email, placeholder_text_color="#949A9F")
+    Past_SP_Email_Text_Frame_Var.configure(state="disabled")
+
+    # Field - Password
+    Past_SP_Password_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
+    Past_SP_Password_Frame_Var = Past_SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Past_SP_Password_Frame_Var.configure(placeholder_text="Fill your password.")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
