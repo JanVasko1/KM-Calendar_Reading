@@ -1,5 +1,13 @@
 {
     "General": {
+        "Default": {
+            "User_Type": "Manager",
+            "User_Type_list": [
+                "User",
+                "Manager"
+            ],
+            "Managed_Team": {}
+        },
         "Downloader": {
             "Outlook": {
                 "Calendar": "Jan.Vasko@konicaminolta.eu"

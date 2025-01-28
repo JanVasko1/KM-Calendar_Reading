@@ -22,6 +22,9 @@ import Libs.Defaults_Lists as Defaults_Lists
 # ------------------------------------------------------------------------------------------------------------------------------------ Set Defaults ------------------------------------------------------------------------------------------------------------------------------------ #
 Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
+
+User_Type = Settings["General"]["Default"]["User_Type"]
+
 Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
 Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
@@ -89,6 +92,21 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
+    global Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady, Icon_Default_pady, Logo_Height, Logo_width, Side_Bar_Frame_Height, Icon_Button_Height, Logo_pady
+    
+    if User_Type == "User":
+        Icon_count = 6
+    elif User_Type == "Manager":
+        Icon_count = 7
+
+    Icon_Default_pady = 10
+    Logo_Height = 40
+    Logo_width = 70
+    Logo_pady = 20
+    
+    Side_Bar_Frame_Height = Side_Bar_Frame._current_height
+    Icon_Button_Height = Configuration["Buttons"]["Picture_SideBar"]["height"]
+
     # ------------------------- Local Functions -------------------------#
     def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
         # Find
@@ -96,85 +114,143 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
             widget.destroy()
             window.update_idletasks()
 
-    def Show_Download_Page(Active_Window: CTkFrame) -> None:
+    def Show_Download_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="e")
         time.sleep(0.1)
         Page_Download(Frame=Frame_Work_Area_Detail)
-        Active_Window.grid(row=0, column=0, padx=(10, 2), pady=(280, 10), sticky="e")
         window.update_idletasks()
 
-    def Show_Dashboard_Page(Active_Window: CTkFrame) -> None:
+    def Show_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         Page_Dashboard(Frame=Frame_Work_Area_Detail)
-        Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
         window.update_idletasks()
 
-    def Show_Data_Page(Active_Window: CTkFrame) -> None:
+    def Show_Team_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
+        time.sleep(0.1)
+        Page_User_Dashboard(Frame=Frame_Work_Area_Detail)
+        window.update_idletasks()
+
+    def Show_Data_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
+        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         Page_Data(Frame=Frame_Work_Area_Detail)
-        Active_Window.grid(row=2, column=0, padx=(10, 2), pady=10, sticky="e")
         window.update_idletasks()
 
-    def Show_Information_Page(Active_Window: CTkFrame) -> None:
+    def Show_Information_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         Page_Information(Frame=Frame_Work_Area_Detail)
-        Active_Window.grid(row=3, column=0, padx=(10, 2), pady=10, sticky="e")
         window.update_idletasks()
 
-    def Show_Settings_Page(Active_Window: CTkFrame) -> None:
+    def Show_Settings_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Detail)
+        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         Page_Settings(Frame=Frame_Work_Area_Detail)
-        Active_Window.grid(row=4, column=0, padx=(10, 2), pady=10, sticky="e")
         window.update_idletasks()
+
+    def Define_Icons_Top_Bottom_indent(Frame_Height: int, Icon_count: int, Icon_Button_Height: int, Icon_Default_pady: int, Logo_height: int, Logo_pady: int) -> list[int, int]:
+        Total_Logo_Height = Logo_height + (2 * Logo_pady)
+        Total_Icons_Height = Icon_count * (Icon_Button_Height + (2 * Icon_Default_pady))
+        Side_Bar_Middle_point = Frame_Height // 2
+        Side_Bar_Icon_top_pady = Side_Bar_Middle_point - (Total_Icons_Height // 2)
+        Side_Bar_Icon_Bottom_pady = Side_Bar_Middle_point - (Total_Icons_Height // 2) - Total_Logo_Height - Logo_pady
+
+        return Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady
 
     # ------------------------- Main Functions -------------------------#
     Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
 
-    Konica_Logo = Elements.Get_Background_Image(Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=45)
-    
     # Page - Download
-    Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
-    Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window))    
+    Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    if User_Type == "User":
+        Download_Row = 0
+    elif User_Type == "Manager":
+        Download_Row = 0
+    Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window, Side_Bar_Row=Download_Row))    
     Elements.Get_ToolTip(widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal")
 
     # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
-    Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window))
+    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    if User_Type == "User":
+        Dashboard_Row = 1
+    elif User_Type == "Manager":
+        Dashboard_Row = 1
+    Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Dashboard_Row))
     Elements.Get_ToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page.", ToolTip_Size="Normal")
 
+    # Page - Users Dashboard
+    if User_Type == "User":
+        pass
+    elif User_Type == "Manager":
+        Team_Row = 2
+        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+        Icon_Frame_Users_Dashboard.configure(command = lambda: Show_Team_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Team_Row))
+        Elements.Get_ToolTip(widget=Icon_Frame_Users_Dashboard, message="My Team page.", ToolTip_Size="Normal")
+
     # Page - Data
-    Icon_Frame_Data = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
-    Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window))
+    Icon_Frame_Data = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    if User_Type == "User":
+        Data_Row = 2
+    elif User_Type == "Manager":
+        Data_Row = 3
+    Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window, Side_Bar_Row=Data_Row))
     Elements.Get_ToolTip(widget=Icon_Frame_Data, message="Data page.", ToolTip_Size="Normal")
 
     # Page - Information
-    Icon_Frame_Information = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
-    Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window))
+    Icon_Frame_Information = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    if User_Type == "User":
+        Information_Row = 3
+    elif User_Type == "Manager":
+        Information_Row = 4
+    Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window, Side_Bar_Row=Information_Row))
     Elements.Get_ToolTip(widget=Icon_Frame_Information, message="Information page.", ToolTip_Size="Normal")
 
     # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
-    Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window))
+    Icon_Frame_Settings = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    if User_Type == "User":
+        Settings_Row = 4
+    elif User_Type == "Manager":
+        Settings_Row = 5
+    Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window, Side_Bar_Row=Settings_Row))
     Elements.Get_ToolTip(widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal")
 
     # Close Application
-    Icon_Frame_Close = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar", Button_Size="Picture_SideBar")
+    Icon_Frame_Close = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
     Icon_Frame_Close.configure(command = lambda: window.quit())
     Elements.Get_ToolTip(widget=Icon_Frame_Close, message="Close.", ToolTip_Size="Normal")
 
+    Konica_Logo = Elements.Get_Background_Image(Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
+
+    # Define intend
+    Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady = Define_Icons_Top_Bottom_indent(Frame_Height=Side_Bar_Frame_Height, Icon_count=Icon_count, Icon_Button_Height=Icon_Button_Height, Icon_Default_pady=Icon_Default_pady, Logo_height=Logo_Height, Logo_pady=Logo_pady)
+
     #? Build look of Widget
-    Active_Window.grid(row=1, column=0, padx=(10, 2), pady=10, sticky="e")
-    Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(280, 10), sticky="w")
-    Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=10, sticky="w")
-    Icon_Frame_Data.grid(row=2, column=1, padx=(0, 10), pady=10, sticky="w")
-    Icon_Frame_Information.grid(row=3, column=1, padx=(0, 10), pady=10, sticky="w")
-    Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=10, sticky="w")
-    Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=(10, 210), sticky="w")
-    Konica_Logo.grid(row=6, column=0, padx=(0, 0), pady=20, sticky="", columnspan=2)
+    Active_Window.grid(row=1, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
+    if User_Type == "User":
+        Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
+        Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Data.grid(row=2, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Information.grid(row=3, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=(Icon_Default_pady, Side_Bar_Icon_Bottom_pady), sticky="w")
+        Konica_Logo.grid(row=6, column=0, padx=(0, 0), pady=Logo_pady, sticky="", columnspan=2)
+    elif User_Type == "Manager":
+        Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
+        Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Users_Dashboard.grid(row=2, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Data.grid(row=3, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Information.grid(row=4, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Settings.grid(row=5, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
+        Icon_Frame_Close.grid(row=6, column=1, padx=(0, 10), pady=(Icon_Default_pady, Side_Bar_Icon_Bottom_pady), sticky="w")
+        Konica_Logo.grid(row=7, column=0, padx=(0, 0), pady=Logo_pady, sticky="", columnspan=2)
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Download Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):
@@ -297,7 +373,13 @@ def Page_Download(Frame: CTk|CTkFrame):
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
     def Pre_Download_Data() -> None:
-        # TODO --> Dodělat
+        print("Pre_Download_Data")
+        # TODO --> Dodělat připravit stahování 
+        pass
+
+    def My_Team_Download_Data() -> None:
+        print("My_Team_Download_Data")
+        # TODO --> Dodělat připravit stahování 
         pass
 
 
@@ -321,6 +403,14 @@ def Page_Download(Frame: CTk|CTkFrame):
     Tab_New.pack_propagate(flag=False)
     Tab_Pre = TabView.add("Past")
     Tab_Pre.pack_propagate(flag=False)
+    if User_Type == "Manager":
+        Tab_Team = TabView.add("My Team")
+        Tab_Team.pack_propagate(flag=False)
+
+        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton3"]
+        Elements.Get_ToolTip(widget=Tab_Team_ToolTip_But, message="Used to download data from my team wit current reporting period.", ToolTip_Size="Normal")
+    else:
+        pass
     TabView.set("New")
 
     Tab_New_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
@@ -383,7 +473,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Pre_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
 
-    Previous_Sharepoint_Widget = Download.Per_Download_Sharepoint(Frame=Tab_Pre)
+    Previous_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Frame=Tab_Pre)
 
     # Download button
     Pre_Download_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
@@ -391,8 +481,24 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     Pre_Button_Download = Elements.Get_Button(Frame=Tab_Pre, Button_Size="Normal")
     Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data())
-    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
     
+    # ---------- Previous periods ---------- #
+    if User_Type == "Manager":
+        Team_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
+        Team_Sharepoint_Text.configure(text="Step 1 - Sharepoint credential")
+
+        My_Team_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Frame=Tab_Team) # Can most probably by identical as downloads needs to connect same ways as in Pre
+
+        # Download button
+        Team_Download_Text = Elements.Get_Label(Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
+        Team_Download_Text.configure(text="Step 2 - Download and process")
+
+        Team_Button_Download = Elements.Get_Button(Frame=Tab_Team, Button_Size="Normal")
+        Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data())
+        Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal")
+    else:
+        pass
 
     # ------------------------- State Area -------------------------#
     # Progress Bar
@@ -423,6 +529,14 @@ def Page_Download(Frame: CTk|CTkFrame):
     Previous_Sharepoint_Widget.grid(row=3, column=0, padx=5, pady=5, sticky="nw")
     Pre_Download_Text.grid(row=4, column=0, padx=5, pady=5, sticky="nw")
     Pre_Button_Download.grid(row=5, column=0, padx=5, pady=15, sticky="nw")
+
+    if User_Type == "Manager":
+        Team_Sharepoint_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+        My_Team_Sharepoint_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+        Team_Download_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
+        Team_Button_Download.grid(row=3, column=0, padx=5, pady=15, sticky="nw")
+    else:
+        pass
 
     Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="w")
     Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="w")
@@ -540,6 +654,10 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     except:
         CTkMessagebox(title="Error", message=f"Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1)
 
+# ------------------------------------------------------------------------------------------------------------------------------------ Dashboard Page ------------------------------------------------------------------------------------------------------------------------------------ #
+def Page_User_Dashboard(Frame: CTk|CTkFrame):
+    # TODO --> Finish completally
+    pass
 # ------------------------------------------------------------------------------------------------------------------------------------ Data Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Data(Frame: CTk|CTkFrame):
     # ------------------------- Local Functions -------------------------#
@@ -771,10 +889,10 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # Tab View
     TabView = Elements.Get_Tab_View(Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
     TabView.pack_propagate(flag=False)
-    Tab_Ape = TabView.add("Appearance")
-    Tab_Ape.pack_propagate(flag=False)
-    Tab_Gen = TabView.add("Data Source")
+    Tab_Gen = TabView.add("General")
     Tab_Gen.pack_propagate(flag=False)
+    Tab_Dat = TabView.add("Data Source")
+    Tab_Dat.pack_propagate(flag=False)
     Tab_Cal = TabView.add("Calendar")
     Tab_Cal.pack_propagate(flag=False)
     Tab_E_G = TabView.add("Events - General")
@@ -785,30 +903,41 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_S.pack_propagate(flag=False)
     Tab_E_A = TabView.add("Events - Rules")
     Tab_E_A.pack_propagate(flag=False)
-    TabView.set("Appearance")
+    if User_Type == "Manager":
+        Tab_Team = TabView.add("My Team")
+        Tab_Team.pack_propagate(flag=False)
 
-    Tab_Ape_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
-    Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
+        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton8"]
+        Elements.Get_ToolTip(widget=Tab_Team_ToolTip_But, message="MY Team base setup.", ToolTip_Size="Normal")
+    else:
+        pass
+    TabView.set("General")
+
+    Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
+    Tab_Dat_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
     Tab_Cal_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton3"]
     Tab_E_G_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton4"]
     Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton5"]
-    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
-    Elements.Get_ToolTip(widget=Tab_Ape_ToolTip_But, message="Application Appearance Setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
+    Tab_E_S_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
+    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton7"]
+    Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Application General Setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Scheduler setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_E_S_ToolTip_But, message="Basic Scheduler setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
-    # Appearance
-    Theme_Widget = Settings_Widgets.Settings_Appearance_Theme(Frame=Tab_Ape, window=window)
-    Color_Palette_Widget = Settings_Widgets.Settings_Appearance_Color_Palette(Frame=Tab_Ape)
+    # General
+    Theme_Widget = Settings_Widgets.Settings_General_Theme(Frame=Tab_Gen, window=window)
+    Color_Palette_Widget = Settings_Widgets.Settings_General_Color_Palette(Frame=Tab_Gen)
+    Program_User_Type_Widget = Settings_Widgets.Settings_Program_User_Type_Widget(Frame=Tab_Gen)
 
     # General Page
-    Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Frame=Tab_Gen)
-    Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Frame=Tab_Gen)
-    Outlook_Widget = Settings_Widgets.Settings_General_Outlook(Frame=Tab_Gen)
-    Formats_Widget = Settings_Widgets.Settings_General_Formats(Frame=Tab_Gen)
+    Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Frame=Tab_Dat)
+    Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Frame=Tab_Dat)
+    Outlook_Widget = Settings_Widgets.Settings_General_Outlook(Frame=Tab_Dat)
+    Formats_Widget = Settings_Widgets.Settings_General_Formats(Frame=Tab_Dat)
 
     # Calendar Page
     Calendar_Working_Widget = Settings_Widgets.Settings_Calendar_Working_Hours(Frame=Tab_Cal)
@@ -834,6 +963,12 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
     Event_Activity_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Frame=Tab_E_A)
 
+    if User_Type == "Manager":
+        # Managed Team
+        Managed_Team_Widget = Settings_Widgets.Settings_My_Team(Frame=Tab_Team)
+    else:
+        pass
+    
     #? Build look of Widget
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
@@ -843,6 +978,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Color_Palette_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
+    Program_User_Type_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
 
     Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
@@ -868,6 +1004,11 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Event_AutoFiller_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Event_Activity_Correction_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
+    if User_Type == "Manager":
+        # Managed Team
+        Managed_Team_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    else:
+        pass
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Main Program -------------------------------------------------------------------------------------------------------------------------------------------------- #

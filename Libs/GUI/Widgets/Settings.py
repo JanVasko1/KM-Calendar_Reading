@@ -18,6 +18,11 @@ client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
 Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
 
+# Program Type
+User_Type = Settings["General"]["Default"]["User_Type"]
+User_Type_list = list(Settings["General"]["Default"]["User_Type_list"])
+Managed_Team_dict = Settings["General"]["Default"]["Managed_Team"]
+
 # Appearance
 Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
 Theme_List = list(Configuration["Global_Appearance"]["Window"]["Theme_List"])
@@ -294,7 +299,7 @@ def Calculate_duration(Entry_Field: CTkEntry, Lunch_Brake_Duration_Frame_Var: in
         CTkMessagebox(title="Error", message="Calendar Type not allowed", icon="cancel", fade_in_duration=1)
 
 # -------------------------------------------------------------------------- Tab Appearance --------------------------------------------------------------------------#
-def Settings_Appearance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
+def Settings_General_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Appearance_Change_Theme(Theme_Frame_Var: CTkOptionMenu) ->  None:
         customtkinter.set_appearance_mode(mode_string=Theme_Frame_Var)
@@ -333,7 +338,7 @@ def Settings_Appearance_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkF
 
 
 
-def Settings_Appearance_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_General_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Settings_Disabling_Color_Pickers(Selected_Value: str, Entry_Field: CTkEntry, Picker_Button: CTkButton, Variable: StringVar, Helper: str) -> None:
         if Selected_Value == "Windows":
@@ -455,7 +460,27 @@ def Settings_Appearance_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
+
+
+def Settings_Program_User_Type_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+    # ------------------------- Main Functions -------------------------#
+    User_Type_Variable = StringVar(master=Frame, value=User_Type)
     
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Program defined for", Additional_Text="Maintained by admin", Widget_size="Single_size", Widget_Label_Tooltip="This is setup of definition if user is considerate as user or user leading team with additional functionality.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Divide Method
+    Program_Type_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User", Field_Type="Input_OptionMenu") 
+    Program_Type_Frame_Var = Program_Type_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Program_Type_Frame_Var.configure(variable=User_Type_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Program_Type_Frame_Var, values=User_Type_list, command=lambda Program_Type_Frame_Var: Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=Program_Type_Frame_Var))
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
 
 
 # -------------------------------------------------------------------------- Tab GEneral --------------------------------------------------------------------------#
@@ -1157,7 +1182,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     for skip_Subject in Events_Skip_list:
         Show_Events_Skip_list.append([skip_Subject])
         
-    Frame_Skip_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Body, Table_Size="Single_size", Table_Values=Show_Events_Skip_list, Table_Columns=1, Table_Rows=len(Events_Skip_list) + 1)
+    Frame_Skip_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Body, Table_Size="Single_size", Table_Values=Show_Events_Skip_list, Table_Columns=len(Header_List), Table_Rows=len(Events_Skip_list) + 1)
     Frame_Skip_Table_Var = Frame_Skip_Table.children["!ctktable"]
     Frame_Skip_Table_Var.configure(wraplength=440)
 
@@ -1193,6 +1218,7 @@ def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
         Add_Project = Project_Option_Var1.get()
         Add_Activity = Activity_Option_Var1.get()
         Add_Coverage = Coverage_Text_Var.get()
+        Add_row = [Add_Project, Add_Activity, Add_Description, Add_Coverage]
 
         Check_List = Frame_Empty_General_Table_Var.values
         Check_List = Update_empty_information(Check_List=Check_List)
@@ -1211,7 +1237,6 @@ def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
 
         # Not To add same line
         if Add_flag == True:
-            Add_row = [Add_Project, Add_Activity, Add_Description, Add_Coverage]
             for Empty_Event in Check_List:
                 if Empty_Event != Add_row:
                     pass
@@ -1477,7 +1502,7 @@ def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
         Sub_dict = Sub_Row[1]
         Skip_Event_General_list.append(list(Sub_dict.values()))
 
-    Frame_Empty_General_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_Event_General_list, Table_Columns=4, Table_Rows=len(Skip_Event_General_list))
+    Frame_Empty_General_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_Event_General_list, Table_Columns=len(Header_List), Table_Rows=len(Skip_Event_General_list))
     Frame_Empty_General_Table_Var = Frame_Empty_General_Table.children["!ctktable"]
     Frame_Empty_General_Table_Var.configure(wraplength=230)
 
@@ -1770,7 +1795,7 @@ def Settings_Events_Empty_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
         Sub_dict = Sub_Row[1]
         Skip_Event_Schedule_list.append(list(Sub_dict.values()))
 
-    Frame_Empty_Schedules_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_Event_Schedule_list, Table_Columns=6, Table_Rows=len(Skip_Event_Schedule_list))
+    Frame_Empty_Schedules_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_Event_Schedule_list, Table_Columns=len(Header_List), Table_Rows=len(Skip_Event_Schedule_list))
     Frame_Empty_Schedules_Table_Var = Frame_Empty_Schedules_Table.children["!ctktable"]
     Frame_Empty_Schedules_Table_Var.configure(wraplength=150)
 
@@ -2094,7 +2119,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
         Skip_AutoFill_list.append(list(Sub_dict.values()))
 
     # BUG --> tabulka se načte pouze první sloupec a až po skrolování se dočte zbytek sloupců
-    Frame_AutoFiller_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_AutoFill_list, Table_Columns=4, Table_Rows=len(Skip_AutoFill_list))
+    Frame_AutoFiller_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_AutoFill_list, Table_Columns=len(Header_List), Table_Rows=len(Skip_AutoFill_list))
     Frame_AutoFiller_Table_Var = Frame_AutoFiller_Table.children["!ctktable"]
     Frame_AutoFiller_Table_Var.configure(wraplength=230)
 
@@ -2337,7 +2362,7 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
         Sub_dict = Sub_Row[1]
         Activity_Correction_list.append(list(Sub_dict.values()))
 
-    Frame_Activity_Correct_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Activity_Correction_list, Table_Columns=3, Table_Rows=len(Activity_Correction_list))
+    Frame_Activity_Correct_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Activity_Correction_list, Table_Columns=len(Header_List), Table_Rows=len(Activity_Correction_list))
     Frame_Activity_Correct_Table_Var = Frame_Activity_Correct_Table.children["!ctktable"]
     Frame_Activity_Correct_Table_Var.configure(wraplength=310)
 
@@ -2380,6 +2405,238 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
     Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var))
     Elements.Get_ToolTip(widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+    Frame_Input_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
+    Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
+
+    return Frame_Main
+
+
+def Settings_My_Team(Frame: CTk|CTkFrame) -> CTkFrame:
+    def Add_Team_User(Header_List: list, Frame_Managed_Team_Table_Var: CTkTable, MT_SP_Teams_Frame_Var: CTkOptionMenu, MT_User_ID_Frame_Var: CTkEntry, MT_User_Name_Frame_Var: CTkEntry) -> None:
+        Add_flag = True
+        # Load single values
+        Add_SP_Team = MT_SP_Teams_Frame_Var.get()
+        Add_User_ID = MT_User_ID_Frame_Var.get()
+        Add_User_Name = MT_User_Name_Frame_Var.get()
+
+        Check_List = Frame_Managed_Team_Table_Var.values
+        Check_List = Update_empty_information(Check_List=Check_List)
+        Add_row = [Add_SP_Team, Add_User_ID, Add_User_Name]
+
+        # Values checkers --> all must be inserted
+        if Add_SP_Team == " ":
+            Add_flag = False
+            CTkMessagebox(title="Error", message=f"Sharepoint list is empty please fill it first.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+
+        if Add_User_ID == "":
+            Add_flag = False
+            CTkMessagebox(title="Error", message=f"User ID list is empty please fill it first.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+
+        if Add_User_Name == "":
+            Add_flag = False
+            CTkMessagebox(title="Error", message=f"User Name list is empty please fill it first.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+       
+        # Not To add same line --> consider only User within same 
+        if Add_flag == True:
+            for User_row in Check_List:
+                if User_row != Add_row:
+                    pass
+                else:
+                    Add_flag = False
+                    CTkMessagebox(title="Error", message=f"The member is already exists in registered members..", icon="cancel", fade_in_duration=1)
+
+        if Add_flag == True:
+            Frame_Managed_Team_Table_Var.add_row(values=Add_row)
+
+            # Save to Settings.json
+            Managed_Team_Users = Frame_Managed_Team_Table_Var.values
+            Managed_Team_Users = [i for i in Managed_Team_Users if i != Header_List]
+            Managed_Team_Users = Update_empty_information(Check_List=Managed_Team_Users)
+
+            Managed_Users_dict = {}
+            Counter = 0
+            for Managed_Team_Users_row in Managed_Team_Users:
+                Managed_Team_Users_row_dict = dict(zip(Header_List, Managed_Team_Users_row))
+                Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
+                Counter += 1
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
+            Defaults_Lists.Create_Folder(file_path=f"Operational\\My_Team_Members\\{Add_User_ID}")
+        else:
+            pass
+
+    def Del_Team_User_One():
+        def Delete_Managed_Member_Confirm(Frame_Managed_Team_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu, User_ID_Label_Var: CTkLabel) -> None:
+            Selected_Line_To_Del = LineNo_Option_Var.get()
+            Delete_Folder_Name = User_ID_Label_Var.cget(attribute_name="text")
+            Frame_Managed_Team_Table_Var.delete_row(index=Selected_Line_To_Del)
+
+            # Save to Settings.json
+            Managed_Team_Users = Frame_Managed_Team_Table_Var.values
+            Managed_Team_Users = [i for i in Managed_Team_Users if i != Header_List]
+            Managed_Team_Users = Update_empty_information(Check_List=Managed_Team_Users)
+
+            Managed_Users_dict = {}
+            Counter = 0
+            for Managed_Team_Users_row in Managed_Team_Users:
+                Managed_Team_Users_row_dict = dict(zip(Header_List, Managed_Team_Users_row))
+                Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
+                Counter += 1
+            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
+            #Defaults_Lists.Delete_All_Files(file_path=f"Operational\\My_Team_Members\\{Delete_Folder_Name}")
+            Defaults_Lists.Delete_Folder(file_path=f"Operational\\My_Team_Members\\{Delete_Folder_Name}")
+            Delete_Managed_Member_Close()   
+
+        def Delete_Managed_Member_Close() -> None:
+            Delete_Managed_User_Window.destroy()
+
+        def Update_Labels_Texts(Line_Selected: int, Frame_Managed_Team_Table_Var: CTkTable, User_Team_Label_Var: CTkLabel, User_ID_Label_Var: CTkLabel, User_Name_Label_Var: CTkLabel) -> None:
+            Line_Option_Variable.set(value=Line_Selected)
+            Selected_Team = Frame_Managed_Team_Table_Var.get(row=Line_Selected, column=0)
+            Selected_User_ID = Frame_Managed_Team_Table_Var.get(row=Line_Selected, column=1)
+            Selected_User_Name = Frame_Managed_Team_Table_Var.get(row=Line_Selected, column=2)
+
+            User_Team_Label_Var.configure(text=Selected_Team)
+            User_ID_Label_Var.configure(text=Selected_User_ID)
+            User_Name_Label_Var.configure(text=Selected_User_Name)
+
+        def drag_win():
+            x = Delete_Managed_User_Window.winfo_pointerx() - Delete_Managed_User_Window._offsetx
+            y = Delete_Managed_User_Window.winfo_pointery() - Delete_Managed_User_Window._offsety
+            Delete_Managed_User_Window.geometry(f"+{x}+{y}")
+
+        def click_win():
+            Delete_Managed_User_Window._offsetx = Delete_Managed_User_Window.winfo_pointerx() - Delete_Managed_User_Window.winfo_rootx()
+            Delete_Managed_User_Window._offsety = Delete_Managed_User_Window.winfo_pointery() - Delete_Managed_User_Window.winfo_rooty()
+
+        # calculate number of lines in table
+        Managed_Team_Users = Frame_Managed_Team_Table_Var.values
+        Managed_Team_Users = [i for i in Managed_Team_Users if i != Header_List]
+        Lines_No = len(Managed_Team_Users)
+        Lines_list = [x for x in range(1, Lines_No + 1)] # Must skip Headers
+        Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
+
+        # TopUp Window
+        Delete_Managed_User_Window = CTkToplevel()
+        Delete_Managed_User_Window.configure(fg_color="#000001")
+        Delete_Managed_User_Window.title("Color Picker")
+        Delete_Managed_User_Window.geometry(f"510x250")
+        Delete_Managed_User_Window.bind(sequence="<Escape>", func=lambda event: Delete_Managed_User_Window.destroy())
+        Delete_Managed_User_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Delete_Managed_User_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
+        Delete_Managed_User_Window.overrideredirect(boolean=True)
+        Delete_Managed_User_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        Delete_Managed_User_Window.resizable(width=False, height=False)
+
+        # Rounded corners 
+        Delete_Managed_User_Window.config(background="#000001")
+        Delete_Managed_User_Window.attributes("-transparentcolor", "#000001")
+
+        # Frame - General
+        Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Delete_Managed_User_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
+        Frame_Body = Frame_Main.children["!ctkframe2"]
+    
+        # Field - Option Menu
+        LineNo_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Line No", Field_Type="Input_OptionMenu") 
+        LineNo_Option_Var = LineNo_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
+        LineNo_Option_Var.configure(variable=Line_Option_Variable)
+
+        # Fields - Labels
+        User_Team_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Team: ") 
+        User_Team_Label_Var = User_Team_Label.children["!ctkframe3"].children["!ctklabel"]
+        User_Team_Label_Var.configure(text=Frame_Managed_Team_Table_Var.get(row=1, column=0))
+        User_ID_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID: ") 
+        User_ID_Label_Var = User_ID_Label.children["!ctkframe3"].children["!ctklabel"]
+        User_ID_Label_Var.configure(text=Frame_Managed_Team_Table_Var.get(row=1, column=1))
+        User_Name_Label = Elements_Groups.Get_Double_Label(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Name: ") 
+        User_Name_Label_Var = User_Name_Label.children["!ctkframe3"].children["!ctklabel"]
+        User_Name_Label_Var.configure(text=Frame_Managed_Team_Table_Var.get(row=1, column=2))
+
+        Elements.Get_Option_Menu_Advance(attach=LineNo_Option_Var, values=Lines_list, command= lambda Line_Selected: Update_Labels_Texts(Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var, Line_Selected=Line_Selected, User_Team_Label_Var=User_Team_Label_Var, User_ID_Label_Var=User_ID_Label_Var, User_Name_Label_Var=User_Name_Label_Var)) 
+
+        # Buttons
+        Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Small") 
+        Button_Confirm_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+        Button_Confirm_Var.configure(text="Confirm", command = lambda:Delete_Managed_Member_Confirm(Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var, LineNo_Option_Var=LineNo_Option_Var, User_ID_Label_Var=User_ID_Label_Var))
+        Elements.Get_ToolTip(widget=Button_Confirm_Var, message="Confirm line delete.", ToolTip_Size="Normal")
+
+        Button_Reject_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+        Button_Reject_Var.configure(text="Reject", command = lambda:Delete_Managed_Member_Close())
+        Elements.Get_ToolTip(widget=Button_Reject_Var, message="Dont process, closing Window.", ToolTip_Size="Normal")
+
+
+    def Del_Team_User_all(Frame_Managed_Team_Table_Var: CTkTable) -> None:
+        Table_len = len(Frame_Managed_Team_Table_Var.values)
+        for Table_index in range(1, Table_len):
+            Frame_Managed_Team_Table_Var.delete_row(index=Table_index)
+        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information={})
+        Defaults_Lists.Delete_Folders(file_path=f"Operational\\My_Team_Members")
+
+    # ------------------------- Main Functions -------------------------#
+    Header_List = ["User Team", "User ID", "User Name"]
+    User_SP_Team_Variable = StringVar(master=Frame, value=SP_Teams_List[0])
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="My managed team", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Add / del user from my team, users are then visible on Managed Team dashboard.")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Input Field + button in one line
+    Frame_Input_Total = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
+
+    Frame_Input_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Total, Field_Frame_Type="Single_Column")
+    Frame_Input_Area.configure(width=300)
+
+    Frame_Table_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Input_Total, Field_Frame_Type="Single_Column")
+
+    # My team Table
+    Managed_Team_list = [Header_List]
+    Managed_Team_dict_rows = Managed_Team_dict.items()
+    for Sub_Row in Managed_Team_dict_rows:
+        Sub_dict = Sub_Row[1]
+        Managed_Team_list.append(list(Sub_dict.values()))
+
+    Frame_Managed_Team_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Managed_Team_list, Table_Columns=len(Header_List), Table_Rows=len(Managed_Team_list))
+    Frame_Managed_Team_Table_Var = Frame_Managed_Team_Table.children["!ctktable"]
+    Frame_Managed_Team_Table_Var.configure(wraplength=310)
+
+    # Field - Managed Team SP List
+    MT_SP_Teams_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Managed Team", Field_Type="Input_OptionMenu") 
+    MT_SP_Teams_Frame_Var = MT_SP_Teams_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    MT_SP_Teams_Frame_Var.configure(variable=User_SP_Team_Variable)
+    Elements.Get_Option_Menu_Advance(attach=MT_SP_Teams_Frame_Var, values=SP_Teams_List, command=None)
+
+    # Field - Managed Team User ID
+    MT_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Member ID", Field_Type="Input_Normal") 
+    MT_User_ID_Frame_Var = MT_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    MT_User_ID_Frame_Var.configure(placeholder_text="Team member ID")
+
+    # Field - Managed Team User ID
+    MT_User_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Member Name", Field_Type="Input_Normal") 
+    MT_User_Name_Frame_Var = MT_User_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
+    MT_User_Name_Frame_Var.configure(placeholder_text="Team member Name")
+
+    # Buttons
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_MT_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_MT_Add_Var.configure(text="Add", command = lambda:Add_Team_User(Header_List=Header_List, Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var, MT_SP_Teams_Frame_Var=MT_SP_Teams_Frame_Var, MT_User_ID_Frame_Var=MT_User_ID_Frame_Var, MT_User_Name_Frame_Var=MT_User_Name_Frame_Var))
+    Elements.Get_ToolTip(widget=Button_MT_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
+
+    Button_MT_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_MT_Del_One_Var.configure(text="Del", command = lambda:Del_Team_User_One())
+    Elements.Get_ToolTip(widget=Button_MT_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
+
+    Button_MT_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
+    Button_MT_Del_All_Var.configure(text="Del all", command = lambda:Del_Team_User_all(Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var))
+    Elements.Get_ToolTip(widget=Button_MT_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

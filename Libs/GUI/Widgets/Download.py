@@ -221,7 +221,7 @@ def Per_Period_Selection(Frame: CTk|CTkFrame) -> CTkFrame:
     return Frame_Main
 
 
-def Per_Download_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
+def Pre_Download_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Sharepoint - authenticate", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Used for Sharepoint authentication to download data.")

@@ -3,6 +3,8 @@ from pandas import DataFrame
 from dotenv import load_dotenv
 import json
 import os
+import glob
+import shutil
 
 from CTkMessagebox import CTkMessagebox
 
@@ -85,9 +87,39 @@ def Information_Update_Settings(File_Name: str, JSON_path: list, Information: in
     except Exception as Error:
         CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
 
+def Create_Folder(file_path: str) -> None:
+    # Create Folder
+    try: 
+        os.makedirs(f"{file_path}")
+    except Exception as Error:
+        CTkMessagebox(title="Error", message=f"Not possible to create folder int {file_path}", icon="cancel", fade_in_duration=1)
+
+def Delete_Folder(file_path: str) -> None:
+    # Create Folder
+    try: 
+        os.rmdir(path=f"{file_path}")
+    except Exception as Error:
+        CTkMessagebox(title="Error", message=f"Not possible to delete folder int {file_path}", icon="cancel", fade_in_duration=1)
+
+def Delete_Folders(file_path: str) -> None:
+    try:
+        shutil.rmtree(file_path)
+    except Exception as Error:
+        CTkMessagebox(title="Error", message=f"Not possible to delete folder int {file_path}", icon="cancel", fade_in_duration=1)
+
 def Delete_File(file_path: str) -> None:
-    # Delete File before generation
+    # Delete File
     try: 
         os.remove(path=f"{file_path}")
-    except:
-        pass
+    except Exception as Error:
+        CTkMessagebox(title="Error", message=f"Not possible to delete file in {file_path}", icon="cancel", fade_in_duration=1)
+
+def Delete_All_Files(file_path: str) -> None:
+    # Delete File
+    try:
+        files = glob.glob(file_path)
+        for file in files:
+            os.remove(file)
+    except Exception as Error:
+        CTkMessagebox(title="Error", message=f"Not possible to delete files in {file_path}", icon="cancel", fade_in_duration=1)
+

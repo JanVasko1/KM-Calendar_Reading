@@ -1564,12 +1564,30 @@
             ],
             "background_radius": 0
         },
-        "Side_Bar": {
+        "Side_Bar_regular": {
             "icon_size": 30,
             "font_size": 30,
             "font_color": [
                 "#FFFFFF",
                 "#FFFFFF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        },
+        "Side_Bar_close": {
+            "icon_size": 30,
+            "font_size": 30,
+            "font_color": [
+                "#FF9797",
+                "#FF9797"
             ],
             "outline_width": 0,
             "outline_color": [
