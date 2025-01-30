@@ -48,6 +48,10 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Events = Divide_Events.OverMidnight_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Skip Events") 
+        Events = Skip_Events.Skip_Events(Events=Events, Type="Regular")
+        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Fill Empty") 
         Events = Fill_Empty_Place.Fill_Events(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -68,8 +72,12 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Events = Special_Events.Lunch(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Private") 
+        Events = Special_Events.Private(Events=Events)
+        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Skip Events") 
-        Events = Skip_Events.Skip_Events(Events=Events)
+        Events = Skip_Events.Skip_Events(Events=Events, Type="Special")
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Parallel Events") 

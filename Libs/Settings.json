@@ -1,6 +1,9 @@
 {
     "General": {
         "Default": {
+            "Code": "CZ011845",
+            "Name": "Jan Vasko",
+            "Email": "Jan.Vasko@konicaminolta.eu",
             "User_Type": "Manager",
             "User_Type_list": [
                 "User",
@@ -102,9 +105,9 @@
             "Wednesday": {
                 "Working_Day": true,
                 "Work_Hours": {
-                    "Start_Time": "8:00",
+                    "Start_Time": "7:00",
                     "End_Time": "15:30",
-                    "Day_Duration": 420
+                    "Day_Duration": 480
                 },
                 "Vacation": {
                     "Start_Time": "8:00",
@@ -165,7 +168,7 @@
                 }
             },
             "Totals": {
-                "Work": "40:30",
+                "Work": "41:30",
                 "Vacation": "40:00"
             }
         }
@@ -359,15 +362,19 @@
                         "Event",
                         "Calendar"
                     ]
+                },
+                "Private": {
+                    "Use": true,
+                    "Search_Text": "Private",
+                    "Method": "Split Parallel and delete",
+                    "Private_Option_List": [
+                        "Split Parallel and delete",
+                        "Just delete Private"
+                    ]
                 }
             },
             "Parallel_Events": {
                 "Use": true,
-                "Divide_Method": "Divide",
-                "Divide_Method_List": [
-                    "Divide",
-                    "Keep Parallel"
-                ],
                 "Start_Method": "Use Shorter",
                 "Start_Method_List": [
                     "Use Shorter",
@@ -443,7 +450,6 @@
                     "Grilovačka",
                     "KONTROLA DOCHÁZKY",
                     "On-Call Duty",
-                    "Private",
                     "Save the date ",
                     "Teambuilding",
                     "Teambulding",

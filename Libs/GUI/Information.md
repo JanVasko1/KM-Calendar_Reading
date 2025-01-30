@@ -3,9 +3,9 @@ This program was developed to make TimeSheet administration easier and harmonize
 
 # Setup
 ### Installation
-1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/) - recomended or higher
+1. Install [Python 3.11.2](https://www.python.org/downloads/release/python-3112/) - recommended or higher
     - install it as "Run as Administrator"
-    - on pop-up page mark "Add Python 3.11.2 to PATH" and unmark "Instal launcher for all users" (if possible)
+    - on pop-up page mark "Add Python 3.11.2 to PATH" and un-mark "Instal launcher for all users" (if possible)
 2. Run **Installation_libs.ps1** code (reflect correct path to your python installation)
 3. Update **TimeSheets.bat** to reflect correct path to your python installation
 
@@ -15,7 +15,7 @@ This program was developed to make TimeSheet administration easier and harmonize
 - red --> manual steps
 - green --> automatic steps
 
-### Outlook Calendar - Pre-Requisit
+### Outlook Calendar - Pre-Requisite
 There must be special Events created for each day and special behavior must be followed
 
 - **Work Start** --> tells program when is particular working day starts
@@ -24,15 +24,15 @@ There must be special Events created for each day and special behavior must be f
     - must be 0 minutes duration
 - **Lunch** --> tells program when is particular lunch is
 - **Category** --> is considerate as “Project” from TimeSheets
-    - Must be manually updated when needed from TimeSheet from Shareponit
-    - If event is marke by category, then whole program counts with it base on setup
+    - Must be manually updated when needed from TimeSheet from Sharepoint
+    - If event is marked by category, then whole program counts with it base on setup
 
 ![Category](Libs\\Readme\\Category.png)
 
-- **Templates** --> is considerate to contain “Activity” from Timesheets
+- **Templates** --> is considerate to contain “Activity” from Time sheets
     - If event has line: “Activity: Activity”, then whole program counts with it base on setup 
 
-![Tempaltes](Libs\\Readme\\Templates.png) -> ![Event body](Libs\\Readme\\Activity.png)
+![Templates](Libs\\Readme\\Templates.png) -> ![Event body](Libs\\Readme\\Activity.png)
 
 
 # Downloader
@@ -55,11 +55,11 @@ This first part of program is used to download events from calendar
     - Special sign: “t” = Today
 
 ### Methods
-- **Outlook_classic** --> download events from Outlook (classic) application installed on Windows, there is draback, must be only one account in Outlook client
+- **Outlook_classic** --> download events from Outlook (classic) application installed on Windows
 - **Exchange** --> download events directly from Exchange Server for defined User
 
 
-# Dashnoard
+# Dashboard
 Is defined to print statistic and all records of selected period to provide better overview of Time spent:
 
 - Total Statistics
@@ -72,7 +72,7 @@ Is defined to print statistic and all records of selected period to provide bett
 # Data
 ### Uploader
 **[!CAUTION]**
-Under Developemnt as whole functionality
+Under Development as whole functionality
 
 ### Export csv
 The processed result is automatically exported to the defined path and automatically opened by Windows in the format ready to “Copy + Paste” to TimeSheet on Sharepoint
@@ -84,8 +84,8 @@ Show processed data, ready to be applied. It can directly upload to Sharepoint o
 
 ### Overnights
 - This handler splits Events if they go over midnight
-- This doesn´t require any setup as it is programmed.
-- Videly used for multiday Vacation, travel-time ...
+- This doesn't require any setup as it is programmed.
+- Widely used for multi day Vacation, travel-time ...
 
 ![Overnight Events](Libs\\Readme\\OverNight.png)
 
@@ -132,8 +132,12 @@ Show processed data, ready to be applied. It can directly upload to Sharepoint o
 
 ## Events - General
 
+### Skip Events
+- This is the list of evens which should be skipped from registering them into TimeSheets
+- Text is compared with Event subject and if a part of subject contain text then is recognized and event is not considerate for Time Sheets
+
 ### Lunch
-- lunch is special event which should be skipped from Timesheet
+- lunch is special event which should be skipped from Time sheet
 - Also is used to split  parallel meeting which is planned over the lunch (like whole day meetings)
 - Search text can be modified
 
@@ -148,16 +152,8 @@ Show processed data, ready to be applied. It can directly upload to Sharepoint o
 - Handled of Home Office --> currently is not doing anything as in Time Sheets there is no Location for HomeOffice
 
 
-### Skip Events
-- This is the list of evens which should be skiped from registering them into TimeSheets
-- Text is compared with Event subject and if a part of subject contain text then is recognized and event is not considerate for Time Sheets
-
-
 ### Parallel Events
 - This handler helps to process Events which might be in parallelly set in Calendar
-- **Methods**
-    - **Divide** --> will divide Parralle Events based on logic (eveerytime takes as separator the begining of Event)
-    - **Keep Parallel** --> will keep both parallel events for TimeSheet
     
 **Divide:**<br>
 ![Parallel 1](Libs\\Readme\\Parallel1.png)
@@ -165,7 +161,7 @@ Show processed data, ready to be applied. It can directly upload to Sharepoint o
 **Divide and Use Shorter:**<br>
 ![Parallel 2](Libs\\Readme\\Parallel2.png)
 
-**Keep Parallel:**<br>
+**When not used:**<br>
 ![Parallel Keep](Libs\\Readme\\Parallel_keep.png)
 
 - has 2 methods for Events start at the same time:
