@@ -238,7 +238,6 @@ def Parallel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
 
             if Return == True:
                 # if one change is done then return to main Parallel handler to process again --> because it is better 
-                print(Conflict_df)
                 return Conflict_df
             else:
                 pass
@@ -357,9 +356,7 @@ def Parallel_Events(Events: DataFrame):
                             Event_End_Time = row_Series["End_Time"]
                             Conflict_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
 
-                        print(Conflict_df)
                         Conflict_df = Find_Conflict_in_DF(Check_DF=Conflict_df)
-                        print(Conflict_df)
 
                         mask1 = Conflict_df["Conflict"] == False
                         Non_Conflict_df = Conflict_df.loc[mask1]
