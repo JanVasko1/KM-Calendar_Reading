@@ -13,10 +13,12 @@ Time_format = Settings["General"]["Formats"]["Time"]
 Vacation_Calendar = Settings["General"]["Calendar"]
 Vacation_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]
 Lunch_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]
+Private_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]
 
 Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
 HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
 Lunch_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
+Private_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
@@ -45,9 +47,69 @@ def Days_Handler(Events: DataFrame) -> list:
     Days_List.sort()
     return Days_List
 
+def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataFrame:
+    # Should split conflict meetings if they are within Lunch
+    Cumulated_Events = pandas.DataFrame()
+
+    #Get Days details from Events
+    Days_List = Days_Handler(Events)
+
+    for Day in Days_List:
+        mask1 = Events["Start_Date"] == Day
+        Day_Events_df = Events.loc[mask1]
+        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        
+        # Get Lunch Conflict
+        Day_Events_df = Parallel_Events.Find_Conflict_in_DF(Check_DF=Day_Events_df)
+        mask1 = Day_Events_df["Subject"] == Event_Search_Text
+        Filtered_df = Day_Events_df.loc[mask1]
+
+        # Test if there is Lunch within Day
+        try:
+            Conflict_list = Filtered_df.iloc[0]["Conflict_indexes"]
+            Sub_Event_Start_Time = Filtered_df.iloc[0]["Start_Time"]
+            Sub_Event_End_Time = Filtered_df.iloc[0]["End_Time"]
+        except:
+            Conflict_list = []
+
+        if not Conflict_list:
+            pass
+        else:
+            for Conflict_index in Conflict_list:
+                # Find Event in Day_Events_df
+                Event_Series = Day_Events_df.iloc[Conflict_index]
+                Event_Start_Time = Event_Series["Start_Time"]
+                Event_End_Time = Event_Series["End_Time"]
+
+                # ------------ Split Event ------------ #
+                # Event End will be cut by SubEvent
+                Parallel_Events.Event_End_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                
+                # Event Start will be cut by SubEvent
+                Parallel_Events.Event_Start_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+                
+                # Event Start will be cut by SubEvent
+                Parallel_Events.Event_Start_Cut_Lunch(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+
+                # SubEvent is inside totally of Event no borders
+                Parallel_Events.Event_Middle_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Data=Event_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
+
+        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        for row in Day_Events_df.iterrows():
+            row_Series = pandas.Series(row[1])
+            Event_Start_Time = row_Series["Start_Time"]
+            Event_End_Time = row_Series["End_Time"]
+            Day_Events_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
+        
+        # Add to Cumulated
+        Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
+    Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)
+
+    return Cumulated_Events
+
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 # Vacation
-def Vacation(Events: DataFrame):
+def Vacation(Events: DataFrame) -> DataFrame:
     if Vacation_Enabled == True:
         for row in Events.iterrows():
             row_index = row[0]
@@ -89,71 +151,30 @@ def Vacation(Events: DataFrame):
 # Home Office
 def HomeOffice(Events: DataFrame):
     if HomeOffice_Enabled == True:
-        # Can potentially be needed when location should not be changed
+        # TODO --> Can potentially be needed when location should not be changed
         return Events
     else:
         return Events
 
 # Lunch
-def Lunch(Events: DataFrame):
+def Lunch(Events: DataFrame) -> DataFrame:
     if Lunch_Enabled == True:
-        # Should split conflict meetings if they are within Lunch
-        Cumulated_Events = pandas.DataFrame()
-
-        #Get Days details from Events
-        Days_List = Days_Handler(Events)
-
-        for Day in Days_List:
-            mask1 = Events["Start_Date"] == Day
-            Day_Events_df = Events.loc[mask1]
-            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
-            
-            # Get Lunch Conflict
-            Day_Events_df = Parallel_Events.Find_Conflict_in_DF(Check_DF=Day_Events_df)
-            mask1 = Day_Events_df["Subject"] == Lunch_Details["Search_Text"]
-            Lunch_df = Day_Events_df.loc[mask1]
-
-            # Test if there is Lunch within Day
-            try:
-                Conflict_list = Lunch_df.iloc[0]["Conflict_indexes"]
-                Sub_Event_Start_Time = Lunch_df.iloc[0]["Start_Time"]
-                Sub_Event_End_Time = Lunch_df.iloc[0]["End_Time"]
-            except:
-                Conflict_list = []
-
-            if not Conflict_list:
-                pass
-            else:
-                for Conflict_index in Conflict_list:
-                    # Find Event in Day_Events_df
-                    Event_Series = Day_Events_df.iloc[Conflict_index]
-                    Event_Start_Time = Event_Series["Start_Time"]
-                    Event_End_Time = Event_Series["End_Time"]
-
-                    # ------------ Split Event ------------ #
-                    # Event End will be cut by SubEvent
-                    Parallel_Events.Event_End_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
-                    
-                    # Event Start will be cut by SubEvent
-                    Parallel_Events.Event_Start_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
-                    
-                    # Event Start will be cut by SubEvent
-                    Parallel_Events.Event_Start_Cut_Lunch(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
-
-                    # SubEvent is inside totally of Event no borders
-                    Parallel_Events.Event_Middle_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Data=Event_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
-
-            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
-            for row in Day_Events_df.iterrows():
-                row_Series = pandas.Series(row[1])
-                Event_Start_Time = row_Series["Start_Time"]
-                Event_End_Time = row_Series["End_Time"]
-                Day_Events_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
-            
-            # Add to Cumulated
-            Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
-        Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)
-        
+        Cumulated_Events = Subtract_Parallel_Events(Events=Events, Event_Search_Text = Lunch_Details["Search_Text"])
         return Cumulated_Events
+    else:
+        return Events
+
+# Private
+def Private(Events: DataFrame) -> DataFrame:
+    if Private_Enabled == True:
+        if Private_Details["Method"] == "Split Parallel and delete":
+            Cumulated_Events = Subtract_Parallel_Events(Events=Events, Event_Search_Text = Private_Details["Search_Text"])
+            return Cumulated_Events
+        elif Private_Details["Method"] == "Just delete Private":
+            mask = Events["Subject"] == Private_Details["Search_Text"]
+            Events_Subtracted = Events[~mask]
+            return Events_Subtracted
+        else:
+            pass
     else:
         return Events
