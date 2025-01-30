@@ -1,4 +1,5 @@
 
+# BUG --> při jakýkoliv změně, musím nechat znova načíst globální SEttings (protože když udělám změnu v setupu a spustím download znova, pořád má v SEttings staré nastavení)
 # Import Libraries
 import time
 import pandas
@@ -25,9 +26,10 @@ Configuration = Defaults_Lists.Load_Configuration()
 
 User_Type = Settings["General"]["Default"]["User_Type"]
 
-Account_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-Account_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
-Account_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+User_Name = Settings["General"]["Default"]["Name"]
+User_ID = Settings["General"]["Default"]["Code"]
+User_Email = Settings["General"]["Default"]["Email"]
+
 Format_Date = Settings["General"]["Formats"]["Date"]
 
 Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
@@ -70,25 +72,25 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
 
     # Account Mail
-    Frame_Account_Mail = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
-    Frame_Account_Mail.configure(text=Account_Email)
-    Frame_Account_Mail.pack_propagate(flag=False)
+    Frame_User_Email = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_Email.configure(text=User_Email)
+    Frame_User_Email.pack_propagate(flag=False)
 
     # Account ID
-    Frame_Account_ID = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
-    Frame_Account_ID.configure(text=Account_ID)
-    Frame_Account_ID.pack_propagate(flag=False)
+    Frame_User_ID = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_ID.configure(text=User_ID)
+    Frame_User_ID.pack_propagate(flag=False)
 
     # Account Name
-    Frame_Account_Name = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
-    Frame_Account_Name.configure(text=Account_Name)
-    Frame_Account_Name.pack_propagate(flag=False)
+    Frame_User_Name = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_Name.configure(text=User_Name)
+    Frame_User_Name.pack_propagate(flag=False)
 
     #? Build look of Widget
     Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
-    Frame_Account_Mail.pack(side="right", fill="none", expand=False, padx=5, pady=5)
-    Frame_Account_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
-    Frame_Account_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
+    Frame_User_Email.pack(side="right", fill="none", expand=False, padx=5, pady=5)
+    Frame_User_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
+    Frame_User_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
@@ -374,7 +376,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     def Pre_Download_Data() -> None:
         print("Pre_Download_Data")
-        # TODO --> Dodělat připravit stahování 
+        # TODO --> Dodělat připravit stahování když je zvolený aktuální měsíc , tak musí stáhnout jen z aktuálního TimeSheet
         pass
 
     def My_Team_Download_Data() -> None:
@@ -656,8 +658,38 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Dashboard Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_User_Dashboard(Frame: CTk|CTkFrame):
-    # TODO --> Finish completally
-    pass
+    def Get_Member_list() -> list:
+
+        return Member_List
+
+    Member_List = Get_Member_list()
+    Members_count = 2 + len(Member_List)
+
+    # ------------------------- Main Functions -------------------------#
+    # Define Frames
+    Frame_User_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_User_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
+
+    # Tab View
+    TabView = Elements.Get_Tab_View(Frame=Frame_User_Dashboard_Work_Detail_Area, Tab_size="Normal")
+    TabView.pack_propagate(flag=False)
+    Tab_Gen = TabView.add("Totals")
+    Tab_Gen.pack_propagate(flag=False)
+
+    for member in Member_List:
+        Tab_Cal = TabView.add(f"{member}")
+        Tab_Cal.pack_propagate(flag=False)
+        Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children[f"!ctkbutton{Members_count}"]
+        Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Team member dashboard.", ToolTip_Size="Normal")
+
+        # TODO --> dodělat vložené dashboardu pro danýho uživatele na vlastní page
+
+    TabView.set("Totals")
+
+    #? Build look of Widget
+    Frame_User_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
+    TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
+
 # ------------------------------------------------------------------------------------------------------------------------------------ Data Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Data(Frame: CTk|CTkFrame):
     # ------------------------- Local Functions -------------------------#
@@ -897,6 +929,8 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_Cal.pack_propagate(flag=False)
     Tab_E_G = TabView.add("Events - General")
     Tab_E_G.pack_propagate(flag=False)
+    Tab_E_Spec = TabView.add("Events - Special")
+    Tab_E_Spec.pack_propagate(flag=False)
     Tab_E_E = TabView.add("Events - Empty")
     Tab_E_E.pack_propagate(flag=False)
     Tab_E_S = TabView.add("Events - Empty Scheduler")
@@ -907,7 +941,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
         Tab_Team = TabView.add("My Team")
         Tab_Team.pack_propagate(flag=False)
 
-        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton8"]
+        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton9"]
         Elements.Get_ToolTip(widget=Tab_Team_ToolTip_But, message="MY Team base setup.", ToolTip_Size="Normal")
     else:
         pass
@@ -917,21 +951,22 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_Dat_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
     Tab_Cal_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton3"]
     Tab_E_G_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton4"]
-    Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton5"]
-    Tab_E_S_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
-    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton7"]
+    Tab_E_Spec_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton5"]
+    Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
+    Tab_E_S_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton7"]
+    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton8"]
     Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Application General Setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Scheduler setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Split too long Empty place.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_S_ToolTip_But, message="Basic Scheduler setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
     # General
     Theme_Widget = Settings_Widgets.Settings_General_Theme(Frame=Tab_Gen, window=window)
-    Color_Palette_Widget = Settings_Widgets.Settings_General_Color_Palette(Frame=Tab_Gen)
-    Program_User_Type_Widget = Settings_Widgets.Settings_Program_User_Type_Widget(Frame=Tab_Gen)
+    Color_Palette_Widget = Settings_Widgets.Settings_General_Color(Frame=Tab_Gen)
+    Program_User_Type_Widget = Settings_Widgets.Settings_User_Widget(Frame=Tab_Gen)
 
     # General Page
     Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Frame=Tab_Dat)
@@ -945,16 +980,19 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Calendar_Start_End_Widget = Settings_Widgets.Settings_Calendar_Start_End_Time(Frame=Tab_Cal)
 
     # Event-General Page
-    Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Frame=Tab_E_G)
-    Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Frame=Tab_E_G)
-    Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_G)
     Event_Skip_Widget = Settings_Widgets.Settings_Events_General_Skip(Frame=Tab_E_G)
-    Event_Parallel_Widget = Settings_Widgets.Settings_Parallel_events(Frame=Tab_E_G)
     Event_Join_Widget = Settings_Widgets.Settings_Join_events(Frame=Tab_E_G)
+    Event_Parallel_Widget = Settings_Widgets.Settings_Parallel_events(Frame=Tab_E_G)
+
+    # Event-Special Page
+    Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Frame=Tab_E_Spec)
+    Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Frame=Tab_E_Spec)
+    Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_Spec)
+    Event_Private_Widget = Settings_Widgets.Settings_Events_General_Private(Frame=Tab_E_Spec)
 
     # Event-Empty Page
-    Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Frame=Tab_E_E)
     Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generally(Frame=Tab_E_E)
+    Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Frame=Tab_E_E)
 
     # Event-Empty Splitting Page
     Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empty_Schedule(Frame=Tab_E_S)
@@ -989,15 +1027,17 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Calendar_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
     Calendar_Start_End_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
 
+    Event_Skip_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Event_Join_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
+    Event_Parallel_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+
     Event_Lunch_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Event_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
     Event_HomeOffice_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
-    Event_Skip_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-    Event_Parallel_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
-    Event_Join_Widget.grid(row=1, column=2, padx=5, pady=5, sticky="nw")
+    Event_Private_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
-    Event_Split_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Empty_General_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Event_Empty_General_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+    Event_Split_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
 
     Event_Scheduler_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 

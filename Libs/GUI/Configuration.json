@@ -1454,7 +1454,7 @@
                     "#517A31"
                 ],
                 "orientation": "horizontal",
-                "determinate_speed": 3.57,
+                "determinate_speed": 3.33,
                 "indeterminate_speed": 0.5,
                 "mode": "determinate"
             }

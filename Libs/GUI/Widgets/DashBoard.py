@@ -365,7 +365,13 @@ def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
     
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Detail WeekDay Summary.", Scrollable=True) 
+    Frame_Header = Frame_Main.children["!ctkframe"]
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Button --> Projects
+    Button_Show_Utilization = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Utilization.configure(text="Utilization", command = lambda:DashBoard_Utilization())
+    Elements.Get_ToolTip(widget=Button_Show_Utilization, message="Shows Utilization chart.", ToolTip_Size="Normal")
 
     # Table
     WeekDays_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_WeekDays", columns=7, rows=WeekDays_Df.shape[0] + 1)
@@ -373,6 +379,7 @@ def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
+    Button_Show_Utilization.pack(side="right")
     WeekDays_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Main
@@ -387,7 +394,13 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     
     # Field - Use
     Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set=None, Icon_Name=None, Widget_Label_Tooltip="Week details.", Scrollable=True) 
+    Frame_Header = Frame_Main.children["!ctkframe"]
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Button --> Projects
+    Button_Show_Utilization = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
+    Button_Show_Utilization.configure(text="Utilization", command = lambda:DashBoard_Utilization())
+    Elements.Get_ToolTip(widget=Button_Show_Utilization, message="Shows Utilization chart.", ToolTip_Size="Normal")
 
     # Table
     Week_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Weeks", columns=8, rows=Weeks_DF.shape[0] + 1)
@@ -395,6 +408,7 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
+    Button_Show_Utilization.pack(side="right")
     Week_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
 
     return Frame_Main

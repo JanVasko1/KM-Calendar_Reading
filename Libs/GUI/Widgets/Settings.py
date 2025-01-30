@@ -19,6 +19,9 @@ Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
 
 # Program Type
+User_Name = Settings["General"]["Default"]["Name"]
+User_ID = Settings["General"]["Default"]["Code"]
+User_Email = Settings["General"]["Default"]["Email"]
 User_Type = Settings["General"]["Default"]["User_Type"]
 User_Type_list = list(Settings["General"]["Default"]["User_Type_list"])
 Managed_Team_dict = Settings["General"]["Default"]["Managed_Team"]
@@ -75,6 +78,12 @@ Lunch_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch
 Lunch_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["All_Day"]
 Lunch_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
 Lunch_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Lunch_Option_List"]
+
+# Private
+Private_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
+Private_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Search_Text"]
+Private_Method = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Method"]
+Private_Method_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Private_Option_List"]
 
 # Events Empty
 Skip_Enabled = Settings["Event_Handler"]["Events"]["Skip"]["Use"]
@@ -166,8 +175,6 @@ Location_List.insert(0, " ") # Because there might be not filled one in Calendar
 
 # Parallel Events
 Parallel_Enabled = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
-Divide_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Divide_Method"]
-Divide_Method_List = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Divide_Method_List"]
 Start_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
 Start_Method_List = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method_List"]
 
@@ -338,7 +345,7 @@ def Settings_General_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFram
 
 
 
-def Settings_General_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_General_Color(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Local Functions -------------------------#
     def Settings_Disabling_Color_Pickers(Selected_Value: str, Entry_Field: CTkEntry, Picker_Button: CTkButton, Variable: StringVar, Helper: str) -> None:
         if Selected_Value == "Windows":
@@ -410,7 +417,7 @@ def Settings_General_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
     Hover_Color_Mode_Variable = StringVar(master=Frame, value=Hover_Color_Mode)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Color Palettes", Additional_Text="Applied after restart.", Widget_size="Single_size", Widget_Label_Tooltip="Colors")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Colors", Additional_Text="Applied after restart.", Widget_size="Single_size", Widget_Label_Tooltip="Colors")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Accent Color Mode
@@ -455,26 +462,46 @@ def Settings_General_Color_Palette(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda Hover_Color_Mode_Frame_Var: Settings_Disabling_Color_Pickers(Selected_Value=Hover_Color_Mode_Frame_Var, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover"))
     Settings_Disabling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")   # Must be here because of initial value
 
-
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
 
 
-def Settings_Program_User_Type_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+def Settings_User_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     User_Type_Variable = StringVar(master=Frame, value=User_Type)
-    
+
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Program defined for", Additional_Text="Maintained by admin", Widget_size="Single_size", Widget_Label_Tooltip="This is setup of definition if user is considerate as user or user leading team with additional functionality.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="User", Additional_Text="Maintained by admin", Widget_size="Single_size", Widget_Label_Tooltip="This is setup of definition if user is considerate as user or user leading team with additional functionality.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Field - Divide Method
-    Program_Type_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User", Field_Type="Input_OptionMenu") 
-    Program_Type_Frame_Var = Program_Type_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Program_Type_Frame_Var.configure(variable=User_Type_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Program_Type_Frame_Var, values=User_Type_list, command=lambda Program_Type_Frame_Var: Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=Program_Type_Frame_Var))
+    # Field - User ID
+    User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Konica ID", Field_Type="Input_Normal")
+    User_ID_Frame_Var = User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
+    User_ID_Frame_Var.configure(placeholder_text="My Konica ID.")
+    User_ID_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Code"], Information=User_ID_Frame_Var.get()))
+    Entry_field_Insert(Field=User_ID_Frame_Var, Value=User_ID)
+
+    # Field - Name
+    User_Name_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Name", Field_Type="Input_Normal") 
+    User_Name_Frame_Var = User_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
+    User_Name_Frame_Var.configure(placeholder_text="My Name.")
+    User_Name_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Name"], Information=User_Name_Frame_Var.get()))
+    Entry_field_Insert(Field=User_Name_Frame_Var, Value=User_Name)
+
+    # Field - User Email
+    User_Email_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Email", Field_Type="Input_Normal")
+    User_Email_Frame_Var = User_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
+    User_Email_Frame_Var.configure(placeholder_text="My Konica ID.")
+    User_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Email"], Information=User_Email_Frame_Var.get()))
+    Entry_field_Insert(Field=User_Email_Frame_Var, Value=User_Email)
+
+    # Field - User Type
+    User_Type_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Type ", Field_Type="Input_OptionMenu") 
+    User_Type_Frame_Var = User_Type_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    User_Type_Frame_Var.configure(variable=User_Type_Variable)
+    Elements.Get_Option_Menu_Advance(attach=User_Type_Frame_Var, values=User_Type_list, command=lambda User_Type_Frame_Var: Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var))
 
     #? Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -646,7 +673,6 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
 def Settings_Parallel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     Parallel_Use_Variable = BooleanVar(master=Frame, value=Parallel_Enabled)
-    Divide_Method_Variable = StringVar(master=Frame, value=Divide_Method)
     Start_Method_Variable = StringVar(master=Frame, value=Start_Method)
     
     # Frame - General
@@ -658,14 +684,8 @@ def Settings_Parallel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Use_Parallel_Events_Var = Use_Parallel_Events.children["!ctkframe3"].children["!ctkcheckbox"]
     Use_Parallel_Events_Var.configure(variable=Parallel_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Parallel_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Use"], Information=Parallel_Use_Variable))
 
-    # Field - Divide Method
-    Divide_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Divide Method", Field_Type="Input_OptionMenu") 
-    Divide_Method_Frame_Var = Divide_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Divide_Method_Frame_Var.configure(variable=Divide_Method_Variable)
-    Elements.Get_Option_Menu_Advance(attach=Divide_Method_Frame_Var, values=Divide_Method_List, command=lambda Divide_Method_Frame_Var: Field_Update_Value(Variable=Divide_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Divide_Method"], Information=Divide_Method_Frame_Var))
-
     # Field - Start Method
-    Start_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Start Method", Field_Type="Input_OptionMenu") 
+    Start_Method_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Same Start Time", Field_Type="Input_OptionMenu") 
     Start_Method_Frame_Var = Start_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Start_Method_Frame_Var.configure(variable=Start_Method_Variable)
     Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Field_Update_Value(Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Start_Method"], Information=Start_Method_Frame_Var))
@@ -1096,6 +1116,38 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
 
     return Frame_Main
 
+def Settings_Events_General_Private(Frame: CTk|CTkFrame) -> CTkFrame:
+    # ------------------------- Main Functions -------------------------#
+    Private_Use_Variable = BooleanVar(master=Frame, value=Private_Enabled)
+    Private_Method_Variable = StringVar(master=Frame, value=Private_Method)
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Private", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Special Event Private, \n Split --> Special Event will split parallel events, like Lunch \n Do nothing --> This event will not do anything to parallel events")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_Private = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_Private_Var = Use_Private.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_Private_Var.configure(variable=Private_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=Private_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Private", "Use"], Information=Private_Use_Variable))
+
+    # Field - Search Text
+    Search_Text_Private = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_Private_Var = Search_Text_Private.children["!ctkframe3"].children["!ctkentry"]
+    Search_Text_Private_Var.configure(placeholder_text="Event Subject which defines private special event.")
+    Search_Text_Private_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Private", "Search_Text"], Information=Search_Text_Private_Var.get()))
+    Entry_field_Insert(Field=Search_Text_Private_Var, Value=Private_Search_Text)
+
+    # Field - Method used
+    Method_Private = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    Method_Private_Var = Method_Private.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Method_Private_Var.configure(variable=Private_Method_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Method_Private_Var, values=Private_Method_List, command=lambda Method_Private_Var: Field_Update_Value(Variable=Private_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Private", "Method"], Information=Method_Private_Var))
+
+
+    #? Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
 
 
 def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
