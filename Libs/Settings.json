@@ -229,6 +229,63 @@
                     "Project": "CLN Support",
                     "Project_Type": "PROJECT"
                 }
+            },
+            "Colors": {
+                "Used": "Gray",
+                "Color_List": [
+                    "Red",
+                    "Orange",
+                    "Brown",
+                    "Yellow",
+                    "Green",
+                    "Teal",
+                    "Olive",
+                    "Blue",
+                    "Purple",
+                    "Cranberry",
+                    "Steel",
+                    "DarkSteel",
+                    "Gray",
+                    "DarkGray",
+                    "Black",
+                    "DarkRed",
+                    "DarkOrange",
+                    "DarkBrown",
+                    "DarkYellow",
+                    "DarkGreen",
+                    "DarkTeal",
+                    "DarkOlive",
+                    "DarkBlue",
+                    "DarkPurple",
+                    "DarkCranberry"
+                ],
+                "Color_preset_map": {
+                    "Red": "Preset0",
+                    "Orange": "Preset1",
+                    "Brown": "Preset2",
+                    "Yellow": "Preset3",
+                    "Green": "Preset4",
+                    "Teal": "Preset5",
+                    "Olive": "Preset6",
+                    "Blue": "Preset7",
+                    "Purple": "Preset8",
+                    "Cranberry": "Preset9",
+                    "Steel": "Preset10",
+                    "DarkSteel": "Preset11",
+                    "Gray": "Preset12",
+                    "DarkGray": "Preset13",
+                    "Black": "Preset14",
+                    "DarkRed": "Preset15",
+                    "DarkOrange": "Preset16",
+                    "DarkBrown": "Preset17",
+                    "DarkYellow": "Preset18",
+                    "DarkGreen": "Preset19",
+                    "DarkTeal": "Preset20",
+                    "DarkOlive": "Preset21",
+                    "DarkBlue": "Preset22",
+                    "DarkPurple": "Preset23",
+                    "DarkCranberry": "Preset24"
+                }
             }
         },
         "Activity": {
@@ -341,7 +398,19 @@
                     "Vacation_Option_List": [
                         "Event",
                         "Calendar"
-                    ]
+                    ],
+                    "Delete_Events_w_KM_Calendar": true
+                },
+                "SickDay": {
+                    "Use": true,
+                    "Search_Text": "Sick Day",
+                    "All_Day": "Calendar",
+                    "Part_Day": "Event",
+                    "SickDay_Option_List": [
+                        "Event",
+                        "Calendar"
+                    ],
+                    "Delete_Events_w_KM_Calendar": true
                 },
                 "HomeOffice": {
                     "Use": false,
@@ -447,7 +516,10 @@
                     "Car Blocker",
                     "Christmas party",
                     "Deadline pro TimeSheet",
+                    "FG Targets Evaluation ",
                     "Grilovačka",
+                    "HEALH FIRST",
+                    "HEALTH FIRST",
                     "KONTROLA DOCHÁZKY",
                     "On-Call Duty",
                     "Save the date ",
@@ -542,6 +614,12 @@
                             "Search Text": "BRO NUS Cloud - Internal Status",
                             "Project": "BRO NUS Cloud Pilot",
                             "Activity": "Project Management",
+                            "Location": "Office"
+                        },
+                        "14": {
+                            "Search Text": "Sick Day",
+                            "Project": "Other Internal activities - BPC Brno",
+                            "Activity": "Sick Leave",
                             "Location": "Office"
                         }
                     }

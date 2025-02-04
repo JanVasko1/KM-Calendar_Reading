@@ -20,7 +20,7 @@ def Get_Widget_Frame(Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widge
 
     Frame_Single_Data_Area = Elements.Get_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_size=Widget_size)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
     Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=7)
     Header_text.pack(side="left", fill="x")
@@ -50,7 +50,7 @@ def Get_DashBoard_Widget_Frame(Frame: CTk|CTkFrame, Label: str, Widget_Line:str,
 
     Frame_Single_Data_Area = Elements.Get_Dashboard_Widget_Frame_Area(Frame=Frame_Single_Body, Widget_Line=Widget_Line, Widget_size=Widget_size)
     
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
     Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=(7, 2))
     if Icon_Name != None:

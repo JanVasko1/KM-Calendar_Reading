@@ -74,7 +74,7 @@ def DashBoard_Totals_Total_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:s
     Total_Hours_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Total_Hours_unit_text.configure(text=f"hours")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Total_Hours_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
     Total_Hours_text.pack(side="right", padx=0, pady=0)
@@ -93,7 +93,7 @@ def DashBoard_Totals_Average_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
     Average_Hours_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Average_Hours_unit_text.configure(text=f"/hours")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Average_Hours_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
     Average_Hours_text.pack(side="right", padx=0, pady=0)
@@ -112,7 +112,7 @@ def DashBoard_Totals_Counter_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line
     Event_Counter_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Event_Counter_unit_text.configure(text=f"")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Event_Counter_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
     Event_Counter_text.pack(side="right", padx=0, pady=0)
@@ -131,7 +131,7 @@ def DashBoard_Totals_Report_Period_Util_Widget(Frame: CTk|CTkFrame, Label: str, 
     Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Coverage_unit_text.configure(text=f"%")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Coverage_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
     Coverage_text.pack(side="right", padx=0, pady=0)
@@ -150,7 +150,7 @@ def DashBoard_Totals_Active_Day_Util_Widget(Frame: CTk|CTkFrame, Label: str, Wid
     Day_Average_Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Day_Average_Coverage_unit_text.configure(text=f"%")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Day_Average_Coverage_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
     Day_Average_Coverage_text.pack(side="right", padx=0, pady=0)
@@ -169,7 +169,7 @@ def DashBoard_Totals_Utilization_Surplus_Widget(Frame: CTk|CTkFrame, Label: str,
     Day_Average_Coverage_unit_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
     Day_Average_Coverage_unit_text.configure(text=f"hours")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Day_Average_Coverage_unit_text.pack(side="right", padx=(0, 20), pady=(15,2))
     Day_Average_Coverage_text.pack(side="right", padx=0, pady=0)
@@ -199,7 +199,7 @@ def DashBoard_Project_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, W
     Project_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Project_Activity", columns=4, rows=Project_DF.shape[0] + 1)
     Project_Table.configure(values=Table_Values)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Button_Show_Projects.pack(side="right")
     Project_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
@@ -220,7 +220,7 @@ def DashBoard_Project_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Project_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
     Project_Count_text.configure(text=f"{Most_Occurrence_Project}")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Project_Count_text.pack(side="right", padx=0, pady=0)
 
@@ -240,7 +240,7 @@ def DashBoard_Project_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Project_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
     Project_Hours_text.configure(text=f"{Most_Project_Hours}")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Project_Hours_text.pack(side="right", padx=0, pady=0)
 
@@ -260,7 +260,7 @@ def DashBoard_Project_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Lin
     Project_Hours_Avg_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
     Project_Hours_Avg_text.configure(text=f"{Most_Project_Avg_Hours}")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Project_Hours_Avg_text.pack(side="right", padx=0, pady=0)
 
@@ -288,7 +288,7 @@ def DashBoard_Activity_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
     Activity_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Project_Activity", columns=4, rows=Activity_Df.shape[0] + 1)
     Activity_Table.configure(values=Table_Values)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Button_Show_Activities.pack(side="right")
     Activity_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
@@ -309,7 +309,7 @@ def DashBoard_Activity_Detail1_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Activity_Count_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
     Activity_Count_text.configure(text=f"{Most_Occurrence_Activity}")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Activity_Count_text.pack(side="right", padx=0, pady=0)
 
@@ -329,7 +329,7 @@ def DashBoard_Activity_Detail2_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Activity_Hours_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
     Activity_Hours_text.configure(text=f"{Most_Activity_Hours}")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Activity_Hours_text.pack(side="right", padx=0, pady=0)
 
@@ -349,7 +349,7 @@ def DashBoard_Activity_Detail3_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Li
     Activity_Hours_Avg_text = Elements.Get_Label(Frame=Frame_Body, Label_Size="Dashboard_Detail_Value", Font_Size="Field_Label")
     Activity_Hours_Avg_text.configure(text=f"{Most_Activity_Avg_Hours}")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Activity_Hours_Avg_text.pack(side="right", padx=0, pady=0)
 
@@ -377,7 +377,7 @@ def DashBoard_WeekDays_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, 
     WeekDays_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_WeekDays", columns=7, rows=WeekDays_Df.shape[0] + 1)
     WeekDays_Table.configure(values=Table_Values)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Button_Show_Utilization.pack(side="right")
     WeekDays_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
@@ -406,7 +406,7 @@ def DashBoard_Weeks_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     Week_Table = Elements.Get_Table(Frame=Frame_Body, Table_size="Dashboard_Weeks", columns=8, rows=Weeks_DF.shape[0] + 1)
     Week_Table.configure(values=Table_Values)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Button_Show_Utilization.pack(side="right")
     Week_Table.pack(side="top", fill="none", expand=True, padx=10, pady=10)
@@ -437,7 +437,7 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     Button_Show_Utilization.configure(text="Utilization", command = lambda:DashBoard_Utilization())
     Elements.Get_ToolTip(widget=Button_Show_Utilization, message="Show utilization chart", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Button_Show_Utilization.pack(side="right")
     Button_Show_Activities.pack(side="right")

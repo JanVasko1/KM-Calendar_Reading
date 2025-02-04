@@ -1,5 +1,5 @@
 
-# BUG --> při jakýkoliv změně, musím nechat znova načíst globální SEttings (protože když udělám změnu v setupu a spustím download znova, pořád má v SEttings staré nastavení)
+# BUG --> při jakýkoliv změně, musím nechat znova načíst globální Settings (protože když udělám změnu v setupu a spustím download znova, pořád má v SEttings staré nastavení)
 # Import Libraries
 import time
 import pandas
@@ -7,7 +7,6 @@ import markdown
 from pandas import DataFrame
 from datetime import datetime
 
-from tkinter import ttk
 import customtkinter
 from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkOptionMenu, CTkLabel
 from CTkMessagebox import CTkMessagebox
@@ -86,7 +85,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_User_Name.configure(text=User_Name)
     Frame_User_Name.pack_propagate(flag=False)
 
-    #? Build look of Widget
+    # Build look of Widget
     Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_User_Email.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_User_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
@@ -234,7 +233,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     # Define intend
     Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady = Define_Icons_Top_Bottom_indent(Frame_Height=Side_Bar_Frame_Height, Icon_count=Icon_count, Icon_Button_Height=Icon_Button_Height, Icon_Default_pady=Icon_Default_pady, Logo_height=Logo_Height, Logo_pady=Logo_pady)
 
-    #? Build look of Widget
+    # Build look of Widget
     Active_Window.grid(row=1, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
     if User_Type == "User":
         Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
@@ -511,7 +510,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Progress_text.configure(text=f"Download progress", width=200)
 
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
@@ -618,7 +617,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Frame_DashBoard_Chart_Frame = DashBoard.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
         Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
-        #? Build look of Widget
+        # Build look of Widget
         Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
         Frame_DashBoard_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
@@ -686,7 +685,7 @@ def Page_User_Dashboard(Frame: CTk|CTkFrame):
 
     TabView.set("Totals")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_User_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
 
@@ -827,7 +826,7 @@ def Page_Data(Frame: CTk|CTkFrame):
     Elements.Get_ToolTip(widget=Button_Last, message="Last page", ToolTip_Size="Normal")
 
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Data_Button_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Data_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
 
@@ -880,7 +879,7 @@ def Page_Information(Frame: CTk|CTkFrame):
     Information_html = HTMLLabel(Frame_Information_Scrollable_Area, html=f"{html_markdown}", background=HTML_Background_Color, font="Roboto", fg=HTML_Font_Color)
     Information_html.configure(height=700)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Information_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     Frame_Information_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
     Information_html.pack(side="top", fill="both", expand=True, padx=10, pady=10)
@@ -901,7 +900,16 @@ def Page_Settings(Frame: CTk|CTkFrame):
             Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
             CTkMessagebox(title="warning", message="Project and Activity downloaded from Sharepoint. Restart app!!", icon="check", option_1="Thanks", fade_in_duration=1)
 
-            # TODO --> automaticky poslat i do Outlooku abych měl správně list a kategorie v Outlooku
+    def Upload_Project_Activities():
+        Exchange_Password = Dialog_Window_Request(title="Exchange Login", text="Write your password", Dialog_Type="Password")
+        
+        if Exchange_Password == None:
+            CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
+        else:
+            import Libs.Download.Exchange as Exchange
+            Exchange.Push_Project(Exchange_Password=Exchange_Password)
+            Exchange.Push_Project(Exchange_Password=Exchange_Password)
+            CTkMessagebox(title="warning", message="Project and Activity uploaded to Exchange.", icon="check", option_1="Thanks", fade_in_duration=1)
 
 
     # ------------------------- Main Functions -------------------------#
@@ -912,10 +920,15 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Frame_Settings_Work_Detail_Area.grid_propagate(flag=False)
 
     # ------------------------- State Area -------------------------#
-    # Add Button - Download New Project and Activities
+    # Button - Download New Project and Activities
     Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
-    Elements.Get_ToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities inside the app from actual Sharepoint.", ToolTip_Size="Normal")
+
+    # Button - Download New Project and Activities
+    Button_Upload_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
+    Button_Upload_Pro_Act.configure(text="Upload Project/Activity", command = lambda:Upload_Project_Activities())
+    Elements.Get_ToolTip(widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Tab View
@@ -959,6 +972,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Elements.Get_ToolTip(widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(widget=Tab_E_Spec_ToolTip_But, message="Special Events which needs special treatment.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Split too long Empty place.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_S_ToolTip_But, message="Basic Scheduler setup.", ToolTip_Size="Normal")
     Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
@@ -987,6 +1001,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # Event-Special Page
     Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Frame=Tab_E_Spec)
     Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Frame=Tab_E_Spec)
+    Event_SickDay_Widget = Settings_Widgets.Settings_Events_General_SickDay(Frame=Tab_E_Spec)
     Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_Spec)
     Event_Private_Widget = Settings_Widgets.Settings_Events_General_Private(Frame=Tab_E_Spec)
 
@@ -1007,11 +1022,13 @@ def Page_Settings(Frame: CTk|CTkFrame):
     else:
         pass
     
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
     Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
 
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=15, sticky="e")
+    Button_Upload_Pro_Act.grid(row=0, column=1, padx=5, pady=15, sticky="e")
+
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
 
     Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
@@ -1033,8 +1050,9 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     Event_Lunch_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Event_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Event_HomeOffice_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
-    Event_Private_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Event_SickDay_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Event_HomeOffice_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Event_Private_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
 
     Event_Empty_General_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Event_Split_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
@@ -1056,7 +1074,7 @@ class Win(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         super().overrideredirect(True)
-        super().title("Time Sheet Downloader")
+        super().title("Time Sheets")
         super().iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
         self._offsetx = 0
         self._offsety = 0

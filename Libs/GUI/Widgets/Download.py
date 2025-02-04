@@ -88,7 +88,7 @@ def Download_Sharepoint(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringV
     SP_Password_Frame_Var = SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_Password_Frame_Var.configure(placeholder_text="Fill your password.")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -116,7 +116,7 @@ def Download_Manual(Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) 
     Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
     Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -145,7 +145,7 @@ def Download_Exchange(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> C
     Ex_Password_Frame_Var = Ex_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
     Ex_Password_Frame_Var.configure(placeholder_text="Fill your password.")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -169,7 +169,7 @@ def Download_Outlook(Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CT
     Out_Email_Frame_Var.configure(placeholder_text=Outlook_Email, placeholder_text_color="#949A9F")
     Out_Email_Frame_Var.configure(state="disabled")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -215,7 +215,7 @@ def Per_Period_Selection(Frame: CTk|CTkFrame) -> CTkFrame:
     Past_Month_To_Frame_Var.configure(variable=Month_To_Variable)
     Elements.Get_Option_Menu_Advance(attach=Past_Month_To_Frame_Var, values=Month_list, command=None)
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -244,7 +244,7 @@ def Pre_Download_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     Past_SP_Password_Frame_Var = Past_SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
     Past_SP_Password_Frame_Var.configure(placeholder_text="Fill your password.")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main

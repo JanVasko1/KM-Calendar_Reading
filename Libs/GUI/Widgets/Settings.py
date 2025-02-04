@@ -11,8 +11,6 @@ from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, BooleanVar
 from CTkTable import CTkTable
 from CTkMessagebox import CTkMessagebox
 
-from CTkColorPicker import *
-
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Set Defaults -------------------------------------------------------------------------------------------------------------------------------------------------- #
 client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
 Settings = Defaults_Lists.Load_Settings()
@@ -50,6 +48,8 @@ SP_Teams_List = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_L
 
 # Outlook
 Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+Category_Color = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
+Category_Color_list = list(Settings["Event_Handler"]["Project"]["Colors"]["Color_List"])
 
 # Formats
 Format_Date = Settings["General"]["Formats"]["Date"]
@@ -64,6 +64,15 @@ Vacation_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["Va
 Vacation_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["All_Day"]
 Vacation_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Part_Day"]
 Vacation_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Vacation_Option_List"]
+Vacation_Delete_Events = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Delete_Events_w_KM_Calendar"]
+
+# Vacation
+SickDay_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Use"]
+SickDay_Search_Text = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Search_Text"]
+SickDay_All_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["All_Day"]
+SickDay_Part_Day = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Part_Day"]
+SickDay_Day_Option_List = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["SickDay_Option_List"]
+SickDay_Delete_Events = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Delete_Events_w_KM_Calendar"]
 
 # HomeOffice
 HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
@@ -133,7 +142,7 @@ Sunday_Working_day = Settings["General"]["Calendar"]["Sunday"]["Working_Day"]
 
 Total_Work_Duration =  Settings["General"]["Calendar"]["Totals"]["Work"]
 
-# Calendar - Vacation
+# Calendar - Vacation/SickDay
 Monday_Vacation_Start = Settings["General"]["Calendar"]["Monday"]["Vacation"]["Start_Time"]
 Tuesday_Vacation_Start = Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Start_Time"]
 Wednesday_Vacation_Start = Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Start_Time"]
@@ -338,7 +347,7 @@ def Settings_General_Theme(Frame: CTk|CTkFrame, window: CTk|CTkFrame) -> CTkFram
     Win_Style_Frame_Var.configure(variable=Win_Style_Variable)
     Elements.Get_Option_Menu_Advance(attach=Win_Style_Frame_Var, values=Win_Style_List, command= lambda Win_Style_Selected: Appearance_Change_Win_Style(Win_Style_Selected=Win_Style_Selected, window=window))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -409,7 +418,7 @@ def Settings_General_Color(Frame: CTk|CTkFrame) -> CTkFrame:
 
         Color_Picker_Frame = Elements.Get_Color_Picker(Frame=Color_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
 
-        #? Build look of Widget --> must be before inset
+        # Build look of Widget --> must be before inset
         Color_Picker_Frame.pack(padx=0, pady=0) 
 
     # ------------------------- Main Functions -------------------------#
@@ -462,7 +471,7 @@ def Settings_General_Color(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_Option_Menu_Advance(attach=Hover_Color_Mode_Frame_Var, values=Hover_Color_Mode_List, command = lambda Hover_Color_Mode_Frame_Var: Settings_Disabling_Color_Pickers(Selected_Value=Hover_Color_Mode_Frame_Var, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover"))
     Settings_Disabling_Color_Pickers(Selected_Value=Hover_Color_Mode, Entry_Field=Hover_Color_Manual_Frame_Var, Picker_Button=Hover_Color_Picker_Button_Var, Variable=Hover_Color_Mode_Variable, Helper="Hover")   # Must be here because of initial value
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -503,7 +512,7 @@ def Settings_User_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
     User_Type_Frame_Var.configure(variable=User_Type_Variable)
     Elements.Get_Option_Menu_Advance(attach=User_Type_Frame_Var, values=User_Type_list, command=lambda User_Type_Frame_Var: Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -557,7 +566,7 @@ def Settings_General_Sharepoint(Frame: CTk|CTkFrame) -> CTkFrame:
     SP_Auth_Address_Frame_Var.configure(placeholder_text=SP_Auth_Address, placeholder_text_color="#949A9F")
     SP_Auth_Address_Frame_Var.configure(state="disabled")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -600,7 +609,7 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Update_Secret_Var.configure(text="Re-new Secret", command = lambda:Exchange_ReNew_Secret())
     Elements.Get_ToolTip(widget=Button_Update_Secret_Var, message="Update Secret ID.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -608,6 +617,7 @@ def Settings_General_Exchange(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
+    Category_Color_Variable = StringVar(master=Frame, value=Category_Color)
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Outlook", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Outlook Client related settings.")
@@ -620,7 +630,14 @@ def Settings_General_Outlook(Frame: CTk|CTkFrame) -> CTkFrame:
     Outlook_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Outlook", "Calendar"], Information=Outlook_Email_Frame_Var.get()))
     Entry_field_Insert(Field=Outlook_Email_Frame_Var, Value=Outlook_Email)
 
-    #? Build look of Widget
+    # Field - Category Color
+    Category_Color_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Category Color", Field_Type="Input_OptionMenu") 
+    Category_Color_Frame_Var = Category_Color_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Category_Color_Frame_Var.configure(variable=Category_Color_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Category_Color_Frame_Var, values=Category_Color_list, command=lambda Category_Color_Frame_Var: Field_Update_Value(Variable=Category_Color_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Colors", "Used"], Information=Category_Color_Frame_Var))
+
+
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -663,7 +680,7 @@ def Settings_General_Formats(Frame: CTk|CTkFrame) -> CTkFrame:
     Sharepoint_DateTime_Frame_Var.configure(placeholder_text=Format_Sharepoint_DateTime, placeholder_text_color="#949A9F")
     Sharepoint_DateTime_Frame_Var.configure(state="disabled")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -690,7 +707,7 @@ def Settings_Parallel_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Start_Method_Frame_Var.configure(variable=Start_Method_Variable)
     Elements.Get_Option_Menu_Advance(attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Field_Update_Value(Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Parallel_Events", "Start_Method"], Information=Start_Method_Frame_Var))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -745,7 +762,7 @@ def Settings_Join_events(Frame: CTk|CTkFrame) -> CTkFrame:
     Join_Work_ElseWhere_Frame_Var.configure(variable=Join_Work_Else_Variable)
     Elements.Get_Option_Menu_Advance(attach=Join_Work_ElseWhere_Frame_Var, values=Join_Methods_List, command=lambda Join_Work_ElseWhere_Frame_Var: Field_Update_Value(Variable=Join_Work_Else_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Join_method", "Working elsewhere"], Information=Join_Work_ElseWhere_Frame_Var))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -856,7 +873,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Work_Calendar_Total_Var, Lunch_Brake_Duration_Frame_Var=int(Lunch_Brake_Duration_Frame_Var.get()), Calendar_Type="Work_Hours", Monday_Start=Monday_Frame_Var1, Monday_End=Monday_Frame_Var2, Tuesday_Start=Tuesday_Frame_Var1, Tuesday_End=Tuesday_Frame_Var2, Wednesday_Start=Wednesday_Frame_Var1, Wednesday_End=Wednesday_Frame_Var2, Thursday_Start=Thursday_Frame_Var1, Thursday_End=Thursday_Frame_Var2, Friday_Start=Friday_Frame_Var1, Friday_End=Friday_Frame_Var2, Saturday_Start=Saturday_Frame_Var1, Saturday_End=Saturday_Frame_Var2, Sunday_Start=Sunday_Frame_Var1, Sunday_End=Sunday_Frame_Var2))
     Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Calculate total week duration.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -866,7 +883,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
 def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - KM Working/Vacation Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Calendar - KM Working/Vacation/SickDay Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
@@ -958,7 +975,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Skip_Add_Var.configure(text="Calculate", command = lambda: Calculate_duration(Entry_Field= Vacation_Calendar_Total_Var, Lunch_Brake_Duration_Frame_Var=0, Calendar_Type="Vacation", Monday_Start=Monday_Vac_Frame_Var1, Monday_End=Monday_Vac_Frame_Var2, Tuesday_Start=Tuesday_Vac_Frame_Var1, Tuesday_End=Tuesday_Vac_Frame_Var2, Wednesday_Start=Wednesday_Vac_Frame_Var1, Wednesday_End=Wednesday_Vac_Frame_Var2, Thursday_Start=Thursday_Vac_Frame_Var1, Thursday_End=Thursday_Vac_Frame_Var2, Friday_Start=Friday_Vac_Frame_Var1, Friday_End=Friday_Vac_Frame_Var2, Saturday_Start=Saturday_Vac_Frame_Var1, Saturday_End=Saturday_Vac_Frame_Var2, Sunday_Start=Sunday_Vac_Frame_Var1, Sunday_End=Sunday_Vac_Frame_Var2))
     Elements.Get_ToolTip(widget=Button_Skip_Add_Var, message="Calculate total week Vacation duration.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -986,7 +1003,7 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=End_Event_Var, Value=End_Event_json)
 
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -1028,7 +1045,7 @@ def Settings_Events_General_Lunch(Frame: CTk|CTkFrame) -> CTkFrame:
     Part_Day_Lunch_Var.configure(variable=Lunch_Part_Variable)
     Elements.Get_Option_Menu_Advance(attach=Part_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda Part_Day_Lunch_Var: Field_Update_Value(Variable=Lunch_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Lunch", "Part_Day"], Information=Part_Day_Lunch_Var))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -1040,6 +1057,7 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Vacation_Use_Variable = BooleanVar(master=Frame, value=Vacation_Enabled)
     Vacation_All_Variable = StringVar(master=Frame, value=Vacation_All_Day)
     Vacation_Part_Variable = StringVar(master=Frame, value=Vacation_Part_Day)
+    Vacation_Delete_Events_Variable = BooleanVar(master=Frame, value=Vacation_Delete_Events)
 
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Vacation")
@@ -1069,7 +1087,60 @@ def Settings_Events_General_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Part_Day_Vacation_Var.configure(variable=Vacation_Part_Variable)
     Elements.Get_Option_Menu_Advance(attach=Part_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda Part_Day_Vacation_Var: Field_Update_Value(Variable=Vacation_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Part_Day"], Information=Part_Day_Vacation_Var))
 
-    #? Build look of Widget
+    # Field - Use
+    Delete_Events_Vacation = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Delete Events w Working H.", Field_Type="Input_CheckBox") 
+    Delete_Events_Vacation_Var = Delete_Events_Vacation.children["!ctkframe3"].children["!ctkcheckbox"]
+    Delete_Events_Vacation_Var.configure(variable=Vacation_Delete_Events_Variable, text="", command=lambda : Field_Update_Value(Variable=Vacation_Delete_Events_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Vacation", "Delete_Events_w_Working_Hours"], Information=Vacation_Delete_Events_Variable))
+
+    # Build look of Widget
+    Frame_Main.pack(side="top", padx=15, pady=15)
+
+    return Frame_Main
+
+
+
+def Settings_Events_General_SickDay(Frame: CTk|CTkFrame) -> CTkFrame:
+    # ------------------------- Main Functions -------------------------#
+    SickDay_Use_Variable = BooleanVar(master=Frame, value=SickDay_Enabled)
+    SickDay_All_Variable = StringVar(master=Frame, value=SickDay_All_Day)
+    SickDay_Part_Variable = StringVar(master=Frame, value=SickDay_Part_Day)
+    SickDay_Delete_Events_Variable = BooleanVar(master=Frame, value=SickDay_Delete_Events)
+
+    # Frame - General
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Special - SickDay", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of SickDay")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Use
+    Use_SickDay = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
+    Use_SickDay_Var = Use_SickDay.children["!ctkframe3"].children["!ctkcheckbox"]
+    Use_SickDay_Var.configure(variable=SickDay_Use_Variable, text="", command=lambda : Field_Update_Value(Variable=SickDay_Use_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "SickDay", "Use"], Information=SickDay_Use_Variable))
+
+    # Field - Search Text
+    Search_Text_SickDay = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
+    Search_Text_SickDay_Var = Search_Text_SickDay.children["!ctkframe3"].children["!ctkentry"]
+    Search_Text_SickDay_Var.configure(placeholder_text="Event Subject which defines SickDay")
+    Search_Text_SickDay_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "SickDay", "Search_Text"], Information=Search_Text_SickDay_Var.get()))
+    Entry_field_Insert(Field=Search_Text_SickDay_Var, Value=SickDay_Search_Text)
+
+    # Field - All Day
+    All_Day_SickDay = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    All_Day_SickDay_Var = All_Day_SickDay.children["!ctkframe3"].children["!ctkoptionmenu"]
+    All_Day_SickDay_Var.configure(variable=SickDay_All_Variable)
+    Elements.Get_Option_Menu_Advance(attach=All_Day_SickDay_Var, values=SickDay_Day_Option_List, command=lambda All_Day_SickDay_Var: Field_Update_Value(Variable=SickDay_All_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "SickDay", "All_Day"], Information=All_Day_SickDay_Var))
+
+    # Field - Part Day
+    Part_Day_SickDay = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
+    Part_Day_SickDay_Var = Part_Day_SickDay.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Part_Day_SickDay_Var.configure(variable=SickDay_Part_Variable)
+    Elements.Get_Option_Menu_Advance(attach=Part_Day_SickDay_Var, values=SickDay_Day_Option_List, command=lambda Part_Day_SickDay_Var: Field_Update_Value(Variable=SickDay_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "SickDay", "Part_Day"], Information=Part_Day_SickDay_Var))
+
+    # Field - Use
+    Delete_Events_SickDay = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Delete Events w Working H.", Field_Type="Input_CheckBox") 
+    Delete_Events_SickDay_Var = Delete_Events_SickDay.children["!ctkframe3"].children["!ctkcheckbox"]
+    Delete_Events_SickDay_Var.configure(variable=SickDay_Delete_Events_Variable, text="", command=lambda : Field_Update_Value(Variable=SickDay_Delete_Events_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "SickDay", "Delete_Events_w_Working_Hours"], Information=SickDay_Delete_Events_Variable))
+
+
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -1111,10 +1182,12 @@ def Settings_Events_General_HomeOffice(Frame: CTk|CTkFrame) -> CTkFrame:
     Part_Day_HomeOffice_Var.configure(variable=HomeOffice_Part_Variable)
     Elements.Get_Option_Menu_Advance(attach=Part_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda Part_Day_HomeOffice_Var: Field_Update_Value(Variable=HomeOffice_Part_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "HomeOffice", "Part_Day"], Information=Part_Day_HomeOffice_Var))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
+
+
 
 def Settings_Events_General_Private(Frame: CTk|CTkFrame) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
@@ -1144,10 +1217,11 @@ def Settings_Events_General_Private(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_Option_Menu_Advance(attach=Method_Private_Var, values=Private_Method_List, command=lambda Method_Private_Var: Field_Update_Value(Variable=Private_Method_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Special_Events", "Private", "Method"], Information=Method_Private_Var))
 
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
+
 
 
 def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
@@ -1253,7 +1327,7 @@ def Settings_Events_General_Skip(Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(widget=Button_Skip_Del_all_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -1600,7 +1674,7 @@ def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Empty_Recalculate_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
     Elements.Get_ToolTip(widget=Button_Empty_Recalculate_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="none", expand=True, padx=0, pady=0)
@@ -1930,7 +2004,7 @@ def Settings_Events_Empty_Schedule(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_Schedule_Del_All_Var.configure(text="Del all", command = lambda:Del_Schedule_Event_All(Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var))
     Elements.Get_ToolTip(widget=Button_Schedule_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
     Frame_Table_Area.pack(side="left", fill="y", expand=True, padx=0, pady=0)
@@ -1981,7 +2055,7 @@ def Settings_Events_Split(Frame: CTk|CTkFrame) -> CTkFrame:
     Split_Method_Var.configure(variable=Events_Empty_Split_list_Variable)
     Elements.Get_Option_Menu_Advance(attach=Split_Method_Var, values=Events_Empty_Split_list, command=lambda Split_Method_Var: Field_Update_Value(Variable=Events_Empty_Split_list_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Method"], Information=Split_Method_Var))
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
@@ -2217,7 +2291,7 @@ def Settings_Events_AutoFill(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_AutoFill_Event_All(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var))
     Elements.Get_ToolTip(widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Input_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
@@ -2458,7 +2532,7 @@ def Settings_Events_Activity_Correction(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var))
     Elements.Get_ToolTip(widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Input_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
@@ -2690,7 +2764,7 @@ def Settings_My_Team(Frame: CTk|CTkFrame) -> CTkFrame:
     Button_MT_Del_All_Var.configure(text="Del all", command = lambda:Del_Team_User_all(Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var))
     Elements.Get_ToolTip(widget=Button_MT_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    #? Build look of Widget
+    # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
     Frame_Input_Total.pack(side="top", fill="none", expand=True, padx=0, pady=0)
     Frame_Input_Area.pack(side="left", fill="none", expand=False, padx=0, pady=0)
