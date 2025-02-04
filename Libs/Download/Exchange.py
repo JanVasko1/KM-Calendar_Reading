@@ -3,6 +3,7 @@ from pandas import DataFrame as DataFrame
 from dotenv import load_dotenv
 import requests
 from datetime import datetime
+
 import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
@@ -16,6 +17,10 @@ Time_format = Settings["General"]["Formats"]["Time"]
 Exchange_DateTime_format = Settings["General"]["Formats"]["Exchange_DateTime"]
 Exchange_Busy_Status_List = Defaults_Lists.Exchange_Busy_Status_List()
 Busy_Status_List = Defaults_Lists.Busy_Status_List()
+
+# Load OAuth2 info
+client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
+username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
@@ -69,13 +74,7 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
 
     return Counter
 
-# ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
-    import getpass
-    # Load OAuth2 info
-    client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
-    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-
+def Exchange_OAuth(Exchange_Password: str) -> str:
     if not client_id:
         CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
         raise ValueError()
@@ -99,6 +98,13 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     tokens = response.json()
     access_token = tokens["access_token"]
 
+    return access_token
+
+# ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
+def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
+    # OAuth2 Access
+    access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
+
     # Update filters
     Filter_Start_Date = Filter_Start_Date + "T00:00:00Z"
     Filter_End_Date = Filter_End_Date + "T23:59:59Z"
@@ -121,7 +127,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     events_response = requests.get(url=events_url, headers=headers, params=params)
 
     Counter = 0 
-    if response.status_code == 200:
+    if events_response.status_code == 200:
         # Init page 
         Events = events_response.json()
         Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter) 
@@ -134,7 +140,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
                 Events = response.json()
                 Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
     else:
-        CTkMessagebox(title="Info", message=f"Not possible to download from Exchange (Response Code: {response.status_code}), will try to download from Outlook Classic Client.", fade_in_duration=1)
+        CTkMessagebox(title="Info", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), will try to download from Outlook Classic Client.", fade_in_duration=1)
         Events_downloaded = {}
         Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 
@@ -143,3 +149,63 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     Events_Process_df = DataFrame(data=Events_Process, columns=list(Events_Process.keys()))
     Events_Process_df = Events_Process_df.T
     return Events_Process_df
+
+def Delete_Projects(access_token: str, username: str) -> None:
+    headers_del = {
+        "Authorization": f"Bearer {access_token}"}
+
+    # Get all categories
+    Cat_list_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
+    All_Cat_response = requests.get(url=Cat_list_url, headers=headers_del)
+    categories = All_Cat_response.json().get("value", [])
+
+    # Delete each category
+    # BUG --> code do not delete all categoriesheaders_del
+    for category in categories:
+        category_id = category["id"]
+        delete_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories/{category_id}"
+        delete_response = requests.delete(url=delete_url, headers=headers_del)
+        if delete_response.status_code == 204:
+            print(f"""Deleted category: {category["displayName"]}""")
+        else:
+            print(f"""Failed to delete category: {category["displayName"]}""")
+
+
+def Push_Project(Exchange_Password: str) -> None:
+    access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
+
+    # Get list of Projects
+    Project_List = []
+    Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
+    for key, value in Project_dict.items():
+        Project_List.append(value["Project"])
+    Project_List.sort()
+
+    # Preset Color
+    # TODO --> finish selection of Preset_color
+
+    # delete all before upload
+    Delete_Projects(access_token=access_token, username=username)
+
+    # Upload new projects to Category
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"}
+
+    for project in Project_List:
+        params = {
+            "color": f"{Preset_color}",
+            "displayName": f"{project}"}
+        
+        # BUG --> code do not create new category
+        category_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
+        category_response = requests.post(url=category_url, headers=headers, params=params)
+
+        # Response handler
+        if category_response.status_code == 200 or category_response.status_code == 201:
+            print(f"Success: {project}")
+
+
+def Push_Activity(Exchange_Password: str) -> None:
+    access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
+    pass
