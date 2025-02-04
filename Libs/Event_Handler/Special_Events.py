@@ -12,10 +12,12 @@ Time_format = Settings["General"]["Formats"]["Time"]
 
 Vacation_Calendar = Settings["General"]["Calendar"]
 Vacation_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]
+SickDay_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]
 Lunch_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]
 Private_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]
 
 Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
+SickDay_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Use"]
 HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
 Lunch_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
 Private_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
@@ -27,12 +29,12 @@ def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
 
-def Delete_Event_during_Vacation_Day(Dataframe: DataFrame, Event_Day: str, Vacation_Start_Time_dt: datetime, Vacation_End_Time_dt: datetime, Vacation_Index: int) -> None:
+def Delete_Event_during_KM_Calendar(Dataframe: DataFrame, Event_Day: str, KM_Start_Time_dt: datetime, KM_End_Time_dt: datetime, Vacation_Index: int) -> None:
     mask1 = Dataframe["Start_Date"] == Event_Day
-    mask2 = Dataframe["Start_Time"] >= Vacation_Start_Time_dt
-    mask3 = Dataframe["Start_Time"] <= Vacation_End_Time_dt
-    mask4 = Dataframe["End_Time"] >= Vacation_Start_Time_dt
-    mask5 = Dataframe["End_Time"] <= Vacation_End_Time_dt
+    mask2 = Dataframe["Start_Time"] >= KM_Start_Time_dt
+    mask3 = Dataframe["Start_Time"] <= KM_End_Time_dt
+    mask4 = Dataframe["End_Time"] >= KM_Start_Time_dt
+    mask5 = Dataframe["End_Time"] <= KM_End_Time_dt
     To_Delete_df = Dataframe.loc[mask1 & mask2 & mask3 &mask4 & mask5]
     Event_Indexes = To_Delete_df.index.values.tolist() 
     Event_Indexes.remove(Vacation_Index)
@@ -107,43 +109,61 @@ def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataF
 
     return Cumulated_Events
 
+def Day_handler(Events: DataFrame, Details: dict) -> DataFrame:
+    for row in Events.iterrows():
+        row_index = row[0]
+        row_Series = pandas.Series(row[1])
+        Event_Subject = row_Series["Subject"]
+        Event_Day = row_Series["Start_Date"]
+        Event_All_Day = row_Series["All_Day_Event"]
+
+        Day_dt = datetime.strptime(Event_Day, Date_format)
+        Day_WeekDay_name = Day_dt.strftime("%A")
+
+        # Vacation - if found as "All day" substituted for real day hours
+        Text_Found = Event_Subject.find(Details["Search_Text"])
+        if Text_Found == -1:
+            pass
+        else:
+            if Event_All_Day == True:
+                # All Day
+                KM_Start_Time = Vacation_Calendar[Day_WeekDay_name]["Vacation"]["Start_Time"]
+                KM_End_Time = Vacation_Calendar[Day_WeekDay_name]["Vacation"]["End_Time"]
+
+                # Change Event Start Time and End time according to calendar
+                KM_Start_Time_dt = datetime.strptime(KM_Start_Time, Time_format)
+                KM_End_Time_dt = datetime.strptime(KM_End_Time, Time_format)
+                Events.at[row_index, "Start_Time"] = KM_Start_Time_dt
+                Events.at[row_index, "End_Time"] = KM_End_Time_dt
+                Events.at[row_index, "Duration"] = Duration_Counter(Time1=KM_Start_Time_dt, Time2=KM_End_Time_dt)
+
+                # Delete all meetings of that day and within the Event time
+                if Details["Delete_Events_w_KM_Calendar"] == True:
+                    Delete_Event_during_KM_Calendar(Dataframe=Events, Event_Day=Event_Day, KM_Start_Time_dt=KM_Start_Time_dt, KM_End_Time_dt=KM_End_Time_dt, Vacation_Index=row_index)
+                else:
+                    pass
+            else:
+                # Part of the Day
+                # Delete all meetings of that day and within the Event time
+                if Details["Delete_Events_w_KM_Calendar"] == True:
+                    Delete_Event_during_KM_Calendar(Dataframe=Events, Event_Day=Event_Day, KM_Start_Time_dt=KM_Start_Time_dt, KM_End_Time_dt=KM_End_Time_dt, Vacation_Index=row_index)
+                else:
+                    pass
+    return Events
+
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 # Vacation
 def Vacation(Events: DataFrame) -> DataFrame:
     if Vacation_Enabled == True:
-        for row in Events.iterrows():
-            row_index = row[0]
-            row_Series = pandas.Series(row[1])
-            Event_Subject = row_Series["Subject"]
-            Event_Day = row_Series["Start_Date"]
-            Event_All_Day = row_Series["All_Day_Event"]
+        Events = Day_handler(Events=Events, Details=Vacation_Details)
+        return Events
+    else:
+        return Events
 
-            Day_dt = datetime.strptime(Event_Day, Date_format)
-            Day_WeekDay_name = Day_dt.strftime("%A")
-
-            # Vacation - if found as "All day" substituted for real day hours
-            Vacation_Found = Event_Subject.find(Vacation_Details["Search_Text"])
-            if Vacation_Found == -1:
-                pass
-            else:
-                # All Day
-                if Event_All_Day == True:
-                    Calendar_Start_Time = Vacation_Calendar[Day_WeekDay_name]["Vacation"]["Start_Time"]
-                    Calendar_End_Time = Vacation_Calendar[Day_WeekDay_name]["Vacation"]["End_Time"]
-
-                    # Change Event Start Time and End time according to calendar
-                    Vacation_Start_Time_dt = datetime.strptime(Calendar_Start_Time, Time_format)
-                    Vacation_End_Time_dt = datetime.strptime(Calendar_End_Time, Time_format)
-                    Events.at[row_index, "Start_Time"] = Vacation_Start_Time_dt
-                    Events.at[row_index, "End_Time"] = Vacation_End_Time_dt
-                    Events.at[row_index, "Duration"] = Duration_Counter(Time1=Vacation_Start_Time_dt, Time2=Vacation_End_Time_dt)
-
-                    # Delete all meetings of that day and within the Event time
-                    Delete_Event_during_Vacation_Day(Dataframe=Events, Event_Day=Event_Day, Vacation_Start_Time_dt=Vacation_Start_Time_dt, Vacation_End_Time_dt=Vacation_End_Time_dt, Vacation_Index=row_index)
-                else:
-                    # Delete all meetings of that day and within the Event time
-                    Delete_Event_during_Vacation_Day(Dataframe=Events, Event_Day=Event_Day, Vacation_Start_Time_dt=Vacation_Start_Time_dt, Vacation_End_Time_dt=Vacation_End_Time_dt, Vacation_Index=row_index)
-
+# SickDay
+def SickDay(Events: DataFrame) -> DataFrame:
+    if SickDay_Enabled == True:
+        Events = Day_handler(Events=Events, Details=SickDay_Details)
         return Events
     else:
         return Events

@@ -96,6 +96,10 @@ def Download_and_Process(window: CTk, Progress_Bar: CTkProgressBar, Progress_tex
         Events = Special_Events.Vacation(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Sick Day") 
+        Events = Special_Events.SickDay(Events=Events)
+        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="HomeOffice") 
         Events = Special_Events.HomeOffice(Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
