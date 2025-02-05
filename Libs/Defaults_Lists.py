@@ -87,6 +87,13 @@ def Information_Update_Settings(File_Name: str, JSON_path: list, Information: in
     except Exception as Error:
         CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
 
+def List_from_Dict(Dictionary: dict, Key_Argument: str) -> list:
+    Return_List = []
+    for key, value in Dictionary.items():
+        Return_List.append(value[f"{Key_Argument}"])
+    Return_List.sort()
+    return Return_List
+
 def Create_Folder(file_path: str) -> None:
     # Create Folder
     try: 
