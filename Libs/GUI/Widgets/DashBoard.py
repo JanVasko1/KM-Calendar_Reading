@@ -22,7 +22,7 @@ def DashBoard_Project():
     else:
         pass
 
-    Chart_path = f"Operational\\DashBoard_Project_{Theme}.html"
+    Chart_path = f"Operational\\DashBoard\\DashBoard_Project_{Theme}.html"
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -37,7 +37,7 @@ def DashBoard_Activity():
     else:
         pass
 
-    Chart_path = f"Operational\\DashBoard_Activity_{Theme}.html"
+    Chart_path = f"Operational\\DashBoard\\DashBoard_Activity_{Theme}.html"
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -52,7 +52,7 @@ def DashBoard_Utilization():
     else:
         pass
 
-    Chart_path = f"Operational\\DashBoard_Utilization_{Theme}.html"
+    Chart_path = f"Operational\\DashBoard\\DashBoard_Utilization_{Theme}.html"
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -420,8 +420,6 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     Frame_Header = Frame_Main.children["!ctkframe"]
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # TODO --> dokončit Dashboard --> načtení grafů podle zvoleného buttonu do Frame --> možná nemožný
-
     # Button --> Projects
     Button_Show_Projects = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
     Button_Show_Projects.configure(text="Projects", command = lambda:DashBoard_Project())
@@ -436,6 +434,8 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
     Button_Show_Utilization = Elements.Get_Button_Chart(Frame=Frame_Header, Button_Size="Chart_Button")
     Button_Show_Utilization.configure(text="Utilization", command = lambda:DashBoard_Utilization())
     Elements.Get_ToolTip(widget=Button_Show_Utilization, message="Show utilization chart", ToolTip_Size="Normal")
+
+    # TODO --> Finish Dashboard --> Load charts according to button into body of Frame --> potentially not possible
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

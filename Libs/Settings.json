@@ -9,7 +9,21 @@
                 "User",
                 "Manager"
             ],
-            "Managed_Team": {}
+            "Managed_Team": {
+                "0": {
+                    "User Team": "NAV BPC",
+                    "User ID": "CZ011845",
+                    "User Name": "Jan Vasko"
+                },
+                "1": {
+                    "User Team": "NAV BPC",
+                    "User ID": "CZ011868",
+                    "User Name": "Jan Svenda"
+                }
+            }
+        },
+        "DashBoard": {
+            "Creation_Date": "2025-02-05"
         },
         "Downloader": {
             "Outlook": {
@@ -41,6 +55,16 @@
                         "NAV MSM. PHA": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20NAV%20BPC_MSM%20+%20PHA.xlsm",
                         "Portals B2B": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20Portals%20B2B.xlsm",
                         "SAP AD": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/NCC_Time%20register_IT%20SAP%20AD.xlsm"
+                    },
+                    "History_Links": {
+                        "CRM BPL": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20CRM%20BPL.xlsm",
+                        "CRM": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20CRM.xlsm",
+                        "Enterprice Architecture": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20Enterprise%20Architecture%20IT%20Europe.xlsm",
+                        "ITSM": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20ITSM.xlsm",
+                        "NAV BPC": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20NAV%20BPC.xlsm",
+                        "NAV MSM. PHA": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20NAV%20BPC_MSM%20+%20PHA.xlsm",
+                        "Portals B2B": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20Portals%20B2B.xlsm",
+                        "SAP AD": "/:x:/r/sites/BEU_EIT_ACC_Brno/Shared%20Documents/General/B01%20-%20TimeSheets/History/FY%20____/__/NCC_Time%20register_IT%20SAP%20AD.xlsm"
                     }
                 },
                 "Download_Options": {
@@ -60,7 +84,7 @@
                         ]
                     }
                 },
-                "File_name": "SP_TimeSheets.xlsx",
+                "File_name": "SP_TimeSheets",
                 "Auth": {
                     "Email": "Jan.Vasko@konicaminolta.eu",
                     "Auth_Address": "https://connectkonicaminolta.sharepoint.com"
@@ -202,30 +226,22 @@
                     "Project_Type": "PROJECT"
                 },
                 "6": {
-                    "Project": "NUS3 Technical Upgrade (NUS Cloud)",
-                    "Project_Type": "PROJECT"
-                },
-                "7": {
                     "Project": "ITS (WPH, Cloud, Solution, SW Delivery)",
                     "Project_Type": "PROJECT"
                 },
-                "8": {
+                "7": {
                     "Project": "Roll-out support (CRM/ITSM/Portals)",
                     "Project_Type": "PROJECT"
                 },
-                "9": {
-                    "Project": "BRO NUS Cloud Pilot",
-                    "Project_Type": "PROJECT"
-                },
-                "10": {
+                "8": {
                     "Project": "BBG NUS Cloud Roll-out",
                     "Project_Type": "PROJECT"
                 },
-                "11": {
+                "9": {
                     "Project": "BGE NUS Cloud roll-out",
                     "Project_Type": "PROJECT"
                 },
-                "12": {
+                "10": {
                     "Project": "CLN Support",
                     "Project_Type": "PROJECT"
                 }
@@ -563,60 +579,36 @@
                             "Location": "Office"
                         },
                         "5": {
-                            "Search Text": "BRO NUS Cloud - 2nd Migration Wave Daily Review",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "6": {
-                            "Search Text": "BRO: ",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "",
-                            "Location": ""
-                        },
-                        "7": {
                             "Search Text": "BBL: ",
                             "Project": "NUS (CE) harm.&bus. Support",
                             "Activity": "",
                             "Location": ""
                         },
-                        "8": {
+                        "6": {
                             "Search Text": "Product Backlog Item",
                             "Project": "",
                             "Activity": "Testing",
                             "Location": ""
                         },
-                        "9": {
+                        "7": {
                             "Search Text": "INC",
                             "Project": "Incident handling / support - BPC Brno",
                             "Activity": "Consultancy",
                             "Location": ""
                         },
-                        "10": {
+                        "8": {
                             "Search Text": "Travel Time",
                             "Project": "",
                             "Activity": "Travel Time (Project)",
                             "Location": "Customer"
                         },
-                        "11": {
+                        "9": {
                             "Search Text": "Dovolená",
                             "Project": "Other Internal activities - BPC Brno",
                             "Activity": "Vacation",
                             "Location": "Office"
                         },
-                        "12": {
-                            "Search Text": "BRO NUS Cloud - Cut-off and Migration - Daily review",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "13": {
-                            "Search Text": "BRO NUS Cloud - Internal Status",
-                            "Project": "BRO NUS Cloud Pilot",
-                            "Activity": "Project Management",
-                            "Location": "Office"
-                        },
-                        "14": {
+                        "10": {
                             "Search Text": "Sick Day",
                             "Project": "Other Internal activities - BPC Brno",
                             "Activity": "Sick Leave",

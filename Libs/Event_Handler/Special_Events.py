@@ -1,9 +1,10 @@
 # Import Libraries
+import pandas
+from pandas import DataFrame
+from datetime import datetime
+
 import Libs.Event_Handler.Parallel_Events as Parallel_Events
 import Libs.Defaults_Lists as Defaults_Lists
-from pandas import DataFrame
-import pandas
-from datetime import datetime
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
@@ -171,7 +172,6 @@ def SickDay(Events: DataFrame) -> DataFrame:
 # Home Office
 def HomeOffice(Events: DataFrame):
     if HomeOffice_Enabled == True:
-        # TODO --> Can potentially be needed when location should not be changed
         return Events
     else:
         return Events

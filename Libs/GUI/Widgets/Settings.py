@@ -166,11 +166,8 @@ Start_Event_json = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Star
 End_Event_json = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
 
 # Projects and Activities
-Project_List = []
 Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
-for key, value in Project_dict.items():
-    Project_List.append(value["Project"])
-Project_List.sort()
+Project_List = Defaults_Lists.List_from_Dict(Dictionary=Project_dict, Key_Argument="Project")
 
 Project_All_List = Project_List
 Project_All_List.insert(0, " ") # Because there might be not filled one in Calendar
@@ -225,7 +222,6 @@ def Entry_field_Insert(Field: CTkEntry, Value: str|int) -> None:
     else:
         pass
 
-
 def Update_empty_information(Check_List: list):
     Check_List_len = len(Check_List)
     for Check_List_index in range(0, Check_List_len):
@@ -238,6 +234,14 @@ def Update_empty_information(Check_List: list):
             else:
                 pass
     return Check_List
+
+def Check_Time_Continuation(Start_Time: CTkEntry, End_Time: CTkEntry, Week_Day: str, Type: str) -> bool:
+    Start_Time_dt = datetime.strptime(Start_Time.get(), Format_Time)
+    End_Time_dt = datetime.strptime(End_Time.get(), Format_Time)
+    if Start_Time_dt >= End_Time_dt:
+        CTkMessagebox(title="Error", message=f"You entered same or sooner time as Start time, this is not compatible, please correct it. This value is not to be saved.", icon="cancel", fade_in_duration=1)
+    else:
+        Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", f"{Week_Day}", f"{Type}", "End_Time"], Information=End_Time.get())
 
 
 def Retrieve_Activity_based_on_Type(Project_Option_Var: CTkOptionMenu, Activity_Option_Var: CTkOptionMenu, Project_Variable: StringVar) -> None:
@@ -478,6 +482,27 @@ def Settings_General_Color(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 def Settings_User_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
+    def Password_required(User_Type_Variable: StringVar, User_Type_Frame_Var: str) -> None:
+        def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
+            # Password required
+            dialog = Elements.Get_DialogWindow(title=title, text=text, Dialog_Type=Dialog_Type)
+            Password = dialog.get_input()
+            return Password
+        
+        if User_Type_Frame_Var == "User":
+            User_Type_Variable.value = "User"
+            Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var)
+        elif User_Type_Frame_Var == "Manager":
+            Password = Dialog_Window_Request(title="Admin", text="Write your password", Dialog_Type="Password")
+
+            if Password == "JVA_is_best":
+                User_Type_Variable.value = "Manager"
+                Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var)
+            else:
+                User_Type_Variable.value = "User"
+                CTkMessagebox(title="Error", message=f"Wrong administration password.", icon="cancel", fade_in_duration=1)
+           
+
     # ------------------------- Main Functions -------------------------#
     User_Type_Variable = StringVar(master=Frame, value=User_Type)
 
@@ -510,7 +535,7 @@ def Settings_User_Widget(Frame: CTk|CTkFrame) -> CTkFrame:
     User_Type_Frame = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Type ", Field_Type="Input_OptionMenu") 
     User_Type_Frame_Var = User_Type_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     User_Type_Frame_Var.configure(variable=User_Type_Variable)
-    Elements.Get_Option_Menu_Advance(attach=User_Type_Frame_Var, values=User_Type_list, command=lambda User_Type_Frame_Var: Field_Update_Value(Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var))
+    Elements.Get_Option_Menu_Advance(attach=User_Type_Frame_Var, values=User_Type_list, command=lambda User_Type_Frame_Var: Password_required(User_Type_Variable=User_Type_Variable, User_Type_Frame_Var=User_Type_Frame_Var))
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -784,7 +809,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Monday_Frame_Var1, Value=Monday_Work_Start)
     Monday_Frame_Var2 = Monday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Monday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Monday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Work_Hours", "End_Time"], Information=Monday_Frame_Var2.get()))
+    Monday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Monday_Frame_Var1, End_Time=Monday_Frame_Var2, Week_Day="Monday", Type="Work_Hours"))
     Entry_field_Insert(Field=Monday_Frame_Var2, Value=Monday_Work_End)
     
 
@@ -796,7 +821,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Tuesday_Frame_Var1, Value=Tuesday_Work_Start)
     Tuesday_Frame_Var2 = Tuesday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Tuesday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Tuesday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Work_Hours", "End_Time"], Information=Tuesday_Frame_Var2.get()))
+    Tuesday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Tuesday_Frame_Var1, End_Time=Tuesday_Frame_Var2, Week_Day="Tuesday", Type="Work_Hours"))
     Entry_field_Insert(Field=Tuesday_Frame_Var2, Value=Tuesday_Work_End)
 
 
@@ -808,7 +833,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Wednesday_Frame_Var1, Value=Wednesday_Work_Start)
     Wednesday_Frame_Var2 = Wednesday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Wednesday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Wednesday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Work_Hours", "End_Time"], Information=Wednesday_Frame_Var2.get()))
+    Wednesday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Wednesday_Frame_Var1, End_Time=Wednesday_Frame_Var2, Week_Day="Wednesday", Type="Work_Hours"))
     Entry_field_Insert(Field=Wednesday_Frame_Var2, Value=Wednesday_Work_End)
 
     # Field - Thursday
@@ -819,7 +844,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Thursday_Frame_Var1, Value=Thursday_Work_Start)
     Thursday_Frame_Var2 = Thursday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Thursday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Thursday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Work_Hours", "End_Time"], Information=Thursday_Frame_Var2.get()))
+    Thursday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Thursday_Frame_Var1, End_Time=Thursday_Frame_Var2, Week_Day="Thursday", Type="Work_Hours"))
     Entry_field_Insert(Field=Thursday_Frame_Var2, Value=Thursday_Work_End)
 
     # Field - Friday
@@ -830,7 +855,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Friday_Frame_Var1, Value=Friday_Work_Start)
     Friday_Frame_Var2 = Friday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Friday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Friday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Work_Hours", "End_Time"], Information=Friday_Frame_Var2.get()))
+    Friday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Friday_Frame_Var1, End_Time=Friday_Frame_Var2, Week_Day="Friday", Type="Work_Hours"))
     Entry_field_Insert(Field=Friday_Frame_Var2, Value=Friday_Work_End)
 
     # Field - Saturday
@@ -841,7 +866,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Saturday_Frame_Var1, Value=Saturday_Work_Start)
     Saturday_Frame_Var2 = Saturday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Saturday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Saturday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Work_Hours", "End_Time"], Information=Saturday_Frame_Var2.get()))
+    Saturday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Saturday_Frame_Var1, End_Time=Saturday_Frame_Var2, Week_Day="Saturday", Type="Work_Hours"))
     Entry_field_Insert(Field=Saturday_Frame_Var2, Value=Saturday_Work_End)
 
     # Field - Sunday
@@ -852,7 +877,7 @@ def Settings_Calendar_Working_Hours(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Sunday_Frame_Var1, Value=Sunday_Work_Start)
     Sunday_Frame_Var2 = Sunday_Frame.children["!ctkframe5"].children["!ctkentry"]
     Sunday_Frame_Var2.configure(placeholder_text="Day end time.")
-    Sunday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Work_Hours", "End_Time"], Information=Sunday_Frame_Var2.get()))
+    Sunday_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Sunday_Frame_Var1, End_Time=Sunday_Frame_Var2, Week_Day="Sunday", Type="Work_Hours"))
     Entry_field_Insert(Field=Sunday_Frame_Var2, Value=Sunday_Work_End)
 
     # Field - Lunch Break duration
@@ -894,7 +919,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Monday_Vac_Frame_Var1, Value=Monday_Vacation_Start)
     Monday_Vac_Frame_Var2 = Monday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Monday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Monday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Monday", "Vacation", "End_Time"], Information=Monday_Vac_Frame_Var2.get()))
+    Monday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Monday_Vac_Frame_Var1, End_Time=Monday_Vac_Frame_Var2, Week_Day="Monday", Type="Vacation"))
     Entry_field_Insert(Field=Monday_Vac_Frame_Var2, Value=Monday_Vacation_End)
 
     # Field - Tuesday
@@ -905,7 +930,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Tuesday_Vac_Frame_Var1, Value=Tuesday_Vacation_Start)
     Tuesday_Vac_Frame_Var2 = Tuesday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Tuesday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Tuesday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Tuesday", "Vacation", "End_Time"], Information=Tuesday_Vac_Frame_Var2.get()))
+    Tuesday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Tuesday_Vac_Frame_Var1, End_Time=Tuesday_Vac_Frame_Var2, Week_Day="Tuesday", Type="Vacation"))
     Entry_field_Insert(Field=Tuesday_Vac_Frame_Var2, Value=Tuesday_Vacation_End)
 
     # Field - Wednesday
@@ -916,7 +941,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Wednesday_Vac_Frame_Var1, Value=Wednesday_Vacation_Start)
     Wednesday_Vac_Frame_Var2 = Wednesday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Wednesday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Wednesday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Wednesday", "Vacation", "End_Time"], Information=Wednesday_Vac_Frame_Var2.get()))
+    Wednesday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Wednesday_Vac_Frame_Var1, End_Time=Wednesday_Vac_Frame_Var2, Week_Day="Wednesday", Type="Vacation"))
     Entry_field_Insert(Field=Wednesday_Vac_Frame_Var2, Value=Wednesday_Vacation_End)
 
     # Field - Thursday
@@ -927,7 +952,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Thursday_Vac_Frame_Var1, Value=Thursday_Vacation_Start)
     Thursday_Vac_Frame_Var2 = Thursday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Thursday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Thursday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Thursday", "Vacation", "End_Time"], Information=Thursday_Vac_Frame_Var2.get()))
+    Thursday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Thursday_Vac_Frame_Var1, End_Time=Thursday_Vac_Frame_Var2, Week_Day="Thursday", Type="Vacation"))
     Entry_field_Insert(Field=Thursday_Vac_Frame_Var2, Value=Thursday_Vacation_End)
 
     # Field - Friday
@@ -938,7 +963,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Friday_Vac_Frame_Var1, Value=Friday_Vacation_Start)
     Friday_Vac_Frame_Var2 = Friday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Friday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Friday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Friday", "Vacation", "End_Time"], Information=Friday_Vac_Frame_Var2.get()))
+    Friday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Friday_Vac_Frame_Var1, End_Time=Friday_Vac_Frame_Var2, Week_Day="Friday", Type="Vacation"))
     Entry_field_Insert(Field=Friday_Vac_Frame_Var2, Value=Friday_Vacation_End)
 
     # Field - Saturday
@@ -949,7 +974,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Saturday_Vac_Frame_Var1, Value=Saturday_Vacation_Start)
     Saturday_Vac_Frame_Var2 = Saturday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Saturday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Saturday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Saturday", "Vacation", "End_Time"], Information=Saturday_Vac_Frame_Var2.get()))
+    Saturday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Saturday_Vac_Frame_Var1, End_Time=Saturday_Vac_Frame_Var2, Week_Day="Saturday", Type="Vacation"))
     Entry_field_Insert(Field=Saturday_Vac_Frame_Var2, Value=Saturday_Vacation_End)
 
     # Field - Sunday
@@ -960,7 +985,7 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
     Entry_field_Insert(Field=Sunday_Vac_Frame_Var1, Value=Sunday_Vacation_Start)
     Sunday_Vac_Frame_Var2 = Sunday_Vac_Frame.children["!ctkframe5"].children["!ctkentry"]
     Sunday_Vac_Frame_Var2.configure(placeholder_text="Day end time.")
-    Sunday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["General", "Calendar", "Sunday", "Vacation", "End_Time"], Information=Sunday_Vac_Frame_Var2.get()))
+    Sunday_Vac_Frame_Var2.bind("<FocusOut>", lambda Entry_value: Check_Time_Continuation(Start_Time=Sunday_Vac_Frame_Var1, End_Time=Sunday_Vac_Frame_Var2, Week_Day="Sunday", Type="Vacation"))
     Entry_field_Insert(Field=Sunday_Vac_Frame_Var2, Value=Sunday_Vacation_End)
 
     # Field - Total Time
@@ -983,6 +1008,12 @@ def Settings_Calendar_Vacation(Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
+    def Check_Same_Values(Start_Event_Var: CTkEntry, End_Event_Var: CTkEntry) -> bool:
+        if Start_Event_Var.get() == End_Event_Var.get():
+            CTkMessagebox(title="Error", message=f"You entered same value as Work - Start, which would not work, please change it. This value is not to be saved.", icon="cancel", fade_in_duration=1)
+        else:
+            Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Start_End_Events", "End"], Information=End_Event_Var.get())
+
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Workday - Start / End Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Events Subject which defines Start and End time of each day in Calendar.")
@@ -999,9 +1030,8 @@ def Settings_Calendar_Start_End_Time(Frame: CTk|CTkFrame) -> CTkFrame:
     End_Event = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Work - End", Field_Type="Input_Normal") 
     End_Event_Var = End_Event.children["!ctkframe3"].children["!ctkentry"]
     End_Event_Var.configure(placeholder_text="Event Subject which ends day")
-    End_Event_Var.bind("<FocusOut>", lambda Entry_value: Field_Update_Value(Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Start_End_Events", "End"], Information=End_Event_Var.get()))
+    End_Event_Var.bind("<FocusOut>", lambda Entry_value: Check_Same_Values(Start_Event_Var=Start_Event_Var, End_Event_Var=End_Event_Var))
     Entry_field_Insert(Field=End_Event_Var, Value=End_Event_json)
-
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1613,7 +1643,7 @@ def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
     Activity_Variable = StringVar(master=Frame, value=Activity_All_List[0])
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Events", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="For empty space (between Events in calendar) program use fill them by this setup.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Frame=Frame, Name="Empty Space coverage Events", Additional_Text="Sum of Coverage Percentage must equal 100%.", Widget_size="Triple_size", Widget_Label_Tooltip="For empty space (between Events in calendar) program use fill them by this setup.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Frame_Input_Area = Elements.Get_Widget_Field_Frame_Area(Frame=Frame_Body, Field_Frame_Type="Single_Column")
@@ -1642,7 +1672,7 @@ def Settings_Events_Empty_Generally(Frame: CTk|CTkFrame) -> CTkFrame:
     Project_Option_Var1 = Project_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Project_Option_Var1.configure(variable=Project_Variable)
 
-    # Field - Activity --> placed before project because of variable to be used
+    # Field - Activity
     Activity_Option = Elements_Groups.Get_Widget_Input_row(Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Label="Activity", Field_Type="Input_OptionMenu") 
     Activity_Option_Var1 = Activity_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
     Activity_Option_Var1.configure(variable=Activity_Variable)

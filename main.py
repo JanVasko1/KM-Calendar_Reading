@@ -1,6 +1,7 @@
 
 # BUG --> při jakýkoliv změně, musím nechat znova načíst globální Settings (protože když udělám změnu v setupu a spustím download znova, pořád má v SEttings staré nastavení)
 # Import Libraries
+import os
 import time
 import pandas
 import markdown
@@ -11,12 +12,12 @@ import customtkinter
 from customtkinter import CTk, CTkFrame, StringVar, CTkProgressBar, CTkEntry, CTkLabel, CTkOptionMenu, CTkLabel
 from CTkMessagebox import CTkMessagebox
 from CTkTable import CTkTable
-
-import Libs.GUI.Elements_Groups as Elements_Groups
-import Libs.GUI.Elements as Elements
 import pywinstyles
 from tkhtmlview import HTMLLabel
 
+import Libs.GUI.Elements_Groups as Elements_Groups
+import Libs.GUI.Elements as Elements
+import Libs.Process as Process
 import Libs.Defaults_Lists as Defaults_Lists
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Set Defaults ------------------------------------------------------------------------------------------------------------------------------------ #
@@ -368,15 +369,56 @@ def Page_Download(Frame: CTk|CTkFrame):
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            import Libs.Process as Process
             Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
         else:
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
-    def Pre_Download_Data() -> None:
-        print("Pre_Download_Data")
-        # TODO --> Dodělat připravit stahování když je zvolený aktuální měsíc , tak musí stáhnout jen z aktuálního TimeSheet
-        pass
+    def Pre_Download_Data(Previous_Period_Def_Widget: CTkFrame, Previous_Sharepoint_Widget: CTkFrame) -> None:
+        def get_year_month_list(start_date: datetime, end_date: datetime):
+            year_month_list = []
+            current = start_date
+            while current <= end_date:
+                year_month_list.append((current.year, current.month))
+                # Move to the next month
+                if current.month == 12:
+                    current = datetime(current.year + 1, 1, 1)
+                else:
+                    current = datetime(current.year, current.month + 1, 1)
+            return year_month_list
+        
+        Can_Download = True
+
+        # Sharepoint
+        SP_Password = Previous_Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+
+        # History Period definition and checks
+        From_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        From_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        From_DateTime =datetime(year=From_Year, month=From_Month, day=1)
+        To_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        To_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        To_DateTime =datetime(year=To_Year, month=To_Month, day=1)
+
+        # Check filled password
+        if Download_Date_Range_Source == "Sharepoint":
+            if SP_Password == "":
+                Can_Download = False
+                CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
+            else:
+                pass
+
+        if From_DateTime <= To_DateTime:
+            Download_Periods = get_year_month_list(start_date=From_DateTime, end_date=To_DateTime)
+        else:
+            Can_Download = False
+            CTkMessagebox(title="Error", message=f"Cannot download as From Period is sooner To Period, please check.", icon="cancel", fade_in_duration=1)
+
+        # -------------- Download  -------------- #
+        if Can_Download == True:
+            Process.Pre_Periods_Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
+        else:
+            pass
+
 
     def My_Team_Download_Data() -> None:
         print("My_Team_Download_Data")
@@ -481,7 +523,7 @@ def Page_Download(Frame: CTk|CTkFrame):
     Pre_Download_Text.configure(text="Step 2 - Download and process")
 
     Pre_Button_Download = Elements.Get_Button(Frame=Tab_Pre, Button_Size="Normal")
-    Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data())
+    Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Period_Def_Widget, Previous_Sharepoint_Widget=Previous_Sharepoint_Widget))
     Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
     
     # ---------- Previous periods ---------- #
@@ -554,11 +596,11 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
-        Totals_Summary_Df = pandas.read_csv(f"Operational\\Events_Totals.csv", sep=";")
-        Project_DF = pandas.read_csv(f"Operational\\Events_Project.csv", sep=";")
-        Activity_Df = pandas.read_csv(f"Operational\\Events_Activity.csv", sep=";")
-        WeekDays_Df = pandas.read_csv(f"Operational\\Events_WeekDays.csv", sep=";")
-        Weeks_DF = pandas.read_csv(f"Operational\\Events_Weeks.csv", sep=";")
+        Totals_Summary_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Totals.csv", sep=";")
+        Project_DF = pandas.read_csv(f"Operational\\DashBoard\\Events_Project.csv", sep=";")
+        Activity_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Activity.csv", sep=";")
+        WeekDays_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_WeekDays.csv", sep=";")
+        Weeks_DF = pandas.read_csv(f"Operational\\DashBoard\\Events_Weeks.csv", sep=";")
 
         # Total Line
         Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
@@ -567,6 +609,10 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Reporting_Period_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["Reporting_Period_Utilization"], ndigits=2))
         My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
         Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
+
+        Creation_Date = Settings["General"]["DashBoard"]["Creation_Date"]
+        DashBoard_text_Additional = Elements.Get_Label(Frame=Frame_DashBoard_Scrollable_Area, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
+        DashBoard_text_Additional.configure(text=f"Generated on {Creation_Date}")
 
         Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Totals_Line")
         Frame_Dashboard_Total_Line.pack_propagate(flag=False)
@@ -621,6 +667,8 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
         Frame_DashBoard_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
+        DashBoard_text_Additional.pack(side="top", fill="none", expand=True, padx=(1500, 10), pady=(0, 0))
+
         Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
         Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
@@ -657,12 +705,8 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Dashboard Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_User_Dashboard(Frame: CTk|CTkFrame):
-    def Get_Member_list() -> list:
-
-        return Member_List
-
-    Member_List = Get_Member_list()
-    Members_count = 2 + len(Member_List)
+    Members_dict = Settings["General"]["Default"]["Managed_Team"]
+    Member_List = Defaults_Lists.List_from_Dict(Dictionary=Members_dict, Key_Argument="User Name")
 
     # ------------------------- Main Functions -------------------------#
     # Define Frames
@@ -675,13 +719,18 @@ def Page_User_Dashboard(Frame: CTk|CTkFrame):
     Tab_Gen = TabView.add("Totals")
     Tab_Gen.pack_propagate(flag=False)
 
-    for member in Member_List:
-        Tab_Cal = TabView.add(f"{member}")
-        Tab_Cal.pack_propagate(flag=False)
-        Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children[f"!ctkbutton{Members_count}"]
-        Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Team member dashboard.", ToolTip_Size="Normal")
+    if Member_List:
+        for member in Member_List:
+            member_order = 2    # From 2 as second Tab
+            Tab_Cal = TabView.add(f"{member}")
+            Tab_Cal.pack_propagate(flag=False)
+            Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children[f"!ctkbutton{member_order}"]
+            Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Team member dashboard.", ToolTip_Size="Normal")
 
-        # TODO --> dodělat vložené dashboardu pro danýho uživatele na vlastní page
+            # TODO --> dodělat vložené dashboardu pro danýho uživatele na vlastní page
+
+
+            member_order += 1
 
     TabView.set("Totals")
 
@@ -758,7 +807,7 @@ def Page_Data(Frame: CTk|CTkFrame):
 
     def Data_Excel():
         import subprocess
-        subprocess.run('start excel "Operational\\Events.csv"', shell=True, capture_output=False, text=False)
+        subprocess.run('start excel "Operational\\DashBoard\\Events.csv"', shell=True, capture_output=False, text=False)
 
     def Data_Upload(Events: DataFrame):
         SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
@@ -776,7 +825,7 @@ def Page_Data(Frame: CTk|CTkFrame):
     Frame_Data_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Data_Work_Detail_Area.grid_propagate(flag=False)
 
-    Events = pandas.read_csv(f"Operational\\Events.csv", sep=";")
+    Events = pandas.read_csv(f"Operational\\DashBoard\\Events.csv", sep=";")
 
     # ------------------------- Buttons Area -------------------------#
     # Download Button
@@ -1095,6 +1144,15 @@ class Win(customtkinter.CTk):
         self._offsety = super().winfo_pointery() - super().winfo_rooty()
 
 if __name__ == "__main__":
+    # Create folders if do not exists
+    try:
+        os.mkdir(f"Operational\\")
+        os.mkdir(f"Operational\\DashBoard\\")
+        os.mkdir(f"Operational\\SP_History\\")
+        os.mkdir(f"Operational\\My_Team_Members\\")
+    except:
+        pass
+
     window = Win()
     display_width = window.winfo_screenwidth()
     display_height = window.winfo_screenheight()
