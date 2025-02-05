@@ -160,7 +160,7 @@ def Delete_Projects(access_token: str, username: str) -> None:
     categories = All_Cat_response.json().get("value", [])
 
     # Delete each category
-    # BUG --> code do not delete all categoriesheaders_del
+    # BUG --> code do not delete all categories headers_del
     for category in categories:
         category_id = category["id"]
         delete_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories/{category_id}"
@@ -170,19 +170,16 @@ def Delete_Projects(access_token: str, username: str) -> None:
         else:
             print(f"""Failed to delete category: {category["displayName"]}""")
 
-
 def Push_Project(Exchange_Password: str) -> None:
     access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
 
     # Get list of Projects
-    Project_List = []
     Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
-    for key, value in Project_dict.items():
-        Project_List.append(value["Project"])
-    Project_List.sort()
+    Project_List = Defaults_Lists.List_from_Dict(Dictionary=Project_dict, Key_Argument="Project")
 
     # Preset Color
-    # TODO --> finish selection of Preset_color
+    Color_Used = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
+    Preset_color = Settings["Event_Handler"]["Project"]["Colors"]["Color_preset_map"][f"{Color_Used}"]
 
     # delete all before upload
     Delete_Projects(access_token=access_token, username=username)
