@@ -18,6 +18,8 @@ Time_Format = Settings["General"]["Formats"]["Time"]
 Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
 Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
 Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
@@ -41,20 +43,20 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
         s_aut = Authentication.Authentication(SP_Password=SP_Password)
 
         # Download
-        Downloaded = Sharepoint.Download_Excel(s_aut=s_aut)
+        Downloaded = Sharepoint.Download_Excel(s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
 
         if Downloaded == True:
             # Delete File before generation
-            Defaults_Lists.Delete_File(file_path="Operational\\Events_Registered.csv")
+            Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_Registered.csv")
 
             # Report Period Information
-            Utilization_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="Utilization")
+            Utilization_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="Utilization", Type="SP_Current", Name=None)
             Report_Period_Start = Utilization_Sheet["G2"].value
             Report_Period_End = Utilization_Sheet["H2"].value
             Report_Period_Active_Days = int(Utilization_Sheet["I2"].value)
 
             # My last Date imported 
-            TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="TimeSpent")
+            TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
             Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
             data_boundary = Table_list[0][1]
             data_boundary = data_boundary.replace("O", "J")

@@ -10,10 +10,10 @@ from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Settings = Defaults_Lists.Load_Settings()
-SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-SP_Link = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team}"]
 SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_Table_Data(ws, data_boundary) -> DataFrame:
@@ -25,13 +25,25 @@ def Get_Table_Data(ws, data_boundary) -> DataFrame:
     TimeSheets_df = TimeSheets_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     return TimeSheets_df
 
-def Download_Excel(s_aut: sharepy) -> str:
+def Download_Excel(s_aut: sharepy, SP_Link: str, Type: str, Name: str|None) -> str:
     # Download
-    r = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\{SP_File_Name}")
-    return True
+    if Type == "SP_Current":
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\{SP_File_Name}.xlsx")
+    elif Type == "SP_History":
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\SP_History\\{Name}.xlsx")
+    else:
+        return False
 
-def Get_WorkSheet(Sheet_Name: str):
-    WorkBook = load_workbook(filename=f"Operational\\{SP_File_Name}")
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+
+def Get_WorkSheet(Sheet_Name: str, Type: str, Name: str|None):
+    if Type == "SP_Current":
+        WorkBook = load_workbook(filename=f"Operational\\{SP_File_Name}.xlsx")
+    elif Type == "SP_History":
+        WorkBook = load_workbook(filename=f"Operational\\SP_History\\{Name}.xlsx")
     Sheet = WorkBook[Sheet_Name]
     return Sheet
 
@@ -102,11 +114,11 @@ def Upload(Events: DataFrame, SP_Password: str|None) -> None:
     s_aut = Authentication.Authentication(SP_Password=SP_Password)
 
     # Download
-    Downloaded = Download_Excel(s_aut=s_aut)
+    Downloaded = Download_Excel(s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
 
     if Downloaded == True:
         # Get WorkSheet
-        TimeSpent_ws = Get_WorkSheet(Sheet_Name="TimeSpent")
+        TimeSpent_ws = Get_WorkSheet(Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
 
         # Get Table List from Worksheet
         Table_list = Get_Tables_on_Worksheet(Sheet=TimeSpent_ws)
@@ -126,7 +138,7 @@ def Get_Project_and_Activity(SP_Password: str|None) -> None:
     s_aut = Authentication.Authentication(SP_Password=SP_Password)
 
     # Download
-    Downloaded = Download_Excel(s_aut=s_aut)
+    Downloaded = Download_Excel(s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
     
     if Downloaded == True:
         Get_Project()
