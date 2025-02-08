@@ -439,8 +439,8 @@ def DashBoard_Chart_Widget(Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Wid
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
-    Button_Show_Utilization.pack(side="right")
-    Button_Show_Activities.pack(side="right")
-    Button_Show_Projects.pack(side="right")
+    Button_Show_Utilization.pack(side="right", fill="none", expand=False, padx=5, pady=0)
+    Button_Show_Activities.pack(side="right", fill="none", expand=False, padx=5, pady=0)
+    Button_Show_Projects.pack(side="right", fill="none", expand=False, padx=5, pady=0)
     
     return Frame_Main

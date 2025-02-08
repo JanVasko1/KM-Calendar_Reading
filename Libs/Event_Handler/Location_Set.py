@@ -1,14 +1,11 @@
 # Import Libraries
 from pandas import DataFrame
 import pandas
-import Libs.Defaults_Lists as Defaults_Lists
-
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Default_Location = Settings["Event_Handler"]["Location"]["Default"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Location_Set(Events: DataFrame):
+def Location_Set(Settings: dict, Events: DataFrame):
+    Default_Location = Settings["Event_Handler"]["Location"]["Default"]
+
     for row in Events.iterrows():
         row_Series = pandas.Series(row[1])
 

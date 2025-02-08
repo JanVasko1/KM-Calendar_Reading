@@ -12,20 +12,20 @@ import Libs.Sharepoint.Sharepoint as Sharepoint
 from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_Format = Settings["General"]["Formats"]["Date"]
-Time_Format = Settings["General"]["Formats"]["Time"]
-Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
-Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
-SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
-
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> DataFrame:
+def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> DataFrame:
     # Default
+    Date_Format = Settings["General"]["Formats"]["Date"]
+    Time_Format = Settings["General"]["Formats"]["Time"]
+    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
+    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
+
+
     Report_Period_Active_Days = None
     Report_Period_Start = None
     Report_Period_End = None
@@ -40,23 +40,23 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
     # -------------- Sharepoint  -------------- #
     if Download_Date_Range_Source == "Sharepoint":
         # Authentication
-        s_aut = Authentication.Authentication(SP_Password=SP_Password)
+        s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
 
         # Download
-        Downloaded = Sharepoint.Download_Excel(s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
+        Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
 
         if Downloaded == True:
             # Delete File before generation
             Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_Registered.csv")
 
             # Report Period Information
-            Utilization_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="Utilization", Type="SP_Current", Name=None)
+            Utilization_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="Utilization", Type="SP_Current", Name=None)
             Report_Period_Start = Utilization_Sheet["G2"].value
             Report_Period_End = Utilization_Sheet["H2"].value
             Report_Period_Active_Days = int(Utilization_Sheet["I2"].value)
 
             # My last Date imported 
-            TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
+            TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
             Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
             data_boundary = Table_list[0][1]
             data_boundary = data_boundary.replace("O", "J")
@@ -173,9 +173,9 @@ def Download_Events(Download_Date_Range_Source: str, Download_Data_Source: str, 
     # Engine selection
     if Download_canceled == False:
         if Download_Data_Source == "Outlook_Client":
-            Events = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
+            Events = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
         elif Download_Data_Source == "Exchange":
-            Events = Exchange.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
+            Events = Exchange.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
         else:
             CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_Client, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
             raise ValueError

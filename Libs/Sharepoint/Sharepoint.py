@@ -8,13 +8,6 @@ import sharepy
 
 from CTkMessagebox import CTkMessagebox
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
-SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
-SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
-
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_Table_Data(ws, data_boundary) -> DataFrame:
     data = ws[data_boundary]
@@ -25,7 +18,10 @@ def Get_Table_Data(ws, data_boundary) -> DataFrame:
     TimeSheets_df = TimeSheets_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     return TimeSheets_df
 
-def Download_Excel(s_aut: sharepy, SP_Link: str, Type: str, Name: str|None) -> str:
+def Download_Excel(Settings: dict, s_aut: sharepy, SP_Link: str, Type: str, Name: str|None) -> str:
+    SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
+    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+
     # Download
     if Type == "SP_Current":
         response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\{SP_File_Name}.xlsx")
@@ -39,7 +35,9 @@ def Download_Excel(s_aut: sharepy, SP_Link: str, Type: str, Name: str|None) -> s
     else:
         return False
 
-def Get_WorkSheet(Sheet_Name: str, Type: str, Name: str|None):
+def Get_WorkSheet(Settings: dict, Sheet_Name: str, Type: str, Name: str|None):
+    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+
     if Type == "SP_Current":
         WorkBook = load_workbook(filename=f"Operational\\{SP_File_Name}.xlsx")
     elif Type == "SP_History":
@@ -109,16 +107,19 @@ def Time_sheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     return A_Cell, E_Cell
 
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
-def Upload(Events: DataFrame, SP_Password: str|None) -> None:
+def Upload(Settings: dict, Events: DataFrame, SP_Password: str|None) -> None:
+    SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
+
     # Authentication
-    s_aut = Authentication.Authentication(SP_Password=SP_Password)
+    s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
 
     # Download
-    Downloaded = Download_Excel(s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
+    Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
 
     if Downloaded == True:
         # Get WorkSheet
-        TimeSpent_ws = Get_WorkSheet(Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
+        TimeSpent_ws = Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
 
         # Get Table List from Worksheet
         Table_list = Get_Tables_on_Worksheet(Sheet=TimeSpent_ws)
@@ -133,18 +134,23 @@ def Upload(Events: DataFrame, SP_Password: str|None) -> None:
         CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")
         
 
-def Get_Project_and_Activity(SP_Password: str|None) -> None:
+def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
+    SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
+
     # Authentication
-    s_aut = Authentication.Authentication(SP_Password=SP_Password)
+    s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
 
     # Download
-    Downloaded = Download_Excel(s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
+    Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
     
     if Downloaded == True:
-        Get_Project()
-        Get_Activity()
+        Get_Project(Settings=Settings)
+        Get_Activity(Settings=Settings)
         
-def Get_Project() -> None:
+def Get_Project(Settings: dict) -> None:
+    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+
     Projects_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
     Projects_df.drop(columns=[1], inplace=True)
     Projects_df.rename(columns={0: "Project", 2: "Project_Type"}, inplace=True)
@@ -155,7 +161,9 @@ def Get_Project() -> None:
     # Save to Settings.json
     Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Project", "Project_List"], Information=Projects_dict)
     
-def Get_Activity() -> None:
+def Get_Activity(Settings: dict) -> None:
+    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+
     Activities_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
     Column_List = Activities_df[1].to_list()
     Empty_line_index = Column_List.index("Activity")

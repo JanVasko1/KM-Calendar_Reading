@@ -3,22 +3,15 @@ from pandas import DataFrame, Series
 import pandas
 import random
 from datetime import datetime, timedelta
-import Libs.Defaults_Lists as Defaults_Lists
 
 from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
 
-Events_Empty_Split_Enabled = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
-Split_duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
-Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
-Split_method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
+
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Duration_Change(Start_Date: str, End_Date: str, Start_Time: str, End_Time: str) -> int:
+def Duration_Change(Date_format: str, Time_format: str, Start_Date: str, End_Date: str, Start_Time: str, End_Time: str) -> int:
     Start_Date_Time = f"""{Start_Date}_{Start_Time}"""
     End_Date_Time = f"""{End_Date}_{End_Time}"""
     Start_Date_Time_dt = datetime.strptime(Start_Date_Time, f"{Date_format}_{Time_format}")
@@ -31,7 +24,7 @@ def Duration_Change(Start_Date: str, End_Date: str, Start_Time: str, End_Time: s
     Duration = (int(Duration_dt.total_seconds())) // 60
     return Duration
 
-def Days_Handler(Event_Start_Date: str, Event_End_Date: str) -> list:
+def Days_Handler(Date_format: str, Event_Start_Date: str, Event_End_Date: str) -> list:
     Event_Start_Date_dt = datetime.strptime(Event_Start_Date, Date_format)
     Event_End_Date_dt = datetime.strptime(Event_End_Date, Date_format)
     Days_dt = Event_End_Date_dt - Event_Start_Date_dt
@@ -45,7 +38,11 @@ def Days_Handler(Event_Start_Date: str, Event_End_Date: str) -> list:
     return Days_List
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def OverMidnight_Events(Events: DataFrame):
+def OverMidnight_Events(Settings: dict, Events: DataFrame):
+    Date_format = Settings["General"]["Formats"]["Date"]
+    Time_format = Settings["General"]["Formats"]["Time"]
+
+
     # Handle Meetings which are for more days / over midnight --> splits them
     Event_Indexes = []
     for row in Events.iterrows():
@@ -54,7 +51,7 @@ def OverMidnight_Events(Events: DataFrame):
         Event_End_Date = row_Series["End_Date"]
 
         if Event_Start_Date != Event_End_Date:
-            Days_List = Days_Handler(Event_Start_Date, Event_End_Date)
+            Days_List = Days_Handler(Date_format=Date_format, Event_Start_Date=Event_Start_Date, Event_End_Date=Event_End_Date)
             last_index = len(Days_List) - 1
 
             for Current_index, Current_day in enumerate(Days_List):
@@ -63,7 +60,7 @@ def OverMidnight_Events(Events: DataFrame):
                 if Current_index == 0:
                     row_Series_2["End_Date"] = Current_day
                     row_Series_2["End_Time"] = "23:59"
-                    row_Series_2["Duration"] = Duration_Change(Start_Date=row_Series_2["Start_Date"], End_Date=row_Series_2["End_Date"], Start_Time=row_Series_2["Start_Time"], End_Time=row_Series_2["End_Time"])
+                    row_Series_2["Duration"] = Duration_Change(Date_format=Date_format, Time_format=Time_format, Start_Date=row_Series_2["Start_Date"], End_Date=row_Series_2["End_Date"], Start_Time=row_Series_2["Start_Time"], End_Time=row_Series_2["End_Time"])
                     
                     Events.loc[Events.shape[0]] = row_Series_2
 
@@ -73,7 +70,7 @@ def OverMidnight_Events(Events: DataFrame):
                     row_Series_2["End_Date"] = Current_day
                     row_Series_2["Start_Time"] = "00:00"
                     row_Series_2["End_Time"] = "23:59"
-                    row_Series_2["Duration"] = Duration_Change(Start_Date=row_Series_2["Start_Date"], End_Date=row_Series_2["End_Date"], Start_Time=row_Series_2["Start_Time"], End_Time=row_Series_2["End_Time"])
+                    row_Series_2["Duration"] = Duration_Change(Date_format=Date_format, Time_format=Time_format, Start_Date=row_Series_2["Start_Date"], End_Date=row_Series_2["End_Date"], Start_Time=row_Series_2["Start_Time"], End_Time=row_Series_2["End_Time"])
                     
                     Events.loc[Events.shape[0]] = row_Series_2
 
@@ -81,7 +78,7 @@ def OverMidnight_Events(Events: DataFrame):
                 elif Current_index == last_index:
                     row_Series_2["Start_Date"] = Current_day
                     row_Series_2["Start_Time"] = "00:00"
-                    row_Series_2["Duration"] = Duration_Change(Start_Date=row_Series_2["Start_Date"], End_Date=row_Series_2["End_Date"], Start_Time=row_Series_2["Start_Time"], End_Time=row_Series_2["End_Time"])
+                    row_Series_2["Duration"] = Duration_Change(Date_format=Date_format, Time_format=Time_format, Start_Date=row_Series_2["Start_Date"], End_Date=row_Series_2["End_Date"], Start_Time=row_Series_2["Start_Time"], End_Time=row_Series_2["End_Time"])
                     
                     Events.loc[Events.shape[0]] = row_Series_2
                 
@@ -100,7 +97,12 @@ def OverMidnight_Events(Events: DataFrame):
         Events.drop(labels=[Event_index], axis=0, inplace=True)
     return Events
 
-def Empty_Split_Events(Events: DataFrame):
+def Empty_Split_Events(Settings: dict, Events: DataFrame):
+    Events_Empty_Split_Enabled = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
+    Split_duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
+    Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
+    Split_method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
+
     def Find_Split_Events(Events: DataFrame) -> DataFrame:
         if (Events["Event_Empty_Insert"] == True) and (Events["Event_Empty_Method"] == "General") and (Events["Duration"] >= Split_duration):
             return True

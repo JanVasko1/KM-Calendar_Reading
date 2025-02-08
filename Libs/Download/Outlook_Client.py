@@ -5,16 +5,12 @@ import win32com.client
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-
-BusyStatus_List = Defaults_Lists.Busy_Status_List()
-
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
+def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
+    Date_format = Settings["General"]["Formats"]["Date"]
+    Time_format = Settings["General"]["Formats"]["Time"]
+    BusyStatus_List = Defaults_Lists.Busy_Status_List()
+
     # Access Outlook and get the events from the calendar
     Outlook = win32com.client.Dispatch("Outlook.Application")
     ns = Outlook.GetNamespace("MAPI")
@@ -50,22 +46,22 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
         Body = Event.Body
 
         # Project --> secure only one be used outlook can have 2: Use first one only
-        Project = Downloader_Helpers.Project_handler(Project=Project)
+        Project = Downloader_Helpers.Project_handler(Settings=Settings, Project=Project)
 
         # Activity --> in the Body as predefined text
-        Activity = Downloader_Helpers.Activity_handler(Body=Body)
+        Activity = Downloader_Helpers.Activity_handler(Settings=Settings, Body=Body)
 
         # Location --> Get only Meeting Room
-        Location = Downloader_Helpers.Location_handler(Location=Location)
+        Location = Downloader_Helpers.Location_handler(Settings=Settings, Location=Location)
 
         # Update End_Date for all Day Event and split them to every day event
-        Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
+        Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Settings=Settings, Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
 
     # Close Outlook
     Outlook.Quit()
 
     # Crop edge dates as they were added in previous step
-    Events_Process = Downloader_Helpers.Crop_edge_days_Events(Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Date_format=Date_format)
+    Events_Process = Downloader_Helpers.Crop_edge_days_Events(Settings=Settings, Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)
     Events_Process_df = DataFrame(data=Events_Process, columns=list(Events_Process.keys()))
     Events_Process_df = Events_Process_df.T
     print(Events_Process_df)

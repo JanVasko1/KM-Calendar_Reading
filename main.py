@@ -20,23 +20,6 @@ import Libs.GUI.Elements as Elements
 import Libs.Process as Process
 import Libs.Defaults_Lists as Defaults_Lists
 
-# ------------------------------------------------------------------------------------------------------------------------------------ Set Defaults ------------------------------------------------------------------------------------------------------------------------------------ #
-Settings = Defaults_Lists.Load_Settings()
-Configuration = Defaults_Lists.Load_Configuration() 
-
-User_Type = Settings["General"]["Default"]["User_Type"]
-
-User_Name = Settings["General"]["Default"]["Name"]
-User_ID = Settings["General"]["Default"]["Code"]
-User_Email = Settings["General"]["Default"]["Email"]
-
-Format_Date = Settings["General"]["Formats"]["Date"]
-
-Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
-Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
-
-SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]
-
 # ------------------------------------------------------------------------------------------------------------------------------------ Local Functions ------------------------------------------------------------------------------------------------------------------------------------ #
 def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
     # Password required
@@ -47,11 +30,12 @@ def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
 def Get_Current_Theme() -> str:
     Current_Theme = customtkinter.get_appearance_mode()
     return Current_Theme
-
-
-
 # ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
+    User_Name = Settings["General"]["Default"]["Name"]
+    User_ID = Settings["General"]["Default"]["Code"]
+    User_Email = Settings["General"]["Default"]["Email"]
+
     # ------------------------- Local Functions -------------------------#
     def Theme_Change():
         Current_Theme = Get_Current_Theme() 
@@ -94,6 +78,8 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
+    User_Type = Settings["General"]["Default"]["User_Type"]
+
     global Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady, Icon_Default_pady, Logo_Height, Logo_width, Side_Bar_Frame_Height, Icon_Button_Height, Logo_pady
     
     if User_Type == "User":
@@ -256,6 +242,8 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Download Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):
+    User_Type = Settings["General"]["Default"]["User_Type"]
+
     import Libs.GUI.Widgets.Download as Download
     # ------------------------- Local Functions -------------------------#
     def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Password_Var: CTkEntry):
@@ -296,6 +284,7 @@ def Page_Download(Frame: CTk|CTkFrame):
             pass
 
     def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
+        Format_Date = Settings["General"]["Formats"]["Date"]
         Can_Download = True
 
         # -------------- Actual Values  -------------- #
@@ -369,7 +358,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+            Process.Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
         else:
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
@@ -466,14 +455,14 @@ def Page_Download(Frame: CTk|CTkFrame):
     Method_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Method_Text.configure(text="Step 1 - Date Range Source")
 
-    Sharepoint_Widget = Download.Download_Sharepoint(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Sharepoint_Widget = Download.Download_Sharepoint(Settings=Settings, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
     Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
     Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
     Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
     
-    Manual_Widget = Download.Download_Manual(Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Manual_Widget = Download.Download_Manual(Settings=Settings, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
@@ -488,11 +477,11 @@ def Page_Download(Frame: CTk|CTkFrame):
     Source_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Download Data Source")
 
-    Exchange_Widget = Download.Download_Exchange(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Exchange_Widget = Download.Download_Exchange(Settings=Settings, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
-    Outlook_Widget = Download.Download_Outlook(Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Outlook_Widget = Download.Download_Outlook(Settings=Settings, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
 
     # Disabling fields --> Download_Data_Source
@@ -511,12 +500,12 @@ def Page_Download(Frame: CTk|CTkFrame):
     Previous_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Previous_Text.configure(text="Step 1 - Define previous periods")
 
-    Previous_Period_Def_Widget = Download.Per_Period_Selection(Frame=Tab_Pre)
+    Previous_Period_Def_Widget = Download.Per_Period_Selection(Settings=Settings, Frame=Tab_Pre)
 
     Pre_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
 
-    Previous_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Frame=Tab_Pre)
+    Previous_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Settings=Settings, Frame=Tab_Pre)
 
     # Download button
     Pre_Download_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
@@ -531,7 +520,7 @@ def Page_Download(Frame: CTk|CTkFrame):
         Team_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
         Team_Sharepoint_Text.configure(text="Step 1 - Sharepoint credential")
 
-        My_Team_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Frame=Tab_Team) # Can most probably by identical as downloads needs to connect same ways as in Pre
+        My_Team_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Settings=Settings, Frame=Tab_Team) # Can most probably by identical as downloads needs to connect same ways as in Pre
 
         # Download button
         Team_Download_Text = Elements.Get_Label(Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
@@ -728,7 +717,6 @@ def Page_User_Dashboard(Frame: CTk|CTkFrame):
             Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Team member dashboard.", ToolTip_Size="Normal")
 
             # TODO --> dodělat vložené dashboardu pro danýho uživatele na vlastní page
-
 
             member_order += 1
 
@@ -937,6 +925,8 @@ def Page_Information(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Settings Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Settings(Frame: CTk|CTkFrame):
+    User_Type = Settings["General"]["Default"]["User_Type"]
+
     import Libs.GUI.Widgets.Settings as Settings_Widgets
     # ------------------------- Local Functions -------------------------#
     def Download_Project_Activities():
@@ -956,8 +946,8 @@ def Page_Settings(Frame: CTk|CTkFrame):
             CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
         else:
             import Libs.Download.Exchange as Exchange
-            Exchange.Push_Project(Exchange_Password=Exchange_Password)
-            Exchange.Push_Project(Exchange_Password=Exchange_Password)
+            Exchange.Push_Project(Settings=Settings, Exchange_Password=Exchange_Password)
+            Exchange.Push_Activity(Settings=Settings, Exchange_Password=Exchange_Password)
             CTkMessagebox(title="warning", message="Project and Activity uploaded to Exchange.", icon="check", option_1="Thanks", fade_in_duration=1)
 
 
@@ -1027,47 +1017,47 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
     # General
-    Theme_Widget = Settings_Widgets.Settings_General_Theme(Frame=Tab_Gen, window=window)
-    Color_Palette_Widget = Settings_Widgets.Settings_General_Color(Frame=Tab_Gen)
-    Program_User_Type_Widget = Settings_Widgets.Settings_User_Widget(Frame=Tab_Gen)
+    Theme_Widget = Settings_Widgets.Settings_General_Theme(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen, window=window)
+    Color_Palette_Widget = Settings_Widgets.Settings_General_Color(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen)
+    Program_User_Type_Widget = Settings_Widgets.Settings_User_Widget(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen)
 
     # General Page
-    Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Frame=Tab_Dat)
-    Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Frame=Tab_Dat)
-    Outlook_Widget = Settings_Widgets.Settings_General_Outlook(Frame=Tab_Dat)
-    Formats_Widget = Settings_Widgets.Settings_General_Formats(Frame=Tab_Dat)
+    Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
+    Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
+    Outlook_Widget = Settings_Widgets.Settings_General_Outlook(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
+    Formats_Widget = Settings_Widgets.Settings_General_Formats(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
 
     # Calendar Page
-    Calendar_Working_Widget = Settings_Widgets.Settings_Calendar_Working_Hours(Frame=Tab_Cal)
-    Calendar_Vacation_Widget = Settings_Widgets.Settings_Calendar_Vacation(Frame=Tab_Cal)
-    Calendar_Start_End_Widget = Settings_Widgets.Settings_Calendar_Start_End_Time(Frame=Tab_Cal)
+    Calendar_Working_Widget = Settings_Widgets.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, Frame=Tab_Cal)
+    Calendar_Vacation_Widget = Settings_Widgets.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, Frame=Tab_Cal)
+    Calendar_Start_End_Widget = Settings_Widgets.Settings_Calendar_Start_End_Time(Settings=Settings, Configuration=Configuration, Frame=Tab_Cal)
 
     # Event-General Page
-    Event_Skip_Widget = Settings_Widgets.Settings_Events_General_Skip(Frame=Tab_E_G)
-    Event_Join_Widget = Settings_Widgets.Settings_Join_events(Frame=Tab_E_G)
-    Event_Parallel_Widget = Settings_Widgets.Settings_Parallel_events(Frame=Tab_E_G)
+    Event_Skip_Widget = Settings_Widgets.Settings_Events_General_Skip(Settings=Settings, Configuration=Configuration, Frame=Tab_E_G)
+    Event_Join_Widget = Settings_Widgets.Settings_Join_events(Settings=Settings, Configuration=Configuration, Frame=Tab_E_G)
+    Event_Parallel_Widget = Settings_Widgets.Settings_Parallel_events(Settings=Settings, Configuration=Configuration, Frame=Tab_E_G)
 
     # Event-Special Page
-    Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Frame=Tab_E_Spec)
-    Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Frame=Tab_E_Spec)
-    Event_SickDay_Widget = Settings_Widgets.Settings_Events_General_SickDay(Frame=Tab_E_Spec)
-    Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Frame=Tab_E_Spec)
-    Event_Private_Widget = Settings_Widgets.Settings_Events_General_Private(Frame=Tab_E_Spec)
+    Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
+    Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
+    Event_SickDay_Widget = Settings_Widgets.Settings_Events_General_SickDay(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
+    Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
+    Event_Private_Widget = Settings_Widgets.Settings_Events_General_Private(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
 
     # Event-Empty Page
-    Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generally(Frame=Tab_E_E)
-    Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Frame=Tab_E_E)
+    Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generally(Settings=Settings, Configuration=Configuration, Frame=Tab_E_E)
+    Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Settings=Settings, Configuration=Configuration, Frame=Tab_E_E)
 
     # Event-Empty Splitting Page
-    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empty_Schedule(Frame=Tab_E_S)
+    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empty_Schedule(Settings=Settings, Configuration=Configuration, Frame=Tab_E_S)
 
     # Event-AutoFill Page
-    Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Frame=Tab_E_A)
-    Event_Activity_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Frame=Tab_E_A)
+    Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Settings=Settings, Configuration=Configuration, Frame=Tab_E_A)
+    Event_Activity_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Settings=Settings, Configuration=Configuration, Frame=Tab_E_A)
 
     if User_Type == "Manager":
         # Managed Team
-        Managed_Team_Widget = Settings_Widgets.Settings_My_Team(Frame=Tab_Team)
+        Managed_Team_Widget = Settings_Widgets.Settings_My_Team(Settings=Settings, Configuration=Configuration, Frame=Tab_Team)
     else:
         pass
     
@@ -1144,6 +1134,13 @@ class Win(customtkinter.CTk):
         self._offsety = super().winfo_pointery() - super().winfo_rooty()
 
 if __name__ == "__main__":
+    Settings = Defaults_Lists.Load_Settings()
+    Configuration = Defaults_Lists.Load_Configuration() 
+
+    Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
+    Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
+    SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]
+
     # Create folders if do not exists
     try:
         os.mkdir(f"Operational\\")

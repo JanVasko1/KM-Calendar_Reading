@@ -6,23 +6,6 @@ from datetime import datetime
 import Libs.Event_Handler.Parallel_Events as Parallel_Events
 import Libs.Defaults_Lists as Defaults_Lists
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-
-Vacation_Calendar = Settings["General"]["Calendar"]
-Vacation_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]
-SickDay_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]
-Lunch_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]
-Private_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]
-
-Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
-SickDay_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Use"]
-HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
-Lunch_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
-Private_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
-
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
     # Count duration between 2 datetime in minutes
@@ -110,7 +93,11 @@ def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataF
 
     return Cumulated_Events
 
-def Day_handler(Events: DataFrame, Details: dict) -> DataFrame:
+def Day_handler(Settings: dict, Events: DataFrame, Details: dict) -> DataFrame:
+    Vacation_Calendar = Settings["General"]["Calendar"]
+    Date_format = Settings["General"]["Formats"]["Date"]
+    Time_format = Settings["General"]["Formats"]["Time"]
+
     for row in Events.iterrows():
         row_index = row[0]
         row_Series = pandas.Series(row[1])
@@ -154,30 +141,41 @@ def Day_handler(Events: DataFrame, Details: dict) -> DataFrame:
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 # Vacation
-def Vacation(Events: DataFrame) -> DataFrame:
+def Vacation(Settings: dict, Events: DataFrame) -> DataFrame:
+    Vacation_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]
+    Vacation_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
+
     if Vacation_Enabled == True:
-        Events = Day_handler(Events=Events, Details=Vacation_Details)
+        Events = Day_handler(Settings=Settings, Events=Events, Details=Vacation_Details)
         return Events
     else:
         return Events
 
 # SickDay
-def SickDay(Events: DataFrame) -> DataFrame:
+def SickDay(Settings: dict, Events: DataFrame) -> DataFrame:
+    SickDay_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]
+    SickDay_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Use"]
+
     if SickDay_Enabled == True:
-        Events = Day_handler(Events=Events, Details=SickDay_Details)
+        Events = Day_handler(Settings=Settings, Events=Events, Details=SickDay_Details)
         return Events
     else:
         return Events
 
 # Home Office
-def HomeOffice(Events: DataFrame):
+def HomeOffice(Settings: dict, Events: DataFrame):
+    HomeOffice_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
+
     if HomeOffice_Enabled == True:
         return Events
     else:
         return Events
 
 # Lunch
-def Lunch(Events: DataFrame) -> DataFrame:
+def Lunch(Settings: dict, Events: DataFrame) -> DataFrame:
+    Lunch_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]
+    Lunch_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
+
     if Lunch_Enabled == True:
         Cumulated_Events = Subtract_Parallel_Events(Events=Events, Event_Search_Text = Lunch_Details["Search_Text"])
         return Cumulated_Events
@@ -185,7 +183,10 @@ def Lunch(Events: DataFrame) -> DataFrame:
         return Events
 
 # Private
-def Private(Events: DataFrame) -> DataFrame:
+def Private(Settings: dict, Events: DataFrame) -> DataFrame:
+    Private_Details = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]
+    Private_Enabled = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
+
     if Private_Enabled == True:
         if Private_Details["Method"] == "Split Parallel and delete":
             Cumulated_Events = Subtract_Parallel_Events(Events=Events, Event_Search_Text = Private_Details["Search_Text"])

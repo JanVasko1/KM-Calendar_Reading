@@ -11,16 +11,11 @@ import Libs.Download.Downloader_Helpers as Downloader_Helpers
 from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-Exchange_DateTime_format = Settings["General"]["Formats"]["Exchange_DateTime"]
 Exchange_Busy_Status_List = Defaults_Lists.Exchange_Busy_Status_List()
 Busy_Status_List = Defaults_Lists.Busy_Status_List()
 
 # Load OAuth2 info
 client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
-username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
@@ -29,7 +24,12 @@ def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
     Duration = int(Duration_dt.total_seconds() // 60)
     return Duration
 
-def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -> None:
+def Add_Events_downloaded(Settings: dict, Events_downloaded: dict, Events: dict, Counter: int) -> None:
+    Exchange_DateTime_format = Settings["General"]["Formats"]["Exchange_DateTime"]
+    Date_format = Settings["General"]["Formats"]["Date"]
+    Time_format = Settings["General"]["Formats"]["Time"]
+
+
     for Event in Events["value"]:
         Subject = str(Event["subject"])
         Start_Date_correction = str(Event["start"]["dateTime"])
@@ -61,20 +61,22 @@ def Add_Events_downloaded(Events_downloaded: dict, Events: dict, Counter: int) -
         Body = Event["bodyPreview"]
 
         # Project --> secure only one be used outlook can have 2: Use first one only
-        Project = Downloader_Helpers.Project_handler(Project=Project)
+        Project = Downloader_Helpers.Project_handler(Settings=Settings, Project=Project)
 
         # Activity --> in the Body as predefined text
-        Activity = Downloader_Helpers.Activity_handler(Body=Body)
+        Activity = Downloader_Helpers.Activity_handler(Settings=Settings, Body=Body)
 
         # Location --> Get only Meeting Room
-        Location = Downloader_Helpers.Location_handler(Location=Location)
+        Location = Downloader_Helpers.Location_handler(Settings=Settings, Location=Location)
 
         # Update End_Date for all Day Event and split them to every day event
-        Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
+        Events_downloaded, Counter = Downloader_Helpers.All_Day_Event_End_Handler(Settings=Settings, Events_downloaded=Events_downloaded, Counter=Counter, Subject=Subject, Start_Date=Start_Date, End_Date=End_Date, End_Date_dt=End_Date_dt, Start_Time=Start_Time, End_Time=End_Time, Duration=Duration, Project=Project, Activity=Activity, Recurring=Recurring, Busy_Status=Busy_Status, Location=Location, All_Day_Event=All_Day_Event)
 
     return Counter
 
-def Exchange_OAuth(Exchange_Password: str) -> str:
+def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
+    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+
     if not client_id:
         CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
         raise ValueError()
@@ -101,9 +103,11 @@ def Exchange_OAuth(Exchange_Password: str) -> str:
     return access_token
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
+def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
+    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+
     # OAuth2 Access
-    access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
+    access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
 
     # Update filters
     Filter_Start_Date = Filter_Start_Date + "T00:00:00Z"
@@ -130,7 +134,7 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
     if events_response.status_code == 200:
         # Init page 
         Events = events_response.json()
-        Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter) 
+        Counter = Add_Events_downloaded(Settings=Settings, Events_downloaded=Events_downloaded, Events=Events, Counter=Counter) 
 
         # Check if there are more pages of results 
         while '@odata.nextLink' in Events:
@@ -138,14 +142,14 @@ def Download_Events(Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, 
             response = requests.get(next_link, headers=headers) 
             if response.status_code == 200: 
                 Events = response.json()
-                Counter = Add_Events_downloaded(Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
+                Counter = Add_Events_downloaded(Settings=Settings, Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
     else:
         CTkMessagebox(title="Info", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), will try to download from Outlook Classic Client.", fade_in_duration=1)
         Events_downloaded = {}
-        Events_Process_df = Outlook_Client.Download_Events(Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
+        Events_Process_df = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 
     # Crop edge dates as they were added in previous step
-    Events_Process = Downloader_Helpers.Crop_edge_days_Events(Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Date_format=Date_format)
+    Events_Process = Downloader_Helpers.Crop_edge_days_Events(Settings=Settings, Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)
     Events_Process_df = DataFrame(data=Events_Process, columns=list(Events_Process.keys()))
     Events_Process_df = Events_Process_df.T
     return Events_Process_df
@@ -170,8 +174,9 @@ def Delete_Projects(access_token: str, username: str) -> None:
         else:
             print(f"""Failed to delete category: {category["displayName"]}""")
 
-def Push_Project(Exchange_Password: str) -> None:
-    access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
+def Push_Project(Settings: dict, Exchange_Password: str) -> None:
+    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
 
     # Get list of Projects
     Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
@@ -203,6 +208,6 @@ def Push_Project(Exchange_Password: str) -> None:
             print(f"Success: {project}")
 
 
-def Push_Activity(Exchange_Password: str) -> None:
-    access_token = Exchange_OAuth(Exchange_Password=Exchange_Password)
+def Push_Activity(Settings: dict, Exchange_Password: str) -> None:
+    access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
     pass

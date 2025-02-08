@@ -11,14 +11,6 @@ warnings.filterwarnings('ignore')
 
 from CTkMessagebox import CTkMessagebox
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-
-Day_Start_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
-Day_End_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
-
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:
     Random_Num = random.randrange(start=0, stop=Gen_Event_Counter, step=1)
@@ -112,7 +104,7 @@ def Days_Handler(Events: DataFrame) -> list:
     Days_List.sort()
     return Days_List
 
-def Get_Day_Start_End_Time(Day_Events_df: DataFrame, Day: str):
+def Get_Day_Start_End_Time(Day_Start_Subject: str, Day_End_Subject: str, Day_Events_df: DataFrame, Day: str):
     Day_Start_Series = Day_Events_df[Day_Events_df["Subject"] == str(Day_Start_Subject)]
     Day_End_Series = Day_Events_df[Day_Events_df["Subject"] == str(Day_End_Subject)]
     try:
@@ -124,8 +116,13 @@ def Get_Day_Start_End_Time(Day_Events_df: DataFrame, Day: str):
     return Day_Start_Time, Day_End_Time
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Fill_Events(Events: DataFrame) -> DataFrame:
+def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
     Cumulated_Events = pandas.DataFrame()
+
+    Date_format = Settings["General"]["Formats"]["Date"]
+    Time_format = Settings["General"]["Formats"]["Time"]
+    Day_Start_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
+    Day_End_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
     Events_Empty_Scheduled = Settings["Event_Handler"]["Events"]["Empty"]["Scheduled"]
     Gen_Event_Counter = int(len(Settings["Event_Handler"]["Events"]["Empty"]["General"]))
     
@@ -139,7 +136,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
         # Sorting
         Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         
-        Day_Start_Time, Day_End_Time = Get_Day_Start_End_Time(Day_Events_df=Day_Events_df, Day=Day)
+        Day_Start_Time, Day_End_Time = Get_Day_Start_End_Time(Day_Start_Subject=Day_Start_Subject, Day_End_Subject=Day_End_Subject, Day_Events_df=Day_Events_df, Day=Day)
         if Day_Start_Time == None or Day_End_Time == None:
             # Do not make input to the day when day does not have Work Start / Work End Time
             Day_Events_df["Start_Time"] = pandas.to_datetime(Day_Events_df["Start_Time"], format=Time_format)
@@ -321,7 +318,7 @@ def Fill_Events(Events: DataFrame) -> DataFrame:
 
     return Cumulated_Events
 
-def Fill_Events_Coverage(Events: DataFrame) -> DataFrame:
+def Fill_Events_Coverage(Settings: dict, Events: DataFrame) -> DataFrame:
     # Get Coverage for setup event 2 list 
     Fill_Event_desc_list = []
     Fill_Event_project_list = []

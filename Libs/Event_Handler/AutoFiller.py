@@ -1,18 +1,11 @@
 from pandas import DataFrame
 import pandas
-import Libs.Defaults_Lists as Defaults_Lists
-
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-
-AutoFiller_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Use"]
-AutoFiller_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Dictionary"]
-
-Activity_Correction_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Use"]
-Activity_Correction_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Dictionary"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def AutoFiller(Events: DataFrame):
+def AutoFiller(Settings: dict, Events: DataFrame):
+    AutoFiller_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Use"]
+    AutoFiller_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Dictionary"]
+
     if AutoFiller_Enabled == True:
         for row in Events.iterrows():
             # Define current row as pandas Series
@@ -55,7 +48,10 @@ def AutoFiller(Events: DataFrame):
     else:
         return Events
 
-def Auto_Activity_Corrections(Events: DataFrame):
+def Auto_Activity_Corrections(Settings: dict, Events: DataFrame):
+    Activity_Correction_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Use"]
+    Activity_Correction_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Dictionary"]
+
     if Activity_Correction_Enabled == True:
         for row in Events.iterrows():
             # Define current row as pandas Series

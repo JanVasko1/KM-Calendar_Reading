@@ -14,29 +14,7 @@ from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block, Hove
 
 from CTkMessagebox import CTkMessagebox
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_Format = Settings["General"]["Formats"]["Date"]
-Time_Format = Settings["General"]["Formats"]["Time"]
-
 # ---------------------------------------------------------- Local Functions---------------------------------------------------------- #
-def Load_DataFrame(Name: str) -> DataFrame:
-    try:
-        Loaded_df = pandas.read_csv(f"Operational\\DashBoard\\{Name}.csv", sep=";")
-    except:
-        # When didnt found file
-        Loaded_df = pandas.DataFrame()
-    return Loaded_df
-
-def Define_Event_Duration(row) -> int:
-    Start_Time = row["Start Time"]
-    End_Time = row["End Time"]
-    Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
-    End_Time_dt = datetime.strptime(End_Time, Time_Format)
-    Duration_dt = End_Time_dt - Start_Time_dt
-    Duration = Duration_dt.seconds // 60
-    return Duration
-
 def Chart_update_html(Chart: str, color: str, opacity: float):
     with open(file=f"{Chart}", mode="r") as file:
         lines = file.readlines()
@@ -79,13 +57,12 @@ def Chart_update_html(Chart: str, color: str, opacity: float):
 
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_End: datetime|None) -> None:
+def Gen_Chart_Project_Activity(Settings: dict, Category: str, theme: str, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_End: datetime|None) -> None:
     warnings.filterwarnings("ignore")
-
-    # Variable Defaults
+    # ---------------------------- Defaults ----------------------------#
+    Date_Format = Settings["General"]["Formats"]["Date"]
     X_Series_Column = "Date"  
 
-    # General information about Game
     if theme == "Light" or theme == "Dark":
         Figure_height=370
         Figure_sizing_mode = "stretch_width"
@@ -94,6 +71,7 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
         CTkMessagebox(title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1)
         raise ValueError
         
+    # General information about Game
     Chart_Area_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Chart_Area_Properties"], columns=["Column_Color_Single", "Column_Color_Fill_1", "Column_Color_Fill_2", "Colors_Palette_Range", "Line_Column_Color", "Line_Thickness", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
     Chart_Area_Properties.Name = "Chart_Area_Properties"
     Grid_properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Grid_properties"], columns=["X_Grid_Line", "X_Grid_Line_Style", "X_Grid_Line_Dash_Ration", "X_Grid_Line_Thickness", "X_Grid_Line_Color", "X_Grid_Line_Color_Opacity", "Y_Grid_Line", "Y_Grid_Line_Style", "Y_Grid_Line_Dash_Ration", "Y_Grid_Line_Thickness", "Y_Grid_Line_Color", "Y_Grid_Line_Color_Opacity"], index=[0])
@@ -113,6 +91,19 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
     Range_Tool_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Range_Tool_Properties"], columns=["Range_Tool_Visible", "Range_Tool_Height_Percentage", "Range_Tool_Active_Def_Area", "Range_Tool_Active_Def_Color", "Range_Tool_Active_Def_Color_Opacity"], index=[0])
     Range_Tool_Properties.Name = "Range_Tool_Properties"
 
+    # ------------------------- Local Functions ------------------------#
+    def Define_Event_Duration(row) -> int:
+        Time_Format = Settings["General"]["Formats"]["Time"]
+
+        Start_Time = row["Start Time"]
+        End_Time = row["End Time"]
+        Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
+        End_Time_dt = datetime.strptime(End_Time, Time_Format)
+        Duration_dt = End_Time_dt - Start_Time_dt
+        Duration = Duration_dt.seconds // 60
+        return Duration
+
+    # ------------------------- Main Functions -------------------------#
     # Process Data
     Cumulated_Events = pandas.concat(objs=[Events_Registered_df, Events], axis=0)
     Cumulated_Events["Duration"] = Cumulated_Events.apply(Define_Event_Duration, axis = 1)
@@ -252,7 +243,9 @@ def Gen_Chart_Project_Activity(Category: str, theme: str, Events: DataFrame, Eve
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError
     
-def Gen_Chart_Calendar_Utilization(theme: str, Utilization_Calendar_df: DataFrame):
+def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calendar_df: DataFrame):
+    Date_Format = Settings["General"]["Formats"]["Date"]
+    
     warnings.filterwarnings("ignore")
 
     # Variable Defaults

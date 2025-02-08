@@ -15,7 +15,6 @@ import winaccent
 
 import Libs.Defaults_Lists as Defaults_Lists
 
-Settings = Defaults_Lists.Load_Settings()
 Configuration = Defaults_Lists.Load_Configuration() 
 Accent_Color_Mode = Configuration["Global_Appearance"]["Window"]["Colors"]["Accent"]["Accent_Color_Mode"]
 Accent_Color_Windows = winaccent.accent_normal
@@ -24,12 +23,10 @@ Accent_Color_Manual = Configuration["Global_Appearance"]["Window"]["Colors"]["Ac
 Hover_Color_Mode = Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_Mode"]
 Hover_Color_Manual = Configuration["Global_Appearance"]["Window"]["Colors"]["Hover"]["Hover_Color_Manual"]
 
-Date_Format = Settings["General"]["Formats"]["Date"]
-Time_Format = Settings["General"]["Formats"]["Time"]
-
-
 # ---------------------------------------------- Local Functions ----------------------------------------------# 
-def Time_Validate(Value: str) -> None:
+def Time_Validate(Settings: dict, Value: str) -> None:
+    Time_Format = Settings["General"]["Formats"]["Time"]
+
     if Value != "":
         try:
             datetime.strptime(Value, Time_Format)
@@ -38,7 +35,9 @@ def Time_Validate(Value: str) -> None:
     else:
         pass
 
-def Date_Validate(Value: str) -> None:
+def Date_Validate(Settings: dict, Value: str) -> None:
+    Date_Format = Settings["General"]["Formats"]["Date"]
+
     if Value != "":
         try:
             datetime.strptime(Value, Date_Format)
@@ -47,7 +46,7 @@ def Date_Validate(Value: str) -> None:
     else:
         pass
 
-def Int_Validate(Value: str) -> None:
+def Int_Validate(Settings: dict, Value: str) -> None:
     if Value != "":
         try:
             int(Value)
@@ -56,7 +55,7 @@ def Int_Validate(Value: str) -> None:
     else:
         pass
 
-def Float_Validate(Value: str) -> None:
+def Float_Validate(Settings: dict, Value: str) -> None:
     if Value != "":
         try:
             float(Value)
@@ -225,7 +224,7 @@ def Get_Button_Chart(Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
     return Frame_Button
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
-def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
+def Get_Entry_Field(Settings: dict, Frame: CTk|CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
     Configuration_Field = Configuration["Fields"]["Entry"][f"{Field_Size}"]
 
     Field = CTkEntry(
@@ -243,13 +242,13 @@ def Get_Entry_Field(Frame: CTk|CTkFrame, Field_Size: str, Validation: str|None =
         validate="focusout")
     
     if Validation == "Time":
-        Field.configure(validatecommand=lambda: Time_Validate(Value=Field.get()))
+        Field.configure(validatecommand=lambda: Time_Validate(Settings=Settings, Value=Field.get()))
     elif Validation == "Date":
-        Field.configure(validatecommand=lambda: Date_Validate(Value=Field.get()))
+        Field.configure(validatecommand=lambda: Date_Validate(Settings=Settings, Value=Field.get()))
     elif Validation == "Integer":
-        Field.configure(validatecommand=lambda: Int_Validate(Value=Field.get()))
+        Field.configure(validatecommand=lambda: Int_Validate(Settings=Settings, Value=Field.get()))
     elif Validation == "Float":
-        Field.configure(validatecommand=lambda: Float_Validate(Value=Field.get()))
+        Field.configure(validatecommand=lambda: Float_Validate(Settings=Settings, Value=Field.get()))
     else:
         pass
 

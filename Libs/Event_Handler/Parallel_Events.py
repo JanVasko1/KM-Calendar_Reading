@@ -4,14 +4,6 @@ from pandas import DataFrame, Series
 import pandas
 from datetime import datetime
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-
-Parallel_Enabled = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
-Start_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
-
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
     # Count duration between 2 datetime in minutes
@@ -163,7 +155,9 @@ def Event_Middle_Cut(Conflict_df: DataFrame, Event_Index: int, Data: Series, Eve
     else:
         return False
 
-def Parallel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
+def Parallel_Events_Handler(Settings: dict, Conflict_df: DataFrame) -> DataFrame:
+    Start_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
+
     # Sort because of 3 and more same start events
     if Start_Method == "Use Shorter":
         Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time", "Duration"], Accenting_list=[False, False, False]) 
@@ -244,7 +238,10 @@ def Parallel_Events_Handler(Conflict_df: DataFrame) -> DataFrame:
     return Conflict_df
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Parallel_Events(Events: DataFrame):
+def Parallel_Events(Settings: dict, Events: DataFrame):
+    Parallel_Enabled = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
+    
+
     if Parallel_Enabled == True:
         Cumulated_Events = pandas.DataFrame()
         #Get Days details from Events
@@ -346,7 +343,7 @@ def Parallel_Events(Events: DataFrame):
                     if Conflict_df.empty:
                         break
                     else:
-                        Conflict_df = Parallel_Events_Handler(Conflict_df=Conflict_df)
+                        Conflict_df = Parallel_Events_Handler(Settings=Settings, Conflict_df=Conflict_df)
                                 
                         # Duration change
                         Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 

@@ -7,178 +7,137 @@ import holidays
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Charts as Charts
 
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
-Date_Format = Settings["General"]["Formats"]["Date"]
-Time_Format = Settings["General"]["Formats"]["Time"]
-Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None) -> None:
+    # ------------------------------------------------------------ Defaults ------------------------------------------------------------ #
+    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    Date_Format = Settings["General"]["Formats"]["Date"]
+    Time_Format = Settings["General"]["Formats"]["Time"]
+    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
 
-# ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def DataFrame_WeekDay(row) -> str:
-    x_dt = datetime.strptime(row, Date_Format)
-    WeekDay = x_dt.strftime("%A")
-    return WeekDay
+    My_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["Day_Duration"]) / 60
 
-def Define_Event_Duration(row) -> int:
-    Start_Time = row["Start Time"]
-    End_Time = row["End Time"]
-    Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
-    End_Time_dt = datetime.strptime(End_Time, Time_Format)
-    Duration_dt = End_Time_dt - Start_Time_dt
-    Duration = Duration_dt.seconds // 60
-    return Duration
+    My_WH_dict = {
+        "Monday": My_Monday_WH,
+        "Tuesday": My_Tuesday_WH,
+        "Wednesday": My_Wednesday_WH,
+        "Thursday": My_Thursday_WH,
+        "Friday": My_Friday_WH,
+        "Saturday": My_Saturday_WH,
+        "Sunday": My_Sunday_WH,
+        }
 
-def DataFrame_Week(row) -> str:
-    x_dt = datetime.strptime(row, Date_Format)
-    ISO_Date = x_dt.isocalendar()
+    KM_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Vacation"]["Day_Duration"]) / 60
 
-    Week = ISO_Date.week
-    Year = ISO_Date.year
-
-    X_Week = f"{Year}-{Week}"
-    return X_Week
-
-def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, Report_Period_End: datetime) -> DataFrame:
-    Czech_Holidays = holidays.country_holidays("CZ")
-    Utilization_Calendar_df = DataFrame(columns=["Working_day", "KM_Cumulative_Utilization", "Day_Total_Time", "Reported_Cumulative_Time"])
-    KM_Cumulative_Utilization = 0
-    Day_Total_Time = 0
-    Reported_Cumulative_Time = 0
-
-    # Dataframe preparation
-    Events_Date_GR = Events.loc[:, ["Start_Date", "Duration_H"]]
-    Events_Date_Sum = Events_Date_GR.groupby(["Start_Date"]).sum()
-    Events_Date_Sum["Cumulated_H"] = Events_Date_Sum["Duration_H"].cumsum()
-    
-    while True:
-        Check_Date_str = Report_Period_Start.strftime(format=Date_Format)
-        Working_day = True
-
-        # Working Day
-        Holiday_day = Czech_Holidays.get(key=Check_Date_str)
-        if Holiday_day == None:
-            Weekend_Day = Report_Period_Start.weekday()
-            if Weekend_Day < 5:
-                pass
-            else:
-                Working_day = False
-        else:
-            Working_day = False
-
-        # Cumulated KM Utilization
-        if Working_day == True:
-            KM_Cumulative_Utilization = KM_Cumulative_Utilization + 8
-        else: 
-            KM_Cumulative_Utilization = KM_Cumulative_Utilization
-
-        # Day Total Time
-        try:
-            Day_Total_Time = Events_Date_Sum.loc[f"{Check_Date_str}"]["Duration_H"]
-        except:
-            Day_Total_Time = Day_Total_Time
+    KM_WH_dict = {
+        "Monday": KM_Monday_WH,
+        "Tuesday": KM_Tuesday_WH,
+        "Wednesday": KM_Wednesday_WH,
+        "Thursday": KM_Thursday_WH,
+        "Friday": KM_Friday_WH,
+        "Saturday": KM_Saturday_WH,
+        "Sunday": KM_Sunday_WH,
+        }
 
 
-        # Reported Cumulative Utilization
-        try:
-            Reported_Cumulative_Time = Events_Date_Sum.loc[f"{Check_Date_str}"]["Cumulated_H"]
-        except:
-            Reported_Cumulative_Time = Reported_Cumulative_Time
-    	
-        # Add to calendar
-        Utilization_Calendar_df.loc[f"{Check_Date_str}"] = [Working_day, KM_Cumulative_Utilization, Day_Total_Time, Reported_Cumulative_Time]
-
-        # Check End of Report Period
-        if Report_Period_Start == Report_Period_End:
-            break
-        else:
-            Report_Period_Start += timedelta(days=1)
-    
-    return Utilization_Calendar_df  
-
-# ---------------------------------------------------------- Local Variables ---------------------------------------------------------- #
-My_Monday_Start_WH = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Start_Time"]
-My_Monday_End_WH = Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["End_Time"]
-My_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_Tuesday_Start_WH = Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Start_Time"]
-My_Tuesday_End_WH = Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["End_Time"]
-My_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_Wednesday_Start_WH = Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Start_Time"]
-My_Wednesday_End_WH = Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["End_Time"]
-My_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_Thursday_Start_WH = Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["Start_Time"]
-My_Thursday_End_WH = Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["End_Time"]
-My_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_Friday_Start_WH = Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["Start_Time"]
-My_Friday_End_WH = Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["End_Time"]
-My_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_Saturday_Start_WH = Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["Start_Time"]
-My_Saturday_End_WH = Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["End_Time"]
-My_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_Sunday_Start_WH = Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["Start_Time"]
-My_Sunday_End_WH = Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["End_Time"]
-My_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["Day_Duration"]) / 60
-
-My_WH_dict = {
-    "Monday": My_Monday_WH,
-    "Tuesday": My_Tuesday_WH,
-    "Wednesday": My_Wednesday_WH,
-    "Thursday": My_Thursday_WH,
-    "Friday": My_Friday_WH,
-    "Saturday": My_Saturday_WH,
-    "Sunday": My_Sunday_WH,
-    }
-
-KM_Monday_Start_WH = Settings["General"]["Calendar"]["Monday"]["Vacation"]["Start_Time"]
-KM_Monday_End_WH = Settings["General"]["Calendar"]["Monday"]["Vacation"]["End_Time"]
-KM_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_Tuesday_Start_WH = Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Start_Time"]
-KM_Tuesday_End_WH = Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["End_Time"]
-KM_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_Wednesday_Start_WH = Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Start_Time"]
-KM_Wednesday_End_WH = Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["End_Time"]
-KM_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_Thursday_Start_WH = Settings["General"]["Calendar"]["Thursday"]["Vacation"]["Start_Time"]
-KM_Thursday_End_WH = Settings["General"]["Calendar"]["Thursday"]["Vacation"]["End_Time"]
-KM_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_Friday_Start_WH = Settings["General"]["Calendar"]["Friday"]["Vacation"]["Start_Time"]
-KM_Friday_End_WH = Settings["General"]["Calendar"]["Friday"]["Vacation"]["End_Time"]
-KM_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_Saturday_Start_WH = Settings["General"]["Calendar"]["Saturday"]["Vacation"]["Start_Time"]
-KM_Saturday_End_WH = Settings["General"]["Calendar"]["Saturday"]["Vacation"]["End_Time"]
-KM_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_Sunday_Start_WH = Settings["General"]["Calendar"]["Sunday"]["Vacation"]["Start_Time"]
-KM_Sunday_End_WH = Settings["General"]["Calendar"]["Sunday"]["Vacation"]["End_Time"]
-KM_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Vacation"]["Day_Duration"]) / 60
-
-KM_WH_dict = {
-    "Monday": KM_Monday_WH,
-    "Tuesday": KM_Tuesday_WH,
-    "Wednesday": KM_Wednesday_WH,
-    "Thursday": KM_Thursday_WH,
-    "Friday": KM_Friday_WH,
-    "Saturday": KM_Saturday_WH,
-    "Sunday": KM_Sunday_WH,
-    }
-
-# ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None) -> None:
     # Save Generation date Statistics
     Today = datetime.now()
     Today_str = Today.strftime(Date_Format)
     Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
+
+    # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
+
+    def DataFrame_WeekDay(row) -> str:
+        x_dt = datetime.strptime(row, Date_Format)
+        WeekDay = x_dt.strftime("%A")
+        return WeekDay
+
+    def Define_Event_Duration(row) -> int:
+        Start_Time = row["Start Time"]
+        End_Time = row["End Time"]
+        Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
+        End_Time_dt = datetime.strptime(End_Time, Time_Format)
+        Duration_dt = End_Time_dt - Start_Time_dt
+        Duration = Duration_dt.seconds // 60
+        return Duration
+
+    def DataFrame_Week(row) -> str:
+        x_dt = datetime.strptime(row, Date_Format)
+        ISO_Date = x_dt.isocalendar()
+
+        Week = ISO_Date.week
+        Year = ISO_Date.year
+
+        X_Week = f"{Year}-{Week}"
+        return X_Week
+
+    def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, Report_Period_End: datetime, Date_Format: str) -> DataFrame:
+        Czech_Holidays = holidays.country_holidays("CZ")
+        Utilization_Calendar_df = DataFrame(columns=["Working_day", "KM_Cumulative_Utilization", "Day_Total_Time", "Reported_Cumulative_Time"])
+        KM_Cumulative_Utilization = 0
+        Day_Total_Time = 0
+        Reported_Cumulative_Time = 0
+
+        # Dataframe preparation
+        Events_Date_GR = Events.loc[:, ["Start_Date", "Duration_H"]]
+        Events_Date_Sum = Events_Date_GR.groupby(["Start_Date"]).sum()
+        Events_Date_Sum["Cumulated_H"] = Events_Date_Sum["Duration_H"].cumsum()
+        
+        while True:
+            Check_Date_str = Report_Period_Start.strftime(format=Date_Format)
+            Working_day = True
+
+            # Working Day
+            Holiday_day = Czech_Holidays.get(key=Check_Date_str)
+            if Holiday_day == None:
+                Weekend_Day = Report_Period_Start.weekday()
+                if Weekend_Day < 5:
+                    pass
+                else:
+                    Working_day = False
+            else:
+                Working_day = False
+
+            # Cumulated KM Utilization
+            if Working_day == True:
+                KM_Cumulative_Utilization = KM_Cumulative_Utilization + 8
+            else: 
+                KM_Cumulative_Utilization = KM_Cumulative_Utilization
+
+            # Day Total Time
+            try:
+                Day_Total_Time = Events_Date_Sum.loc[f"{Check_Date_str}"]["Duration_H"]
+            except:
+                Day_Total_Time = Day_Total_Time
+
+
+            # Reported Cumulative Utilization
+            try:
+                Reported_Cumulative_Time = Events_Date_Sum.loc[f"{Check_Date_str}"]["Cumulated_H"]
+            except:
+                Reported_Cumulative_Time = Reported_Cumulative_Time
+            
+            # Add to calendar
+            Utilization_Calendar_df.loc[f"{Check_Date_str}"] = [Working_day, KM_Cumulative_Utilization, Day_Total_Time, Reported_Cumulative_Time]
+
+            # Check End of Report Period
+            if Report_Period_Start == Report_Period_End:
+                break
+            else:
+                Report_Period_Start += timedelta(days=1)
+        
+        return Utilization_Calendar_df  
 
     #Update Events Dataframe
     Events["Personnel number"] = Personnel_number
@@ -467,19 +426,19 @@ def Generate_Summary(Events: DataFrame, Events_Registered_df: DataFrame, Report_
     Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Utilization_Dark.html")
 
     # Generate charts - Project And Activity
-    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
-    Charts.Gen_Chart_Project_Activity(Category="Project", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
-    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
-    Charts.Gen_Chart_Project_Activity(Category="Activity", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Project", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Project", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Activity", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Activity", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
 
     # Utilization
     # TODO -> Dodělat
-    """Utilization_Event_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
+    """Utilization_Event_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Date_Format=Date_Format)
     Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
     KM_Cumulative_Util_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
     Reported_Cumulative_Time_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
     Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
 
-    Charts.Gen_Chart_Calendar_Utilization(theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df)
-    Charts.Gen_Chart_Calendar_Utilization(theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df)
+    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df)
+    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df)
     """

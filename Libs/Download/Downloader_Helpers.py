@@ -1,16 +1,11 @@
 # Import Libraries
 from datetime import datetime, timedelta
-import Libs.Defaults_Lists as Defaults_Lists
-
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-Activity_Method = Settings["Event_Handler"]["Activity"]["Method"]
-Project_Method = Settings["Event_Handler"]["Project"]["Method"]
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
-def Duration_Change(Events_downloaded: dict, key:int, value: dict) -> None:
+def Duration_Change(Settings: dict, Events_downloaded: dict, key:int, value: dict) -> None:
+    Date_format = Settings["General"]["Formats"]["Date"]
+    Time_format = Settings["General"]["Formats"]["Time"]
+
     Start_Date_Time = f"""{value["Start_Date"]}_{value["Start_Time"]}"""
     End_Date_Time = f"""{value["End_Date"]}_{value["End_Time"]}"""
     Start_Date_Time_dt = datetime.strptime(Start_Date_Time, f"{Date_format}_{Time_format}")
@@ -23,7 +18,9 @@ def Duration_Change(Events_downloaded: dict, key:int, value: dict) -> None:
     Duration = (int(Duration_dt.total_seconds())) // 60
     Events_downloaded[key]["Duration"] = Duration
 
-def Crop_edge_days_Events(Events_downloaded: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Date_format: str) -> dict:
+def Crop_edge_days_Events(Settings: dict, Events_downloaded: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime) -> dict:
+    Date_format = Settings["General"]["Formats"]["Date"]
+
     Events_Process = {}
     Counter = 0
     for key, value in Events_downloaded.items():
@@ -42,7 +39,7 @@ def Crop_edge_days_Events(Events_downloaded: dict, Input_Start_Date_dt: datetime
             Event_Start_Time = "00:00"
             Events_downloaded[key]["Start_Date"] = Event_Start_Date
             Events_downloaded[key]["Start_Time"] = Event_Start_Time
-            Duration_Change(Events_downloaded=Events_downloaded, key=key, value=value) 
+            Duration_Change(Settings=Settings, Events_downloaded=Events_downloaded, key=key, value=value) 
 
             Events_Process[Counter] = value
             Counter += 1
@@ -54,7 +51,7 @@ def Crop_edge_days_Events(Events_downloaded: dict, Input_Start_Date_dt: datetime
             Event_End_Time = "23:59"
             Events_downloaded[key]["End_Date"] = Event_End_Date
             Events_downloaded[key]["End_Time"] = Event_End_Time
-            Duration_Change(Events_downloaded=Events_downloaded, key=key, value=value) 
+            Duration_Change(Settings=Settings, Events_downloaded=Events_downloaded, key=key, value=value) 
 
             Events_Process[Counter] = value
             Counter += 1
@@ -72,18 +69,23 @@ def Crop_edge_days_Events(Events_downloaded: dict, Input_Start_Date_dt: datetime
             Event_End_Time = "23:59"
             Events_downloaded[key]["End_Date"] = Event_End_Date
             Events_downloaded[key]["End_Time"] = Event_End_Time
-            Duration_Change(Events_downloaded=Events_downloaded, key=key, value=value) 
+            Duration_Change(Settings=Settings, Events_downloaded=Events_downloaded, key=key, value=value) 
 
             Events_Process[Counter] = value
             Counter += 1
 
-        # Events totaly outside the Input Date interval
+        # Events totally outside the Input Date interval
         else:
             continue
 
     return Events_Process
 
-def Project_handler(Project: str) -> str:
+def Project_handler(Settings: dict, Project: str) -> str:
+    """
+    This Local function helps with processing of Project.
+    """
+    Project_Method = Settings["Event_Handler"]["Project"]["Method"]
+
     if Project_Method == "Events":
         Multiple_Projects = Project.find("; ")
         if Multiple_Projects != -1:
@@ -95,11 +97,16 @@ def Project_handler(Project: str) -> str:
         Project = ""
     return Project
     
-def Activity_handler(Body: str) -> str:
+def Activity_handler(Settings: dict, Body: str) -> str:
+    """
+    This Local function helps with processing of Activity.
+    """
+    Activity_Method = Settings["Event_Handler"]["Activity"]["Method"]
+    
     if Activity_Method == "Events":
-        Activity_occurence = Body.find("Activity: ")
+        Activity_occurrence = Body.find("Activity: ")
 
-        if Activity_occurence != -1:
+        if Activity_occurrence != -1:
             body_split = Body.split("Activity: ")
             Sub_body_split = str(body_split[1]).split("\r\n")
             Activity = Sub_body_split[0]
@@ -110,7 +117,10 @@ def Activity_handler(Body: str) -> str:
         Activity = ""  
     return Activity
 
-def Location_handler(Location: str) -> str:
+def Location_handler(Settings: dict, Location: str) -> str:
+    """
+    This Local function helps with processing of Location.
+    """
     if Location != "":
         Location = Location.replace("Microsoft Teams Meeting; ", "")
         Location = Location.replace(" (Brno (Holandská 4))", "")
@@ -118,7 +128,9 @@ def Location_handler(Location: str) -> str:
         pass
     return Location
 
-def All_Day_Event_End_Handler(Events_downloaded: dict, Counter: int, Subject: str, Start_Date: str, End_Date: str, End_Date_dt: datetime, Start_Time: str, End_Time: str, Duration: int, Project: str, Activity: str, Recurring: bool, Busy_Status: str, Location: str, All_Day_Event: bool) -> list[dict, int]:
+def All_Day_Event_End_Handler(Settings: dict, Events_downloaded: dict, Counter: int, Subject: str, Start_Date: str, End_Date: str, End_Date_dt: datetime, Start_Time: str, End_Time: str, Duration: int, Project: str, Activity: str, Recurring: bool, Busy_Status: str, Location: str, All_Day_Event: bool) -> list[dict, int]:
+    Date_format = Settings["General"]["Formats"]["Date"]
+
     if (All_Day_Event == True) and (End_Time == "00:00"):
         End_Date_dt = End_Date_dt - timedelta(days=1)
         End_Date = End_Date_dt.strftime(Date_format)
@@ -133,6 +145,9 @@ def All_Day_Event_End_Handler(Events_downloaded: dict, Counter: int, Subject: st
     return Events_downloaded, Counter
 
 def Add_to_Events_dict(Events_downloaded: dict, Counter: int, Subject: str, Start_Date: str, End_Date: str, Start_Time: str, End_Time: str, Duration: int, Project: str, Activity: str, Recurring: bool, Busy_Status: str, Location: str, All_Day_Event: bool) -> dict: 
+    """
+    This Local function adds values to Events dictionary.
+    """
     Events_downloaded[Counter] = {
         "Subject": Subject, 
         "Start_Date": Start_Date, 

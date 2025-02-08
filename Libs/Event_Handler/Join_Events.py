@@ -1,16 +1,11 @@
 # Import Libraries
 from pandas import DataFrame
 import pandas
-import Libs.Defaults_Lists as Defaults_Lists
-
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-Settings = Defaults_Lists.Load_Settings()
-Date_format = Settings["General"]["Formats"]["Date"]
-Time_format = Settings["General"]["Formats"]["Time"]
-Join_Events_Enabled = Settings["Event_Handler"]["Events"]["Join_method"]["Use"]
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Join_Events(Events: DataFrame) -> DataFrame:
+def Join_Events(Settings: dict, Events: DataFrame) -> DataFrame:
+    Join_Events_Enabled = Settings["Event_Handler"]["Events"]["Join_method"]["Use"]
+
     if Join_Events_Enabled == True:
         Cumulated_Events = pandas.DataFrame(columns=list(Events.columns))
         
