@@ -129,7 +129,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Category: str, theme: str, Events
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
     # ToolTip
-    # TODO --> dodělat tooltip aby byl v jednom jediném poli!!!!, pak pařenýst i do pomocných grafů
+    # TODO --> finish tooltip to be only in one containing all pf them, then transfer it to the helpers
     ToolTip = [
         ("Date", "@Date{%F}"), 
         (f"{Category}", "$name"), 

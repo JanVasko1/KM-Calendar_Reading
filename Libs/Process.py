@@ -170,4 +170,4 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
 
     # Summary Dataframe
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-    Events = Summary.Generate_Summary(Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None)
+    Events = Summary.Generate_Summary(Settings=Settings, Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None)

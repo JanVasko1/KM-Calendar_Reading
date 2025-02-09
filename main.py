@@ -1,5 +1,4 @@
 
-# BUG --> při jakýkoliv změně, musím nechat znova načíst globální Settings (protože když udělám změnu v setupu a spustím download znova, pořád má v SEttings staré nastavení)
 # Import Libraries
 import os
 import time
@@ -23,7 +22,7 @@ import Libs.Defaults_Lists as Defaults_Lists
 # ------------------------------------------------------------------------------------------------------------------------------------ Local Functions ------------------------------------------------------------------------------------------------------------------------------------ #
 def Dialog_Window_Request(title: str, text: str, Dialog_Type: str) -> str|None:
     # Password required
-    dialog = Elements.Get_DialogWindow(title=title, text=text, Dialog_Type=Dialog_Type)
+    dialog = Elements.Get_DialogWindow(Configuration=Configuration, title=title, text=text, Dialog_Type=Dialog_Type)
     SP_Password = dialog.get_input()
     return SP_Password
 
@@ -50,23 +49,23 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # ------------------------- Main Functions -------------------------#
     # Theme Change - Button
-    Icon_Theme = Elements.Get_Button_Icon(Frame=Frame, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
     Icon_Theme.configure(text="")
     Icon_Theme.configure(command = lambda: Theme_Change())
-    Elements.Get_ToolTip(widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
 
     # Account Mail
-    Frame_User_Email = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_Email = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_User_Email.configure(text=User_Email)
     Frame_User_Email.pack_propagate(flag=False)
 
     # Account ID
-    Frame_User_ID = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_ID = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_User_ID.configure(text=User_ID)
     Frame_User_ID.pack_propagate(flag=False)
 
     # Account Name
-    Frame_User_Name = Elements.Get_Label(Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_Name = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_User_Name.configure(text=User_Name)
     Frame_User_Name.pack_propagate(flag=False)
 
@@ -154,68 +153,68 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         return Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady
 
     # ------------------------- Main Functions -------------------------#
-    Active_Window = Elements.Get_Frame(Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
+    Active_Window = Elements.Get_Frame(Configuration=Configuration, Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
 
     # Page - Download
-    Icon_Frame_Download = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Download_Row = 0
     elif User_Type == "Manager":
         Download_Row = 0
     Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window, Side_Bar_Row=Download_Row))    
-    Elements.Get_ToolTip(widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal")
 
     # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Dashboard_Row = 1
     elif User_Type == "Manager":
         Dashboard_Row = 1
     Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Dashboard_Row))
-    Elements.Get_ToolTip(widget=Icon_Frame_Dashboard, message="Dashboard page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Dashboard, message="Dashboard page.", ToolTip_Size="Normal")
 
     # Page - Users Dashboard
     if User_Type == "User":
         pass
     elif User_Type == "Manager":
         Team_Row = 2
-        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
         Icon_Frame_Users_Dashboard.configure(command = lambda: Show_Team_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Team_Row))
-        Elements.Get_ToolTip(widget=Icon_Frame_Users_Dashboard, message="My Team page.", ToolTip_Size="Normal")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Users_Dashboard, message="My Team page.", ToolTip_Size="Normal")
 
     # Page - Data
-    Icon_Frame_Data = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Data = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Data_Row = 2
     elif User_Type == "Manager":
         Data_Row = 3
     Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window, Side_Bar_Row=Data_Row))
-    Elements.Get_ToolTip(widget=Icon_Frame_Data, message="Data page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Data, message="Data page.", ToolTip_Size="Normal")
 
     # Page - Information
-    Icon_Frame_Information = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Information_Row = 3
     elif User_Type == "Manager":
         Information_Row = 4
     Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window, Side_Bar_Row=Information_Row))
-    Elements.Get_ToolTip(widget=Icon_Frame_Information, message="Information page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Information, message="Information page.", ToolTip_Size="Normal")
 
     # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Settings_Row = 4
     elif User_Type == "Manager":
         Settings_Row = 5
     Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window, Side_Bar_Row=Settings_Row))
-    Elements.Get_ToolTip(widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal")
 
     # Close Application
-    Icon_Frame_Close = Elements.Get_Button_Icon(Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
+    Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
     Icon_Frame_Close.configure(command = lambda: window.quit())
-    Elements.Get_ToolTip(widget=Icon_Frame_Close, message="Close.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close.", ToolTip_Size="Normal")
 
-    Konica_Logo = Elements.Get_Background_Image(Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
+    Konica_Logo = Elements.Get_Background_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
 
     # Define intend
     Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady = Define_Icons_Top_Bottom_indent(Frame_Height=Side_Bar_Frame_Height, Icon_count=Icon_count, Icon_Button_Height=Icon_Button_Height, Icon_Default_pady=Icon_Default_pady, Logo_height=Logo_Height, Logo_pady=Logo_pady)
@@ -411,7 +410,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     def My_Team_Download_Data() -> None:
         print("My_Team_Download_Data")
-        # TODO --> Dodělat připravit stahování 
+        # TODO --> Finish and prepare downloader 
         pass
 
 
@@ -421,15 +420,15 @@ def Page_Download(Frame: CTk|CTkFrame):
     Download_Data_Source = StringVar(master=Frame, value="Exchange", name="Download_Data_Source")
 
     # Divide Working Page into 2 parts
-    Frame_Download_State_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Download_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line")
     Frame_Download_State_Area.pack_propagate(flag=False)
 
-    Frame_Download_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Download_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
 
     # ------------------------- Work Area -------------------------#
     # Tab View
-    TabView = Elements.Get_Tab_View(Frame=Frame_Download_Work_Detail_Area, Tab_size="Normal")
+    TabView = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame_Download_Work_Detail_Area, Tab_size="Normal")
     TabView.pack_propagate(flag=False)
     Tab_New = TabView.add("New")
     Tab_New.pack_propagate(flag=False)
@@ -440,29 +439,29 @@ def Page_Download(Frame: CTk|CTkFrame):
         Tab_Team.pack_propagate(flag=False)
 
         Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton3"]
-        Elements.Get_ToolTip(widget=Tab_Team_ToolTip_But, message="Used to download data from my team wit current reporting period.", ToolTip_Size="Normal")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Team_ToolTip_But, message="Used to download data from my team wit current reporting period.", ToolTip_Size="Normal")
     else:
         pass
     TabView.set("New")
 
     Tab_New_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
     Tab_Pre_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
-    Elements.Get_ToolTip(widget=Tab_New_ToolTip_But, message="Used to download new data to be registered, or Current Period checking.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_Pre_ToolTip_But, message="Used to download already registered date in Time Sheets --> download from Sharepoint previous periods.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_New_ToolTip_But, message="Used to download new data to be registered, or Current Period checking.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Pre_ToolTip_But, message="Used to download already registered date in Time Sheets --> download from Sharepoint previous periods.", ToolTip_Size="Normal")
 
     # ---------- New Download ---------- #
     # Download Method
-    Method_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Method_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Method_Text.configure(text="Step 1 - Date Range Source")
 
-    Sharepoint_Widget = Download.Download_Sharepoint(Settings=Settings, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Sharepoint_Widget = Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
     Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
     Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
     Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
     
-    Manual_Widget = Download.Download_Manual(Settings=Settings, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Manual_Widget = Download.Download_Manual(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
@@ -474,14 +473,14 @@ def Page_Download(Frame: CTk|CTkFrame):
     Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Date_From_Option_Var=Sharepoint_Date_From_Option_Var, Sharepoint_Date_To_Option_Var=Sharepoint_Date_To_Option_Var, Sharepoint_Man_Date_To_Var=Sharepoint_Man_Date_To_Var))
 
     # Download Source
-    Source_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Source_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Download Data Source")
 
-    Exchange_Widget = Download.Download_Exchange(Settings=Settings, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Exchange_Widget = Download.Download_Exchange(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
-    Outlook_Widget = Download.Download_Outlook(Settings=Settings, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Outlook_Widget = Download.Download_Outlook(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
     Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
 
     # Disabling fields --> Download_Data_Source
@@ -489,55 +488,55 @@ def Page_Download(Frame: CTk|CTkFrame):
     Outlook_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
 
     # Download button
-    Download_Text = Elements.Get_Label(Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")
     Download_Text.configure(text="Step 3 - Download and process")
 
-    Button_Download = Elements.Get_Button(Frame=Tab_New, Button_Size="Normal")
+    Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_New, Button_Size="Normal")
     Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
-    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
     
     # ---------- Previous periods ---------- #
-    Previous_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Previous_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Previous_Text.configure(text="Step 1 - Define previous periods")
 
-    Previous_Period_Def_Widget = Download.Per_Period_Selection(Settings=Settings, Frame=Tab_Pre)
+    Previous_Period_Def_Widget = Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, Frame=Tab_Pre)
 
-    Pre_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Pre_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
 
-    Previous_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Settings=Settings, Frame=Tab_Pre)
+    Previous_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Pre)
 
     # Download button
-    Pre_Download_Text = Elements.Get_Label(Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Pre_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
     Pre_Download_Text.configure(text="Step 2 - Download and process")
 
-    Pre_Button_Download = Elements.Get_Button(Frame=Tab_Pre, Button_Size="Normal")
+    Pre_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_Pre, Button_Size="Normal")
     Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Period_Def_Widget, Previous_Sharepoint_Widget=Previous_Sharepoint_Widget))
-    Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
     
     # ---------- Previous periods ---------- #
     if User_Type == "Manager":
-        Team_Sharepoint_Text = Elements.Get_Label(Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
+        Team_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
         Team_Sharepoint_Text.configure(text="Step 1 - Sharepoint credential")
 
-        My_Team_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Settings=Settings, Frame=Tab_Team) # Can most probably by identical as downloads needs to connect same ways as in Pre
+        My_Team_Sharepoint_Widget = Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Team) # Can most probably by identical as downloads needs to connect same ways as in Pre
 
         # Download button
-        Team_Download_Text = Elements.Get_Label(Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
+        Team_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
         Team_Download_Text.configure(text="Step 2 - Download and process")
 
-        Team_Button_Download = Elements.Get_Button(Frame=Tab_Team, Button_Size="Normal")
+        Team_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_Team, Button_Size="Normal")
         Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data())
-        Elements.Get_ToolTip(widget=Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal")
     else:
         pass
 
     # ------------------------- State Area -------------------------#
     # Progress Bar
-    Progress_Bar = Elements.Get_ProgressBar(Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process")
+    Progress_Bar = Elements.Get_ProgressBar(Configuration=Configuration, Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process")
     Progress_Bar.set(value=0)
 
-    Progress_text = Elements.Get_Label(Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
+    Progress_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
     Progress_text.configure(text=f"Download progress", width=200)
 
 
@@ -578,10 +577,10 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
     import Libs.GUI.Widgets.DashBoard as DashBoard
     # ------------------------- Main Functions -------------------------#
     # Define Frames
-    Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Dashboard_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
 
-    Frame_DashBoard_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
+    Frame_DashBoard_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Work_Detail_Area, Frame_Size="Triple_size")
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
@@ -600,56 +599,56 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
         Creation_Date = Settings["General"]["DashBoard"]["Creation_Date"]
-        DashBoard_text_Additional = Elements.Get_Label(Frame=Frame_DashBoard_Scrollable_Area, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
+        DashBoard_text_Additional = Elements.Get_Label(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
         DashBoard_text_Additional.configure(text=f"Generated on {Creation_Date}")
 
-        Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Totals_Line")
+        Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Totals_Line")
         Frame_Dashboard_Total_Line.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Counter = DashBoard.DashBoard_Totals_Counter_Widget(Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
+        Frame_DashBoard_Totals_Counter = DashBoard.DashBoard_Totals_Counter_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Total_Line, Label="Count", Widget_Line="Totals_Line", Widget_size="Normal", Data=Event_counts)
         Frame_DashBoard_Totals_Counter.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Total = DashBoard.DashBoard_Totals_Total_Widget(Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
+        Frame_DashBoard_Totals_Total = DashBoard.DashBoard_Totals_Total_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Total_Line, Label="Total", Widget_Line="Totals_Line", Widget_size="Normal", Data=Total_Duration_hours)
         Frame_DashBoard_Totals_Total.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Average = DashBoard.DashBoard_Totals_Average_Widget(Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
+        Frame_DashBoard_Totals_Average = DashBoard.DashBoard_Totals_Average_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Total_Line, Label="Average", Widget_Line="Totals_Line", Widget_size="Normal", Data=Mean_Duration_hours)
         Frame_DashBoard_Totals_Average.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Report_Per_Util = DashBoard.DashBoard_Totals_Report_Period_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
+        Frame_DashBoard_Totals_Report_Per_Util = DashBoard.DashBoard_Totals_Report_Period_Util_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Total_Line, Label="Reported Period Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=Reporting_Period_Utilization)
         Frame_DashBoard_Totals_Report_Per_Util.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Active_Day_Util = DashBoard.DashBoard_Totals_Active_Day_Util_Widget(Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
+        Frame_DashBoard_Totals_Active_Day_Util = DashBoard.DashBoard_Totals_Active_Day_Util_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Total_Line, Label="My Active Days Utilization", Widget_Line="Totals_Line", Widget_size="Normal", Data=My_Calendar_Utilization)
         Frame_DashBoard_Totals_Active_Day_Util.pack_propagate(flag=False)
-        Frame_DashBoard_Totals_Util_by_today_surplus = DashBoard.DashBoard_Totals_Utilization_Surplus_Widget(Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
+        Frame_DashBoard_Totals_Util_by_today_surplus = DashBoard.DashBoard_Totals_Utilization_Surplus_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Total_Line, Label="Util. surplus by Input End Date", Widget_Line="Totals_Line", Widget_size="Normal", Data=Utilization_Surplus_hours)
         Frame_DashBoard_Totals_Util_by_today_surplus.pack_propagate(flag=False)
 
         # Project Activity Line
-        Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Project_Activity_Line")
-        Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
-        Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
-        Frame_DashBoard_Project_Frame = DashBoard.DashBoard_Project_Widget(Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Project_DF=Project_DF)
-        Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
-        Frame_DashBoard_Project_Detail1_Frame = DashBoard.DashBoard_Project_Detail1_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
+        Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Project_Activity_Line")
+        Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
+        Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section")
+        Frame_DashBoard_Project_Frame = DashBoard.DashBoard_Project_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Project_DF=Project_DF)
+        Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section")
+        Frame_DashBoard_Project_Detail1_Frame = DashBoard.DashBoard_Project_Detail1_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
         Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Project_Detail2_Frame = DashBoard.DashBoard_Project_Detail2_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
+        Frame_DashBoard_Project_Detail2_Frame = DashBoard.DashBoard_Project_Detail2_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Project_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
         Frame_DashBoard_Project_Detail2_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Project_Detail3_Frame = DashBoard.DashBoard_Project_Detail3_Widget(Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
+        Frame_DashBoard_Project_Detail3_Frame = DashBoard.DashBoard_Project_Detail3_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Project_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF)
         Frame_DashBoard_Project_Detail3_Frame.pack_propagate(flag=False)
 
-        Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
-        Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
-        Frame_DashBoard_Activity_Frame = DashBoard.DashBoard_Activity_Widget(Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
-        Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
-        Frame_DashBoard_Activity_Detail1_Frame = DashBoard.DashBoard_Activity_Detail1_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section")
+        Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section")
+        Frame_DashBoard_Activity_Frame = DashBoard.DashBoard_Activity_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df)
+        Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section")
+        Frame_DashBoard_Activity_Detail1_Frame = DashBoard.DashBoard_Activity_Detail1_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Activity_Detail2_Frame = DashBoard.DashBoard_Activity_Detail2_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail2_Frame = DashBoard.DashBoard_Activity_Detail2_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Hours", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail2_Frame.pack_propagate(flag=False)
-        Frame_DashBoard_Activity_Detail3_Frame = DashBoard.DashBoard_Activity_Detail3_Widget(Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
+        Frame_DashBoard_Activity_Detail3_Frame = DashBoard.DashBoard_Activity_Detail3_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Side_Section, Label="Highest Average", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df)
         Frame_DashBoard_Activity_Detail3_Frame.pack_propagate(flag=False)
 
         # WeekDay and Weeks Line
-        Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="WeekDay_Weeks_Line")
-        Frame_DashBoard_WeekDays_Frame = DashBoard.DashBoard_WeekDays_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
-        Frame_DashBoard_Weeks_Frame = DashBoard.DashBoard_Weeks_Widget(Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
+        Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="WeekDay_Weeks_Line")
+        Frame_DashBoard_WeekDays_Frame = DashBoard.DashBoard_WeekDays_Widget(Configuration=Configuration, Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df)
+        Frame_DashBoard_Weeks_Frame = DashBoard.DashBoard_Weeks_Widget(Configuration=Configuration, Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF)
 
         # Day Chart Line
-        Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Day_Chart_Line")
-        Frame_DashBoard_Chart_Frame = DashBoard.DashBoard_Chart_Widget(Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
+        Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Day_Chart_Line")
+        Frame_DashBoard_Chart_Frame = DashBoard.DashBoard_Chart_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal")
         Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
         # Build look of Widget
@@ -699,11 +698,11 @@ def Page_User_Dashboard(Frame: CTk|CTkFrame):
 
     # ------------------------- Main Functions -------------------------#
     # Define Frames
-    Frame_User_Dashboard_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_User_Dashboard_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_User_Dashboard_Work_Detail_Area.grid_propagate(flag=False)
 
     # Tab View
-    TabView = Elements.Get_Tab_View(Frame=Frame_User_Dashboard_Work_Detail_Area, Tab_size="Normal")
+    TabView = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame_User_Dashboard_Work_Detail_Area, Tab_size="Normal")
     TabView.pack_propagate(flag=False)
     Tab_Gen = TabView.add("Totals")
     Tab_Gen.pack_propagate(flag=False)
@@ -714,9 +713,9 @@ def Page_User_Dashboard(Frame: CTk|CTkFrame):
             Tab_Cal = TabView.add(f"{member}")
             Tab_Cal.pack_propagate(flag=False)
             Tab_Gen_ToolTip_But = TabView.children["!ctksegmentedbutton"].children[f"!ctkbutton{member_order}"]
-            Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Team member dashboard.", ToolTip_Size="Normal")
+            Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Gen_ToolTip_But, message="Team member dashboard.", ToolTip_Size="Normal")
 
-            # TODO --> dodělat vložené dashboardu pro danýho uživatele na vlastní page
+            # TODO --> Finish fill dashboard to each page of each person
 
             member_order += 1
 
@@ -808,27 +807,27 @@ def Page_Data(Frame: CTk|CTkFrame):
 
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
-    Frame_Data_Button_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Data_Button_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
-    Frame_Data_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Data_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Data_Work_Detail_Area.grid_propagate(flag=False)
 
     Events = pandas.read_csv(f"Operational\\DashBoard\\Events.csv", sep=";")
 
     # ------------------------- Buttons Area -------------------------#
     # Download Button
-    Button_Upload = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
+    Button_Upload = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Upload.configure(text="Upload", command = lambda:Data_Upload(Events=Events))
-    Elements.Get_ToolTip(widget=Button_Upload, message="Upload processed data directly to Sharepoint TimeSheets.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload, message="Upload processed data directly to Sharepoint TimeSheets.", ToolTip_Size="Normal")
 
     # Download Button
-    Button_Excel = Elements.Get_Button(Frame=Frame_Data_Button_Area, Button_Size="Normal")
+    Button_Excel = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Excel.configure(text="Excel", command = lambda:Data_Excel())
-    Elements.Get_ToolTip(widget=Button_Excel, message="Show generated Excel file.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Excel, message="Show generated Excel file.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Current Page text
-    Page_text = Elements.Get_Label(Frame=Frame_Data_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
+    Page_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area, Label_Size="H1", Font_Size="H1")
 
     # Data table
     Events_List = []
@@ -836,31 +835,31 @@ def Page_Data(Frame: CTk|CTkFrame):
         Events_List.append(row[1].to_list())
     Events_list_len = len(Events_List)
 
-    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Frame=Frame_Data_Work_Detail_Area, Table_Values=None, Table_Size="Triple_size", Table_Columns=8, Table_Rows=Info_Table_Rows + 1)
+    Frame_Events_Table = Elements_Groups.Get_Table_Frame(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area, Table_Values=None, Table_Size="Triple_size", Table_Columns=8, Table_Rows=Info_Table_Rows + 1)
     Frame_Events_Table_Var = Frame_Events_Table.children["!ctktable"]
     Frame_Events_Table_Var.configure(wraplength=180)
     # Init values in table
     change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len)
 
     # Beginning Button
-    Button_First = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_First = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
     Button_First.configure(text="<<", command = lambda: change_first(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
-    Elements.Get_ToolTip(widget=Button_First, message="First page", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_First, message="First page", ToolTip_Size="Normal")
 
     # Pre Button
-    Button_Pre = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_Pre = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
     Button_Pre.configure(text="<", command = lambda: change_left(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
-    Elements.Get_ToolTip(widget=Button_Pre, message="Previous page", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Pre, message="Previous page", ToolTip_Size="Normal")
 
     # next Button
-    Button_Next = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_Next = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
     Button_Next.configure(text=">", command = lambda: change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
-    Elements.Get_ToolTip(widget=Button_Next, message="Next page", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Next, message="Next page", ToolTip_Size="Normal")
 
     # End Button
-    Button_Last = Elements.Get_Button(Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
+    Button_Last = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area, Button_Size="Small")
     Button_Last.configure(text=">>", command = lambda: change_last(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
-    Elements.Get_ToolTip(widget=Button_Last, message="Last page", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Last, message="Last page", ToolTip_Size="Normal")
 
 
     # Build look of Widget
@@ -886,7 +885,7 @@ def Page_Information(Frame: CTk|CTkFrame):
     Work_Area_Detail_Font = Configuration["Labels"]["Main"]["text_color"]
 
     # ------------------------- Main Functions -------------------------#
-    Frame_Information_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Information_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Information_Work_Detail_Area.grid_propagate(flag=False)
 
     # Get Theme --> because of background color
@@ -907,7 +906,7 @@ def Page_Information(Frame: CTk|CTkFrame):
 
     # ------------------------- Info Text Area -------------------------#
     # Description
-    Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
+    Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
     with open("Libs\\GUI\\Information.md", "r", encoding="UTF-8") as file:
         html_markdown=markdown.markdown( file.read())
@@ -953,25 +952,25 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
-    Frame_Settings_State_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Status_Line")
+    Frame_Settings_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line")
 
-    Frame_Settings_Work_Detail_Area = Elements.Get_Frame(Frame=Frame, Frame_Size="Work_Area_Detail")
+    Frame_Settings_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Settings_Work_Detail_Area.grid_propagate(flag=False)
 
     # ------------------------- State Area -------------------------#
     # Button - Download New Project and Activities
-    Button_Download_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
+    Button_Download_Pro_Act = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
-    Elements.Get_ToolTip(widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities inside the app from actual Sharepoint.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities inside the app from actual Sharepoint.", ToolTip_Size="Normal")
 
     # Button - Download New Project and Activities
-    Button_Upload_Pro_Act = Elements.Get_Button(Frame=Frame_Settings_State_Area, Button_Size="Normal")
+    Button_Upload_Pro_Act = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Upload_Pro_Act.configure(text="Upload Project/Activity", command = lambda:Upload_Project_Activities())
-    Elements.Get_ToolTip(widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Tab View
-    TabView = Elements.Get_Tab_View(Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
+    TabView = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
     TabView.pack_propagate(flag=False)
     Tab_Gen = TabView.add("General")
     Tab_Gen.pack_propagate(flag=False)
@@ -994,7 +993,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
         Tab_Team.pack_propagate(flag=False)
 
         Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton9"]
-        Elements.Get_ToolTip(widget=Tab_Team_ToolTip_But, message="MY Team base setup.", ToolTip_Size="Normal")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Team_ToolTip_But, message="MY Team base setup.", ToolTip_Size="Normal")
     else:
         pass
     TabView.set("General")
@@ -1007,14 +1006,14 @@ def Page_Settings(Frame: CTk|CTkFrame):
     Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
     Tab_E_S_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton7"]
     Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton8"]
-    Elements.Get_ToolTip(widget=Tab_Gen_ToolTip_But, message="Application General Setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_E_Spec_ToolTip_But, message="Special Events which needs special treatment.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Split too long Empty place.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_E_S_ToolTip_But, message="Basic Scheduler setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Gen_ToolTip_But, message="Application General Setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_Spec_ToolTip_But, message="Special Events which needs special treatment.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Split too long Empty place.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_S_ToolTip_But, message="Basic Scheduler setup.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
 
     # General
     Theme_Widget = Settings_Widgets.Settings_General_Theme(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen, window=window)
@@ -1170,22 +1169,22 @@ if __name__ == "__main__":
 
     # ---------------------------------- Content ----------------------------------#
     # Background
-    Frame_Background = Elements.Get_Frame(Frame=window, Frame_Size="Background")
+    Frame_Background = Elements.Get_Frame(Configuration=Configuration, Frame=window, Frame_Size="Background")
     Frame_Background.pack(side="top", fill="none", expand=False)
 
     # SideBar
-    Frame_Side_Bar = Elements.Get_SideBar_Frame(Frame=Frame_Background, Frame_Size="SideBar")
+    Frame_Side_Bar = Elements.Get_SideBar_Frame(Configuration=Configuration, Frame=Frame_Background, Frame_Size="SideBar")
     Frame_Side_Bar.pack(side="left", fill="y", expand=False)
 
     # Work Area
-    Frame_Work_Area = Elements.Get_Frame(Frame=Frame_Background, Frame_Size="Work_Area")
+    Frame_Work_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame_Background, Frame_Size="Work_Area")
     Frame_Work_Area.pack(side="top", fill="both", expand=False)
 
-    Frame_Header = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Header")
+    Frame_Header = Elements.Get_Frame(Configuration=Configuration, Frame=Frame_Work_Area, Frame_Size="Work_Area_Header")
     Frame_Header.pack_propagate(flag=False)
     Frame_Header.pack(side="top", fill="both", expand=False)
 
-    Frame_Work_Area_Detail = Elements.Get_Frame(Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
+    Frame_Work_Area_Detail = Elements.Get_Frame(Configuration=Configuration, Frame=Frame_Work_Area, Frame_Size="Work_Area_Main")
     Frame_Work_Area_Detail.pack_propagate(flag=False)
     Frame_Work_Area_Detail.pack(side="left", fill="none", expand=False)
 

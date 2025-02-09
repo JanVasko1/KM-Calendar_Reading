@@ -432,7 +432,7 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Activity", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
 
     # Utilization
-    # TODO -> Dodělat
+    # TODO --> Finis Utilization
     """Utilization_Event_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Date_Format=Date_Format)
     Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
     KM_Cumulative_Util_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
