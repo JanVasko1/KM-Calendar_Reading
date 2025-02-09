@@ -1,4 +1,4 @@
-from customtkinter import CTk, CTkFrame, CTkScrollableFrame
+from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEntry
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Elements as Elements
@@ -244,3 +244,66 @@ def Get_Table_Frame(Configuration:dict, Frame: CTk|CTkFrame, Table_Size: str, Ta
     Skip_List_Table.pack(side="top", fill="y", expand=True, padx=10, pady=10)
 
     return Frame_Scrollable_Area
+
+def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -> CTkToplevel:
+    def drag_win():
+        x = Pop_Up_Window.winfo_pointerx() - Pop_Up_Window._offsetx
+        y = Pop_Up_Window.winfo_pointery() - Pop_Up_Window._offsety
+        Pop_Up_Window.geometry(f"+{x}+{y}")
+
+    def click_win():
+        Pop_Up_Window._offsetx = Pop_Up_Window.winfo_pointerx() - Pop_Up_Window.winfo_rootx()
+        Pop_Up_Window._offsety = Pop_Up_Window.winfo_pointery() - Pop_Up_Window.winfo_rooty()
+
+    # TopUp Window
+    Pop_Up_Window = CTkToplevel()
+    Pop_Up_Window.configure(fg_color="#000001")
+    Pop_Up_Window.title(title)
+    Pop_Up_Window.geometry(f"{width}x{height}")
+    Pop_Up_Window.bind(sequence="<Escape>", func=lambda event: Pop_Up_Window.destroy())
+    Pop_Up_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+    Pop_Up_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
+    Pop_Up_Window.overrideredirect(boolean=True)
+    Pop_Up_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+    Pop_Up_Window.resizable(width=False, height=False)
+
+    # Rounded corners 
+    Pop_Up_Window.config(background="#000001")
+    Pop_Up_Window.attributes("-transparentcolor", "#000001")
+
+    return Pop_Up_Window
+
+def Get_My_Dialog_Window(Settings: dict, Configuration:dict, title: str, tooltip: str, width: int, height: int, text: str, Password: bool) -> CTkFrame:
+    # TODO --> must be finished to be used instead of
+    def Confirm_Choice(Field_Normal: CTkEntry):
+        return Field_Normal.get()
+
+    def Reject_Choice():
+        return ""
+
+    Dialog_Window = Get_Pop_up_window(Configuration=Configuration, title=title, width=width, height=height)
+
+    # Frame - General
+    Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Dialog_Window, Name=title, Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip=tooltip)
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    Label_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Body, Label_Size="Field_Label", Font_Size="Field_Label")
+    Label_text.configure(text=f"{text}:")
+    Label_text.pack(side="top", fill="none", expand=True, padx=10, pady=5)
+
+    if Password == False:
+        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Size="Normal")
+        Field_Normal.pack(side="top", fill="none", expand=True, padx=10, pady=5)
+    elif Password == True:
+        Field_Normal = Elements.Get_Password_Normal(Configuration=Configuration, Frame=Frame_Body)
+        Field_Normal.pack(side="top", fill="none", expand=True, padx=10, pady=5)
+
+    # Buttons
+    Button_Frame = Get_Widget_Button_row(Frame=Frame_Body, Configuration=Configuration, Field_Frame_Type="Single_Column" , Buttons_count=2, Button_Size="Normal") 
+    Button_Confirm_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Confirm_Var.configure(text="Confirm", command = lambda:Confirm_Choice(Field_Normal=Field_Normal))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Confirm_Var, message="Confirm.", ToolTip_Size="Normal")
+
+    Button_Reject_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_Reject_Var.configure(text="Reject", command = lambda:Reject_Choice())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Reject_Var, message="Reject.", ToolTip_Size="Normal")

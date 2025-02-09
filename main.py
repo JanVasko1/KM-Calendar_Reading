@@ -171,7 +171,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     elif User_Type == "Manager":
         Dashboard_Row = 1
     Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Dashboard_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Dashboard, message="Dashboard page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Dashboard, message="My dashboard page.", ToolTip_Size="Normal")
 
     # Page - Users Dashboard
     if User_Type == "User":
@@ -189,7 +189,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     elif User_Type == "Manager":
         Data_Row = 3
     Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window, Side_Bar_Row=Data_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Data, message="Data page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Data, message="Data to export page.", ToolTip_Size="Normal")
 
     # Page - Information
     Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
@@ -198,7 +198,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     elif User_Type == "Manager":
         Information_Row = 4
     Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window, Side_Bar_Row=Information_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Information, message="Information page.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Information, message="Application information page.", ToolTip_Size="Normal")
 
     # Page - Settings
     Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
@@ -212,7 +212,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     # Close Application
     Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
     Icon_Frame_Close.configure(command = lambda: window.quit())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close application.", ToolTip_Size="Normal")
 
     Konica_Logo = Elements.Get_Background_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
 
@@ -410,7 +410,8 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     def My_Team_Download_Data() -> None:
         print("My_Team_Download_Data")
-        # TODO --> Finish and prepare downloader 
+        # TODO --> Finish and prepare downloader, prepare also utilization in one chart for all team mebers --> to see 
+        
         pass
 
 

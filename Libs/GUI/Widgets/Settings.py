@@ -252,7 +252,7 @@ def Settings_General_Color(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
 
     def Appearance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry, Helper: str) -> None:
         def Quit_Save(Helper: str):
-            Defaults_Lists.Information_Update_Settings(File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Color_Picker_Frame.get())
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Color_Picker_Frame.get())
             Color_Picker_window.destroy()
 
         def drag_win():
@@ -1290,7 +1290,7 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
             Skip_Events.remove(Header_List)
             Skip_Events.sort()
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=Skip_Events)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=Skip_Events)
         else:
             CTkMessagebox(title="Error", message=f"Subject is already within list of skip Events.", icon="cancel", fade_in_duration=1)
 
@@ -1315,7 +1315,7 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
             Skip_Events = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
             Skip_Events.remove("Skip Events")
             Skip_Events.sort()
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=Skip_Events)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=Skip_Events)
         else:
             CTkMessagebox(title="Error", message=f"Header cannot be deleted.", icon="cancel", fade_in_duration=1)
 
@@ -1323,7 +1323,7 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
         Table_len = len(Frame_Skip_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Skip_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=[])
+        Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=[])
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -1437,7 +1437,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
                 Empty_General_Events_row_dict = dict(zip(Header_List, Empty_General_Events_row))
                 General_dict[Counter] = Empty_General_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
         else:
             pass
     
@@ -1457,7 +1457,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
                 Empty_General_Events_row_dict = dict(zip(Header_List, Empty_General_Events_row))
                 General_dict[Counter] = Empty_General_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
             Delete_One_Close()
 
         def Delete_One_Close() -> None:
@@ -1475,15 +1475,6 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
             Description_Label_Var.configure(text=Selected_Description)
             Coverage_Label_Var.configure(text=Selected_Coverage)
 
-        def drag_win():
-            x = Delete_One_Window.winfo_pointerx() - Delete_One_Window._offsetx
-            y = Delete_One_Window.winfo_pointery() - Delete_One_Window._offsety
-            Delete_One_Window.geometry(f"+{x}+{y}")
-
-        def click_win():
-            Delete_One_Window._offsetx = Delete_One_Window.winfo_pointerx() - Delete_One_Window.winfo_rootx()
-            Delete_One_Window._offsety = Delete_One_Window.winfo_pointery() - Delete_One_Window.winfo_rooty()
-
         # calculate number of lines in table
         Empty_General_Events = Frame_Empty_General_Table_Var.values
         Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
@@ -1492,20 +1483,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_One_Window = CTkToplevel()
-        Delete_One_Window.configure(fg_color="#000001")
-        Delete_One_Window.title("Color Picker")
-        Delete_One_Window.geometry(f"510x260")
-        Delete_One_Window.bind(sequence="<Escape>", func=lambda event: Delete_One_Window.destroy())
-        Delete_One_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        Delete_One_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        Delete_One_Window.overrideredirect(boolean=True)
-        Delete_One_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Delete_One_Window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        Delete_One_Window.config(background="#000001")
-        Delete_One_Window.attributes("-transparentcolor", "#000001")
+        Delete_One_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=510, height=260)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_One_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -1546,7 +1524,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         Table_len = len(Frame_Empty_General_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Empty_General_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information={})
+        Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information={})
 
     def Recalculate_Empty_Event(Header_List: list, Frame_Empty_General_Table_Var: CTkTable) -> None:
         def Recalculation_Confirm(Frame_Body: CTkFrame, Lines_No: int) -> None:
@@ -1596,7 +1574,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
                     Empty_General_Events_row_dict = dict(zip(Header_List, Empty_General_Events_row))
                     General_dict[Counter] = Empty_General_Events_row_dict
                     Counter += 1
-                Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
+                Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information=General_dict)
 
                 Recalculation_Reject()
             else:
@@ -1605,16 +1583,6 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         def Recalculation_Reject() -> None:
             Recalculate_window.destroy()
 
-        def drag_win():
-            x = Recalculate_window.winfo_pointerx() - Recalculate_window._offsetx
-            y = Recalculate_window.winfo_pointery() - Recalculate_window._offsety
-            Recalculate_window.geometry(f"+{x}+{y}")
-
-        def click_win():
-            Recalculate_window._offsetx = Recalculate_window.winfo_pointerx() - Recalculate_window.winfo_rootx()
-            Recalculate_window._offsety = Recalculate_window.winfo_pointery() - Recalculate_window.winfo_rooty()
-
-
         # calculate number of lines in table
         Empty_General_Events = Frame_Empty_General_Table_Var.values
         Empty_General_Events = [i for i in Empty_General_Events if i != Header_List]
@@ -1622,20 +1590,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
 
         Recalculate_window_height = (Lines_No * 40) + 100
 
-        Recalculate_window = CTkToplevel()
-        Recalculate_window.configure(fg_color="#000001")
-        Recalculate_window.title("Color Picker")
-        Recalculate_window.geometry(f"510x{Recalculate_window_height}")
-        Recalculate_window.bind(sequence="<Escape>", func=lambda event: Recalculate_window.destroy())
-        Recalculate_window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        Recalculate_window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        Recalculate_window.overrideredirect(boolean=True)
-        Recalculate_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Recalculate_window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        Recalculate_window.config(background="#000001")
-        Recalculate_window.attributes("-transparentcolor", "#000001")
+        Recalculate_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Recalculate", width=510, height=Recalculate_window_height)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Recalculate_window, Name="Recalculate coverage", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Helps to recalculate Coverage percentage so sum is equal 100")
@@ -1834,13 +1789,13 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
             Schedule_Events = [i for i in Schedule_Events if i != Header_List]
             Schedule_Events = Update_empty_information(Check_List=Schedule_Events)
 
-            Schedule_dict = {}
+            Scheduled_dict = {}
             Counter = 0
             for Schedule_Events_row in Schedule_Events:
                 Schedule_Events_row_dict = dict(zip(Header_List, Schedule_Events_row))
-                Schedule_dict[Counter] = Schedule_Events_row_dict
+                Scheduled_dict[Counter] = Schedule_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information=Schedule_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information=Scheduled_dict)
         else:
             pass
 
@@ -1860,7 +1815,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
                 Empty_Scheduled_Events_row_dict = dict(zip(Header_List, Empty_Scheduled_Events_row))
                 Scheduled_dict[Counter] = Empty_Scheduled_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information=Scheduled_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information=Scheduled_dict)
             Delete_Schedule_Close()
 
         def Delete_Schedule_Close() -> None:
@@ -1882,16 +1837,6 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
             Start_Label_Var.configure(text=Selected_Start)
             End_Label_Var.configure(text=Selected_End)
 
-        def drag_win():
-            x = Delete_Scheduled_Window.winfo_pointerx() - Delete_Scheduled_Window._offsetx
-            y = Delete_Scheduled_Window.winfo_pointery() - Delete_Scheduled_Window._offsety
-            Delete_Scheduled_Window.geometry(f"+{x}+{y}")
-
-        def click_win():
-            Delete_Scheduled_Window._offsetx = Delete_Scheduled_Window.winfo_pointerx() - Delete_Scheduled_Window.winfo_rootx()
-            Delete_Scheduled_Window._offsety = Delete_Scheduled_Window.winfo_pointery() - Delete_Scheduled_Window.winfo_rooty()
-
-
         # calculate number of lines in table
         Empty_Scheduled_Events = Frame_Empty_Schedules_Table_Var.values
         Empty_Scheduled_Events = [i for i in Empty_Scheduled_Events if i != Header_List]
@@ -1900,20 +1845,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_Scheduled_Window = CTkToplevel()
-        Delete_Scheduled_Window.configure(fg_color="#000001")
-        Delete_Scheduled_Window.title("Color Picker")
-        Delete_Scheduled_Window.geometry(f"510x400")
-        Delete_Scheduled_Window.bind(sequence="<Escape>", func=lambda event: Delete_Scheduled_Window.destroy())
-        Delete_Scheduled_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        Delete_Scheduled_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        Delete_Scheduled_Window.overrideredirect(boolean=True)
-        Delete_Scheduled_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Delete_Scheduled_Window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        Delete_Scheduled_Window.config(background="#000001")
-        Delete_Scheduled_Window.attributes("-transparentcolor", "#000001")
+        Delete_Scheduled_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one scheduled line", width=510, height=400)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Scheduled_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -1960,7 +1892,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
         Table_len = len(Frame_Empty_Schedules_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Empty_Schedules_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information={})
+        Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -2196,7 +2128,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
                 Auto_Fill_Events_row_row_dict = dict(zip(Header_List, Auto_Fill_Events_row))
                 AutoFill_dict[Counter] = Auto_Fill_Events_row_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information=AutoFill_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information=AutoFill_dict)
         else:
             pass
         
@@ -2216,7 +2148,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
                 AutoFill_Events_row_dict = dict(zip(Header_List, AutoFill_Events_row))
                 AutoFill_dict[Counter] = AutoFill_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information=AutoFill_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information=AutoFill_dict)
             Delete_AutoFill_Close()
 
         def Delete_AutoFill_Close() -> None:
@@ -2234,16 +2166,6 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
             Description_Label_Var.configure(text=Selected_Description)
             Location_Label_Var.configure(text=Selected_Location)
 
-        def drag_win():
-            x = Delete_AutoFill_Window.winfo_pointerx() - Delete_AutoFill_Window._offsetx
-            y = Delete_AutoFill_Window.winfo_pointery() - Delete_AutoFill_Window._offsety
-            Delete_AutoFill_Window.geometry(f"+{x}+{y}")
-
-        def click_win():
-            Delete_AutoFill_Window._offsetx = Delete_AutoFill_Window.winfo_pointerx() - Delete_AutoFill_Window.winfo_rootx()
-            Delete_AutoFill_Window._offsety = Delete_AutoFill_Window.winfo_pointery() - Delete_AutoFill_Window.winfo_rooty()
-
-
         # calculate number of lines in table
         AutoFill_Events = Frame_AutoFiller_Table_Var.values
         AutoFill_Events = [i for i in AutoFill_Events if i != Header_List]
@@ -2252,20 +2174,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_AutoFill_Window = CTkToplevel()
-        Delete_AutoFill_Window.configure(fg_color="#000001")
-        Delete_AutoFill_Window.title("Color Picker")
-        Delete_AutoFill_Window.geometry(f"510x260")
-        Delete_AutoFill_Window.bind(sequence="<Escape>", func=lambda event: Delete_AutoFill_Window.destroy())
-        Delete_AutoFill_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        Delete_AutoFill_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        Delete_AutoFill_Window.overrideredirect(boolean=True)
-        Delete_AutoFill_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Delete_AutoFill_Window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        Delete_AutoFill_Window.config(background="#000001")
-        Delete_AutoFill_Window.attributes("-transparentcolor", "#000001")
+        Delete_AutoFill_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=510, height=260)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_AutoFill_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -2306,7 +2215,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         Table_len = len(Frame_AutoFiller_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_AutoFiller_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information={})
+        Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -2456,7 +2365,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
                 Activity_Corrections_Events_row_dict = dict(zip(Header_List, Activity_Corrections_Events_row))
                 Activity_Correction_dict[Counter] = Activity_Corrections_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information=Activity_Correction_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information=Activity_Correction_dict)
         else:
             pass
 
@@ -2476,7 +2385,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
                 Activity_Corrections_Events_row_dict = dict(zip(Header_List, Activity_Corrections_Events_row))
                 Activity_Correction_dict[Counter] = Activity_Corrections_Events_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information=Activity_Correction_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information=Activity_Correction_dict)
             Delete_Activity_Correct_Close()
 
         def Delete_Activity_Correct_Close() -> None:
@@ -2492,15 +2401,6 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
             Wrong_Activity_Label_Var.configure(text=Selected_Wrong_Activity)
             Correct_Activity_Label_Var.configure(text=Selected_Correct_Activity)
 
-        def drag_win():
-            x = Delete_Activity_Correct_Window.winfo_pointerx() - Delete_Activity_Correct_Window._offsetx
-            y = Delete_Activity_Correct_Window.winfo_pointery() - Delete_Activity_Correct_Window._offsety
-            Delete_Activity_Correct_Window.geometry(f"+{x}+{y}")
-
-        def click_win():
-            Delete_Activity_Correct_Window._offsetx = Delete_Activity_Correct_Window.winfo_pointerx() - Delete_Activity_Correct_Window.winfo_rootx()
-            Delete_Activity_Correct_Window._offsety = Delete_Activity_Correct_Window.winfo_pointery() - Delete_Activity_Correct_Window.winfo_rooty()
-
         # calculate number of lines in table
         Activity_Corrections_Events = Frame_Activity_Correct_Table_Var.values
         Activity_Corrections_Events = [i for i in Activity_Corrections_Events if i != Header_List]
@@ -2509,20 +2409,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_Activity_Correct_Window = CTkToplevel()
-        Delete_Activity_Correct_Window.configure(fg_color="#000001")
-        Delete_Activity_Correct_Window.title("Color Picker")
-        Delete_Activity_Correct_Window.geometry(f"510x250")
-        Delete_Activity_Correct_Window.bind(sequence="<Escape>", func=lambda event: Delete_Activity_Correct_Window.destroy())
-        Delete_Activity_Correct_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        Delete_Activity_Correct_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        Delete_Activity_Correct_Window.overrideredirect(boolean=True)
-        Delete_Activity_Correct_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Delete_Activity_Correct_Window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        Delete_Activity_Correct_Window.config(background="#000001")
-        Delete_Activity_Correct_Window.attributes("-transparentcolor", "#000001")
+        Delete_Activity_Correct_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one Activity", width=510, height=250)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Activity_Correct_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -2562,7 +2449,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
         Table_len = len(Frame_Activity_Correct_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Activity_Correct_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information={})
+        Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information={})
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -2700,7 +2587,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
                 Managed_Team_Users_row_dict = dict(zip(Header_List, Managed_Team_Users_row))
                 Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
             Defaults_Lists.Create_Folder(file_path=f"Operational\\My_Team_Members\\{Add_User_ID}")
         else:
             pass
@@ -2722,8 +2609,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
                 Managed_Team_Users_row_dict = dict(zip(Header_List, Managed_Team_Users_row))
                 Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
                 Counter += 1
-            Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
-            #Defaults_Lists.Delete_All_Files(file_path=f"Operational\\My_Team_Members\\{Delete_Folder_Name}")
+            Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
             Defaults_Lists.Delete_Folder(file_path=f"Operational\\My_Team_Members\\{Delete_Folder_Name}")
             Delete_Managed_Member_Close()   
 
@@ -2740,15 +2626,6 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
             User_ID_Label_Var.configure(text=Selected_User_ID)
             User_Name_Label_Var.configure(text=Selected_User_Name)
 
-        def drag_win():
-            x = Delete_Managed_User_Window.winfo_pointerx() - Delete_Managed_User_Window._offsetx
-            y = Delete_Managed_User_Window.winfo_pointery() - Delete_Managed_User_Window._offsety
-            Delete_Managed_User_Window.geometry(f"+{x}+{y}")
-
-        def click_win():
-            Delete_Managed_User_Window._offsetx = Delete_Managed_User_Window.winfo_pointerx() - Delete_Managed_User_Window.winfo_rootx()
-            Delete_Managed_User_Window._offsety = Delete_Managed_User_Window.winfo_pointery() - Delete_Managed_User_Window.winfo_rooty()
-
         # calculate number of lines in table
         Managed_Team_Users = Frame_Managed_Team_Table_Var.values
         Managed_Team_Users = [i for i in Managed_Team_Users if i != Header_List]
@@ -2757,20 +2634,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_Managed_User_Window = CTkToplevel()
-        Delete_Managed_User_Window.configure(fg_color="#000001")
-        Delete_Managed_User_Window.title("Color Picker")
-        Delete_Managed_User_Window.geometry(f"510x250")
-        Delete_Managed_User_Window.bind(sequence="<Escape>", func=lambda event: Delete_Managed_User_Window.destroy())
-        Delete_Managed_User_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        Delete_Managed_User_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        Delete_Managed_User_Window.overrideredirect(boolean=True)
-        Delete_Managed_User_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
-        Delete_Managed_User_Window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        Delete_Managed_User_Window.config(background="#000001")
-        Delete_Managed_User_Window.attributes("-transparentcolor", "#000001")
+        Delete_Managed_User_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one User", width=510, height=250)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Managed_User_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -2809,7 +2673,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         Table_len = len(Frame_Managed_Team_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Managed_Team_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information={})
+        Field_Update_Value(Settings=Settings, Configuration=Configuration, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information={})
         Defaults_Lists.Delete_Folders(file_path=f"Operational\\My_Team_Members")
 
     # ------------------------- Main Functions -------------------------#
