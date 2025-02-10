@@ -151,7 +151,7 @@ def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
 def Get_Project(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Projects_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
+    Projects_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}.xlsx", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
     Projects_df.drop(columns=[1], inplace=True)
     Projects_df.rename(columns={0: "Project", 2: "Project_Type"}, inplace=True)
 
@@ -159,12 +159,12 @@ def Get_Project(Settings: dict) -> None:
     Projects_dict = Projects_df.to_dict()
 
     # Save to Settings.json
-    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Project", "Project_List"], Information=Projects_dict)
+    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Project_List"], Information=Projects_dict)
     
 def Get_Activity(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Activities_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
+    Activities_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}.xlsx", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
     Column_List = Activities_df[1].to_list()
     Empty_line_index = Column_List.index("Activity")
     Activities_df = Activities_df.iloc[Empty_line_index + 1:]
@@ -194,5 +194,5 @@ def Get_Activity(Settings: dict) -> None:
         Counter += 1
 
     # Save to Settings.json
-    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_List"], Information=Activity_list)
-    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_by_Type_dict"], Information=Activity_by_Type_dict)
+    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_List"], Information=Activity_list)
+    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_by_Type_dict"], Information=Activity_by_Type_dict)

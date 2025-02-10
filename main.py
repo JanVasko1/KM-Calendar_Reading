@@ -358,6 +358,11 @@ def Page_Download(Frame: CTk|CTkFrame):
         # -------------- Download  -------------- #
         if Can_Download == True:
             Process.Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+            
+            # Save into Settings --> to be displayed on Dashboard later 
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Period"], Information="Current")
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
@@ -404,6 +409,11 @@ def Page_Download(Frame: CTk|CTkFrame):
         # -------------- Download  -------------- #
         if Can_Download == True:
             Process.Pre_Periods_Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
+
+            # Save into Settings --> to be displayed on Dashboard later 
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Period"], Information="Past")
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             pass
 
@@ -600,8 +610,10 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
         Creation_Date = Settings["General"]["DashBoard"]["Creation_Date"]
+        Data_Period = Settings["General"]["DashBoard"]["Data_Period"]
+        Data_Source = Settings["General"]["DashBoard"]["Data_Source"]
         DashBoard_text_Additional = Elements.Get_Label(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
-        DashBoard_text_Additional.configure(text=f"Generated on {Creation_Date}")
+        DashBoard_text_Additional.configure(text=f"""Generated on: {Creation_Date} -- Period: {Data_Period} -- Dates Source: {Data_Source}.""")
 
         Frame_Dashboard_Total_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Totals_Line")
         Frame_Dashboard_Total_Line.pack_propagate(flag=False)
@@ -656,7 +668,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         Frame_Dashboard_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
         Frame_DashBoard_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
-        DashBoard_text_Additional.pack(side="top", fill="none", expand=True, padx=(1500, 10), pady=(0, 0))
+        DashBoard_text_Additional.pack(side="top", fill="none", expand=True, padx=(1250, 20), pady=(0, 0))
 
         Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
@@ -936,7 +948,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
             CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
-            Sharepoint.Get_Project_and_Activity(SP_Password=SP_Password)
+            Sharepoint.Get_Project_and_Activity(Settings=Settings, SP_Password=SP_Password)
             CTkMessagebox(title="warning", message="Project and Activity downloaded from Sharepoint. Restart app!!", icon="check", option_1="Thanks", fade_in_duration=1)
 
     def Upload_Project_Activities():
@@ -948,8 +960,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
             import Libs.Download.Exchange as Exchange
             Exchange.Push_Project(Settings=Settings, Exchange_Password=Exchange_Password)
             Exchange.Push_Activity(Settings=Settings, Exchange_Password=Exchange_Password)
-            CTkMessagebox(title="warning", message="Project and Activity uploaded to Exchange.", icon="check", option_1="Thanks", fade_in_duration=1)
-
+            CTkMessagebox(title="warning", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
 
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
@@ -1137,9 +1148,13 @@ if __name__ == "__main__":
     Settings = Defaults_Lists.Load_Settings()
     Configuration = Defaults_Lists.Load_Configuration() 
 
+    Date_format = Settings["General"]["Formats"]["Date"]
     Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
     Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
     SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]
+
+    Today = datetime.now()
+    Today_str = Today.strftime(Date_format)
 
     # Create folders if do not exists
     try:

@@ -50,12 +50,6 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
         "Sunday": KM_Sunday_WH,
         }
 
-
-    # Save Generation date Statistics
-    Today = datetime.now()
-    Today_str = Today.strftime(Date_Format)
-    Defaults_Lists.Information_Update_Settings(File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
-
     # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 
     def DataFrame_WeekDay(row) -> str:

@@ -23,7 +23,9 @@
             }
         },
         "DashBoard": {
-            "Creation_Date": "2025-02-08"
+            "Creation_Date": "2025-02-10",
+            "Data_Period": "Current",
+            "Data_Source": "Sharepoint"
         },
         "Downloader": {
             "Outlook": {
@@ -247,7 +249,7 @@
                 }
             },
             "Colors": {
-                "Used": "Gray",
+                "Used": "Blue",
                 "Color_List": [
                     "Red",
                     "Orange",

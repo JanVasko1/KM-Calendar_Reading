@@ -38,14 +38,14 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
 def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> None:
     Progress_Bar.configure(determinate_speed = round(number=50 / 17, ndigits=3))
     
-    # Download Events 
+    # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
     Events, Events_Registered_df, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Download_canceled = Downloader.Download_Events(Settings=Settings, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     
     if Download_canceled == False:
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-        # Process Events
+        # ----------------------- Process Events ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Overnight Events") 
         Events = Divide_Events.OverMidnight_Events(Settings=Settings, Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -110,7 +110,8 @@ def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressB
         Events = Join_Events.Join_Events(Settings=Settings, Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-        # Summary Dataframe
+        # ----------------------- Summary Dataframe ----------------------- #
+        # TODO --> must enter unified to Generate_Summary
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
         Events = Summary.Generate_Summary(Settings=Settings, Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
 
@@ -118,8 +119,6 @@ def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressB
         CTkMessagebox(title="Success", message="Successfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
     else:
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Canceled", value=0) 
-
-
 
 def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str, Download_Periods: list) -> None:
     Events = pandas.DataFrame()
@@ -133,7 +132,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
     Download_Periods_Count = len(Download_Periods)
     Progress_Bar.configure(determinate_speed = round(number=50 / (Download_Periods_Count), ndigits=3))      # Counts only with downloads as Summary set it to 1
 
-    # Download Events 
+    # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
     s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
     for period in Download_Periods:
@@ -165,9 +164,9 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
         else:
             CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
 
-    print(Events_Registered_df)
     Events_Registered_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_Registered_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
 
-    # Summary Dataframe
+    # ----------------------- Summary Dataframe ----------------------- #
+    # TODO --> must enter unified to Generate_Summary
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
     Events = Summary.Generate_Summary(Settings=Settings, Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None)

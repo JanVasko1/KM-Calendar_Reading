@@ -154,25 +154,49 @@ def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Dat
     Events_Process_df = Events_Process_df.T
     return Events_Process_df
 
-def Delete_Projects(access_token: str, username: str) -> None:
+def Get_All_Projects(access_token: str, username: str) -> dict:
+    headers_get = {
+        "Authorization": f"Bearer {access_token}"}
+    
+    # Get all categories
+    Cat_list_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
+    All_Cat_response = requests.get(url=Cat_list_url, headers=headers_get)
+
+    if All_Cat_response.status_code == 200 or All_Cat_response.status_code == 201:
+        Exchange_Categories = All_Cat_response.json().get("value", {})
+        Exchange_Categories_dict = {index: value for index, value in enumerate(Exchange_Categories)}
+        return Exchange_Categories_dict, True
+    else:
+        return {}, False
+
+def Create_Project(access_token: str, username: str, Preset_color: str, project: str) -> bool:
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"}
+    
+    body = {
+        "color": f"{Preset_color}",
+        "displayName": f"{project}"}
+    
+    category_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
+    category_response = requests.post(url=category_url, headers=headers, json=body)
+
+    if category_response.status_code == 200 or category_response.status_code == 201:
+        return True
+    else:
+        return False
+
+def Delete_Projects(access_token: str, username: str, category_id: str) -> bool:
     headers_del = {
         "Authorization": f"Bearer {access_token}"}
 
-    # Get all categories
-    Cat_list_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
-    All_Cat_response = requests.get(url=Cat_list_url, headers=headers_del)
-    categories = All_Cat_response.json().get("value", [])
+    delete_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories/{category_id}"
+    delete_response = requests.delete(url=delete_url, headers=headers_del)
 
-    # Delete each category
-    # BUG --> code do not delete all categories headers_del
-    for category in categories:
-        category_id = category["id"]
-        delete_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories/{category_id}"
-        delete_response = requests.delete(url=delete_url, headers=headers_del)
-        if delete_response.status_code == 204:
-            print(f"""Deleted category: {category["displayName"]}""")
-        else:
-            print(f"""Failed to delete category: {category["displayName"]}""")
+    if delete_response.status_code == 200 or delete_response.status_code == 201:
+        return True
+    else:
+        return False
 
 def Push_Project(Settings: dict, Exchange_Password: str) -> None:
     username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
@@ -186,28 +210,53 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
     Color_Used = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
     Preset_color = Settings["Event_Handler"]["Project"]["Colors"]["Color_preset_map"][f"{Color_Used}"]
 
-    # delete all before upload
-    Delete_Projects(access_token=access_token, username=username)
+    # Exchange Categories --> Projects
+    Exchange_Categories_dict, Can_Continue = Get_All_Projects(access_token=access_token, username=username)
+    Exchange_Categories_Names_list = Defaults_Lists.List_from_Dict(Exchange_Categories_dict, Key_Argument="displayName")
 
-    # Upload new projects to Category
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json"}
+    if Can_Continue == True:
+        # Check missing in Exchange
+        Exchange_Missing_list = Defaults_Lists.List_missing_values(Source_list=Exchange_Categories_Names_list, Compare_list=Project_List)
+        for project in Exchange_Missing_list:
+            Created_Flag = Create_Project(access_token=access_token, username=username, Preset_color=Preset_color, project=project)
+            if Created_Flag == True:
+                pass
+            else:
+                CTkMessagebox(title="Error", message=f"""It was not possible to crate "{project}" as Category on Exchange, please create it manually.""", icon="cancel", fade_in_duration=1)
 
-    for project in Project_List:
-        params = {
-            "color": f"{Preset_color}",
-            "displayName": f"{project}"}
-        
-        # BUG --> code do not create new category
-        category_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
-        category_response = requests.post(url=category_url, headers=headers, params=params)
-
-        # Response handler
-        if category_response.status_code == 200 or category_response.status_code == 201:
-            print(f"Success: {project}")
+        # Check for surplus in Exchange
+        Exchange_Surplus_list = Defaults_Lists.List_missing_values(Source_list=Project_List, Compare_list=Exchange_Categories_Names_list)
+        if len(Exchange_Surplus_list) > 0:
+            for project in Exchange_Surplus_list:
+                # Find Category ID
+                for key, value in Exchange_Categories_dict.items():
+                    if value["displayName"] == project:
+                        category_id = value["id"]
+                        # Date check
+                        Question_Message = CTkMessagebox(title="Confirmation", message=f"Do you agree that this step will delete project from all of your Events in Exchange where it was used?\n Projects list: {Exchange_Surplus_list}", icon="question", fade_in_duration=1, option_1="Delete", option_2="Keep")
+                        response = Question_Message.get()
+                        if response == "Delete":
+                            Deleted_Flag = Delete_Projects(access_token=access_token, username=username, category_id=category_id)
+                            if Deleted_Flag == True:
+                                pass
+                            else:
+                                CTkMessagebox(title="Error", message=f"""It was not possible to delete "{project}" from Category on Exchange, please delete it manually.""", icon="cancel", fade_in_duration=1)
+                        else:
+                            CTkMessagebox(title="Error", message="Delete Categories on Exchange stopped by user.", icon="cancel", fade_in_duration=1)   
+                    else:
+                        pass
+        else:
+            pass         
+    else:
+        CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
 
 
 def Push_Activity(Settings: dict, Exchange_Password: str) -> None:
+    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
     access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
+
+    # Get list of Projects
+    Activity_List = Settings["Event_Handler"]["Activity"]["Activity_List"]
+
+    # TODO - Finish this Function
     pass

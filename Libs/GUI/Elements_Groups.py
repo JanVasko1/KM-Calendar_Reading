@@ -274,7 +274,7 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -
     return Pop_Up_Window
 
 def Get_My_Dialog_Window(Settings: dict, Configuration:dict, title: str, tooltip: str, width: int, height: int, text: str, Password: bool) -> CTkFrame:
-    # TODO --> must be finished to be used instead of
+    # TODO --> must be finished to be used instead of Elements.Get_DialogWindow
     def Confirm_Choice(Field_Normal: CTkEntry):
         return Field_Normal.get()
 
