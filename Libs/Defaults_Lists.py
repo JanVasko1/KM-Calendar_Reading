@@ -121,27 +121,27 @@ def Delete_Folder(file_path: str) -> None:
     try: 
         os.rmdir(path=f"{file_path}")
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to delete folder int {file_path}", icon="cancel", fade_in_duration=1)
+        print(Error)
 
 def Delete_Folders(file_path: str) -> None:
     try:
         shutil.rmtree(file_path)
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to delete folder int {file_path}", icon="cancel", fade_in_duration=1)
+        print(Error)
 
 def Delete_File(file_path: str) -> None:
     # Delete File
     try: 
         os.remove(path=f"{file_path}")
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to delete file in {file_path}", icon="cancel", fade_in_duration=1)
+        print(Error)
 
-def Delete_All_Files(file_path: str) -> None:
+def Delete_All_Files(file_path: str, include_hidden: bool) -> None:
     # Delete File
     try:
-        files = glob.glob(file_path)
+        files = glob.glob(pathname=os.path.join(file_path, "*"), include_hidden=include_hidden)
         for file in files:
             os.remove(file)
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to delete files in {file_path}", icon="cancel", fade_in_duration=1)
+        print(Error)
 
