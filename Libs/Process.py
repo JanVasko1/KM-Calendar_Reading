@@ -1,4 +1,6 @@
 # Import Libraries
+from pandas import DataFrame
+
 import Libs.Download.Downloader as Downloader
 import Libs.Sharepoint.Authentication as Authentication
 import Libs.Sharepoint.Sharepoint as Sharepoint
@@ -33,6 +35,33 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
     window.update_idletasks()
     Progress_text.configure(text=f"{Label}")
     window.update_idletasks()
+
+def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_df: DataFrame) -> DataFrame:
+    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+    Time_Format = Settings["General"]["Formats"]["Time"]
+    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+
+    # Delete File before generation
+    Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events.csv")
+
+    # Calculation
+    Events_df["Personnel number"] = Personnel_number
+    Events_df.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Duration", "Busy_Status"], axis=1, inplace=True)
+    Events_df.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
+    Events_df = Events_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
+    Events_df["Start Time"] = pandas.to_datetime(arg=Events_df["Start Time"], format=Sharepoint_Time_Format)
+    Events_df["End Time"] = pandas.to_datetime(arg=Events_df["End Time"], format=Sharepoint_Time_Format)
+    Events_df["Start Time"] = Events_df["Start Time"].dt.strftime(Time_Format)
+    Events_df["End Time"] = Events_df["End Time"].dt.strftime(Time_Format)
+    
+    # Cumulate with Event Registered
+    Cumulated_Events = pandas.concat(objs=[Events_df, Events_Registered_df], axis=0)
+
+    Cumulated_Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Cumulated_Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+    Cumulated_Events.to_csv(path_or_buf=f"Operational\\Downloads\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+
+    return Cumulated_Events
+
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> None:
@@ -110,10 +139,11 @@ def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressB
         Events = Join_Events.Join_Events(Settings=Settings, Events=Events)
         Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
+        Cumulated_Events = Events_Summary_Save(Settings=Settings, Events_df=Events, Events_Registered_df=Events_Registered_df)
+
         # ----------------------- Summary Dataframe ----------------------- #
-        # TODO --> must enter unified to Generate_Summary
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-        Events = Summary.Generate_Summary(Settings=Settings, Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
+        #Summary.Generate_Summary(Settings=Settings, Events=Cumulated_Events,  Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
 
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Done", value=1) 
         CTkMessagebox(title="Success", message="Successfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
@@ -121,12 +151,18 @@ def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressB
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Canceled", value=0) 
 
 def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str, Download_Periods: list) -> None:
-    Events = pandas.DataFrame()
-    Events_Registered_df = pandas.DataFrame()
-
     Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
     SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_History = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["History_Links"][f"{SP_Team}"]
+    Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+    Date_Format = Settings["General"]["Formats"]["Date"]
+    Time_Format = Settings["General"]["Formats"]["Time"]
+
+    Events_History_df = pandas.DataFrame()
+
+    # Delete previous files 
+    Defaults_Lists.Delete_All_Files(file_path=f"Operational\\SP_History\\", include_hidden=True)
 
     # Progress bar
     Download_Periods_Count = len(Download_Periods)
@@ -153,20 +189,34 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
             Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
             data_boundary = Table_list[0][1]
             data_boundary = data_boundary.replace("O", "J")
-            Events_Registered_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
+            Events_History_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
 
-            mask1 = Events_Registered_df["Personnel number"] == Personnel_number
-            mask2 = Events_Registered_df["Activity description"] != "User included in TimeSpent"
+            mask1 = Events_History_df["Personnel number"] == Personnel_number
+            mask2 = Events_History_df["Activity description"] != "User included in TimeSpent"
 
-            Events_Registered_df = Events_Registered_df[mask1 & mask2]
+            Events_History_df = Events_History_df[mask1 & mask2]
 
-            Events_Registered_df = pandas.concat(objs=[Events_Registered_df, Events_Registered_df], axis=0)
+            Events_History_df = pandas.concat(objs=[Events_History_df, Events_History_df], axis=0)
         else:
             CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
+    
+    # Data correct
+    try:
+        Events_History_df["Date"] = pandas.to_datetime(arg=Events_History_df["Date"], format=Sharepoint_Date_Format)
+        Events_History_df["Date"] = Events_History_df["Date"].dt.strftime(Date_Format)
 
-    Events_Registered_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_Registered_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+        Events_History_df["Start Time"] = pandas.to_datetime(arg=Events_History_df["Start Time"], format=Sharepoint_Time_Format)
+        Events_History_df["End Time"] = pandas.to_datetime(arg=Events_History_df["End Time"], format=Sharepoint_Time_Format)
+        Events_History_df["Start Time"] = Events_History_df["Start Time"].dt.strftime(Time_Format)
+        Events_History_df["End Time"] = Events_History_df["End Time"].dt.strftime(Time_Format)
+    except:
+        pass
+
+    # Save
+    Events_History_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_History_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+    Events_History_df.to_csv(path_or_buf=f"Operational\\SP_History\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ----------------------- Summary Dataframe ----------------------- #
-    # TODO --> must enter unified to Generate_Summary
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-    Events = Summary.Generate_Summary(Settings=Settings, Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None)
+    Summary.Generate_Summary(Settings=Settings, Events=Events_History_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None)
+    CTkMessagebox(title="Success", message="Successfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)

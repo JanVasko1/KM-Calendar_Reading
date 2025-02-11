@@ -184,17 +184,23 @@ def Per_Period_Selection(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Previous Periods range", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define Which periods should be downloaded from TimeSheet History. Included.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
+    # Field - Month From
+    Past_Month_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Month", Field_Type="Input_OptionMenu") 
+    Past_Month_From_Frame_Var = Past_Month_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Past_Month_From_Frame_Var.configure(variable=Month_From_Variable)
+    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Month_From_Frame_Var, values=Month_list, command=None)
+
     # Field - Year From
     Past_Year_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Year", Field_Type="Input_OptionMenu") 
     Past_Year_From_Frame_Var = Past_Year_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
     Past_Year_From_Frame_Var.configure(variable=Year_From_Variable)
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Year_From_Frame_Var, values=Year_list, command=None)
 
-    # Field - Month From
-    Past_Month_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Month", Field_Type="Input_OptionMenu") 
-    Past_Month_From_Frame_Var = Past_Month_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Past_Month_From_Frame_Var.configure(variable=Month_From_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Month_From_Frame_Var, values=Month_list, command=None)
+    # Field - Month To
+    Past_Month_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Month", Field_Type="Input_OptionMenu") 
+    Past_Month_To_Frame_Var = Past_Month_To_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Past_Month_To_Frame_Var.configure(variable=Month_To_Variable)
+    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Month_To_Frame_Var, values=Month_list, command=None)
 
     # Field - Year To
     Past_Year_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Year", Field_Type="Input_OptionMenu") 
@@ -202,11 +208,6 @@ def Per_Period_Selection(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame
     Past_Year_To_Frame_Var.configure(variable=Year_To_Variable)
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Year_To_Frame_Var, values=Year_list, command=None)
 
-    # Field - Month To
-    Past_Month_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Month", Field_Type="Input_OptionMenu") 
-    Past_Month_To_Frame_Var = Past_Month_To_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Past_Month_To_Frame_Var.configure(variable=Month_To_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Month_To_Frame_Var, values=Month_list, command=None)
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

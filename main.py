@@ -385,11 +385,11 @@ def Page_Download(Frame: CTk|CTkFrame):
         SP_Password = Previous_Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
 
         # History Period definition and checks
-        From_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
-        From_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        From_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        From_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
         From_DateTime =datetime(year=From_Year, month=From_Month, day=1)
-        To_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
-        To_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        To_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        To_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
         To_DateTime =datetime(year=To_Year, month=To_Month, day=1)
 
         # Check filled password
@@ -408,7 +408,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.Pre_Periods_Download_and_Process(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
+            Process.Pre_Periods_Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
 
             # Save into Settings --> to be displayed on Dashboard later 
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
@@ -595,7 +595,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
-        Totals_Summary_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Totals.csv", sep=";")
+        Totals_Summary_Df = pandas.read_csv(f"Operational\\nts\\Events_Totals.csv", sep=";")
         Project_DF = pandas.read_csv(f"Operational\\DashBoard\\Events_Project.csv", sep=";")
         Activity_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Activity.csv", sep=";")
         WeekDays_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_WeekDays.csv", sep=";")
@@ -807,7 +807,7 @@ def Page_Data(Frame: CTk|CTkFrame):
 
     def Data_Excel():
         import subprocess
-        subprocess.run('start excel "Operational\\DashBoard\\Events.csv"', shell=True, capture_output=False, text=False)
+        subprocess.run('start excel "Operational\\Downloads\\Events.csv"', shell=True, capture_output=False, text=False)
 
     def Data_Upload(Events: DataFrame):
         SP_Password = Dialog_Window_Request(title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
@@ -825,7 +825,7 @@ def Page_Data(Frame: CTk|CTkFrame):
     Frame_Data_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Data_Work_Detail_Area.grid_propagate(flag=False)
 
-    Events = pandas.read_csv(f"Operational\\DashBoard\\Events.csv", sep=";")
+    Events = pandas.read_csv(f"Operational\\Downloads\\Events.csv", sep=";")
 
     # ------------------------- Buttons Area -------------------------#
     # Download Button
@@ -1160,8 +1160,9 @@ if __name__ == "__main__":
     try:
         os.mkdir(f"Operational\\")
         os.mkdir(f"Operational\\DashBoard\\")
-        os.mkdir(f"Operational\\SP_History\\")
+        os.mkdir(f"Operational\\Downloads\\")
         os.mkdir(f"Operational\\My_Team_Members\\")
+        os.mkdir(f"Operational\\SP_History\\")
     except:
         pass
 

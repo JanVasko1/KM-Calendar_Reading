@@ -538,6 +538,7 @@ def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Format_Date = Settings["General"]["Formats"]["Date"]
     Format_Time = Settings["General"]["Formats"]["Time"]
     Format_Exchange_DateTime = Settings["General"]["Formats"]["Exchange_DateTime"]
+    Format_Sharepoint_Date = Settings["General"]["Formats"]["Sharepoint_Date"]
     Format_Sharepoint_Time = Settings["General"]["Formats"]["Sharepoint_Time"]
     Format_Sharepoint_DateTime = Settings["General"]["Formats"]["Sharepoint_DateTime"]
 
@@ -564,6 +565,12 @@ def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Exchange_DateTime_Frame_Var = Exchange_DateTime_Frame.children["!ctkframe3"].children["!ctkentry"]
     Exchange_DateTime_Frame_Var.configure(placeholder_text=Format_Exchange_DateTime, placeholder_text_color="#949A9F")
     Exchange_DateTime_Frame_Var.configure(state="disabled")
+
+    # Field - Sharepoint DAte Format
+    Sharepoint_Date_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Date", Field_Type="Input_Normal")
+    Sharepoint_Date_Frame_Var = Sharepoint_Date_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Sharepoint_Date_Frame_Var.configure(placeholder_text=Format_Sharepoint_Date, placeholder_text_color="#949A9F")
+    Sharepoint_Date_Frame_Var.configure(state="disabled")
 
     # Field - Sharepoint Time Format
     Sharepoint_Time_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Time", Field_Type="Input_Normal")

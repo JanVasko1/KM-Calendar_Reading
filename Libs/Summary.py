@@ -9,11 +9,10 @@ import Libs.GUI.Charts as Charts
 
 def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None) -> None:
     # ------------------------------------------------------------ Defaults ------------------------------------------------------------ #
-    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    
     Date_Format = Settings["General"]["Formats"]["Date"]
     Time_Format = Settings["General"]["Formats"]["Time"]
-    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-
+    
     My_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Day_Duration"]) / 60
     My_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Day_Duration"]) / 60
     My_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Day_Duration"]) / 60
@@ -134,7 +133,6 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
         return Utilization_Calendar_df  
 
     #Update Events Dataframe
-    Events["Personnel number"] = Personnel_number
     Events["Start_Time"] = Events["Start_Time"].astype(str)
     Events["End_Time"] = Events["End_Time"].astype(str)
     Events[["Start_Date_Del", "Start_Time"]] = Events["Start_Time"].str.split(" ", expand=True)
@@ -392,25 +390,8 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
     Totals_df.to_csv(path_or_buf=f"Operational\\DashBoard\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
-
-    # ---------------------------------------------------------------------------------- Events ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events.csv")
-
-    # Calculation
-    Events.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Start_Date_Del", "End_Date_Del"], axis=1, inplace=True)
-    Events.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
-    Events = Events[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location", "Duration", "Busy_Status"]]
-    Events["Start Time"] = pandas.to_datetime(arg=Events["Start Time"], format=Sharepoint_Time_Format)
-    Events["End Time"] = pandas.to_datetime(arg=Events["End Time"], format=Sharepoint_Time_Format)
-    Events["Start Time"] = Events["Start Time"].dt.strftime(Time_Format)
-    Events["End Time"] = Events["End Time"].dt.strftime(Time_Format)
-
-    Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-    Events.drop(labels=["Duration", "Busy_Status"], axis=1, inplace=True)
-    Events.to_csv(path_or_buf=f"Operational\\DashBoard\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
+    # TODO --> also must count only with Events_df and other parameter comes to the Dasboard
     # Delete File before generation
     Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Project_Light.html")
     Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Project_Dark.html")

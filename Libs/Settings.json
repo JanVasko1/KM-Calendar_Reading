@@ -23,7 +23,7 @@
             }
         },
         "DashBoard": {
-            "Creation_Date": "2025-02-10",
+            "Creation_Date": "2025-02-11",
             "Data_Period": "Current",
             "Data_Source": "Sharepoint"
         },
@@ -98,6 +98,7 @@
             "Time": "%H:%M",
             "Exchange_DateTime": "%Y-%m-%dT%H:%M:%S",
             "Sharepoint_Time": "%H:%M:%S",
+            "Sharepoint_Date": "%d.%m.%Y",
             "Sharepoint_DateTime": "%Y-%m-%d %H:%M:%S"
         },
         "Calendar": {
