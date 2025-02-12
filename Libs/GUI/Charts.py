@@ -57,7 +57,7 @@ def Chart_update_html(Chart: str, color: str, opacity: float):
 
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Gen_Chart_Project_Activity(Settings: dict, Category: str, theme: str, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_End: datetime|None) -> None:
+def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category: str, theme: str, Events: DataFrame, Report_Period_End: datetime|None, File_Sub_Path: str) -> None:
     warnings.filterwarnings("ignore")
     # ---------------------------- Defaults ----------------------------#
     Date_Format = Settings["General"]["Formats"]["Date"]
@@ -91,27 +91,13 @@ def Gen_Chart_Project_Activity(Settings: dict, Category: str, theme: str, Events
     Range_Tool_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Range_Tool_Properties"], columns=["Range_Tool_Visible", "Range_Tool_Height_Percentage", "Range_Tool_Active_Def_Area", "Range_Tool_Active_Def_Color", "Range_Tool_Active_Def_Color_Opacity"], index=[0])
     Range_Tool_Properties.Name = "Range_Tool_Properties"
 
-    # ------------------------- Local Functions ------------------------#
-    def Define_Event_Duration(row) -> int:
-        Time_Format = Settings["General"]["Formats"]["Time"]
-
-        Start_Time = row["Start Time"]
-        End_Time = row["End Time"]
-        Start_Time_dt = datetime.strptime(Start_Time, Time_Format)
-        End_Time_dt = datetime.strptime(End_Time, Time_Format)
-        Duration_dt = End_Time_dt - Start_Time_dt
-        Duration = Duration_dt.seconds // 60
-        return Duration
 
     # ------------------------- Main Functions -------------------------#
     # Process Data
-    Cumulated_Events = pandas.concat(objs=[Events_Registered_df, Events], axis=0)
-    Cumulated_Events["Duration"] = Cumulated_Events.apply(Define_Event_Duration, axis = 1)
-    Cumulated_Events["Duration_H"] = Cumulated_Events["Duration"].map(lambda x: round(x/60, 2))
-    Cumulated_Events.rename(columns={"Network Description": "Project"}, inplace=True)
-    Cumulated_Events_GR = Cumulated_Events.loc[:, ["Date", f"{Category}", "Duration_H"]]
+    Events.rename(columns={"Network Description": "Project"}, inplace=True)
+    Events_GR = Events.loc[:, ["Date", f"{Category}", "Duration_H"]]
 
-    Value_df = Cumulated_Events_GR.groupby(["Date", f"{Category}"]).sum()
+    Value_df = Events_GR.groupby(["Date", f"{Category}"]).sum()
     Value_df.sort_index(ascending=True, inplace=True)
     Value_df.reset_index(inplace=True)
     Colum_list = Value_df[f"{Category}"].tolist()
@@ -187,23 +173,29 @@ def Gen_Chart_Project_Activity(Settings: dict, Category: str, theme: str, Events
         Crate_Forecast = False
 
     # Registered Area
-    if Events_Registered_df.empty:
-        pass
+    if Calculation_source == "Current":
+        try:
+            Events_Registered_df = pandas.read_csv(f"Operational\\Downloads\\Events_Registered.csv", sep=";")
+            if Events_Registered_df.empty:
+                pass
+            else:
+                Event_Registered_Min_Data = min(Events_Registered_df["Date"])
+                Event_Registered_Min_Data_dt = datetime.strptime(Event_Registered_Min_Data, Date_Format)
+                Event_Registered_Min_Data_ts = (datetime.timestamp(Event_Registered_Min_Data_dt)) * 1000
+                Event_Registered_Max_Date = max(Events_Registered_df["Date"])
+                Event_Registered_Max_Data_dt = datetime.strptime(Event_Registered_Max_Date, Date_Format)
+                Event_Registered_Max_Data_ts = (datetime.timestamp(Event_Registered_Max_Data_dt))  * 1000
+                Registered_Block_width = Event_Registered_Max_Data_ts - Event_Registered_Min_Data_ts + 50000000
+
+                glyph = Block(x=Event_Registered_Min_Data_ts - 25000000, y=0, width=Registered_Block_width, height=Y_Max_Coordinates, fill_color="#25c887", fill_alpha=0.1, line_width=0)
+                Chart.add_glyph(glyph)
+
+                fixed_label = Label(x=Event_Registered_Min_Data_ts, y=Y_Max_Coordinates, text="Already registered", text_font_size="10pt", text_color="#25c887")
+                Chart.add_layout(fixed_label)
+        except:
+            pass
     else:
-        Event_Registered_Min_Data = min(Events_Registered_df["Date"])
-        Event_Registered_Min_Data_dt = datetime.strptime(Event_Registered_Min_Data, Date_Format)
-        Event_Registered_Min_Data_ts = (datetime.timestamp(Event_Registered_Min_Data_dt)) * 1000
-        Event_Registered_Max_Date = max(Events_Registered_df["Date"])
-        Event_Registered_Max_Data_dt = datetime.strptime(Event_Registered_Max_Date, Date_Format)
-        Event_Registered_Max_Data_ts = (datetime.timestamp(Event_Registered_Max_Data_dt))  * 1000
-        Registered_Block_width = Event_Registered_Max_Data_ts - Event_Registered_Min_Data_ts + 50000000
-
-        glyph = Block(x=Event_Registered_Min_Data_ts - 25000000, y=0, width=Registered_Block_width, height=Y_Max_Coordinates, fill_color="#25c887", fill_alpha=0.1, line_width=0)
-        Chart.add_glyph(glyph)
-
-        fixed_label = Label(x=Event_Registered_Min_Data_ts, y=Y_Max_Coordinates, text="Already registered", text_font_size="10pt", text_color="#25c887")
-        Chart.add_layout(fixed_label)
-
+        pass
     # ForeCast
     if (Report_Period_End == None) or (Crate_Forecast == False):
         pass
@@ -237,13 +229,13 @@ def Gen_Chart_Project_Activity(Settings: dict, Category: str, theme: str, Events
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
-        save(obj=Chart_Layout, filename=f"Operational\\DashBoard\\DashBoard_{Category}_{theme}.html", title=f"{Category}")
-        Chart_update_html(Chart=f"Operational\\DashBoard\\DashBoard_{Category}_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
+        save(obj=Chart_Layout, filename=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html", title=f"{Category}")
+        Chart_update_html(Chart=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError
     
-def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calendar_df: DataFrame):
+def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calendar_df: DataFrame, File_Sub_Path: str):
     Date_Format = Settings["General"]["Formats"]["Date"]
     
     warnings.filterwarnings("ignore")
@@ -377,8 +369,8 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
-        save(obj=Chart_Layout, filename=f"Operational\\DashBoard\\DashBoard_Utilization_{theme}.html", title=f"Report Rage utilization compare")
-        Chart_update_html(Chart=f"Operational\\DashBoard\\DashBoard_Utilization_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
+        save(obj=Chart_Layout, filename=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html", title=f"Report Rage utilization compare")
+        Chart_update_html(Chart=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
         raise ValueError

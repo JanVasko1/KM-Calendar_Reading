@@ -21,7 +21,7 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
     Time_Format = Settings["General"]["Formats"]["Time"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
     Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
-    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    User_ID = Settings["General"]["User"]["Code"]
     SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
@@ -43,36 +43,40 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
 
         # Download
-        Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
+        Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="Current", Name=None)
 
         if Downloaded == True:
             # Delete File before generation
             Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events_Registered.csv")
 
             # Report Period Information
-            Utilization_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="Utilization", Type="SP_Current", Name=None)
+            Utilization_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="Utilization", Type="Current", Name=None)
             Report_Period_Start = Utilization_Sheet["G2"].value
             Report_Period_End = Utilization_Sheet["H2"].value
             Report_Period_Active_Days = int(Utilization_Sheet["I2"].value)
 
             # My last Date imported 
-            TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
+            try:
+                TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="Current", Name=None)
+            except:
+                TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpend", Type="Current", Name=None)
             Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
             data_boundary = Table_list[0][1]
             data_boundary = data_boundary.replace("O", "J")
             Events_Registered_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
 
-            mask1 = Events_Registered_df["Personnel number"] == Personnel_number
-            mask2 = Events_Registered_df["Date"] != "=Utilization!$G$2"
-            Events_Registered_df = Events_Registered_df[mask1 & mask2]
+            mask1 = Events_Registered_df["Personnel number"] == User_ID
+            mask2 = Events_Registered_df["Activity description"] != "User included in TimeSpent"
+            mask3 = Events_Registered_df["Date"] != "=Utilization!$G$2"
+            Events_Registered_df = Events_Registered_df[mask1 & mask2 & mask3]
+
+            Events_Registered_df["Date"] = pandas.to_datetime(arg=Events_Registered_df["Date"], format=Sharepoint_DateTime_Forma)
+            Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
 
             Events_Registered_df["Start Time"] = pandas.to_datetime(arg=Events_Registered_df["Start Time"], format=Sharepoint_Time_Format)
             Events_Registered_df["End Time"] = pandas.to_datetime(arg=Events_Registered_df["End Time"], format=Sharepoint_Time_Format)
             Events_Registered_df["Start Time"] = Events_Registered_df["Start Time"].dt.strftime(Time_Format)
             Events_Registered_df["End Time"] = Events_Registered_df["End Time"].dt.strftime(Time_Format)
-
-            Events_Registered_df["Date"] = pandas.to_datetime(arg=Events_Registered_df["Date"], format=Sharepoint_DateTime_Forma)
-            Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
             
             if Events_Registered_df.empty:
                 # Sharepoint doesn't contain any my data

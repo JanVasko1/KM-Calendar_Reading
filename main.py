@@ -31,9 +31,9 @@ def Get_Current_Theme() -> str:
     return Current_Theme
 # ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
-    User_Name = Settings["General"]["Default"]["Name"]
-    User_ID = Settings["General"]["Default"]["Code"]
-    User_Email = Settings["General"]["Default"]["Email"]
+    User_Name = Settings["General"]["User"]["Name"]
+    User_ID = Settings["General"]["User"]["Code"]
+    User_Email = Settings["General"]["User"]["Email"]
 
     # ------------------------- Local Functions -------------------------#
     def Theme_Change():
@@ -77,7 +77,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
-    User_Type = Settings["General"]["Default"]["User_Type"]
+    User_Type = Settings["General"]["User"]["User_Type"]
 
     global Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady, Icon_Default_pady, Logo_Height, Logo_width, Side_Bar_Frame_Height, Icon_Button_Height, Logo_pady
     
@@ -241,7 +241,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Download Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Download(Frame: CTk|CTkFrame):
-    User_Type = Settings["General"]["Default"]["User_Type"]
+    User_Type = Settings["General"]["User"]["User_Type"]
 
     import Libs.GUI.Widgets.Download as Download
     # ------------------------- Local Functions -------------------------#
@@ -360,9 +360,9 @@ def Page_Download(Frame: CTk|CTkFrame):
             Process.Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
             
             # Save into Settings --> to be displayed on Dashboard later 
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Period"], Information="Current")
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
 
@@ -411,18 +411,34 @@ def Page_Download(Frame: CTk|CTkFrame):
             Process.Pre_Periods_Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
 
             # Save into Settings --> to be displayed on Dashboard later 
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Creation_Date"], Information=Today_str)
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Period"], Information="Past")
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "DashBoard", "Data_Period"], Information="Past")
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             pass
 
 
-    def My_Team_Download_Data() -> None:
-        print("My_Team_Download_Data")
-        # TODO --> Finish and prepare downloader, prepare also utilization in one chart for all team mebers --> to see 
-        
-        pass
+    def My_Team_Download_Data(My_Team_Sharepoint_Widget: CTkFrame) -> None:
+        Can_Download = True
+
+        # Sharepoint
+        SP_Password = My_Team_Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+
+        # Check filled password
+        if SP_Password == "":
+            Can_Download = False
+            CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
+        else:
+            pass
+
+        # -------------- Download  -------------- #
+        if Can_Download == True:
+            Process.My_Team_Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password)
+
+            # Save into Settings --> to be displayed on Dashboard later 
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)
+        else:
+            pass
 
 
     # ------------------------- Main Functions -------------------------#
@@ -523,7 +539,7 @@ def Page_Download(Frame: CTk|CTkFrame):
 
     Pre_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_Pre, Button_Size="Normal")
     Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Period_Def_Widget, Previous_Sharepoint_Widget=Previous_Sharepoint_Widget))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Pre_Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
     
     # ---------- Previous periods ---------- #
     if User_Type == "Manager":
@@ -537,8 +553,8 @@ def Page_Download(Frame: CTk|CTkFrame):
         Team_Download_Text.configure(text="Step 2 - Download and process")
 
         Team_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_Team, Button_Size="Normal")
-        Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data())
-        Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal")
+        Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data(My_Team_Sharepoint_Widget=My_Team_Sharepoint_Widget))
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Team_Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal")
     else:
         pass
 
@@ -595,7 +611,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
-        Totals_Summary_Df = pandas.read_csv(f"Operational\\nts\\Events_Totals.csv", sep=";")
+        Totals_Summary_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Totals.csv", sep=";")
         Project_DF = pandas.read_csv(f"Operational\\DashBoard\\Events_Project.csv", sep=";")
         Activity_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Activity.csv", sep=";")
         WeekDays_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_WeekDays.csv", sep=";")
@@ -609,9 +625,9 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
         My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
         Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
-        Creation_Date = Settings["General"]["DashBoard"]["Creation_Date"]
-        Data_Period = Settings["General"]["DashBoard"]["Data_Period"]
-        Data_Source = Settings["General"]["DashBoard"]["Data_Source"]
+        Creation_Date = Settings["General"]["DashBoard"]["DashBoard"]["Creation_Date"]
+        Data_Period = Settings["General"]["DashBoard"]["DashBoard"]["Data_Period"]
+        Data_Source = Settings["General"]["DashBoard"]["DashBoard"]["Data_Source"]
         DashBoard_text_Additional = Elements.Get_Label(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
         DashBoard_text_Additional.configure(text=f"""Generated on: {Creation_Date} -- Period: {Data_Period} -- Dates Source: {Data_Source}.""")
 
@@ -706,7 +722,7 @@ def Page_Dashboard(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Dashboard Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_User_Dashboard(Frame: CTk|CTkFrame):
-    Members_dict = Settings["General"]["Default"]["Managed_Team"]
+    Members_dict = Settings["General"]["User"]["Managed_Team"]
     Member_List = Defaults_Lists.List_from_Dict(Dictionary=Members_dict, Key_Argument="User Name")
 
     # ------------------------- Main Functions -------------------------#
@@ -937,7 +953,7 @@ def Page_Information(Frame: CTk|CTkFrame):
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Settings Page ------------------------------------------------------------------------------------------------------------------------------------ #
 def Page_Settings(Frame: CTk|CTkFrame):
-    User_Type = Settings["General"]["Default"]["User_Type"]
+    User_Type = Settings["General"]["User"]["User_Type"]
 
     import Libs.GUI.Widgets.Settings as Settings_Widgets
     # ------------------------- Local Functions -------------------------#
@@ -1035,7 +1051,6 @@ def Page_Settings(Frame: CTk|CTkFrame):
     # General Page
     Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
     Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
-    Outlook_Widget = Settings_Widgets.Settings_General_Outlook(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
     Formats_Widget = Settings_Widgets.Settings_General_Formats(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
 
     # Calendar Page
@@ -1087,8 +1102,7 @@ def Page_Settings(Frame: CTk|CTkFrame):
 
     Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Outlook_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
-    Formats_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Formats_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
 
     Calendar_Working_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
     Calendar_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
@@ -1161,8 +1175,8 @@ if __name__ == "__main__":
         os.mkdir(f"Operational\\")
         os.mkdir(f"Operational\\DashBoard\\")
         os.mkdir(f"Operational\\Downloads\\")
-        os.mkdir(f"Operational\\My_Team_Members\\")
-        os.mkdir(f"Operational\\SP_History\\")
+        os.mkdir(f"Operational\\My_Team\\")
+        os.mkdir(f"Operational\\History\\")
     except:
         pass
 

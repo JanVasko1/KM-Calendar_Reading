@@ -8,8 +8,8 @@ from CTkMessagebox import CTkMessagebox
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Download Page Widgets -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
-    SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
-    SP_Person_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    User_Email = Settings["General"]["User"]["Email"]
+    User_ID = Settings["General"]["User"]["Code"]
     SP_Date_From_Method = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method"]
     SP_Date_From_Method_list = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method_List"]
     SP_Date_To_Method = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method"]
@@ -43,13 +43,13 @@ def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame,
     # Field - User ID
     SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
     SP_User_ID_Text_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_User_ID_Text_Frame_Var.configure(placeholder_text=SP_Person_ID, placeholder_text_color="#949A9F")
+    SP_User_ID_Text_Frame_Var.configure(placeholder_text=User_ID, placeholder_text_color="#949A9F")
     SP_User_ID_Text_Frame_Var.configure(state="disabled")
 
     # Field - User Email
     SP_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     SP_Email_Text_Frame_Var = SP_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Email_Text_Frame_Var.configure(placeholder_text=SP_Auth_Email, placeholder_text_color="#949A9F")
+    SP_Email_Text_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
     SP_Email_Text_Frame_Var.configure(state="disabled")
 
     # Field - Date From Method
@@ -87,7 +87,7 @@ def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame,
 def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for download process. Format YYYY-MM-DD")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for download process.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -113,7 +113,7 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
 
 
 def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
-    Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    User_Email = Settings["General"]["User"]["Email"]
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -128,7 +128,7 @@ def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, D
     # Field - User ID
     Ex_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Ex_Email_Frame_Var = Ex_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Ex_Email_Frame_Var.configure(placeholder_text=Outlook_Email, placeholder_text_color="#949A9F")
+    Ex_Email_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
     Ex_Email_Frame_Var.configure(state="disabled")
 
     # Field - Password
@@ -144,7 +144,7 @@ def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, D
 
 
 def Download_Outlook(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
-    Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    User_Email = Settings["General"]["User"]["Email"]
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -159,7 +159,7 @@ def Download_Outlook(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Do
     # Field - User ID
     Out_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Out_Email_Frame_Var = Out_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Out_Email_Frame_Var.configure(placeholder_text=Outlook_Email, placeholder_text_color="#949A9F")
+    Out_Email_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
     Out_Email_Frame_Var.configure(state="disabled")
 
     # Build look of Widget
@@ -216,8 +216,8 @@ def Per_Period_Selection(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame
 
 
 def Pre_Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame) -> CTkFrame:
-    SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
-    SP_Person_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    User_Email = Settings["General"]["User"]["Email"]
+    User_ID = Settings["General"]["User"]["Code"]
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -227,13 +227,13 @@ def Pre_Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFr
     # Field - User ID
     Past_SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
     Past_SP_User_ID_Text_Frame_Var = Past_SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Past_SP_User_ID_Text_Frame_Var.configure(placeholder_text=SP_Person_ID, placeholder_text_color="#949A9F")
+    Past_SP_User_ID_Text_Frame_Var.configure(placeholder_text=User_ID, placeholder_text_color="#949A9F")
     Past_SP_User_ID_Text_Frame_Var.configure(state="disabled")
 
     # Field - User Email
     Past_SP_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
     Past_SP_Email_Text_Frame_Var = Past_SP_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Past_SP_Email_Text_Frame_Var.configure(placeholder_text=SP_Auth_Email, placeholder_text_color="#949A9F")
+    Past_SP_Email_Text_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
     Past_SP_Email_Text_Frame_Var.configure(state="disabled")
 
     # Field - Password

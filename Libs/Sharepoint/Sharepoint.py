@@ -23,10 +23,12 @@ def Download_Excel(Settings: dict, s_aut: sharepy, SP_Link: str, Type: str, Name
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
     # Download
-    if Type == "SP_Current":
-        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\{SP_File_Name}.xlsx")
-    elif Type == "SP_History":
-        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\SP_History\\{Name}.xlsx")
+    if Type == "Current":
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\Downloads\\{SP_File_Name}.xlsm")
+    elif Type == "History":
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\History\\{Name}.xlsm")
+    elif Type == "Team":
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\My_Team\\{Name}.xlsm")
     else:
         return False
 
@@ -38,10 +40,12 @@ def Download_Excel(Settings: dict, s_aut: sharepy, SP_Link: str, Type: str, Name
 def Get_WorkSheet(Settings: dict, Sheet_Name: str, Type: str, Name: str|None):
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    if Type == "SP_Current":
-        WorkBook = load_workbook(filename=f"Operational\\{SP_File_Name}.xlsx")
-    elif Type == "SP_History":
-        WorkBook = load_workbook(filename=f"Operational\\SP_History\\{Name}.xlsx")
+    if Type == "Current":
+        WorkBook = load_workbook(filename=f"Operational\\Downloads\\{SP_File_Name}.xlsm")
+    elif Type == "History":
+        WorkBook = load_workbook(filename=f"Operational\\History\\{Name}.xlsm")
+    elif Type == "Team":
+        WorkBook = load_workbook(filename=f"Operational\\My_Team\\{Name}.xlsm")
     Sheet = WorkBook[Sheet_Name]
     return Sheet
 
@@ -115,11 +119,11 @@ def Upload(Settings: dict, Events: DataFrame, SP_Password: str|None) -> None:
     s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
 
     # Download
-    Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
+    Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="Current", Name=None)
 
     if Downloaded == True:
         # Get WorkSheet
-        TimeSpent_ws = Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="SP_Current", Name=None)
+        TimeSpent_ws = Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="Current", Name=None)
 
         # Get Table List from Worksheet
         Table_list = Get_Tables_on_Worksheet(Sheet=TimeSpent_ws)
@@ -142,7 +146,7 @@ def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
     s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
 
     # Download
-    Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="SP_Current", Name=None)
+    Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="Current", Name=None)
     
     if Downloaded == True:
         Get_Project(Settings=Settings)
@@ -151,7 +155,7 @@ def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
 def Get_Project(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Projects_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}.xlsx", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
+    Projects_df = pandas.read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
     Projects_df.drop(columns=[1], inplace=True)
     Projects_df.rename(columns={0: "Project", 2: "Project_Type"}, inplace=True)
 
@@ -164,7 +168,7 @@ def Get_Project(Settings: dict) -> None:
 def Get_Activity(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Activities_df = pandas.read_excel(io=f"Operational\\{SP_File_Name}.xlsx", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
+    Activities_df = pandas.read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
     Column_List = Activities_df[1].to_list()
     Empty_line_index = Column_List.index("Activity")
     Activities_df = Activities_df.iloc[Empty_line_index + 1:]

@@ -319,11 +319,11 @@ def Settings_General_Color(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
 
 def Settings_User_Widget(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
     # ---------------------------- Defaults ----------------------------#
-    User_Name = Settings["General"]["Default"]["Name"]
-    User_ID = Settings["General"]["Default"]["Code"]
-    User_Email = Settings["General"]["Default"]["Email"]
-    User_Type = Settings["General"]["Default"]["User_Type"]
-    User_Type_list = list(Settings["General"]["Default"]["User_Type_list"])
+    User_Name = Settings["General"]["User"]["Name"]
+    User_ID = Settings["General"]["User"]["Code"]
+    User_Email = Settings["General"]["User"]["Email"]
+    User_Type = Settings["General"]["User"]["User_Type"]
+    User_Type_list = list(Settings["General"]["User"]["User_Type_list"])
     
     # ------------------------- Local Functions ------------------------#
     def Password_required(User_Type_Variable: StringVar, User_Type_Frame_Var: str) -> None:
@@ -335,13 +335,13 @@ def Settings_User_Widget(Settings: dict, Configuration: dict, Frame: CTk|CTkFram
         
         if User_Type_Frame_Var == "User":
             User_Type_Variable.value = "User"
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var)
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "User", "User_Type"], Information=User_Type_Frame_Var)
         elif User_Type_Frame_Var == "Manager":
             Password = Dialog_Window_Request(title="Admin", text="Write your password", Dialog_Type="Password")
 
             if Password == "JVA_is_best":
                 User_Type_Variable.value = "Manager"
-                Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "Default", "User_Type"], Information=User_Type_Frame_Var)
+                Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=User_Type_Variable, File_Name="Settings", JSON_path=["General", "User", "User_Type"], Information=User_Type_Frame_Var)
             else:
                 User_Type_Variable.value = "User"
                 CTkMessagebox(title="Error", message=f"Wrong administration password.", icon="cancel", fade_in_duration=1)
@@ -358,21 +358,21 @@ def Settings_User_Widget(Settings: dict, Configuration: dict, Frame: CTk|CTkFram
     User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Konica ID", Field_Type="Input_Normal")
     User_ID_Frame_Var = User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     User_ID_Frame_Var.configure(placeholder_text="My Konica ID.")
-    User_ID_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Code"], Information=User_ID_Frame_Var.get()))
+    User_ID_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Code"], Information=User_ID_Frame_Var.get()))
     Entry_field_Insert(Field=User_ID_Frame_Var, Value=User_ID)
 
     # Field - Name
     User_Name_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Name", Field_Type="Input_Normal") 
     User_Name_Frame_Var = User_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
     User_Name_Frame_Var.configure(placeholder_text="My Name.")
-    User_Name_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Name"], Information=User_Name_Frame_Var.get()))
+    User_Name_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Name"], Information=User_Name_Frame_Var.get()))
     Entry_field_Insert(Field=User_Name_Frame_Var, Value=User_Name)
 
     # Field - User Email
     User_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Email", Field_Type="Input_Normal")
     User_Email_Frame_Var = User_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
     User_Email_Frame_Var.configure(placeholder_text="My Konica ID.")
-    User_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Email"], Information=User_Email_Frame_Var.get()))
+    User_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Email"], Information=User_Email_Frame_Var.get()))
     Entry_field_Insert(Field=User_Email_Frame_Var, Value=User_Email)
 
     # Field - User Type
@@ -391,35 +391,17 @@ def Settings_User_Widget(Settings: dict, Configuration: dict, Frame: CTk|CTkFram
 # -------------------------------------------------------------------------- Tab GEneral --------------------------------------------------------------------------#
 def Settings_General_Sharepoint(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
     # ---------------------------- Defaults ----------------------------#
-    SP_Auth_Email = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Email"]
     SP_Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]   
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
-    SP_Person_Name = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Name"]
-    SP_Person_ID = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
     SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Teams_List = list(Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_List"])
     SP_Team_Variable = StringVar(master=Frame, value=SP_Team)
-
 
     # ------------------------- Local Functions ------------------------#
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Sharepoint", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Sharepoint related settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Name
-    SP_Name_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Name", Field_Type="Input_Normal") 
-    SP_Name_Frame_Var = SP_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Name_Frame_Var.configure(placeholder_text="Name used in Sharepoint TimeSheets")
-    SP_Name_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Person", "Name"], Information=SP_Name_Frame_Var.get()))
-    Entry_field_Insert(Field=SP_Name_Frame_Var, Value=SP_Person_Name)
-
-    # Field - User ID
-    SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
-    SP_User_ID_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_User_ID_Frame_Var.configure(placeholder_text="Your UserID (KM ID)")
-    SP_User_ID_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Person", "Code"], Information=SP_User_ID_Frame_Var.get()))
-    Entry_field_Insert(Field=SP_User_ID_Frame_Var, Value=SP_Person_ID)
 
     # Field - Team
     SP_Team_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Team", Field_Type="Input_OptionMenu") 
@@ -432,13 +414,6 @@ def Settings_General_Sharepoint(Settings: dict, Configuration: dict, Frame: CTk|
     SP_File_Name_Frame_Var = SP_File_Name_Frame.children["!ctkframe3"].children["!ctkentry"]
     SP_File_Name_Frame_Var.configure(placeholder_text=SP_File_Name, placeholder_text_color="#949A9F")
     SP_File_Name_Frame_Var.configure(state="disabled")
-
-    # Field - Auth Email
-    SP_Auth_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Email", Field_Type="Input_Normal")
-    SP_Auth_Email_Frame_Var = SP_Auth_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Auth_Email_Frame_Var.configure(placeholder_text="Sharepoint authorization email.")
-    SP_Auth_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Sharepoint", "Auth", "Email"], Information=SP_Auth_Email_Frame_Var.get()))
-    Entry_field_Insert(Field=SP_Auth_Email_Frame_Var, Value=SP_Auth_Email)
 
     # Field - Auth Address
     SP_Auth_Address_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Auth Address", Field_Type="Input_Normal")
@@ -456,6 +431,10 @@ def Settings_General_Sharepoint(Settings: dict, Configuration: dict, Frame: CTk|
 def Settings_General_Exchange(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
     # ---------------------------- Defaults ----------------------------#
     client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
+    Category_Color = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
+    Category_Color_list = list(Settings["Event_Handler"]["Project"]["Colors"]["Color_List"])
+    Category_Color_Variable = StringVar(master=Frame, value=Category_Color)
+
 
     # ------------------------- Local Functions ------------------------#
     def Exchange_ReNew_Secret() -> None:
@@ -467,6 +446,12 @@ def Settings_General_Exchange(Settings: dict, Configuration: dict, Frame: CTk|CT
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Exchange", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Exchange Server related settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
+
+    # Field - Category Color
+    Category_Color_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Category Color", Field_Type="Input_OptionMenu") 
+    Category_Color_Frame_Var = Category_Color_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Category_Color_Frame_Var.configure(variable=Category_Color_Variable)
+    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Category_Color_Frame_Var, values=Category_Color_list, command=lambda Category_Color_Frame_Var: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=Category_Color_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Colors", "Used"], Information=Category_Color_Frame_Var))
 
     # Field - Name
     EX_Client_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client ID", Field_Type="Input_Normal") 
@@ -496,41 +481,6 @@ def Settings_General_Exchange(Settings: dict, Configuration: dict, Frame: CTk|CT
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
-
-
-
-def Settings_General_Outlook(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
-    # ---------------------------- Defaults ----------------------------#
-    Outlook_Email = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
-    Category_Color = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
-    Category_Color_list = list(Settings["Event_Handler"]["Project"]["Colors"]["Color_List"])
-    Category_Color_Variable = StringVar(master=Frame, value=Category_Color)
-
-    # ------------------------- Local Functions ------------------------#
-    # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Outlook", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Outlook Client related settings.")
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Name
-    Outlook_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal") 
-    Outlook_Email_Frame_Var = Outlook_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Outlook_Email_Frame_Var.configure(placeholder_text="Your outlook email.")
-    Outlook_Email_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Downloader", "Outlook", "Calendar"], Information=Outlook_Email_Frame_Var.get()))
-    Entry_field_Insert(Field=Outlook_Email_Frame_Var, Value=Outlook_Email)
-
-    # Field - Category Color
-    Category_Color_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Category Color", Field_Type="Input_OptionMenu") 
-    Category_Color_Frame_Var = Category_Color_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Category_Color_Frame_Var.configure(variable=Category_Color_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Category_Color_Frame_Var, values=Category_Color_list, command=lambda Category_Color_Frame_Var: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=Category_Color_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Colors", "Used"], Information=Category_Color_Frame_Var))
-
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
 
 
 def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
@@ -2509,7 +2459,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
 
 def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
     # ---------------------------- Defaults ----------------------------#
-    Managed_Team_dict = Settings["General"]["Default"]["Managed_Team"]
+    Managed_Team_dict = Settings["General"]["User"]["Managed_Team"]
     Header_List = ["User Team", "User ID", "User Name"]
     SP_Teams_List = list(Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_List"])
     User_SP_Team_Variable = StringVar(master=Frame, value=SP_Teams_List[0])
@@ -2570,8 +2520,8 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
                 Managed_Team_Users_row_dict = dict(zip(Header_List, Managed_Team_Users_row))
                 Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
                 Counter += 1
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
-            Defaults_Lists.Create_Folder(file_path=f"Operational\\My_Team_Members\\{Add_User_ID}")
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information=Managed_Users_dict)
+            Defaults_Lists.Create_Folder(file_path=f"Operational\\My_Team\\{Add_User_ID}")
         else:
             pass
 
@@ -2592,8 +2542,8 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
                 Managed_Team_Users_row_dict = dict(zip(Header_List, Managed_Team_Users_row))
                 Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
                 Counter += 1
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information=Managed_Users_dict)
-            Defaults_Lists.Delete_Folder(file_path=f"Operational\\My_Team_Members\\{Delete_Folder_Name}")
+            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information=Managed_Users_dict)
+            Defaults_Lists.Delete_Folder(file_path=f"Operational\\My_Team\\{Delete_Folder_Name}")
             Delete_Managed_Member_Close()   
 
         def Delete_Managed_Member_Close() -> None:
@@ -2656,8 +2606,8 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         Table_len = len(Frame_Managed_Team_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Managed_Team_Table_Var.delete_row(index=Table_index)
-        Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "Default", "Managed_Team"], Information={})
-        Defaults_Lists.Delete_Folders(file_path=f"Operational\\My_Team_Members")
+        Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information={})
+        Defaults_Lists.Delete_Folders(file_path=f"Operational\\My_Team")
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General

@@ -75,7 +75,7 @@ def Add_Events_downloaded(Settings: dict, Events_downloaded: dict, Events: dict,
     return Counter
 
 def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
-    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    User_Email = Settings["General"]["User"]["Email"]
 
     if not client_id:
         CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
@@ -94,7 +94,7 @@ def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
         "client_id": client_id,
         "client_secret": client_secret,
         "scope": "https://graph.microsoft.com/.default",
-        "username": username,
+        "username": User_Email,
         "password": Exchange_Password}
     response = requests.post(url=url, data=payload)
     tokens = response.json()
@@ -104,7 +104,7 @@ def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
-    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    User_Email = Settings["General"]["User"]["Email"]
 
     # OAuth2 Access
     access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
@@ -127,7 +127,7 @@ def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Dat
         "$select": "subject, start, end, categories, recurrence, showAs, location, isAllDay, bodyPreview"}
 
     Events_downloaded = {}
-    events_url = f"https://graph.microsoft.com/v1.0/users/{username}/calendar/calendarView"
+    events_url = f"https://graph.microsoft.com/v1.0/users/{User_Email}/calendar/calendarView"
     events_response = requests.get(url=events_url, headers=headers, params=params)
 
     Counter = 0 
@@ -199,7 +199,7 @@ def Delete_Projects(access_token: str, username: str, category_id: str) -> bool:
         return False
 
 def Push_Project(Settings: dict, Exchange_Password: str) -> None:
-    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    User_Email = Settings["General"]["User"]["Email"]
     access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
 
     # Get list of Projects
@@ -211,14 +211,14 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
     Preset_color = Settings["Event_Handler"]["Project"]["Colors"]["Color_preset_map"][f"{Color_Used}"]
 
     # Exchange Categories --> Projects
-    Exchange_Categories_dict, Can_Continue = Get_All_Projects(access_token=access_token, username=username)
+    Exchange_Categories_dict, Can_Continue = Get_All_Projects(access_token=access_token, username=User_Email)
     Exchange_Categories_Names_list = Defaults_Lists.List_from_Dict(Exchange_Categories_dict, Key_Argument="displayName")
 
     if Can_Continue == True:
         # Check missing in Exchange
         Exchange_Missing_list = Defaults_Lists.List_missing_values(Source_list=Exchange_Categories_Names_list, Compare_list=Project_List)
         for project in Exchange_Missing_list:
-            Created_Flag = Create_Project(access_token=access_token, username=username, Preset_color=Preset_color, project=project)
+            Created_Flag = Create_Project(access_token=access_token, username=User_Email, Preset_color=Preset_color, project=project)
             if Created_Flag == True:
                 pass
             else:
@@ -233,14 +233,16 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
                     if value["displayName"] == project:
                         category_id = value["id"]
                         # Date check
-                        Question_Message = CTkMessagebox(title="Confirmation", message=f"Do you agree that this step will delete project from all of your Events in Exchange where it was used?\n Projects list: {Exchange_Surplus_list}", icon="question", fade_in_duration=1, option_1="Delete", option_2="Keep")
+                        Question_Message = CTkMessagebox(title="Confirmation", message=f"This step will delete project from Exchange Categories which will also delete it from all of your Events where it was used?\n\n Project: {project}", icon="question", fade_in_duration=1, option_1="Delete", option_2="Keep")
                         response = Question_Message.get()
                         if response == "Delete":
-                            Deleted_Flag = Delete_Projects(access_token=access_token, username=username, category_id=category_id)
+                            Deleted_Flag = Delete_Projects(access_token=access_token, username=User_Email, category_id=category_id)
                             if Deleted_Flag == True:
                                 pass
                             else:
                                 CTkMessagebox(title="Error", message=f"""It was not possible to delete "{project}" from Category on Exchange, please delete it manually.""", icon="cancel", fade_in_duration=1)
+                        elif response == "Keep":
+                            break
                         else:
                             CTkMessagebox(title="Error", message="Delete Categories on Exchange stopped by user.", icon="cancel", fade_in_duration=1)   
                     else:
@@ -252,7 +254,7 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
 
 
 def Push_Activity(Settings: dict, Exchange_Password: str) -> None:
-    username = Settings["General"]["Downloader"]["Outlook"]["Calendar"]
+    User_Email = Settings["General"]["User"]["Email"]
     access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
 
     # Get list of Projects

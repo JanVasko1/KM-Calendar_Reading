@@ -39,13 +39,13 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
 def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_df: DataFrame) -> DataFrame:
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
     Time_Format = Settings["General"]["Formats"]["Time"]
-    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    User_ID = Settings["General"]["User"]["Code"]
 
     # Delete File before generation
     Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events.csv")
 
     # Calculation
-    Events_df["Personnel number"] = Personnel_number
+    Events_df["Personnel number"] = User_ID
     Events_df.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Duration", "Busy_Status"], axis=1, inplace=True)
     Events_df.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events_df = Events_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
@@ -143,15 +143,15 @@ def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressB
 
         # ----------------------- Summary Dataframe ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-        #Summary.Generate_Summary(Settings=Settings, Events=Cumulated_Events,  Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End)
+        Summary.Generate_Summary(Settings=Settings, Calculation_source="Current", Events=Cumulated_Events,  Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Team_Member_ID=None)
 
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Done", value=1) 
-        CTkMessagebox(title="Success", message="Successfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
+        CTkMessagebox(title="Success", message="Successfully downloaded and processed new data.", icon="check", option_1="Thanks", fade_in_duration=1)
     else:
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Canceled", value=0) 
 
 def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str, Download_Periods: list) -> None:
-    Personnel_number = Settings["General"]["Downloader"]["Sharepoint"]["Person"]["Code"]
+    User_ID = Settings["General"]["User"]["Code"]
     SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_History = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["History_Links"][f"{SP_Team}"]
     Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
@@ -162,7 +162,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
     Events_History_df = pandas.DataFrame()
 
     # Delete previous files 
-    Defaults_Lists.Delete_All_Files(file_path=f"Operational\\SP_History\\", include_hidden=True)
+    Defaults_Lists.Delete_All_Files(file_path=f"Operational\\History\\", include_hidden=True)
 
     # Progress bar
     Download_Periods_Count = len(Download_Periods)
@@ -180,22 +180,22 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
         SP_Link_Updated = SP_Link_History.replace("____", History_Year)
         SP_Link_Updated = SP_Link_Updated.replace("__", History_month)
 
-        SP_History_Name = f"SP_{History_Year}_{History_month}"
-
-        Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Updated, Type="SP_History", Name=SP_History_Name)
+        History_Name = f"{History_Year}_{History_month}"
+        Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Updated, Type="History", Name=History_Name)
 
         if Downloaded == True:
-            TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="SP_History", Name=SP_History_Name)
+            try:
+                TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="History", Name=History_Name)
+            except:
+                TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpend", Type="History", Name=History_Name)
             Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
             data_boundary = Table_list[0][1]
             data_boundary = data_boundary.replace("O", "J")
             Events_History_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
 
-            mask1 = Events_History_df["Personnel number"] == Personnel_number
+            mask1 = Events_History_df["Personnel number"] == User_ID
             mask2 = Events_History_df["Activity description"] != "User included in TimeSpent"
-
             Events_History_df = Events_History_df[mask1 & mask2]
-
             Events_History_df = pandas.concat(objs=[Events_History_df, Events_History_df], axis=0)
         else:
             CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
@@ -209,14 +209,97 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
         Events_History_df["End Time"] = pandas.to_datetime(arg=Events_History_df["End Time"], format=Sharepoint_Time_Format)
         Events_History_df["Start Time"] = Events_History_df["Start Time"].dt.strftime(Time_Format)
         Events_History_df["End Time"] = Events_History_df["End Time"].dt.strftime(Time_Format)
-    except:
-        pass
+    except ValueError as Error:
+            CTkMessagebox(title="Error", message=f"{Error}", icon="cancel", fade_in_duration=1)
 
     # Save
     Events_History_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_History_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-    Events_History_df.to_csv(path_or_buf=f"Operational\\SP_History\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_History_df.to_csv(path_or_buf=f"Operational\\History\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ----------------------- Summary Dataframe ----------------------- #
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-    Summary.Generate_Summary(Settings=Settings, Events=Events_History_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None)
-    CTkMessagebox(title="Success", message="Successfully downloaded and processed.", icon="check", option_1="Thanks", fade_in_duration=1)
+    Summary.Generate_Summary(Settings=Settings, Calculation_source="History", Events=Events_History_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=None)
+    CTkMessagebox(title="Success", message="Successfully downloaded and processed your history.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+
+def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str) -> None:
+    Managed_Team = Settings["General"]["User"]["Managed_Team"]
+    Link_History_dict = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"]
+    Date_Format = Settings["General"]["Formats"]["Date"]
+    Time_Format = Settings["General"]["Formats"]["Time"]
+    Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
+    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+
+    # Team List and members
+    Teams_list = Defaults_Lists.List_from_Dict(Dictionary=Managed_Team, Key_Argument="User Team")
+    Teams_list = list(set(Teams_list))
+    Teams_list_Count = len(Teams_list)
+    Team_Members_Count = len(Managed_Team)
+
+    # Progress bar
+    Progress_Bar.configure(determinate_speed = round(number=50 / (Teams_list_Count + Team_Members_Count), ndigits=3))      # Counts only with downloads as Summary set it to 1
+
+    # ----------------------- Download Events ----------------------- #
+    Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
+    s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
+
+    # Downloader of Time Sheet of each team
+    for team in Teams_list:
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label=f"Downloading: {team}") 
+        SP_Link_team = Link_History_dict[team]
+
+        Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_team, Type="Team", Name=team)
+
+        if Downloaded == True:
+            try:
+                TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpent", Type="Team", Name=team)
+            except:
+                TimeSpent_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="TimeSpend", Type="Team", Name=team)
+            Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
+            data_boundary = Table_list[0][1]
+            data_boundary = data_boundary.replace("O", "J")
+            Events_Member_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
+
+            mask1 = Events_Member_df["Activity description"] != "User included in TimeSpent"
+            mask2 = Events_Member_df["Personnel number"] != "None"
+            Events_Member_df = Events_Member_df[mask1 & mask2]
+        else:
+            CTkMessagebox(title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1)
+
+        # Data correct
+        try:
+            Events_Member_df["Date"] = pandas.to_datetime(arg=Events_Member_df["Date"], format=Sharepoint_DateTime_Forma)
+            Events_Member_df["Date"] = Events_Member_df["Date"].dt.strftime(Date_Format)
+
+            Events_Member_df["Start Time"] = pandas.to_datetime(arg=Events_Member_df["Start Time"], format=Sharepoint_Time_Format)
+            Events_Member_df["End Time"] = pandas.to_datetime(arg=Events_Member_df["End Time"], format=Sharepoint_Time_Format)
+            Events_Member_df["Start Time"] = Events_Member_df["Start Time"].dt.strftime(Time_Format)
+            Events_Member_df["End Time"] = Events_Member_df["End Time"].dt.strftime(Time_Format)
+        except ValueError as Error:
+            CTkMessagebox(title="Error", message=f"{Error}", icon="cancel", fade_in_duration=1)
+
+        # Save
+        Events_Member_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_Member_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+        Events_Member_df.to_csv(path_or_buf=f"Operational\\My_Team\\{team}.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+
+    # Process each team member on its own TimeSheets
+    for key, value in Managed_Team.items():
+        Team_Member_team = value["User Team"]
+        Team_Member_ID = value["User ID"]
+        Team_Member_name = value["User Name"]
+
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label=f"Processing: {Team_Member_name}") 
+
+        Member_df = pandas.read_csv(filepath_or_buffer=f"Operational\\My_Team\\{Team_Member_team}.csv", sep=";", header=0)
+        mask1 = Member_df["Personnel number"] == Team_Member_ID
+        mask2 = Member_df["Activity description"] != "User included in TimeSpent"
+        Member_df = Member_df[mask1 & mask2]
+
+        # ----------------------- Summary Dataframe ----------------------- #
+        Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
+        Summary.Generate_Summary(Settings=Settings, Calculation_source="Team", Events=Member_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=Team_Member_ID)
+        CTkMessagebox(title="Success", message="Successfully downloaded and processed all team members.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+            
+            
+        

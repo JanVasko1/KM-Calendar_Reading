@@ -7,9 +7,14 @@ import holidays
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Charts as Charts
 
-def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None) -> None:
+def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Team_Member_ID: str|None) -> None:
     # ------------------------------------------------------------ Defaults ------------------------------------------------------------ #
-    
+    File_Sub_Path = "DashBoard"
+    if Calculation_source == "Team":
+        File_Sub_Path = f"My_Team\\{Team_Member_ID}"
+    else:
+        pass
+
     Date_Format = Settings["General"]["Formats"]["Date"]
     Time_Format = Settings["General"]["Formats"]["Time"]
     
@@ -83,8 +88,8 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
         Reported_Cumulative_Time = 0
 
         # Dataframe preparation
-        Events_Date_GR = Events.loc[:, ["Start_Date", "Duration_H"]]
-        Events_Date_Sum = Events_Date_GR.groupby(["Start_Date"]).sum()
+        Events_Date_GR = Events.loc[:, ["Date", "Duration_H"]]
+        Events_Date_Sum = Events_Date_GR.groupby(["Date"]).sum()
         Events_Date_Sum["Cumulated_H"] = Events_Date_Sum["Duration_H"].cumsum()
         
         while True:
@@ -132,19 +137,26 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
         
         return Utilization_Calendar_df  
 
-    #Update Events Dataframe
-    Events["Start_Time"] = Events["Start_Time"].astype(str)
-    Events["End_Time"] = Events["End_Time"].astype(str)
-    Events[["Start_Date_Del", "Start_Time"]] = Events["Start_Time"].str.split(" ", expand=True)
-    Events[["End_Date_Del", "End_Time"]] = Events["End_Time"].str.split(" ", expand=True)
-    Events["Start_Time"] = Events["Start_Time"].map(lambda x: x[:])
-    Events["End_Time"] = Events["End_Time"].map(lambda x: x[:])
+    # ---------------------------------------------------------------------------------- Preparation ---------------------------------------------------------------------------------- #
+    # Update Events Dataframe - PreProcessing
+    Events = Events.reset_index().rename(columns={"Network Description": "Project"})	
+    Events["Duration"] = Events.apply(Define_Event_Duration, axis = 1)
     Events["Duration_H"] = Events["Duration"].map(lambda x: round(x/60, 2))
-    
-    # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_Project.csv")
 
+    # Deletion
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Project.csv")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Activity.csv")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Totals.csv")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Light.html")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Dark.html")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Light.html")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Dark.html")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Light.html")
+    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Dark.html")
+
+    # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
     # Calculation
     Events_Project_GR = Events.loc[:, ["Project", "Duration_H"]]
     Events_Project_Sum = Events_Project_GR.groupby(["Project"]).sum()
@@ -164,12 +176,8 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Events_Project_Concat.loc["Summary"] = [Project_Count_Summary, Project_TotalH_Summary, Project_AverageH_Summary]
     Events_Project_Concat["Count"] = Events_Project_Concat["Count"].astype(int)
     Events_Project_Concat = Events_Project_Concat.reset_index().rename(columns={"index": "Project"})		
-    Events_Project_Concat.to_csv(path_or_buf=f"Operational\\DashBoard\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Activity ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_Activity.csv")
-
     # Calculation
     Events_Activity_GR = Events.loc[:, ["Activity", "Duration_H"]]
     Events_Activity_Sum = Events_Activity_GR.groupby(["Activity"]).sum()
@@ -189,18 +197,13 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Events_Activity_Concat.loc["Summary"] = [Activity_Count_Summary, Activity_TotalH_Summary, Activity_AverageH_Summary]
     Events_Activity_Concat["Count"] = Events_Activity_Concat["Count"].astype(int)
     Events_Activity_Concat = Events_Activity_Concat.reset_index().rename(columns={"index": "Activity"})		
-    Events_Activity_Concat.to_csv(path_or_buf=f"Operational\\DashBoard\\Events_Activity.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-
 
     # ---------------------------------------------------------------------------------- Weekday ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_WeekDays.csv")
-
     # Calculation
     WeekDays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     Events_WeekDays = pandas.DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
-    Events_WeekDays_GR = Events.loc[:, ["Start_Date", "Project", "Activity", "Duration_H"]]
-    Events_WeekDays_GR["WeekDay"] =  Events_WeekDays_GR["Start_Date"].apply(DataFrame_WeekDay)
+    Events_WeekDays_GR = Events.loc[:, ["Date", "Project", "Activity", "Duration_H"]]
+    Events_WeekDays_GR["WeekDay"] =  Events_WeekDays_GR["Date"].apply(DataFrame_WeekDay)
     Used_Days = 0
     Used_Days_wo = 0
 
@@ -224,9 +227,9 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
             else:
                 Used_Days_wo += 1
 
-            WeekDay_dates_list = list(set(Filtered_Df["Start_Date"]))
+            WeekDay_dates_list = list(set(Filtered_Df["Date"]))
             WeekDay_dates_count = len(WeekDay_dates_list)
-            Filtered_Df.drop(labels=["Start_Date"], axis=1, inplace=True)
+            Filtered_Df.drop(labels=["Date"], axis=1, inplace=True)
 
             Events_Totals_GR = Filtered_Df.loc[:, ["Project", "Duration_H"]]
 
@@ -289,16 +292,12 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Events_WeekDays["Days Count"] = Events_WeekDays["Days Count"].astype(int)
     Events_WeekDays["Total Events"] = Events_WeekDays["Total Events"].astype(int)
     Events_WeekDays = Events_WeekDays.reset_index().rename(columns={"index": "Week Day"})		
-    Events_WeekDays.to_csv(path_or_buf=f"Operational\\DashBoard\\Events_WeekDays.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Weeks ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_Weeks.csv")
-
-    # Calculation
-    Events_Weeks_GR = Events.loc[:, ["Start_Date", "Project", "Duration_H"]]
-    Events_Weeks_GR["Week"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_Week)
-    Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Start_Date"].apply(DataFrame_WeekDay)
+     # Calculation
+    Events_Weeks_GR = Events.loc[:, ["Date", "Project", "Duration_H"]]
+    Events_Weeks_GR["Week"] =  Events_Weeks_GR["Date"].apply(DataFrame_Week)
+    Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Date"].apply(DataFrame_WeekDay)
     Weeks_list = list(set(Events_Weeks_GR["Week"]))
     Weeks_list.sort()
     Events_Weeks = pandas.DataFrame(index=Weeks_list, columns=["Days", "Days w/o weekend", "Total Events", "Total[H]", "Average[H]", "Week Utilization[%]", "Active Days Utilization[%]"])
@@ -319,12 +318,12 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
         if Filtered_Df.empty:
             pass
         else:
-            Week_days_list = list(set(Filtered_Df["Start_Date"]))
+            Week_days_list = list(set(Filtered_Df["Date"]))
             Week_days_count = len(Week_days_list)
 
             # Weekdays without weekend
             Filtered_Df_wo = Events_Weeks_GR[mask1 & mask2 & mask3]
-            Week_days_list_wo = list(set(Filtered_Df_wo["Start_Date"]))
+            Week_days_list_wo = list(set(Filtered_Df_wo["Date"]))
             Week_days_count_wo = len(Week_days_list_wo)
             Active_days_Hours = Week_days_count * 8
 
@@ -348,12 +347,8 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Events_Weeks["Days"] = Events_Weeks["Days"].astype(int)
     Events_Weeks["Total Events"] = Events_Weeks["Total Events"].astype(int)
     Events_Weeks = Events_Weeks.reset_index().rename(columns={"index": "Week"})	
-    Events_Weeks.to_csv(path_or_buf=f"Operational\\DashBoard\\Events_Weeks.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\Events_Totals.csv")
-
     # Calculation
     Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
     Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
@@ -366,9 +361,7 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
 
         # Load already registered Events to sum with totals
         try:
-            Events_Registered_df["Duration"] = Events_Registered_df.apply(Define_Event_Duration, axis = 1)
-            Events_Registered_df["Duration_H"] = Events_Registered_df["Duration"].map(lambda x: round(x/60, 2))
-            Total_Duration_hours_registered = round(Events_Registered_df["Duration_H"].sum(), 2)
+            Total_Duration_hours_registered = round(Events["Duration_H"].sum(), 2)
         except:
             Total_Duration_hours_registered = 0
 
@@ -388,23 +381,15 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
         "Utilization_Surplus_hours": Utilization_Surplus_hours}
     
     Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
-    Totals_df.to_csv(path_or_buf=f"Operational\\DashBoard\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    
 
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
-    # TODO --> also must count only with Events_df and other parameter comes to the Dasboard
-    # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Project_Light.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Project_Dark.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Activity_Light.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Activity_Dark.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Utilization_Light.html")
-    Defaults_Lists.Delete_File(file_path="Operational\\DashBoard\\DashBoard_Utilization_Dark.html")
-
+    # TODO --> also must count only with Events_df and other parameter comes to the Dashboard
     # Generate charts - Project And Activity
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Project", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Project", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Activity", theme="Dark", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Category="Activity", theme="Light", Events=Events, Events_Registered_df=Events_Registered_df, Report_Period_End=Report_Period_End)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Project", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Project", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Activity", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Activity", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
 
     # Utilization
     # TODO --> Finis Utilization
@@ -414,6 +399,14 @@ def Generate_Summary(Settings: dict, Events: DataFrame, Events_Registered_df: Da
     Reported_Cumulative_Time_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
     Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
 
-    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df)
-    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df)
+    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
     """
+
+    # ---------------------------------------------------------------------------------- PostProcessing ---------------------------------------------------------------------------------- #
+    # Save Files
+    Events_Project_Concat.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_Activity_Concat.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Activity.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_WeekDays.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_Weeks.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Totals_df.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
