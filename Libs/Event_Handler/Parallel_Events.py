@@ -1,8 +1,9 @@
 # Import Libraries
-import Libs.Defaults_Lists as Defaults_Lists
-from pandas import DataFrame, Series
 import pandas
+from pandas import DataFrame, Series
 from datetime import datetime
+
+import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:

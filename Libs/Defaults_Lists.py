@@ -7,8 +7,11 @@ import os
 import glob
 import shutil
 
+import customtkinter
 from customtkinter import StringVar, IntVar, BooleanVar
 from CTkMessagebox import CTkMessagebox
+
+import Libs.GUI.Elements as Elements
 
 # --------------------------------------------- Load defaults --------------------------------------------- #
 def Load_Settings() -> dict:
@@ -150,3 +153,14 @@ def Delete_All_Files(file_path: str, include_hidden: bool) -> None:
 def PD_Column_to_DateTime(PD_DataFrame: DataFrame, Column: str, Covert_Format: str) -> DataFrame:
     PD_DataFrame[Column] = pandas.to_datetime(arg=PD_DataFrame[Column], format=Covert_Format)
     return PD_DataFrame
+
+# --------------------------------------------- CustomTkinter --------------------------------------------- #
+def Dialog_Window_Request(Configuration: dict, title: str, text: str, Dialog_Type: str) -> str|None:
+    # Password required
+    dialog = Elements.Get_DialogWindow(Configuration=Configuration, title=title, text=text, Dialog_Type=Dialog_Type)
+    SP_Password = dialog.get_input()
+    return SP_Password
+
+def Get_Current_Theme() -> str:
+    Current_Theme = customtkinter.get_appearance_mode()
+    return Current_Theme

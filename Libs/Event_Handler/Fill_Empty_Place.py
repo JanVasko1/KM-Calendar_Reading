@@ -1,7 +1,6 @@
 # Import Libraries
-import Libs.Defaults_Lists as Defaults_Lists
-from pandas import DataFrame
 import pandas
+from pandas import DataFrame
 from datetime import datetime
 import operator
 import json
@@ -10,6 +9,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from CTkMessagebox import CTkMessagebox
+
+import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:

@@ -1,7 +1,7 @@
 # Import Libraries
+import pandas
 from pandas import DataFrame
 from datetime import datetime, timedelta
-import pandas
 import holidays
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -80,7 +80,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
         X_Week = f"{Year}-{Week}"
         return X_Week
 
-    def Get_Utilization_Calendar(Events: DataFrame, Report_Period_Start: datetime, Report_Period_End: datetime, Date_Format: str) -> DataFrame:
+    def Get_Utilization_Calendar(Events: DataFrame, Utilization_Start_Date_dt: datetime, Utilization_End_Date_dt: datetime, Date_Format: str) -> DataFrame:
         Czech_Holidays = holidays.country_holidays("CZ")
         Utilization_Calendar_df = DataFrame(columns=["Working_day", "KM_Cumulative_Utilization", "Day_Total_Time", "Reported_Cumulative_Time"])
         KM_Cumulative_Utilization = 0
@@ -93,13 +93,13 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
         Events_Date_Sum["Cumulated_H"] = Events_Date_Sum["Duration_H"].cumsum()
         
         while True:
-            Check_Date_str = Report_Period_Start.strftime(format=Date_Format)
+            Check_Date_str = Utilization_Start_Date_dt.strftime(format=Date_Format)
             Working_day = True
 
             # Working Day
             Holiday_day = Czech_Holidays.get(key=Check_Date_str)
             if Holiday_day == None:
-                Weekend_Day = Report_Period_Start.weekday()
+                Weekend_Day = Utilization_Start_Date_dt.weekday()
                 if Weekend_Day < 5:
                     pass
                 else:
@@ -130,10 +130,10 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
             Utilization_Calendar_df.loc[f"{Check_Date_str}"] = [Working_day, KM_Cumulative_Utilization, Day_Total_Time, Reported_Cumulative_Time]
 
             # Check End of Report Period
-            if Report_Period_Start == Report_Period_End:
+            if Utilization_Start_Date_dt == Utilization_End_Date_dt:
                 break
             else:
-                Report_Period_Start += timedelta(days=1)
+                Utilization_Start_Date_dt += timedelta(days=1)
         
         return Utilization_Calendar_df  
 
@@ -346,41 +346,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
 
     Events_Weeks["Days"] = Events_Weeks["Days"].astype(int)
     Events_Weeks["Total Events"] = Events_Weeks["Total Events"].astype(int)
-    Events_Weeks = Events_Weeks.reset_index().rename(columns={"index": "Week"})	
-
-    # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
-    # Calculation
-    Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
-    Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
-    Event_counts = Events.shape[0]
-    Utilization_Surplus_hours = None    # Must be as default value
-    
-    # Reporting Period Utilization
-    if type(Report_Period_Active_Days) is int:
-        Period_Utilization = Report_Period_Active_Days * 8
-
-        # Load already registered Events to sum with totals
-        try:
-            Total_Duration_hours_registered = round(Events["Duration_H"].sum(), 2)
-        except:
-            Total_Duration_hours_registered = 0
-
-        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours + Total_Duration_hours_registered, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
-    else:
-        # Cannot divide by 0
-        Reporting_Period_Utilization = None
-    My_Calendar_Utilization = KM_Day_Utilization_w
-
-    Totals_dict = {
-        "Total_Duration_hours": Total_Duration_hours,
-        "Mean_Duration_hours": Mean_Duration_hours,
-        "Event_counts": Event_counts,
-        "Reporting_Period_Utilization": Reporting_Period_Utilization,
-        "My_Calendar_Utilization": My_Calendar_Utilization,
-        "Utilization_Surplus_hours": Utilization_Surplus_hours}
-    
-    Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
-    
+    Events_Weeks = Events_Weeks.reset_index().rename(columns={"index": "Week"})	   
 
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
     # Generate charts - Project And Activity
@@ -390,16 +356,48 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Activity", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
 
     # Utilization
-    # TODO --> Finis Utilization
-    """Utilization_Event_Calendar_df = Get_Utilization_Calendar(Events=Events, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Date_Format=Date_Format)
-    Input_End_Date_str = Input_End_Date_dt.strftime(format=Date_Format)
+    Utilization_Start_Date = min(Events["Date"])
+    Utilization_Start_Date_dt = datetime.strptime(Utilization_Start_Date, Date_Format)
+    Utilization_End_Date = max(Events["Date"])
+    Utilization_End_Date_dt = datetime.strptime(Utilization_End_Date, Date_Format)
+    Utilization_Event_Calendar_df = Get_Utilization_Calendar(Events=Events, Utilization_Start_Date_dt=Utilization_Start_Date_dt, Utilization_End_Date_dt=Utilization_End_Date_dt, Date_Format=Date_Format)
+
+    # Utilization surplus --> for Totals
+    Utilization_Surplus_hours = None    # Must be as default value
+    Input_End_Date_str = Utilization_End_Date_dt.strftime(format=Date_Format)
     KM_Cumulative_Util_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["KM_Cumulative_Utilization"]
     Reported_Cumulative_Time_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
     Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
 
     Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
     Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
-    """
+
+    # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
+    # Calculation
+    Total_Duration_hours = round(Events["Duration_H"].sum(), 2)
+    Mean_Duration_hours = round(Events["Duration_H"].mean(), 2)
+    Event_counts = Events.shape[0]
+    
+    # Reporting Period Utilization
+    if type(Report_Period_Active_Days) is int:
+        Period_Utilization = Report_Period_Active_Days * 8
+
+        # Load already registered Events to sum with totals
+        Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
+    else:
+        # Cannot divide by 0
+        Reporting_Period_Utilization = None
+    My_Calendar_Utilization = My_Day_Utilization_w
+
+    Totals_dict = {
+        "Total_Duration_hours": Total_Duration_hours,
+        "Mean_Duration_hours": Mean_Duration_hours,
+        "Event_counts": Event_counts,
+        "My_Calendar_Utilization": My_Calendar_Utilization,
+        "Reporting_Period_Utilization": Reporting_Period_Utilization,
+        "Utilization_Surplus_hours": Utilization_Surplus_hours}
+    
+    Totals_df = DataFrame(data=Totals_dict, columns=list(Totals_dict.keys()), index=[0])
 
     # ---------------------------------------------------------------------------------- PostProcessing ---------------------------------------------------------------------------------- #
     # Save Files

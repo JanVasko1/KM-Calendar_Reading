@@ -1,5 +1,6 @@
-from pandas import DataFrame
+# Import Libraries
 import pandas
+from pandas import DataFrame
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Settings: dict, Events: DataFrame):

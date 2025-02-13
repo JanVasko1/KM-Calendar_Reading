@@ -1,6 +1,6 @@
 # Import Libraries
-from pandas import DataFrame
 import pandas
+from pandas import DataFrame
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Join_Events(Settings: dict, Events: DataFrame) -> DataFrame:

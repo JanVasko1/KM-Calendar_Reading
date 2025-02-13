@@ -9,7 +9,6 @@ import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
 from bokeh.plotting import save, figure
 from bokeh.layouts import layout
-from bokeh.io import export_svgs, export_svg, export_png
 from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block, HoverTool
 
 from CTkMessagebox import CTkMessagebox
@@ -94,7 +93,6 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
 
     # ------------------------- Main Functions -------------------------#
     # Process Data
-    Events.rename(columns={"Network Description": "Project"}, inplace=True)
     Events_GR = Events.loc[:, ["Date", f"{Category}", "Duration_H"]]
 
     Value_df = Events_GR.groupby(["Date", f"{Category}"]).sum()
@@ -116,7 +114,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
     # ToolTip
-    # TODO --> finish tooltip to be only in one containing all pf them, then transfer it to the helpers
+    # TODO --> Tooltip to be only in one containing all pf them, then transfer it to the helpers
     ToolTip = [
         ("Date", "@Date{%F}"), 
         (f"{Category}", "$name"), 
@@ -135,7 +133,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
 
     if Max_range_len < Active_Area_size:
         pass
-    elif Max_range_len > Active_Area_size:
+    elif Max_range_len >= Active_Area_size:
         Min_Range_Len = Max_range_len - Active_Area_size
         Min_range = Value_df.iloc[Min_Range_Len]["Date"]
     else:
@@ -166,9 +164,9 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     Value_df.drop(labels=["Line_Sum"], axis=1, inplace=True)
 
     # Forecast availability
-    Value_df_Max_Date_ = max(Value_df["Date"])
+    Value_df_Max_Date = max(Value_df["Date"])
     Today_dt = datetime.now()
-    if Today_dt < Value_df_Max_Date_:
+    if Today_dt < Value_df_Max_Date:
         Crate_Forecast = True
     else:
         Crate_Forecast = False

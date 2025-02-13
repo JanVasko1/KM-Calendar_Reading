@@ -22,6 +22,7 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
     Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
     Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
     Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
+    Sharepoint_Date_Format3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
     Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
     User_ID = Settings["General"]["User"]["Code"]
@@ -80,7 +81,10 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
                 try:
                     Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
                 except:
-                    Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+                    try:
+                        Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+                    except:
+                        Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format3)
             Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
 
             # Time

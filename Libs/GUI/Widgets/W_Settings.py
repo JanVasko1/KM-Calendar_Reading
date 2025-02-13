@@ -351,7 +351,7 @@ def Settings_User_Widget(Settings: dict, Configuration: dict, Frame: CTk|CTkFram
     User_Type_Variable = StringVar(master=Frame, value=User_Type)
 
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="User", Additional_Text="Maintained by admin", Widget_size="Single_size", Widget_Label_Tooltip="This is setup of definition if user is considerate as user or user leading team with additional functionality.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="User", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="This is setup of definition if user is considerate as user or user leading team with additional functionality.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - User ID
@@ -492,6 +492,8 @@ def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Format_Sharepoint_Date = Settings["General"]["Formats"]["Sharepoint_Date"]
     Format_Sharepoint_Date1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
     Format_Sharepoint_Date2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
+    Sharepoint_Date_Format3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
+    Format_Sharepoint_Date3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
     Format_Sharepoint_Time = Settings["General"]["Formats"]["Sharepoint_Time"]
     Format_Sharepoint_Time1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
 
@@ -543,6 +545,11 @@ def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Sharepoint_Date_Frame_Var.configure(placeholder_text=Format_Sharepoint_Date2, placeholder_text_color="#949A9F")
     Sharepoint_Date_Frame_Var.configure(state="disabled")
 
+    # Field - Sharepoint Date Format 3
+    Sharepoint_Date_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Date 4", Field_Type="Input_Normal")
+    Sharepoint_Date_Frame_Var = Sharepoint_Date_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Sharepoint_Date_Frame_Var.configure(placeholder_text=Format_Sharepoint_Date3, placeholder_text_color="#949A9F")
+    Sharepoint_Date_Frame_Var.configure(state="disabled")
 
     # Field - Sharepoint Time Format
     Sharepoint_Time_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Time 1", Field_Type="Input_Normal")

@@ -1,6 +1,5 @@
 # Import Libraries
 from pandas import DataFrame as DataFrame
-from dotenv import load_dotenv
 import requests
 from datetime import datetime
 
@@ -260,5 +259,5 @@ def Push_Activity(Settings: dict, Exchange_Password: str) -> None:
     # Get list of Projects
     Activity_List = Settings["Event_Handler"]["Activity"]["Activity_List"]
 
-    # TODO - Finish this Function
+    # TODO --> Push_Activity
     pass

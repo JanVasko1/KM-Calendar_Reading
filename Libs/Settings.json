@@ -29,7 +29,7 @@
         },
         "DashBoard": {
             "DashBoard": {
-                "Creation_Date": "2025-02-13",
+                "Creation_Date": "2025-02-14",
                 "Data_Period": "Past",
                 "Data_Source": "Download_Date_Range_Source"
             },
@@ -104,6 +104,7 @@
             "Sharepoint_Date": "%d.%m.%Y",
             "Sharepoint_Date1": "%Y-%m-%d",
             "Sharepoint_Date2": "%Y-%m-%d %H:%M:%S",
+            "Sharepoint_Date3": "%#d.%#m.%Y",
             "Sharepoint_Time": "%H:%M:%S",
             "Sharepoint_Time1": "%Y-%m-%d %H:%M:%S"
         },

@@ -1,6 +1,6 @@
 # Import Libraries
-from pandas import DataFrame, Series
 import pandas
+from pandas import DataFrame, Series
 import random
 from datetime import datetime, timedelta
 
