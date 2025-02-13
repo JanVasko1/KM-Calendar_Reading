@@ -112,6 +112,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     Active_Area_indented = round((int(Active_Area_size) / 100) * int(Chart_Area_Properties.iloc[0]["Active_Area_indented_percent"]),0)
 
     Value_df["Date"] = pandas.to_datetime(Value_df[X_Series_Column], format=Date_Format)
+    Value_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Value_df, Column="Date", Covert_Format=Date_Format)
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
     # ToolTip

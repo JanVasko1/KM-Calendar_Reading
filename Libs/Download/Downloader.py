@@ -19,12 +19,14 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
     # Default
     Date_Format = Settings["General"]["Formats"]["Date"]
     Time_Format = Settings["General"]["Formats"]["Time"]
+    Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
+    Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-    Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
+    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
     User_ID = Settings["General"]["User"]["Code"]
     SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
-
 
     Report_Period_Active_Days = None
     Report_Period_Start = None
@@ -70,14 +72,28 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
             mask3 = Events_Registered_df["Date"] != "=Utilization!$G$2"
             Events_Registered_df = Events_Registered_df[mask1 & mask2 & mask3]
 
-            Events_Registered_df["Date"] = pandas.to_datetime(arg=Events_Registered_df["Date"], format=Sharepoint_DateTime_Forma)
+            # Dates/Time correct
+            # Date
+            try:
+                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
+            except:
+                try:
+                    Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
+                except:
+                    Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
             Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
 
-            Events_Registered_df["Start Time"] = pandas.to_datetime(arg=Events_Registered_df["Start Time"], format=Sharepoint_Time_Format)
-            Events_Registered_df["End Time"] = pandas.to_datetime(arg=Events_Registered_df["End Time"], format=Sharepoint_Time_Format)
+            # Time
+            try:
+                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+            except:
+                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
             Events_Registered_df["Start Time"] = Events_Registered_df["Start Time"].dt.strftime(Time_Format)
             Events_Registered_df["End Time"] = Events_Registered_df["End Time"].dt.strftime(Time_Format)
-            
+                
+                
             if Events_Registered_df.empty:
                 # Sharepoint doesn't contain any my data
                 My_Last_Day_dt = Report_Period_Start 

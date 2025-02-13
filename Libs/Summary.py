@@ -365,7 +365,6 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
         except:
             Total_Duration_hours_registered = 0
 
-
         Reporting_Period_Utilization = round(number=round(number=Total_Duration_hours + Total_Duration_hours_registered, ndigits=0) / (Period_Utilization) * 100, ndigits=2)
     else:
         # Cannot divide by 0
@@ -384,7 +383,6 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     
 
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
-    # TODO --> also must count only with Events_df and other parameter comes to the Dashboard
     # Generate charts - Project And Activity
     Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Project", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
     Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Project", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)

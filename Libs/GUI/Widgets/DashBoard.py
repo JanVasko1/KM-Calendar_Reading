@@ -122,7 +122,7 @@ def DashBoard_Totals_Counter_Widget(Configuration:dict, Frame: CTk|CTkFrame, Lab
 def DashBoard_Totals_Report_Period_Util_Widget(Configuration:dict, Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Data: int) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
     # Field - Use
-    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Configuration=Configuration, Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="circle-percent", Widget_Label_Tooltip="Shows if Utilization of Reporting Period.", Scrollable=False) 
+    Frame_Main = Elements_Groups.Get_DashBoard_Widget_Frame(Configuration=Configuration, Frame=Frame, Label=Label, Widget_Line=Widget_Line, Widget_size=Widget_size, Icon_Set="lucide", Icon_Name="circle-percent", Widget_Label_Tooltip="Shows Utilization of Reporting Period.", Scrollable=False) 
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     Coverage_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Body, Label_Size="Main", Font_Size="Main")

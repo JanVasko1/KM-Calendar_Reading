@@ -139,8 +139,8 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
         Day_Start_Time, Day_End_Time = Get_Day_Start_End_Time(Day_Start_Subject=Day_Start_Subject, Day_End_Subject=Day_End_Subject, Day_Events_df=Day_Events_df, Day=Day)
         if Day_Start_Time == None or Day_End_Time == None:
             # Do not make input to the day when day does not have Work Start / Work End Time
-            Day_Events_df["Start_Time"] = pandas.to_datetime(Day_Events_df["Start_Time"], format=Time_format)
-            Day_Events_df["End_Time"] = pandas.to_datetime(Day_Events_df["End_Time"], format=Time_format)
+            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
+            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
             Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             continue
         else:
@@ -185,8 +185,8 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             
             #! Insert General - only between Day_Start_Time, Day_End_Time
-            Day_Events_df["Start_Time"] = pandas.to_datetime(Day_Events_df["Start_Time"], format=Time_format)
-            Day_Events_df["End_Time"] = pandas.to_datetime(Day_Events_df["End_Time"], format=Time_format)
+            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
+            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
             Define_Event_within_Working_Hours(Dataframe=Day_Events_df, Day_Start_Time_dt=Day_Start_Time_dt, Day_End_Time_dt=Day_End_Time_dt)
             mask1 = Day_Events_df["Within_Working_Hours"] == True
             mask2 = Day_Events_df["All_Day_Event"] == False

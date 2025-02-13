@@ -38,6 +38,7 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
 
 def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_df: DataFrame) -> DataFrame:
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
     Time_Format = Settings["General"]["Formats"]["Time"]
     User_ID = Settings["General"]["User"]["Code"]
 
@@ -49,11 +50,16 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
     Events_df.drop(labels=["End_Date", "Recurring", "Meeting_Room", "All_Day_Event", "Event_Empty_Insert", "Within_Working_Hours", "Duration", "Busy_Status"], axis=1, inplace=True)
     Events_df.rename(columns={"Start_Date": "Date", "Project": "Network Description", "Subject": "Activity description", "Start_Time": "Start Time", "End_Time": "End Time", "": ""}, inplace=True)
     Events_df = Events_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
-    Events_df["Start Time"] = pandas.to_datetime(arg=Events_df["Start Time"], format=Sharepoint_Time_Format)
-    Events_df["End Time"] = pandas.to_datetime(arg=Events_df["End Time"], format=Sharepoint_Time_Format)
+    # Time
+    try:
+        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+    except:
+        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
     Events_df["Start Time"] = Events_df["Start Time"].dt.strftime(Time_Format)
     Events_df["End Time"] = Events_df["End Time"].dt.strftime(Time_Format)
-    
+
     # Cumulate with Event Registered
     Cumulated_Events = pandas.concat(objs=[Events_df, Events_Registered_df], axis=0)
 
@@ -155,7 +161,10 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
     SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_History = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["History_Links"][f"{SP_Team}"]
     Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
+    Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
     Date_Format = Settings["General"]["Formats"]["Date"]
     Time_Format = Settings["General"]["Formats"]["Time"]
 
@@ -191,26 +200,35 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
             Table_list = Sharepoint.Get_Tables_on_Worksheet(Sheet=TimeSpent_Sheet)
             data_boundary = Table_list[0][1]
             data_boundary = data_boundary.replace("O", "J")
-            Events_History_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
+            Events_Month_df = Sharepoint.Get_Table_Data(ws=TimeSpent_Sheet, data_boundary=data_boundary)
 
-            mask1 = Events_History_df["Personnel number"] == User_ID
-            mask2 = Events_History_df["Activity description"] != "User included in TimeSpent"
-            Events_History_df = Events_History_df[mask1 & mask2]
-            Events_History_df = pandas.concat(objs=[Events_History_df, Events_History_df], axis=0)
+            mask1 = Events_Month_df["Personnel number"] == User_ID
+            mask2 = Events_Month_df["Activity description"] != "User included in TimeSpent"
+            Events_Month_df = Events_Month_df[mask1 & mask2]
+            Events_History_df = pandas.concat(objs=[Events_History_df, Events_Month_df], axis=0)
         else:
             CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
     
-    # Data correct
+    # Dates/Time correct
+    # Date
     try:
-        Events_History_df["Date"] = pandas.to_datetime(arg=Events_History_df["Date"], format=Sharepoint_Date_Format)
-        Events_History_df["Date"] = Events_History_df["Date"].dt.strftime(Date_Format)
+        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
+    except:
+        try:
+            Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
+        except:
+            Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+    Events_History_df["Date"] = Events_History_df["Date"].dt.strftime(Date_Format)
 
-        Events_History_df["Start Time"] = pandas.to_datetime(arg=Events_History_df["Start Time"], format=Sharepoint_Time_Format)
-        Events_History_df["End Time"] = pandas.to_datetime(arg=Events_History_df["End Time"], format=Sharepoint_Time_Format)
-        Events_History_df["Start Time"] = Events_History_df["Start Time"].dt.strftime(Time_Format)
-        Events_History_df["End Time"] = Events_History_df["End Time"].dt.strftime(Time_Format)
-    except ValueError as Error:
-            CTkMessagebox(title="Error", message=f"{Error}", icon="cancel", fade_in_duration=1)
+    # Time
+    try:
+        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+    except:
+        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
+    Events_History_df["Start Time"] = Events_History_df["Start Time"].dt.strftime(Time_Format)
+    Events_History_df["End Time"] = Events_History_df["End Time"].dt.strftime(Time_Format)
 
     # Save
     Events_History_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_History_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
@@ -227,8 +245,11 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
     Link_History_dict = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"]
     Date_Format = Settings["General"]["Formats"]["Date"]
     Time_Format = Settings["General"]["Formats"]["Time"]
-    Sharepoint_DateTime_Forma = Settings["General"]["Formats"]["Sharepoint_DateTime"]
+    Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
+    Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
 
     # Team List and members
     Teams_list = Defaults_Lists.List_from_Dict(Dictionary=Managed_Team, Key_Argument="User Team")
@@ -266,17 +287,26 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
         else:
             CTkMessagebox(title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1)
 
-        # Data correct
+        # Dates/Time correct
+        # Date
         try:
-            Events_Member_df["Date"] = pandas.to_datetime(arg=Events_Member_df["Date"], format=Sharepoint_DateTime_Forma)
-            Events_Member_df["Date"] = Events_Member_df["Date"].dt.strftime(Date_Format)
+            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
+        except:
+            try:
+                Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
+            except:
+                Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+        Events_Member_df["Date"] = Events_Member_df["Date"].dt.strftime(Date_Format)
 
-            Events_Member_df["Start Time"] = pandas.to_datetime(arg=Events_Member_df["Start Time"], format=Sharepoint_Time_Format)
-            Events_Member_df["End Time"] = pandas.to_datetime(arg=Events_Member_df["End Time"], format=Sharepoint_Time_Format)
-            Events_Member_df["Start Time"] = Events_Member_df["Start Time"].dt.strftime(Time_Format)
-            Events_Member_df["End Time"] = Events_Member_df["End Time"].dt.strftime(Time_Format)
-        except ValueError as Error:
-            CTkMessagebox(title="Error", message=f"{Error}", icon="cancel", fade_in_duration=1)
+        # Time
+        try:
+            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+        except:
+            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_Member_df["Start Time"] = Events_Member_df["Start Time"].dt.strftime(Time_Format)
+        Events_Member_df["End Time"] = Events_Member_df["End Time"].dt.strftime(Time_Format)
 
         # Save
         Events_Member_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_Member_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
