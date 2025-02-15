@@ -3,9 +3,9 @@ from pandas import DataFrame, Series, concat
 from datetime import datetime
 import operator
 import json
-import random
-import warnings
-warnings.filterwarnings('ignore')
+from random import randrange, choice
+from  warnings import filterwarnings
+filterwarnings('ignore')
 
 from CTkMessagebox import CTkMessagebox
 
@@ -13,7 +13,7 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:
-    Random_Num = random.randrange(start=0, stop=Gen_Event_Counter, step=1)
+    Random_Num = randrange(start=0, stop=Gen_Event_Counter, step=1)
     General_Empty_Project = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Project"]
     General_Empty_Activity = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Activity"]
     General_Empty_Description = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Description"]
@@ -396,7 +396,7 @@ def Fill_Events_Coverage(Settings: dict, Events: DataFrame) -> DataFrame:
 
                 # Random select index
                 General_Sub_Index_list = list(General_Sub_df.index.values)
-                Change_Row_Index = random.choice(General_Sub_Index_list)
+                Change_Row_Index = choice(General_Sub_Index_list)
 
                 # Find the Fill Event with maximal difference between "Fill_Event_counted_duration_list" and "Fill_Event_actual_duration_list" --> where the number is positive (not to overshoot)
                 Fill_Event_difference_duration_list = list(map(operator.sub, Fill_Event_counted_duration_list, Fill_Event_actual_duration_list))

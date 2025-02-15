@@ -1,17 +1,19 @@
 # Import Libraries
 from pandas import DataFrame, to_datetime, read_csv
-import warnings
+from warnings import filterwarnings
+
 from datetime import datetime, timedelta
 
 import Libs.Defaults_Lists as Defaults_Lists
-
 import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
+
 from bokeh.plotting import save, figure
 from bokeh.layouts import layout
 from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block, HoverTool
 
 from CTkMessagebox import CTkMessagebox
 
+filterwarnings("ignore")
 # ---------------------------------------------------------- Local Functions---------------------------------------------------------- #
 def Chart_update_html(Chart: str, color: str, opacity: float):
     with open(file=f"{Chart}", mode="r") as file:
@@ -56,7 +58,6 @@ def Chart_update_html(Chart: str, color: str, opacity: float):
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category: str, theme: str, Events: DataFrame, Report_Period_End: datetime|None, File_Sub_Path: str) -> None:
-    warnings.filterwarnings("ignore")
     # ---------------------------- Defaults ----------------------------#
     Date_Format = Settings["General"]["Formats"]["Date"]
     X_Series_Column = "Date"  
@@ -232,8 +233,6 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     
 def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calendar_df: DataFrame, File_Sub_Path: str):
     Date_Format = Settings["General"]["Formats"]["Date"]
-    
-    warnings.filterwarnings("ignore")
 
     # Variable Defaults
     X_Series_Column = "Date"  

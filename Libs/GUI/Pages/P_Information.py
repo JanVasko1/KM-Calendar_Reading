@@ -1,5 +1,5 @@
 # Import Libraries
-import markdown
+from  markdown import markdown
 
 from customtkinter import CTk, CTkFrame
 from tkhtmlview import HTMLLabel
@@ -37,7 +37,7 @@ def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
     Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
     with open("Libs\\GUI\\Information.md", "r", encoding="UTF-8") as file:
-        html_markdown=markdown.markdown( file.read())
+        html_markdown=markdown(text=file.read())
     file.close()
 
     Information_html = HTMLLabel(Frame_Information_Scrollable_Area, html=f"{html_markdown}", background=HTML_Background_Color, font="Roboto", fg=HTML_Font_Color)

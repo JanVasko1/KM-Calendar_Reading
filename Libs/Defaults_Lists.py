@@ -3,8 +3,8 @@ from pandas import DataFrame, to_datetime
 from dotenv import load_dotenv
 import json
 import os
-import glob
-import shutil
+from glob import glob
+from shutil import rmtree
 
 from customtkinter import StringVar, IntVar, BooleanVar, get_appearance_mode
 from CTkMessagebox import CTkMessagebox
@@ -127,7 +127,7 @@ def Delete_Folder(file_path: str) -> None:
 
 def Delete_Folders(file_path: str) -> None:
     try:
-        shutil.rmtree(file_path)
+        rmtree(file_path)
     except Exception as Error:
         print(Error)
 
@@ -141,7 +141,7 @@ def Delete_File(file_path: str) -> None:
 def Delete_All_Files(file_path: str, include_hidden: bool) -> None:
     # Delete File
     try:
-        files = glob.glob(pathname=os.path.join(file_path, "*"), include_hidden=include_hidden)
+        files = glob(pathname=os.path.join(file_path, "*"), include_hidden=include_hidden)
         for file in files:
             os.remove(file)
     except Exception as Error:

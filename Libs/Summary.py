@@ -1,7 +1,7 @@
 # Import Libraries
 from pandas import DataFrame, concat
 from datetime import datetime, timedelta
-import holidays
+from holidays import country_holidays
 
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Charts as Charts
@@ -80,7 +80,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
         return X_Week
 
     def Get_Utilization_Calendar(Events: DataFrame, Utilization_Start_Date_dt: datetime, Utilization_End_Date_dt: datetime, Date_Format: str) -> DataFrame:
-        Czech_Holidays = holidays.country_holidays("CZ")
+        Czech_Holidays = country_holidays("CZ")
         Utilization_Calendar_df = DataFrame(columns=["Working_day", "KM_Cumulative_Utilization", "Day_Total_Time", "Reported_Cumulative_Time"])
         KM_Cumulative_Utilization = 0
         Day_Total_Time = 0
