@@ -2,8 +2,7 @@
 from PIL import Image
 from datetime import datetime
 
-import customtkinter
-from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkComboBox
+from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkComboBox, get_appearance_mode
 from CTkTable import CTkTable
 from CTkColorPicker import CTkColorPicker
 from CTkToolTip import CTkToolTip
@@ -631,7 +630,7 @@ def Get_Tab_View(Configuration:dict, Frame: CTk|CTkFrame, Tab_size: str) -> CTkT
 def Get_Table(Configuration:dict, Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int) -> CTkTable:
     def Colors_Theme_change(colors_rows: list) -> tuple:
         # Will be obsolete if Table will implement Light/Dark colors
-        Current_Theme = customtkinter.get_appearance_mode()
+        Current_Theme = get_appearance_mode()
         if Current_Theme == "Light":
             color1 = colors_rows[0]
             color2 = lighten_hex_color(hex_color=color1, percentage=25)
@@ -752,7 +751,7 @@ def Get_Color_Picker(Configuration:dict, Frame: CTk|CTkFrame, Color_Manual_Frame
 
     def Color_Picker_fg_change(fg_color: list|str) -> str:
         # Will be obsolete if CTkColor_Picker will implement Light/Dark colors
-        Current_Theme = customtkinter.get_appearance_mode()
+        Current_Theme = get_appearance_mode()
         if type(fg_color) is list:
             if Current_Theme == "Light":
                 fg_color = fg_color[0]

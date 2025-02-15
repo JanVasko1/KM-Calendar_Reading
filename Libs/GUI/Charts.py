@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, to_datetime, read_csv
 import warnings
 from datetime import datetime, timedelta
 
@@ -68,26 +67,25 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
         Chart_Settings = Defaults_Lists.Load_Figures(Theme=theme)
     else:
         CTkMessagebox(title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1)
-        raise ValueError
         
     # General information about Game
-    Chart_Area_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Chart_Area_Properties"], columns=["Column_Color_Single", "Column_Color_Fill_1", "Column_Color_Fill_2", "Colors_Palette_Range", "Line_Column_Color", "Line_Thickness", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
+    Chart_Area_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Chart_Area_Properties"], columns=["Column_Color_Single", "Column_Color_Fill_1", "Column_Color_Fill_2", "Colors_Palette_Range", "Line_Column_Color", "Line_Thickness", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
     Chart_Area_Properties.Name = "Chart_Area_Properties"
-    Grid_properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Grid_properties"], columns=["X_Grid_Line", "X_Grid_Line_Style", "X_Grid_Line_Dash_Ration", "X_Grid_Line_Thickness", "X_Grid_Line_Color", "X_Grid_Line_Color_Opacity", "Y_Grid_Line", "Y_Grid_Line_Style", "Y_Grid_Line_Dash_Ration", "Y_Grid_Line_Thickness", "Y_Grid_Line_Color", "Y_Grid_Line_Color_Opacity"], index=[0])
+    Grid_properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Grid_properties"], columns=["X_Grid_Line", "X_Grid_Line_Style", "X_Grid_Line_Dash_Ration", "X_Grid_Line_Thickness", "X_Grid_Line_Color", "X_Grid_Line_Color_Opacity", "Y_Grid_Line", "Y_Grid_Line_Style", "Y_Grid_Line_Dash_Ration", "Y_Grid_Line_Thickness", "Y_Grid_Line_Color", "Y_Grid_Line_Color_Opacity"], index=[0])
     Grid_properties.Name = "Grid_properties"
-    X_Axis_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["X_Axis_Properties"], columns=["X_Axis_Visible", "X_Axis_label_orient", "X_Axis_Line_Style", "X_Axis_Line_Thickness", "X_Axis_Line_Color", "X_Axis_Line_Opacity", "X_Axis_Font", "X_Axis_Font_Size", "X_Axis_Font_Color", "X_Axis_Major_Tic_Color", "X_Axis_Major_Tic_Opacity", "X_Axis_Minor_Tic_Color", "X_Axis_Minor_Tic_Opacity"], index=[0])
+    X_Axis_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["X_Axis_Properties"], columns=["X_Axis_Visible", "X_Axis_label_orient", "X_Axis_Line_Style", "X_Axis_Line_Thickness", "X_Axis_Line_Color", "X_Axis_Line_Opacity", "X_Axis_Font", "X_Axis_Font_Size", "X_Axis_Font_Color", "X_Axis_Major_Tic_Color", "X_Axis_Major_Tic_Opacity", "X_Axis_Minor_Tic_Color", "X_Axis_Minor_Tic_Opacity"], index=[0])
     X_Axis_Properties.Name = "X_Axis_Properties"
-    Y_Axis_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Y_Axis_Properties"], columns=["Y_Axis_Visible", "Y_Axis_label_orient", "Y_Axis_Line_Style", "Y_Axis_Line_Thickness", "Y_Axis_Line_Color", "Y_Axis_Line_Opacity", "Y_Axis_Font", "Y_Axis_Font_Size", "Y_Axis_Font_Color", "Y_Axis_Major_Tic_Color", "Y_Axis_Major_Tic_Opacity", "Y_Axis_Minor_Tic_Color", "Y_Axis_Minor_Tic_Opacity"], index=[0])
+    Y_Axis_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Y_Axis_Properties"], columns=["Y_Axis_Visible", "Y_Axis_label_orient", "Y_Axis_Line_Style", "Y_Axis_Line_Thickness", "Y_Axis_Line_Color", "Y_Axis_Line_Opacity", "Y_Axis_Font", "Y_Axis_Font_Size", "Y_Axis_Font_Color", "Y_Axis_Major_Tic_Color", "Y_Axis_Major_Tic_Opacity", "Y_Axis_Minor_Tic_Color", "Y_Axis_Minor_Tic_Opacity"], index=[0])
     Y_Axis_Properties.Name = "Y_Axis_Properties"
-    Color_Bar_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Color_Bar_Properties"], columns=["Color_Bar_Visible", "Color_Bar_Position", "Color_Bar_Tick_Line_Color", "Color_Bar_Font", "Color_Bar_Font_Size", "Color_Bar_Font_Color"], index=[0])
+    Color_Bar_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Color_Bar_Properties"], columns=["Color_Bar_Visible", "Color_Bar_Position", "Color_Bar_Tick_Line_Color", "Color_Bar_Font", "Color_Bar_Font_Size", "Color_Bar_Font_Color"], index=[0])
     Color_Bar_Properties.Name = "Color_Bar_Properties"
-    Legend_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Legend_Properties"], columns=["Legend_Visible", "Legend_Click_Policy", "Legend_Layer_Position", "Legend_Position", "Legend_Font", "Legend_Font_Size", "Legend_Font_Color", "Legend_Title_Visible", "Legend_Title_Font", "Legend_Title_Font_Size", "Legend_Title_Font_Color", "Legend_Title_Font_Style"], index=[0])
+    Legend_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Legend_Properties"], columns=["Legend_Visible", "Legend_Click_Policy", "Legend_Layer_Position", "Legend_Position", "Legend_Font", "Legend_Font_Size", "Legend_Font_Color", "Legend_Title_Visible", "Legend_Title_Font", "Legend_Title_Font_Size", "Legend_Title_Font_Color", "Legend_Title_Font_Style"], index=[0])
     Legend_Properties.Name = "Legend_Properties"
-    Tool_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Tool_Properties"], columns=["Tool_AutoHide", "CrosshairTool_Visible", "CrosshairTool_Color", "CrosshairTool_Mode", "CrosshairTool_Thickness", "WheelZoomTool_Visible", "BoxSelectTool_Visible", "BoxSelectTool_Mode", "HoverTool_Visible", "HoverTool_mode", "HoverTool_mute_policy", "TapTool_Visible", "PanTool_Visible", "PanTool_Dimension", "ResetTool_Visible", "FullscreenTool_Visible", "ZoomInTool_Visible", "ZoomOutTool_Visible", "BoxZoomTool_Visible", "BoxZoomTool_Mode", "PolyDrawTool_Visible", "HelpTool_Visible"], index=[0])
+    Tool_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Tool_Properties"], columns=["Tool_AutoHide", "CrosshairTool_Visible", "CrosshairTool_Color", "CrosshairTool_Mode", "CrosshairTool_Thickness", "WheelZoomTool_Visible", "BoxSelectTool_Visible", "BoxSelectTool_Mode", "HoverTool_Visible", "HoverTool_mode", "HoverTool_mute_policy", "TapTool_Visible", "PanTool_Visible", "PanTool_Dimension", "ResetTool_Visible", "FullscreenTool_Visible", "ZoomInTool_Visible", "ZoomOutTool_Visible", "BoxZoomTool_Visible", "BoxZoomTool_Mode", "PolyDrawTool_Visible", "HelpTool_Visible"], index=[0])
     Tool_Properties.Name = "Tool_Properties"
-    Text_Area_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Text_Area_Properties"], columns=["Text_Area_Visible", "Area_width", "Area_height", "x_Range", "y_Range", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom", "Major_Text_fill_alpha", "Major_Text_Color", "Major_Text_Alpha", "Major_Text_Font", "Major_Text_Font_Size", "Major_Text_Font_Style", "Major_Text_Baseline", "Minor_Text_fill_alpha", "Minor_Text_Color", "Minor_Text_Alpha", "Minor_Text_Font", "Minor_Text_Font_Size", "Minor_Text_Font_Style", "Minor_Text_Baseline", "Arrow_Up_Color", "Arrow_Up_Head_Alpha", "Arrow_Down_Color", "Arrow_Down_Head_Alpha"], index=[0])
+    Text_Area_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Text_Area_Properties"], columns=["Text_Area_Visible", "Area_width", "Area_height", "x_Range", "y_Range", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom", "Major_Text_fill_alpha", "Major_Text_Color", "Major_Text_Alpha", "Major_Text_Font", "Major_Text_Font_Size", "Major_Text_Font_Style", "Major_Text_Baseline", "Minor_Text_fill_alpha", "Minor_Text_Color", "Minor_Text_Alpha", "Minor_Text_Font", "Minor_Text_Font_Size", "Minor_Text_Font_Style", "Minor_Text_Baseline", "Arrow_Up_Color", "Arrow_Up_Head_Alpha", "Arrow_Down_Color", "Arrow_Down_Head_Alpha"], index=[0])
     Text_Area_Properties.Name = "Text_Area_Properties"
-    Range_Tool_Properties = pandas.DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Range_Tool_Properties"], columns=["Range_Tool_Visible", "Range_Tool_Height_Percentage", "Range_Tool_Active_Def_Area", "Range_Tool_Active_Def_Color", "Range_Tool_Active_Def_Color_Opacity"], index=[0])
+    Range_Tool_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Range_Tool_Properties"], columns=["Range_Tool_Visible", "Range_Tool_Height_Percentage", "Range_Tool_Active_Def_Area", "Range_Tool_Active_Def_Color", "Range_Tool_Active_Def_Color_Opacity"], index=[0])
     Range_Tool_Properties.Name = "Range_Tool_Properties"
 
 
@@ -109,7 +107,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     Active_Area_size = int(Chart_Area_Properties.iloc[0]["Active_Area_size"])
     Active_Area_indented = round((int(Active_Area_size) / 100) * int(Chart_Area_Properties.iloc[0]["Active_Area_indented_percent"]),0)
 
-    Value_df["Date"] = pandas.to_datetime(Value_df[X_Series_Column], format=Date_Format)
+    Value_df["Date"] = to_datetime(Value_df[X_Series_Column], format=Date_Format)
     Value_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Value_df, Column="Date", Covert_Format=Date_Format)
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
@@ -138,7 +136,6 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
         Min_range = Value_df.iloc[Min_Range_Len]["Date"]
     else:
         CTkMessagebox(title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1)
-        raise ValueError
 
     x_range_set = DataRange1d(start=Min_range, end=Max_range, bounds=(Min_range_bound, Max_range))
 
@@ -174,7 +171,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     # Registered Area
     if Calculation_source == "Current":
         try:
-            Events_Registered_df = pandas.read_csv(f"Operational\\Downloads\\Events_Registered.csv", sep=";")
+            Events_Registered_df = read_csv(f"Operational\\Downloads\\Events_Registered.csv", sep=";")
             if Events_Registered_df.empty:
                 pass
             else:
@@ -232,7 +229,6 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
         Chart_update_html(Chart=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
-        raise ValueError
     
 def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calendar_df: DataFrame, File_Sub_Path: str):
     Date_Format = Settings["General"]["Formats"]["Date"]
@@ -250,25 +246,24 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
         Chart_Settings = Defaults_Lists.Load_Figures(Theme=theme)
     else:
         CTkMessagebox(title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1)
-        raise ValueError
     
-    Chart_Area_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Chart_Area_Properties"], columns=["Line_Color_start_Range", "Line_Color_end_Range", "Line_Thickness", "Under_Line_Area_Opacity", "Under_Line_Area_Fill_Color", "Tick_Symbol", "Tick_Size", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
+    Chart_Area_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Chart_Area_Properties"], columns=["Line_Color_start_Range", "Line_Color_end_Range", "Line_Thickness", "Under_Line_Area_Opacity", "Under_Line_Area_Fill_Color", "Tick_Symbol", "Tick_Size", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
     Chart_Area_Properties.Name = "Chart_Area_Properties"
-    Grid_properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Grid_properties"], columns=["X_Grid_Line", "X_Grid_Line_Style", "X_Grid_Line_Dash_Ration", "X_Grid_Line_Thickness", "X_Grid_Line_Color", "X_Grid_Line_Color_Opacity", "Y_Grid_Line", "Y_Grid_Line_Style", "Y_Grid_Line_Dash_Ration", "Y_Grid_Line_Thickness", "Y_Grid_Line_Color", "Y_Grid_Line_Color_Opacity"], index=[0])
+    Grid_properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Grid_properties"], columns=["X_Grid_Line", "X_Grid_Line_Style", "X_Grid_Line_Dash_Ration", "X_Grid_Line_Thickness", "X_Grid_Line_Color", "X_Grid_Line_Color_Opacity", "Y_Grid_Line", "Y_Grid_Line_Style", "Y_Grid_Line_Dash_Ration", "Y_Grid_Line_Thickness", "Y_Grid_Line_Color", "Y_Grid_Line_Color_Opacity"], index=[0])
     Grid_properties.Name = "Grid_properties"
-    X_Axis_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["X_Axis_Properties"], columns=["X_Axis_Visible", "X_Axis_label_orient", "X_Axis_Line_Style", "X_Axis_Line_Thickness", "X_Axis_Line_Color", "X_Axis_Line_Opacity", "X_Axis_Font", "X_Axis_Font_Size", "X_Axis_Font_Color", "X_Axis_Major_Tic_Color", "X_Axis_Major_Tic_Opacity", "X_Axis_Minor_Tic_Color", "X_Axis_Minor_Tic_Opacity"], index=[0])
+    X_Axis_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["X_Axis_Properties"], columns=["X_Axis_Visible", "X_Axis_label_orient", "X_Axis_Line_Style", "X_Axis_Line_Thickness", "X_Axis_Line_Color", "X_Axis_Line_Opacity", "X_Axis_Font", "X_Axis_Font_Size", "X_Axis_Font_Color", "X_Axis_Major_Tic_Color", "X_Axis_Major_Tic_Opacity", "X_Axis_Minor_Tic_Color", "X_Axis_Minor_Tic_Opacity"], index=[0])
     X_Axis_Properties.Name = "X_Axis_Properties"
-    Y_Axis_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Y_Axis_Properties"], columns=["Y_Axis_Visible", "Y_Axis_label_orient", "Y_Axis_Line_Style", "Y_Axis_Line_Thickness", "Y_Axis_Line_Color", "Y_Axis_Line_Opacity", "Y_Axis_Font", "Y_Axis_Font_Size", "Y_Axis_Font_Color", "Y_Axis_Major_Tic_Color", "Y_Axis_Major_Tic_Opacity", "Y_Axis_Minor_Tic_Color", "Y_Axis_Minor_Tic_Opacity"], index=[0])
+    Y_Axis_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Y_Axis_Properties"], columns=["Y_Axis_Visible", "Y_Axis_label_orient", "Y_Axis_Line_Style", "Y_Axis_Line_Thickness", "Y_Axis_Line_Color", "Y_Axis_Line_Opacity", "Y_Axis_Font", "Y_Axis_Font_Size", "Y_Axis_Font_Color", "Y_Axis_Major_Tic_Color", "Y_Axis_Major_Tic_Opacity", "Y_Axis_Minor_Tic_Color", "Y_Axis_Minor_Tic_Opacity"], index=[0])
     Y_Axis_Properties.Name = "Y_Axis_Properties"
-    Color_Bar_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Color_Bar_Properties"], columns=["Color_Bar_Visible", "Color_Bar_Position", "Color_Bar_Tick_Line_Color", "Color_Bar_Font", "Color_Bar_Font_Size", "Color_Bar_Font_Color"], index=[0])
+    Color_Bar_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Color_Bar_Properties"], columns=["Color_Bar_Visible", "Color_Bar_Position", "Color_Bar_Tick_Line_Color", "Color_Bar_Font", "Color_Bar_Font_Size", "Color_Bar_Font_Color"], index=[0])
     Color_Bar_Properties.Name = "Color_Bar_Properties"
-    Legend_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Legend_Properties"], columns=["Legend_Visible", "Legend_Click_Policy", "Legend_Layer_Position", "Legend_Position", "Legend_Font", "Legend_Font_Size", "Legend_Font_Color", "Legend_Title_Visible", "Legend_Title_Font", "Legend_Title_Font_Size", "Legend_Title_Font_Color", "Legend_Title_Font_Style"], index=[0])
+    Legend_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Legend_Properties"], columns=["Legend_Visible", "Legend_Click_Policy", "Legend_Layer_Position", "Legend_Position", "Legend_Font", "Legend_Font_Size", "Legend_Font_Color", "Legend_Title_Visible", "Legend_Title_Font", "Legend_Title_Font_Size", "Legend_Title_Font_Color", "Legend_Title_Font_Style"], index=[0])
     Legend_Properties.Name = "Legend_Properties"
-    Range_Tool_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Range_Tool_Properties"], columns=["Range_Tool_Visible", "Range_Tool_Height_Percentage", "Range_Tool_Active_Def_Area", "Range_Tool_Active_Def_Color", "Range_Tool_Active_Def_Color_Opacity"], index=[0])
+    Range_Tool_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Range_Tool_Properties"], columns=["Range_Tool_Visible", "Range_Tool_Height_Percentage", "Range_Tool_Active_Def_Area", "Range_Tool_Active_Def_Color", "Range_Tool_Active_Def_Color_Opacity"], index=[0])
     Range_Tool_Properties.Name = "Range_Tool_Properties"
-    Text_Area_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Text_Area_Properties"], columns=["Text_Area_Visible", "Area_width", "Area_height", "x_Range", "y_Range", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom", "Major_Text_fill_alpha", "Major_Text_Color", "Major_Text_Alpha", "Major_Text_Font", "Major_Text_Font_Size", "Major_Text_Font_Style", "Major_Text_Baseline", "Minor_Text_fill_alpha", "Minor_Text_Color", "Minor_Text_Alpha", "Minor_Text_Font", "Minor_Text_Font_Size", "Minor_Text_Font_Style", "Minor_Text_Baseline", "Arrow_Up_Color", "Arrow_Up_Head_Alpha", "Arrow_Down_Color", "Arrow_Down_Head_Alpha"], index=[0])
+    Text_Area_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Text_Area_Properties"], columns=["Text_Area_Visible", "Area_width", "Area_height", "x_Range", "y_Range", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom", "Major_Text_fill_alpha", "Major_Text_Color", "Major_Text_Alpha", "Major_Text_Font", "Major_Text_Font_Size", "Major_Text_Font_Style", "Major_Text_Baseline", "Minor_Text_fill_alpha", "Minor_Text_Color", "Minor_Text_Alpha", "Minor_Text_Font", "Minor_Text_Font_Size", "Minor_Text_Font_Style", "Minor_Text_Baseline", "Arrow_Up_Color", "Arrow_Up_Head_Alpha", "Arrow_Down_Color", "Arrow_Down_Head_Alpha"], index=[0])
     Text_Area_Properties.Name = "Text_Area_Properties"
-    Tool_Properties = pandas.DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Tool_Properties"], columns=["Tool_AutoHide", "CrosshairTool_Visible", "CrosshairTool_Color", "CrosshairTool_Mode", "CrosshairTool_Thickness", "WheelZoomTool_Visible", "BoxSelectTool_Visible", "BoxSelectTool_Mode", "HoverTool_Visible", "HoverTool_mode", "HoverTool_mute_policy", "TapTool_Visible", "PanTool_Visible", "PanTool_Dimension", "ResetTool_Visible", "FullscreenTool_Visible", "ZoomInTool_Visible", "ZoomOutTool_Visible", "BoxZoomTool_Visible", "BoxZoomTool_Mode", "PolyDrawTool_Visible", "HelpTool_Visible"], index=[0])
+    Tool_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Tool_Properties"], columns=["Tool_AutoHide", "CrosshairTool_Visible", "CrosshairTool_Color", "CrosshairTool_Mode", "CrosshairTool_Thickness", "WheelZoomTool_Visible", "BoxSelectTool_Visible", "BoxSelectTool_Mode", "HoverTool_Visible", "HoverTool_mode", "HoverTool_mute_policy", "TapTool_Visible", "PanTool_Visible", "PanTool_Dimension", "ResetTool_Visible", "FullscreenTool_Visible", "ZoomInTool_Visible", "ZoomOutTool_Visible", "BoxZoomTool_Visible", "BoxZoomTool_Mode", "PolyDrawTool_Visible", "HelpTool_Visible"], index=[0])
     Tool_Properties.Name = "Tool_Properties"
 
     # Process Data
@@ -281,7 +276,7 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
 
     Active_Area_indented = round((int(Chart_Area_Properties.iloc[0]["Active_Area_size"]) / 100) * int(Chart_Area_Properties.iloc[0]["Active_Area_indented_percent"]),0)
 
-    Value_df["Draw_Date2"] = pandas.to_datetime(Value_df[X_Series_Column], format=Date_Format)
+    Value_df["Draw_Date2"] = to_datetime(Value_df[X_Series_Column], format=Date_Format)
     Value_df.drop(labels=["Date"], axis=1,inplace=True)
     Value_df.rename({"Draw_Date2": "Date"}, axis=1, inplace=True)
     Max_range = max(Value_df[f"{X_Series_Column}"]) + timedelta(days=Active_Area_indented)
@@ -313,7 +308,6 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
         Min_range = Value_df.iloc[Min_Range_Len][X_Series_Column]
     else:
         CTkMessagebox(title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1)
-        raise ValueError
     
     x_range_set = DataRange1d(start=Min_range, end=Max_range, bounds=(Min_range_bound, Max_range))
 
@@ -372,4 +366,3 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
         Chart_update_html(Chart=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
-        raise ValueError

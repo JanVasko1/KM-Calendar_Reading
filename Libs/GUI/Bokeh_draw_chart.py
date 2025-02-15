@@ -1,6 +1,6 @@
 # Library Imports
+from pandas import Timestamp, to_datetime
 import numpy
-import pandas
 import math
 from PIL import ImageColor
 from math import sin, cos, pi
@@ -67,12 +67,12 @@ def Bokeh_line_Interpolation(x_values, y_values, Interpolate, Format, multiplica
             y_vals = spl(x_vals)
             return x_vals, y_vals
         elif Format == "datetime":
-            start = pandas.Timestamp(x_values.iloc[0])
-            end = pandas.Timestamp(x_values.iloc[x_values.shape[0]-1])
+            start = Timestamp(x_values.iloc[0])
+            end = Timestamp(x_values.iloc[x_values.shape[0]-1])
             x_dates = numpy.linspace(start.value, end.value, Interpolate_range)
             spl = PchipInterpolator(x = x_values, y = y_values, axis=1)
             y_vals = spl(x_dates)
-            x_dates = pandas.to_datetime(x_dates)           
+            x_dates = to_datetime(x_dates)           
             return x_dates, y_vals
         else:
             return x_values, y_values

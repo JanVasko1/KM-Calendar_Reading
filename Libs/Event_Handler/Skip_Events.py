@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Skip_Events(Settings: dict, Events: DataFrame, Type: str):
@@ -12,7 +11,7 @@ def Skip_Events(Settings: dict, Events: DataFrame, Type: str):
         # Iterate over all lines
         for row in Events.iterrows():
             # Define current row as pandas Series
-            row_Series = pandas.Series(row[1])
+            row_Series = Series(row[1])
             Event_Subject = row_Series["Subject"]
 
             if Type == "Regular": 

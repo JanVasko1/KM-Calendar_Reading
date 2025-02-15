@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Settings: dict, Events: DataFrame):
@@ -11,7 +10,7 @@ def AutoFiller(Settings: dict, Events: DataFrame):
         for row in Events.iterrows():
             # Define current row as pandas Series
             row_index = row[0]
-            row_Series = pandas.Series(row[1])
+            row_Series = Series(row[1])
             Event_Subject = row_Series["Subject"]
             Event_Project = row_Series["Project"]
             Event_Activity = row_Series["Activity"]
@@ -57,7 +56,7 @@ def Auto_Activity_Corrections(Settings: dict, Events: DataFrame):
         for row in Events.iterrows():
             # Define current row as pandas Series
             row_index = row[0]
-            row_Series = pandas.Series(row[1])
+            row_Series = Series(row[1])
             Event_Project = row_Series["Project"]
             Event_Activity = row_Series["Activity"]
 

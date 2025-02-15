@@ -3,8 +3,7 @@
 import os
 import time
 
-import customtkinter
-from customtkinter import CTk, CTkFrame
+from customtkinter import CTk, CTkFrame, set_appearance_mode
 import pywinstyles
 
 import Libs.GUI.Elements as Elements
@@ -20,13 +19,13 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     def Theme_Change():
         Current_Theme = Defaults_Lists.Get_Current_Theme() 
         if Current_Theme == "Dark":
-            customtkinter.set_appearance_mode(mode_string="light")
+            set_appearance_mode(mode_string="light")
         elif Current_Theme == "Light":
-            customtkinter.set_appearance_mode(mode_string="dark")
+            set_appearance_mode(mode_string="dark")
         elif Current_Theme == "System":
-            customtkinter.set_appearance_mode(mode_string="dark")
+            set_appearance_mode(mode_string="dark")
         else:
-            customtkinter.set_appearance_mode(mode_string="system")
+            set_appearance_mode(mode_string="system")
 
     # ------------------------- Main Functions -------------------------#
     # Theme Change - Button
@@ -232,7 +231,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Main Program -------------------------------------------------------------------------------------------------------------------------------------------------- #
-class Win(customtkinter.CTk):
+class Win(CTk):
     def __init__(self):
         super().__init__()
         super().overrideredirect(True)
@@ -289,7 +288,7 @@ if __name__ == "__main__":
     window.attributes("-transparentcolor", "#000001")
 
     # Base Windows style setup --> always keep normal before change
-    customtkinter.set_appearance_mode(mode_string=Theme_Actual)
+    set_appearance_mode(mode_string=Theme_Actual)
     pywinstyles.apply_style(window=window, style="normal")
     pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 

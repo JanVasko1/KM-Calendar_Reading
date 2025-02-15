@@ -6,8 +6,8 @@ import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 
 import pywinstyles
-import customtkinter
-from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, BooleanVar, CTkToplevel, CTkOptionMenu, CTkButton, CTkCheckBox, CTkLabel
+
+from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, BooleanVar, CTkToplevel, CTkOptionMenu, CTkButton, CTkCheckBox, CTkLabel, set_appearance_mode
 from CTkTable import CTkTable
 from CTkMessagebox import CTkMessagebox
 
@@ -149,7 +149,7 @@ def Settings_General_Theme(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
 
     # ------------------------- Local Functions ------------------------#
     def Appearance_Change_Theme(Theme_Frame_Var: CTkOptionMenu) ->  None:
-        customtkinter.set_appearance_mode(mode_string=Theme_Frame_Var)
+        set_appearance_mode(mode_string=Theme_Frame_Var)
         Defaults_Lists.Save_Value(Settings=None, Configuration=Configuration, Variable=Theme_Variable, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Theme"], Information=Theme_Frame_Var)
 
     def Appearance_Change_Win_Style(Win_Style_Selected: str, window: CTk|CTkFrame) -> None:
@@ -492,8 +492,6 @@ def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Format_Sharepoint_Date = Settings["General"]["Formats"]["Sharepoint_Date"]
     Format_Sharepoint_Date1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
     Format_Sharepoint_Date2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Date_Format3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
-    Format_Sharepoint_Date3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
     Format_Sharepoint_Time = Settings["General"]["Formats"]["Sharepoint_Time"]
     Format_Sharepoint_Time1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
 
@@ -543,12 +541,6 @@ def Settings_General_Formats(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Sharepoint_Date_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Date 3", Field_Type="Input_Normal")
     Sharepoint_Date_Frame_Var = Sharepoint_Date_Frame.children["!ctkframe3"].children["!ctkentry"]
     Sharepoint_Date_Frame_Var.configure(placeholder_text=Format_Sharepoint_Date2, placeholder_text_color="#949A9F")
-    Sharepoint_Date_Frame_Var.configure(state="disabled")
-
-    # Field - Sharepoint Date Format 3
-    Sharepoint_Date_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Sharepoint Date 4", Field_Type="Input_Normal")
-    Sharepoint_Date_Frame_Var = Sharepoint_Date_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Sharepoint_Date_Frame_Var.configure(placeholder_text=Format_Sharepoint_Date3, placeholder_text_color="#949A9F")
     Sharepoint_Date_Frame_Var.configure(state="disabled")
 
     # Field - Sharepoint Time Format
@@ -2199,7 +2191,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         Sub_dict = Sub_Row[1]
         Skip_AutoFill_list.append(list(Sub_dict.values()))
 
-    # BUG --> tabulka se načte pouze první sloupec a až po skrolování se dočte zbytek sloupců
+    # BUG --> Table loads only first column
     Frame_AutoFiller_Table = Elements_Groups.Get_Table_Frame(Configuration=Configuration, Frame=Frame_Table_Area, Table_Size="Double_size", Table_Values=Skip_AutoFill_list, Table_Columns=len(Header_List), Table_Rows=len(Skip_AutoFill_list))
     Frame_AutoFiller_Table_Var = Frame_AutoFiller_Table.children["!ctktable"]
     Frame_AutoFiller_Table_Var.configure(wraplength=230)

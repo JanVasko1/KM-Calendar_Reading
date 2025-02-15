@@ -1,6 +1,5 @@
 # Import Libraries
 from pandas import DataFrame as DataFrame
-import pandas
 from datetime import datetime, timedelta
 
 import Libs.Download.Outlook_Client as Outlook_Client
@@ -22,7 +21,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
     Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
     Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
     Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Date_Format3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
     Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
     User_ID = Settings["General"]["User"]["Code"]
@@ -36,6 +34,7 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
 
     Events = DataFrame()
     Events_Registered_df = DataFrame()  # Because of case when it is not downloaded from Sharepoint, but output must exists
+    Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events_Registered.csv")
 
     Today = datetime.today()
     Today = Today.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -49,9 +48,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         Downloaded = Sharepoint.Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="Current", Name=None)
 
         if Downloaded == True:
-            # Delete File before generation
-            Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events_Registered.csv")
-
             # Report Period Information
             Utilization_Sheet = Sharepoint.Get_WorkSheet(Settings=Settings, Sheet_Name="Utilization", Type="Current", Name=None)
             Report_Period_Start = Utilization_Sheet["G2"].value
@@ -81,10 +77,7 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
                 try:
                     Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
                 except:
-                    try:
-                        Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
-                    except:
-                        Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format3)
+                    Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
             Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
 
             # Time
@@ -109,7 +102,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
                 if My_Last_Day_dt >= Today:
                     # Skip whole automatic because it should not load anything
                     CTkMessagebox(title="Error", message=f"Last Day Reported is: {My_Last_Day_dt} --> cannot perform automatic Download. Use Manual.", icon="cancel", fade_in_duration=1)
-                    raise ValueError
                 else:
                     pass
 
@@ -151,7 +143,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
                 CTkMessagebox(title="Error", message=f"Cannot define End date as not know method selected. Method: {SP_Date_To_Method}", icon="cancel", fade_in_duration=1)
         else:
             CTkMessagebox(title="Error", message="It was not possible to automatically download the master data from Sharepoint, please select Start Date and End Date manually.", icon="cancel", fade_in_duration=1)
-            raise ValueError
 
         # Date check
         Question_Message = CTkMessagebox(title="Information", message=f"Dates range to download: \n Date From: {Input_Start_Date_dt.strftime(Date_Format)}\n Date To: {Input_End_Date_dt.strftime(Date_Format)}", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
@@ -174,7 +165,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         Input_End_Date_dt = datetime.strptime(Input_End_Date, Date_Format)
     else:
         CTkMessagebox(title="Error", message=f"Date source: {Download_Date_Range_Source} is not compatible, should be Sharepoint or Manual. Try again.", icon="cancel", fade_in_duration=1)
-        raise ValueError
     
     # -------------- Dates Checker  -------------- #
     try:
@@ -183,7 +173,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
             pass
         else:
             CTkMessagebox(title="Error", message="Start Date is after End Date --> try again.", icon="cancel", fade_in_duration=1)
-            raise ValueError
 
         # add 1 day 
         Filter_Start_Date_dt = Input_Start_Date_dt - timedelta(days=1)
@@ -192,7 +181,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         Filter_End_Date = Filter_End_Date_dt.strftime(Date_Format)
     except:
         CTkMessagebox(title="Error", message="Something went wrong, try again.", icon="cancel", fade_in_duration=1)
-        raise ValueError
 
     # Engine selection
     if Download_canceled == False:
@@ -202,7 +190,6 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
             Events = Exchange.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
         else:
             CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_Client, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
-            raise ValueError
     else:
         pass
     

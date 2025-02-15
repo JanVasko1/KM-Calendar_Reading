@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series, concat
 from datetime import datetime
 import operator
 import json
@@ -72,7 +71,7 @@ def Find_Close_Sub_Event(Day_Events_df: DataFrame, General_Empty_df: DataFrame, 
 def Define_Event_within_Working_Hours(Dataframe: DataFrame, Day_Start_Time_dt: datetime, Day_End_Time_dt: datetime) -> None:
     # Marks row which are at least with some part of event within working hours
     for row in Dataframe.iterrows():
-        row_Series = pandas.Series(row[1])
+        row_Series = Series(row[1])
         Event_Start_time = row_Series["Start_Time"]
         Event_End_time = row_Series["End_Time"]
 
@@ -118,7 +117,7 @@ def Get_Day_Start_End_Time(Day_Start_Subject: str, Day_End_Subject: str, Day_Eve
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
-    Cumulated_Events = pandas.DataFrame()
+    Cumulated_Events = DataFrame()
 
     Date_format = Settings["General"]["Formats"]["Date"]
     Time_format = Settings["General"]["Formats"]["Time"]
@@ -142,7 +141,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             # Do not make input to the day when day does not have Work Start / Work End Time
             Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
             Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
-            Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
+            Cumulated_Events = concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             continue
         else:
             Day_Start_Time_dt = datetime.strptime(Day_Start_Time, Time_format)
@@ -199,7 +198,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             General_Empty_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=General_Empty_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             for row in General_Empty_df.iterrows():
                 # Define current row as pandas Series
-                row_Series = pandas.Series(row[1])
+                row_Series = Series(row[1])
                 Event_End_time = row_Series["End_Time"]
 
                 # Select Randomly from General Empty 
@@ -210,7 +209,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
                 Differences_to_End_list = []
                 Sub_event_DF_Index_list = [] 
                 for row_sub in General_Empty_df.iterrows():
-                    Sub_row_Series = pandas.Series(row_sub[1])
+                    Sub_row_Series = Series(row_sub[1])
                     Sub_Event_Start_time = Sub_row_Series["Start_Time"]
                     Sub_Event_End_time = Sub_row_Series["End_Time"]
 
@@ -241,7 +240,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             Events_Start_Times_list = []
             for row in General_Empty_df.iterrows():
                 # Define current row as pandas Series
-                row_Series = pandas.Series(row[1])
+                row_Series = Series(row[1])
                 Event_Start_time = row_Series["Start_Time"]
                 Event_End_time = row_Series["End_Time"]
                 Events_Start_Times_list.append(Event_Start_time)
@@ -282,7 +281,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             Events_End_Times_list = []
             for row in General_Empty_df.iterrows():
                 # Define current row as pandas Series
-                row_Series = pandas.Series(row[1])
+                row_Series = Series(row[1])
                 Event_Start_time = row_Series["Start_Time"]
                 Event_End_time = row_Series["End_Time"]
                 Events_End_Times_list.append(Event_End_time)
@@ -314,7 +313,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             
             # Add to cumulated Dataframe
             Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
-            Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
+            Cumulated_Events = concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             del Day_Events_df
 
     return Cumulated_Events

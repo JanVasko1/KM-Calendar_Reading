@@ -1,5 +1,5 @@
 # Import Libraries
-import pandas
+from pandas import read_csv
 
 from customtkinter import CTk, CTkFrame
 from CTkMessagebox import CTkMessagebox
@@ -17,11 +17,11 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
-        Totals_Summary_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Totals.csv", sep=";")
-        Project_DF = pandas.read_csv(f"Operational\\DashBoard\\Events_Project.csv", sep=";")
-        Activity_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_Activity.csv", sep=";")
-        WeekDays_Df = pandas.read_csv(f"Operational\\DashBoard\\Events_WeekDays.csv", sep=";")
-        Weeks_DF = pandas.read_csv(f"Operational\\DashBoard\\Events_Weeks.csv", sep=";")
+        Totals_Summary_Df = read_csv(f"Operational\\DashBoard\\Events_Totals.csv", sep=";")
+        Project_DF = read_csv(f"Operational\\DashBoard\\Events_Project.csv", sep=";")
+        Activity_Df = read_csv(f"Operational\\DashBoard\\Events_Activity.csv", sep=";")
+        WeekDays_Df = read_csv(f"Operational\\DashBoard\\Events_WeekDays.csv", sep=";")
+        Weeks_DF = read_csv(f"Operational\\DashBoard\\Events_Weeks.csv", sep=";")
 
         # Total Line
         Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])

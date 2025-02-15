@@ -1,13 +1,12 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Join_Events(Settings: dict, Events: DataFrame) -> DataFrame:
     Join_Events_Enabled = Settings["Event_Handler"]["Events"]["Join_method"]["Use"]
 
     if Join_Events_Enabled == True:
-        Cumulated_Events = pandas.DataFrame(columns=list(Events.columns))
+        Cumulated_Events = DataFrame(columns=list(Events.columns))
         
         Pre_Index = ""
         Pre_Date = ""
@@ -17,7 +16,7 @@ def Join_Events(Settings: dict, Events: DataFrame) -> DataFrame:
 
         for row in Events.iterrows():
             # Define current row as pandas Series
-            row_Series = pandas.Series(row[1])
+            row_Series = Series(row[1])
 
             Current_Date = row_Series["Start_Date"]
             Current_Subject = row_Series["Subject"]

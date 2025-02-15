@@ -1,6 +1,9 @@
 .VSCodeCounter/
 .vscode/
 Operational/
+build/
+dist/
 __pycache__
 Test*
 Exchange.env
+TimeSheets.spec

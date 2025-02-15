@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 
 from customtkinter import CTk, CTkFrame, CTkLabel
 from CTkTable import CTkTable
@@ -96,7 +95,7 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
     Frame_Data_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Data_Work_Detail_Area.grid_propagate(flag=False)
 
-    Events = pandas.read_csv(f"Operational\\Downloads\\Events.csv", sep=";")
+    Events = read_csv(f"Operational\\Downloads\\Events.csv", sep=";")
 
     # ------------------------- Buttons Area -------------------------#
     # Download Button

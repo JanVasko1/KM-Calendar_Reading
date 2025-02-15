@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, Series, concat
 from datetime import datetime
 
 import Libs.Event_Handler.Parallel_Events as Parallel_Events
@@ -35,7 +34,7 @@ def Days_Handler(Events: DataFrame) -> list:
 
 def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataFrame:
     # Should split conflict meetings if they are within Lunch
-    Cumulated_Events = pandas.DataFrame()
+    Cumulated_Events = DataFrame()
 
     #Get Days details from Events
     Days_List = Days_Handler(Events)
@@ -82,13 +81,13 @@ def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataF
 
         Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         for row in Day_Events_df.iterrows():
-            row_Series = pandas.Series(row[1])
+            row_Series = Series(row[1])
             Event_Start_Time = row_Series["Start_Time"]
             Event_End_Time = row_Series["End_Time"]
             Day_Events_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
         
         # Add to Cumulated
-        Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
+        Cumulated_Events = concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
     Cumulated_Events.drop(labels=["Conflict", "Conflict_indexes", "Start_with_Event"], axis=1, inplace=True)
 
     return Cumulated_Events
@@ -100,7 +99,7 @@ def Day_handler(Settings: dict, Events: DataFrame, Details: dict) -> DataFrame:
 
     for row in Events.iterrows():
         row_index = row[0]
-        row_Series = pandas.Series(row[1])
+        row_Series = Series(row[1])
         Event_Subject = row_Series["Subject"]
         Event_Day = row_Series["Start_Date"]
         Event_All_Day = row_Series["All_Day_Event"]

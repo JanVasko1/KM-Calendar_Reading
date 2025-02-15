@@ -1,14 +1,9 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, concat
 import random
 from datetime import datetime, timedelta
 
 from CTkMessagebox import CTkMessagebox
-
-# ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
-
-
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Change(Date_format: str, Time_format: str, Start_Date: str, End_Date: str, Start_Time: str, End_Time: str) -> int:
@@ -46,7 +41,7 @@ def OverMidnight_Events(Settings: dict, Events: DataFrame):
     # Handle Meetings which are for more days / over midnight --> splits them
     Event_Indexes = []
     for row in Events.iterrows():
-        row_Series = pandas.Series(row[1])
+        row_Series = Series(row[1])
         Event_Start_Date = row_Series["Start_Date"]
         Event_End_Date = row_Series["End_Date"]
 
@@ -150,7 +145,7 @@ def Empty_Split_Events(Settings: dict, Events: DataFrame):
         return Cumulated_Events
 
     if Events_Empty_Split_Enabled == True:
-        Cumulated_Events = pandas.DataFrame()
+        Cumulated_Events = DataFrame()
         Events["Empty_Split"] = Events.apply(Find_Split_Events, axis = 1)
 
         # Define events to be splitted DF
@@ -160,13 +155,13 @@ def Empty_Split_Events(Settings: dict, Events: DataFrame):
         # Add non-Conflict to Cumulated
         mask1 = Events["Empty_Split"] == False
         Non_Split_df = Events.loc[mask1]
-        Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Non_Split_df], axis=0, ignore_index=True)
+        Cumulated_Events = concat(objs=[Cumulated_Events, Non_Split_df], axis=0, ignore_index=True)
 
         if Events_to_Split_df.empty:
             pass
         else:
             for row in Events_to_Split_df.iterrows():
-                row_Series = pandas.Series(row[1])
+                row_Series = Series(row[1])
                 Cumulated_Events = Split_Event(Cumulated_Events=Cumulated_Events, Row=row_Series)
         
         Cumulated_Events.drop(labels=["Empty_Split"], axis=1, inplace=True)

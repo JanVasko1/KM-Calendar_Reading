@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame
+from pandas import DataFrame, concat
 from datetime import datetime, timedelta
 import holidays
 
@@ -167,7 +166,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     Events_Project_Mean["Average[H]"] = Events_Project_Mean["Average[H]"].map(lambda x: round(x, 2))
     Events_Project_Count = Events_Project_GR.groupby(["Project"]).count()
     Events_Project_Count.rename(columns={"Duration_H": "Count"}, inplace=True)
-    Events_Project_Concat = pandas.concat(objs=[Events_Project_Count, Events_Project_Sum, Events_Project_Mean], axis=1, join="inner")
+    Events_Project_Concat = concat(objs=[Events_Project_Count, Events_Project_Sum, Events_Project_Mean], axis=1, join="inner")
 
     # Summary line
     Project_Count_Summary = Events_Project_Concat["Count"].sum()
@@ -188,7 +187,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     Events_Activity_Mean["Average[H]"] = Events_Activity_Mean["Average[H]"].map(lambda x: round(x, 2))
     Events_Activity_Count = Events_Activity_GR.groupby(["Activity"]).count()
     Events_Activity_Count.rename(columns={"Duration_H": "Count"}, inplace=True)
-    Events_Activity_Concat = pandas.concat(objs=[Events_Activity_Count, Events_Activity_Sum, Events_Activity_Mean], axis=1, join="inner")
+    Events_Activity_Concat = concat(objs=[Events_Activity_Count, Events_Activity_Sum, Events_Activity_Mean], axis=1, join="inner")
 
     # Summary line
     Activity_Count_Summary = Events_Activity_Concat["Count"].sum()
@@ -201,7 +200,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     # ---------------------------------------------------------------------------------- Weekday ---------------------------------------------------------------------------------- #
     # Calculation
     WeekDays_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    Events_WeekDays = pandas.DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
+    Events_WeekDays = DataFrame(index=WeekDays_list, columns=["Days Count", "Total Events", "Total[H]", "Average[H]", "My Utilization[%]", "Utilization[%]"])
     Events_WeekDays_GR = Events.loc[:, ["Date", "Project", "Activity", "Duration_H"]]
     Events_WeekDays_GR["WeekDay"] =  Events_WeekDays_GR["Date"].apply(DataFrame_WeekDay)
     Used_Days = 0
@@ -300,7 +299,7 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     Events_Weeks_GR["WeekDay"] =  Events_Weeks_GR["Date"].apply(DataFrame_WeekDay)
     Weeks_list = list(set(Events_Weeks_GR["Week"]))
     Weeks_list.sort()
-    Events_Weeks = pandas.DataFrame(index=Weeks_list, columns=["Days", "Days w/o weekend", "Total Events", "Total[H]", "Average[H]", "Week Utilization[%]", "Active Days Utilization[%]"])
+    Events_Weeks = DataFrame(index=Weeks_list, columns=["Days", "Days w/o weekend", "Total Events", "Total[H]", "Average[H]", "Week Utilization[%]", "Active Days Utilization[%]"])
 
     for Week in Weeks_list:
         Week_days_count = 0

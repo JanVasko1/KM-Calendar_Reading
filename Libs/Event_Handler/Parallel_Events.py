@@ -1,6 +1,5 @@
 # Import Libraries
-import pandas
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, concat
 from datetime import datetime
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -31,7 +30,7 @@ def Find_Conflict_in_DF(Check_DF: DataFrame) -> DataFrame:
 
     # Define if there is Conflict in the meeting 
     for row in Check_DF.iterrows():
-        Event_Series = pandas.Series(row[1])
+        Event_Series = Series(row[1])
         Event_Index = row[0]
         Event_Start_time = Event_Series["Start_Time"]
         Event_End_time = Event_Series["End_Time"]
@@ -43,7 +42,7 @@ def Find_Conflict_in_DF(Check_DF: DataFrame) -> DataFrame:
         Event_End_with_indexes = []
 
         for row2 in Check_DF.iterrows():
-            Checked_Event_Series = pandas.Series(row2[1])
+            Checked_Event_Series = Series(row2[1])
             Checked_Event_Index = row2[0]
             Checked_Event_Start_time = Checked_Event_Series["Start_Time"]
             Checked_Event_End_time = Checked_Event_Series["End_Time"]  
@@ -170,7 +169,7 @@ def Parallel_Events_Handler(Settings: dict, Conflict_df: DataFrame) -> DataFrame
     Return = False
     for row in Conflict_df.iterrows():
         # Define current row as pandas Series
-        row_Series = pandas.Series(row[1])
+        row_Series = Series(row[1])
         Event_Index = row[0]
         Event_Start_Time = row_Series["Start_Time"]
         Event_End_Time = row_Series["End_Time"]
@@ -178,7 +177,7 @@ def Parallel_Events_Handler(Settings: dict, Conflict_df: DataFrame) -> DataFrame
 
         # Shorten current event if something is by subEvent
         for Sub_row in Conflict_df.iterrows():
-            Sub_row_Series = pandas.Series(Sub_row[1])
+            Sub_row_Series = Series(Sub_row[1])
             Sub_Event_Index = Sub_row[0]
             Sub_Event_Start_Time = Sub_row_Series["Start_Time"]
             Sub_Event_End_Time = Sub_row_Series["End_Time"]
@@ -244,7 +243,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
     
 
     if Parallel_Enabled == True:
-        Cumulated_Events = pandas.DataFrame()
+        Cumulated_Events = DataFrame()
         #Get Days details from Events
         Days_List = Days_Handler(Events)
 
@@ -258,7 +257,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
             # Add non-Conflict to Cumulated
             mask1 = Day_Events_df["Conflict"] == False
             Non_Conflict_df = Day_Events_df.loc[mask1]
-            Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
+            Cumulated_Events = concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
             
             # Splitting --> done only for Events within same Busy_Status_Priorities_List
             mask1 = Day_Events_df["Conflict"] == True
@@ -271,7 +270,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                 Empty_Index_to_Del_list = []
                 for row in Conflict_df.iterrows():
                     # Define current row as pandas Series
-                    row_Series = pandas.Series(row[1])
+                    row_Series = Series(row[1])
                     Event_Index = row[0]
                     Event_Empty_Insert = row_Series["Event_Empty_Insert"]
                     if Event_Empty_Insert == True:
@@ -279,7 +278,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                         Event_End_Time = row_Series["End_Time"]
                         for sub_row in Conflict_df.iterrows():
                             # Define current row as pandas Series
-                            Sub_row_Series = pandas.Series(sub_row[1])
+                            Sub_row_Series = Series(sub_row[1])
                             Sub_Event_Index = sub_row[0]
                             Sub_Event_Start_Time = Sub_row_Series["Start_Time"]
                             Sub_Event_End_Time = Sub_row_Series["End_Time"]
@@ -303,7 +302,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                 for Empty_Index_to_Del in Empty_Index_to_Del_list:
                     for row in Conflict_df.iterrows():
                         # Define current row as pandas Series
-                        row_Series = pandas.Series(row[1])
+                        row_Series = Series(row[1])
                         Event_Index = row[0]
                         Event_Conflict_indexes = row_Series["Conflict_indexes"]
                         Event_Start_with_Events = row_Series["Start_with_Event"]
@@ -333,7 +332,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                 # Add non-Conflict to Cumulated --> might be changed as previous function change it
                 mask1 = Conflict_df["Conflict"] == False
                 Non_Conflict_df = Conflict_df.loc[mask1]
-                Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
+                Cumulated_Events = concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
 
                 # Update Conflict_df
                 mask1 = Conflict_df["Conflict"] == True
@@ -349,7 +348,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                         # Duration change
                         Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
                         for row in Conflict_df.iterrows():
-                            row_Series = pandas.Series(row[1])
+                            row_Series = Series(row[1])
                             Event_Start_Time = row_Series["Start_Time"]
                             Event_End_Time = row_Series["End_Time"]
                             Conflict_df.at[row[0], "Duration"] = Duration_Counter(Time1=Event_Start_Time, Time2=Event_End_Time)
@@ -358,7 +357,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
 
                         mask1 = Conflict_df["Conflict"] == False
                         Non_Conflict_df = Conflict_df.loc[mask1]
-                        Cumulated_Events = pandas.concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
+                        Cumulated_Events = concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
 
                         # Update Conflict_df
                         mask1 = Conflict_df["Conflict"] == True

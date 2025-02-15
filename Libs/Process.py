@@ -1,5 +1,5 @@
 # Import Libraries
-from pandas import DataFrame
+from pandas import DataFrame, concat, read_csv
 
 import Libs.Download.Downloader as Downloader
 import Libs.Sharepoint.Authentication as Authentication
@@ -18,8 +18,6 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 from customtkinter import CTkProgressBar, CTk, CTkLabel
 from CTkMessagebox import CTkMessagebox
-
-import pandas
 
 # ---------------------------------------------------------- Local Function ---------------------------------------------------------- #
 def Progress_Bar_step(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Label: str) -> None:
@@ -64,7 +62,7 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
     Events_df.to_csv(path_or_buf=f"Operational\\Downloads\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # Cumulate with Event Registered
-    Cumulated_Events = pandas.concat(objs=[Events_df, Events_Registered_df], axis=0)
+    Cumulated_Events = concat(objs=[Events_df, Events_Registered_df], axis=0)
     Cumulated_Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Cumulated_Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
 
     return Cumulated_Events
@@ -164,13 +162,12 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
     Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
     Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
     Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Date_Format3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
     Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
     Date_Format = Settings["General"]["Formats"]["Date"]
     Time_Format = Settings["General"]["Formats"]["Time"]
 
-    Events_History_df = pandas.DataFrame()
+    Events_History_df = DataFrame()
 
     # Delete previous files 
     Defaults_Lists.Delete_All_Files(file_path=f"Operational\\History\\", include_hidden=True)
@@ -207,7 +204,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
             mask1 = Events_Month_df["Personnel number"] == User_ID
             mask2 = Events_Month_df["Activity description"] != "User included in TimeSpent"
             Events_Month_df = Events_Month_df[mask1 & mask2]
-            Events_History_df = pandas.concat(objs=[Events_History_df, Events_Month_df], axis=0)
+            Events_History_df = concat(objs=[Events_History_df, Events_Month_df], axis=0)
         else:
             CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
     
@@ -219,10 +216,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
         try:
             Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
         except:
-            try:
-                Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
-            except:
-                Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format3)
+            Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
     Events_History_df["Date"] = Events_History_df["Date"].dt.strftime(Date_Format)
 
     # Time
@@ -253,7 +247,6 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
     Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
     Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
     Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Date_Format3 = Settings["General"]["Formats"]["Sharepoint_Date3"]
     Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
     Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
 
@@ -301,10 +294,7 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
             try:
                 Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
             except:
-                try:
-                    Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
-                except:
-                    Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format3)
+                Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
         Events_Member_df["Date"] = Events_Member_df["Date"].dt.strftime(Date_Format)
 
         # Time
@@ -329,7 +319,7 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label=f"Processing: {Team_Member_name}") 
 
-        Member_df = pandas.read_csv(filepath_or_buffer=f"Operational\\My_Team\\{Team_Member_team}.csv", sep=";", header=0)
+        Member_df = read_csv(filepath_or_buffer=f"Operational\\My_Team\\{Team_Member_team}.csv", sep=";", header=0)
         mask1 = Member_df["Personnel number"] == Team_Member_ID
         mask2 = Member_df["Activity description"] != "User included in TimeSpent"
         Member_df = Member_df[mask1 & mask2]

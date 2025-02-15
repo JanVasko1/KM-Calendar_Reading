@@ -78,13 +78,10 @@ def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
 
     if not client_id:
         CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        raise ValueError()
     if not client_secret:
         CTkMessagebox(title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        raise ValueError()
     if not tenant_id:
         CTkMessagebox(title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        raise ValueError()
 
     # OAuth2 authentication at KM Azure
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"

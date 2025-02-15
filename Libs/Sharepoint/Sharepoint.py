@@ -2,8 +2,7 @@
 import Libs.Sharepoint.Authentication as Authentication
 import Libs.Defaults_Lists as Defaults_Lists
 from openpyxl import load_workbook
-from pandas import DataFrame
-import pandas
+from pandas import DataFrame, Series, read_excel
 import sharepy
 
 from CTkMessagebox import CTkMessagebox
@@ -14,7 +13,7 @@ def Get_Table_Data(ws, data_boundary) -> DataFrame:
     content = [[str(cell.internal_value) for cell in ent] for ent in data]
     header = content[0]
     data_rows = content[1:]
-    TimeSheets_df = pandas.DataFrame(data=data_rows, columns = header)
+    TimeSheets_df = DataFrame(data=data_rows, columns = header)
     TimeSheets_df = TimeSheets_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     return TimeSheets_df
 
@@ -74,7 +73,7 @@ def Time_sheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
 
     for row in TimeSheets_df2.iterrows():
         # read values from row
-        Row_Series = pandas.Series(row[1])
+        Row_Series = Series(row[1])
         Row_Index = row[0]
         Row_Personnel_number = Row_Series["Personnel number"]
         Row_Date = Row_Series["Date"]
@@ -155,7 +154,7 @@ def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
 def Get_Project(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Projects_df = pandas.read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
+    Projects_df = read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
     Projects_df.drop(columns=[1], inplace=True)
     Projects_df.rename(columns={0: "Project", 2: "Project_Type"}, inplace=True)
 
@@ -168,7 +167,7 @@ def Get_Project(Settings: dict) -> None:
 def Get_Activity(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Activities_df = pandas.read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
+    Activities_df = read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
     Column_List = Activities_df[1].to_list()
     Empty_line_index = Column_List.index("Activity")
     Activities_df = Activities_df.iloc[Empty_line_index + 1:]
