@@ -236,7 +236,7 @@ class Win(CTk):
         super().__init__()
         super().overrideredirect(True)
         super().title("Time Sheets")
-        super().iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        super().iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
         self._offsetx = 0
         self._offsety = 0
         super().bind("<Button-1>",self.click_win)
@@ -266,11 +266,11 @@ if __name__ == "__main__":
 
     # Create folders if do not exists
     try:
-        os.mkdir(f"Operational\\")
-        os.mkdir(f"Operational\\DashBoard\\")
-        os.mkdir(f"Operational\\Downloads\\")
-        os.mkdir(f"Operational\\My_Team\\")
-        os.mkdir(f"Operational\\History\\")
+        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\"))
+        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\"))
+        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\"))
+        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\"))
+        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\"))
     except:
         pass
 

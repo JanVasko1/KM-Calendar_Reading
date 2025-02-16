@@ -143,17 +143,17 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     Events["Duration_H"] = Events["Duration"].map(lambda x: round(x/60, 2))
 
     # Deletion
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Project.csv")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Activity.csv")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\Events_Totals.csv")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Light.html")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Dark.html")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Light.html")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Dark.html")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Light.html")
-    Defaults_Lists.Delete_File(file_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Dark.html")
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Project.csv"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Activity.csv"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Totals.csv"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Light.html"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Dark.html"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Light.html"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Dark.html"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Light.html"))
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Dark.html"))
 
     # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
     # Calculation
@@ -400,8 +400,8 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
 
     # ---------------------------------------------------------------------------------- PostProcessing ---------------------------------------------------------------------------------- #
     # Save Files
-    Events_Project_Concat.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Project.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-    Events_Activity_Concat.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Activity.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-    Events_WeekDays.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-    Events_Weeks.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
-    Totals_df.to_csv(path_or_buf=f"Operational\\{File_Sub_Path}\\Events_Totals.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_Project_Concat.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Project.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_Activity_Concat.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Activity.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_WeekDays.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_Weeks.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+    Totals_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Totals.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")

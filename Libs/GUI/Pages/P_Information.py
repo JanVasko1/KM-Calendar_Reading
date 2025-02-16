@@ -36,7 +36,7 @@ def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
     # Description
     Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
 
-    with open("Libs\\GUI\\Information.md", "r", encoding="UTF-8") as file:
+    with open(Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Information.md"), "r", encoding="UTF-8") as file:
         html_markdown=markdown(text=file.read())
     file.close()
 

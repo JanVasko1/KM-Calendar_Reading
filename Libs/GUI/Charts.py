@@ -172,7 +172,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
     # Registered Area
     if Calculation_source == "Current":
         try:
-            Events_Registered_df = read_csv(f"Operational\\Downloads\\Events_Registered.csv", sep=";")
+            Events_Registered_df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), sep=";")
             if Events_Registered_df.empty:
                 pass
             else:
@@ -226,8 +226,8 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
-        save(obj=Chart_Layout, filename=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html", title=f"{Category}")
-        Chart_update_html(Chart=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
+        save(obj=Chart_Layout, filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), title=f"{Category}")
+        Chart_update_html(Chart=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
     
@@ -361,7 +361,7 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
-        save(obj=Chart_Layout, filename=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html", title=f"Report Rage utilization compare")
-        Chart_update_html(Chart=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html", color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
+        save(obj=Chart_Layout, filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), title=f"Report Rage utilization compare")
+        Chart_update_html(Chart=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)

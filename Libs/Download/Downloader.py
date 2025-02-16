@@ -34,7 +34,7 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
 
     Events = DataFrame()
     Events_Registered_df = DataFrame()  # Because of case when it is not downloaded from Sharepoint, but output must exists
-    Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events_Registered.csv")
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"))
 
     Today = datetime.today()
     Today = Today.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -153,7 +153,7 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
             Download_canceled = True
             CTkMessagebox(title="Error", message="Download process canceled by user.", icon="cancel", fade_in_duration=1)
         
-        Events_Registered_df.to_csv(path_or_buf=f"Operational\\Downloads\\Events_Registered.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+        Events_Registered_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # -------------- Manual  -------------- #
     elif Download_Date_Range_Source == "Manual":

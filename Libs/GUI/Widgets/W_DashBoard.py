@@ -18,7 +18,7 @@ def DashBoard_Project():
     else:
         pass
 
-    Chart_path = f"Operational\\DashBoard\\DashBoard_Project_{Theme}.html"
+    Chart_path = Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Project_{Theme}.html")
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -33,7 +33,7 @@ def DashBoard_Activity():
     else:
         pass
 
-    Chart_path = f"Operational\\DashBoard\\DashBoard_Activity_{Theme}.html"
+    Chart_path = Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Activity_{Theme}.html")
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -48,7 +48,7 @@ def DashBoard_Utilization():
     else:
         pass
 
-    Chart_path = f"Operational\\DashBoard\\DashBoard_Utilization_{Theme}.html"
+    Chart_path = Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Utilization_{Theme}.html")
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 

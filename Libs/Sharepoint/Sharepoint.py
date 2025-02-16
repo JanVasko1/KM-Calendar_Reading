@@ -23,11 +23,11 @@ def Download_Excel(Settings: dict, s_aut: sharepy, SP_Link: str, Type: str, Name
 
     # Download
     if Type == "Current":
-        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\Downloads\\{SP_File_Name}.xlsm")
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"))
     elif Type == "History":
-        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\History\\{Name}.xlsm")
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\{Name}.xlsm"))
     elif Type == "Team":
-        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=f"Operational\\My_Team\\{Name}.xlsm")
+        response = s_aut.getfile(f"{SP_Link_domain}{SP_Link}", filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{Name}.xlsm"))
     else:
         return False
 
@@ -40,11 +40,11 @@ def Get_WorkSheet(Settings: dict, Sheet_Name: str, Type: str, Name: str|None):
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
     if Type == "Current":
-        WorkBook = load_workbook(filename=f"Operational\\Downloads\\{SP_File_Name}.xlsm")
+        WorkBook = load_workbook(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"))
     elif Type == "History":
-        WorkBook = load_workbook(filename=f"Operational\\History\\{Name}.xlsm")
+        WorkBook = load_workbook(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\{Name}.xlsm"))
     elif Type == "Team":
-        WorkBook = load_workbook(filename=f"Operational\\My_Team\\{Name}.xlsm")
+        WorkBook = load_workbook(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{Name}.xlsm"))
     Sheet = WorkBook[Sheet_Name]
     return Sheet
 
@@ -167,7 +167,7 @@ def Get_Project(Settings: dict) -> None:
 def Get_Activity(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Activities_df = read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
+    Activities_df = read_excel(io=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"), sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
     Column_List = Activities_df[1].to_list()
     Empty_line_index = Column_List.index("Activity")
     Activities_df = Activities_df.iloc[Empty_line_index + 1:]

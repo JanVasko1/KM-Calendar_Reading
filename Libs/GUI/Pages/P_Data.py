@@ -95,7 +95,7 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
     Frame_Data_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
     Frame_Data_Work_Detail_Area.grid_propagate(flag=False)
 
-    Events = read_csv(f"Operational\\Downloads\\Events.csv", sep=";")
+    Events = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"), sep=";")
 
     # ------------------------- Buttons Area -------------------------#
     # Download Button

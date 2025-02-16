@@ -4,6 +4,7 @@ from pandas import read_csv
 from customtkinter import CTk, CTkFrame
 from CTkMessagebox import CTkMessagebox
 
+import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Widgets.W_DashBoard as W_DashBoard
 import Libs.GUI.Elements as Elements
 
@@ -17,11 +18,11 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
-        Totals_Summary_Df = read_csv(f"Operational\\DashBoard\\Events_Totals.csv", sep=";")
-        Project_DF = read_csv(f"Operational\\DashBoard\\Events_Project.csv", sep=";")
-        Activity_Df = read_csv(f"Operational\\DashBoard\\Events_Activity.csv", sep=";")
-        WeekDays_Df = read_csv(f"Operational\\DashBoard\\Events_WeekDays.csv", sep=";")
-        Weeks_DF = read_csv(f"Operational\\DashBoard\\Events_Weeks.csv", sep=";")
+        Totals_Summary_Df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Totals.csv"), sep=";")
+        Project_DF = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Project.csv"), sep=";")
+        Activity_Df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Activity.csv"), sep=";")
+        WeekDays_Df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_WeekDays.csv"), sep=";")
+        Weeks_DF = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Weeks.csv"), sep=";")
 
         # Total Line
         Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])

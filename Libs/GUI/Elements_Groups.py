@@ -2,6 +2,7 @@ from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEnt
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Elements as Elements
+import Libs.Defaults_Lists as Defaults_Lists
 
 def Get_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str) -> CTkFrame:
     # Build base Frame for Widget
@@ -264,7 +265,7 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -
     Pop_Up_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
     Pop_Up_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
     Pop_Up_Window.overrideredirect(boolean=True)
-    Pop_Up_Window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+    Pop_Up_Window.iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
     Pop_Up_Window.resizable(width=False, height=False)
 
     # Rounded corners 

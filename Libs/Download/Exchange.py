@@ -139,6 +139,10 @@ def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Dat
             if response.status_code == 200: 
                 Events = response.json()
                 Counter = Add_Events_downloaded(Settings=Settings, Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
+    elif events_response.status_code == 503:
+        CTkMessagebox(title="Info", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), Exchange is temporary unavailable, try few moments later.", fade_in_duration=1)
+        Events_downloaded = {}
+        Events_Process_df = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
     else:
         CTkMessagebox(title="Info", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), will try to download from Outlook Classic Client.", fade_in_duration=1)
         Events_downloaded = {}

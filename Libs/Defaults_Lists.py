@@ -13,19 +13,19 @@ import Libs.GUI.Elements as Elements
 
 # --------------------------------------------- Load defaults --------------------------------------------- #
 def Load_Settings() -> dict:
-    File = open(file=f"Libs\\Settings.json", mode="r", encoding="UTF-8", errors="ignore")
+    File = open(file=Absolute_path(relative_path=f"Libs\\Settings.json"), mode="r", encoding="UTF-8", errors="ignore")
     Settings = json.load(fp=File)
     File.close()
     return Settings
 
 def Load_Configuration() -> dict:
-    File = open(file=f"Libs\\GUI\\Configuration.json", mode="r", encoding="UTF-8", errors="ignore")
+    File = open(file=Absolute_path(relative_path=f"Libs\\GUI\\Configuration.json"), mode="r", encoding="UTF-8", errors="ignore")
     Configuration = json.load(fp=File)
     File.close()
     return Configuration
 
 def Load_Figures(Theme:str) -> dict:
-    File = open(file=f"Libs\\GUI\\Figure_settings_{Theme}.json", mode="r", encoding="UTF-8", errors="ignore")
+    File = open(file=Absolute_path(relative_path=f"Libs\\GUI\\Figure_settings_{Theme}.json"), mode="r", encoding="UTF-8", errors="ignore")
     Configuration = json.load(fp=File)
     File.close()
     return Configuration
@@ -44,7 +44,7 @@ def Busy_Status_Priorities_List() -> list[str]:
     return Busy_Statuses_Priorities
 
 def Load_Exchange_env() -> list[str, str, str]:
-    load_dotenv(dotenv_path=f"Libs\\Download\\Exchange.env")
+    load_dotenv(dotenv_path=Absolute_path(relative_path=f"Libs\\Download\\Exchange.env"))
     client_id = os.getenv("client_id")
     client_secret = os.getenv("client_secret")
     tenant_id = os.getenv("tenant_id")
@@ -95,14 +95,14 @@ def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVa
             Value_change(my_dict=Settings, JSON_path=JSON_path, Information=Information)
 
             # Save to file
-            with open(f"Libs\\Settings.json", mode="wt", encoding="UTF-8", errors="ignore") as file:
+            with open(Absolute_path(relative_path=f"Libs\\Settings.json"), mode="wt", encoding="UTF-8", errors="ignore") as file:
                 json.dump(obj=Settings, fp=file, indent=4, default=str, ensure_ascii=False)
             file.close()
         elif File_Name == "Configuration":
             Value_change(my_dict=Configuration, JSON_path=JSON_path, Information=Information)
 
             # Save to file
-            with open(f"Libs\\GUI\\Configuration.json", mode="wt", encoding="UTF-8", errors="ignore") as file:
+            with open(Absolute_path(relative_path=f"Libs\\GUI\\Configuration.json"), mode="wt", encoding="UTF-8", errors="ignore") as file:
                 json.dump(obj=Configuration, fp=file, indent=4, default=str, ensure_ascii=False)
             file.close()
         else:
@@ -162,3 +162,12 @@ def Dialog_Window_Request(Configuration: dict, title: str, text: str, Dialog_Typ
 def Get_Current_Theme() -> str:
     Current_Theme = get_appearance_mode()
     return Current_Theme
+
+# --------------------------------------------- PyInstaller --------------------------------------------- #
+def Absolute_path(relative_path: str) -> str:
+    try:
+        base_path = os.path.abspath(".")
+        Absolute_path_str = os.path.join(base_path, relative_path)
+    except:
+        Absolute_path_str = relative_path
+    return Absolute_path_str

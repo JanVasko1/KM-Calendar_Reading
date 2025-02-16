@@ -249,7 +249,7 @@ def Settings_General_Color(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
         #Color_Picker_window.bind(sequence="<Button-1>", func=lambda event:click_win())
         #Color_Picker_window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
         #Color_Picker_window.overrideredirect(boolean=True)
-        Color_Picker_window.iconbitmap(bitmap=f"Libs\\GUI\\Icons\\TimeSheet.ico")
+        Color_Picker_window.iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
         Color_Picker_window.resizable(width=False, height=False)
 
         # Rounded corners 
@@ -355,7 +355,7 @@ def Settings_User_Widget(Settings: dict, Configuration: dict, Frame: CTk|CTkFram
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - User ID
-    User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User Konica ID", Field_Type="Input_Normal")
+    User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal")
     User_ID_Frame_Var = User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
     User_ID_Frame_Var.configure(placeholder_text="My Konica ID.")
     User_ID_Frame_Var.bind("<FocusOut>", lambda Entry_value: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Code"], Information=User_ID_Frame_Var.get()))
@@ -821,7 +821,7 @@ def Settings_Calendar_Vacation(Settings: dict, Configuration: dict, Frame: CTk|C
     # ------------------------- Local Functions ------------------------#
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Calendar - KM Working/Vacation/SickDay Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Calendar - KM Working/Vacation/SickDay Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation/SickDay and for KM Utilization charts and information.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Monday
@@ -2003,7 +2003,7 @@ def Settings_Events_Split(Settings: dict, Configuration: dict, Frame: CTk|CTkFra
     Split_Min_Duration_Text_Var.configure(state="disabled")
 
     # Field - All Day
-    Split_Method = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
+    Split_Method = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Method", Field_Type="Input_OptionMenu") 
     Split_Method_Var = Split_Method.children["!ctkframe3"].children["!ctkoptionmenu"]
     Split_Method_Var.configure(variable=Events_Empty_Split_list_Variable)
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Split_Method_Var, values=Events_Empty_Split_list, command=lambda Split_Method_Var: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=Events_Empty_Split_list_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Split", "Split_Method"], Information=Split_Method_Var))
@@ -2542,7 +2542,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
                 Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
                 Counter += 1
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information=Managed_Users_dict)
-            Defaults_Lists.Create_Folder(file_path=f"Operational\\My_Team\\{Add_User_ID}")
+            Defaults_Lists.Create_Folder(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{Add_User_ID}"))
         else:
             pass
 
@@ -2564,7 +2564,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
                 Managed_Users_dict[Counter] = Managed_Team_Users_row_dict
                 Counter += 1
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information=Managed_Users_dict)
-            Defaults_Lists.Delete_Folder(file_path=f"Operational\\My_Team\\{Delete_Folder_Name}")
+            Defaults_Lists.Delete_Folder(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{Delete_Folder_Name}"))
             Delete_Managed_Member_Close()   
 
         def Delete_Managed_Member_Close() -> None:
@@ -2628,7 +2628,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         for Table_index in range(1, Table_len):
             Frame_Managed_Team_Table_Var.delete_row(index=Table_index)
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information={})
-        Defaults_Lists.Delete_Folders(file_path=f"Operational\\My_Team")
+        Defaults_Lists.Delete_Folders(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team"))
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General

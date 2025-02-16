@@ -7,6 +7,8 @@ from CTkTable import CTkTable
 from CTkColorPicker import CTkColorPicker
 from CTkToolTip import CTkToolTip
 from CTkMessagebox import CTkMessagebox
+
+import Libs.Defaults_Lists as Defaults_Lists
 from Libs.GUI.CTk.ctk_scrollable_dropdown import CTkScrollableDropdown as CTkScrollableDropdown 
 
 from iconipy import IconFactory 
@@ -693,8 +695,8 @@ def Get_CTk_Icon(Configuration:dict, Icon_Set: str, Icon_Name: str, Icon_Size: s
 
 def Get_Background_Image(Configuration:dict, Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
     Picture = CTkImage(
-        light_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}"),
-        dark_image = Image.open(f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}"),
+        light_image = Image.open(Defaults_Lists.Absolute_path(relative_path=f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}")),
+        dark_image = Image.open(Defaults_Lists.Absolute_path(relative_path=f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}")),
         size = (width, heigh))
     Background_Image_Label = Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Main", Font_Size="Main")
     Background_Image_Label.configure(image=Picture, text="")

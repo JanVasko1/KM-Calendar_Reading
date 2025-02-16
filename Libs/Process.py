@@ -21,6 +21,7 @@ from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Local Function ---------------------------------------------------------- #
 def Progress_Bar_step(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Label: str) -> None:
+    # BUG --> not updated when manuall datest used --> always skip to Done
     Progress_Bar.step()
     Progress_text.configure(text="                                                        ")
     window.update_idletasks()
@@ -41,7 +42,7 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
     User_ID = Settings["General"]["User"]["Code"]
 
     # Delete File before generation
-    Defaults_Lists.Delete_File(file_path="Operational\\Downloads\\Events.csv")
+    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"))
 
     # Calculation
     Events_df["Personnel number"] = User_ID
@@ -59,7 +60,7 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
     Events_df["End Time"] = Events_df["End Time"].dt.strftime(Time_Format)
 
     # Save only new values --> what is registered should not be available as new data
-    Events_df.to_csv(path_or_buf=f"Operational\\Downloads\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # Cumulate with Event Registered
     Cumulated_Events = concat(objs=[Events_df, Events_Registered_df], axis=0)
@@ -170,7 +171,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
     Events_History_df = DataFrame()
 
     # Delete previous files 
-    Defaults_Lists.Delete_All_Files(file_path=f"Operational\\History\\", include_hidden=True)
+    Defaults_Lists.Delete_All_Files(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\"), include_hidden=True)
 
     # Progress bar
     Download_Periods_Count = len(Download_Periods)
@@ -231,7 +232,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
 
     # Save
     Events_History_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_History_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-    Events_History_df.to_csv(path_or_buf=f"Operational\\History\\Events.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_History_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\Events.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ----------------------- Summary Dataframe ----------------------- #
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
@@ -309,7 +310,7 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
 
         # Save
         Events_Member_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_Member_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-        Events_Member_df.to_csv(path_or_buf=f"Operational\\My_Team\\{team}.csv", index=False, sep=";", header=True, encoding="utf-8-sig")
+        Events_Member_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{team}.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # Process each team member on its own TimeSheets
     for key, value in Managed_Team.items():
@@ -319,7 +320,7 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label=f"Processing: {Team_Member_name}") 
 
-        Member_df = read_csv(filepath_or_buffer=f"Operational\\My_Team\\{Team_Member_team}.csv", sep=";", header=0)
+        Member_df = read_csv(filepath_or_buffer=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{Team_Member_team}.csv"), sep=";", header=0)
         mask1 = Member_df["Personnel number"] == Team_Member_ID
         mask2 = Member_df["Activity description"] != "User included in TimeSpent"
         Member_df = Member_df[mask1 & mask2]
