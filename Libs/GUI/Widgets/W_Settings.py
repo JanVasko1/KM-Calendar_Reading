@@ -1334,7 +1334,10 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
 
     Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
     Project_List = Defaults_Lists.List_from_Dict(Dictionary=Project_dict, Key_Argument="Project")
-    Project_Variable = StringVar(master=Frame, value=Project_List[0])
+    if not Project_List:
+        Project_Variable = StringVar(master=Frame, value="")
+    else:
+        Project_Variable = StringVar(master=Frame, value=Project_List[0])
 
     Activity_All_List = list(Settings["Event_Handler"]["Activity"]["Activity_List"])
     Activity_All_List.insert(0, " ") # Because there might be not filled one in Calendar
@@ -1648,7 +1651,11 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
 
     Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
     Project_List = Defaults_Lists.List_from_Dict(Dictionary=Project_dict, Key_Argument="Project")
-    Project_Variable = StringVar(master=Frame, value=Project_List[0])
+    if not Project_List:
+        Project_Variable = StringVar(master=Frame, value="")
+    else:
+        Project_Variable = StringVar(master=Frame, value=Project_List[0])
+
 
     Activity_All_List = list(Settings["Event_Handler"]["Activity"]["Activity_List"])
     Activity_All_List.insert(0, " ") # Because there might be not filled one in Calendar
@@ -2256,7 +2263,11 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
 
     Project_dict = Settings["Event_Handler"]["Project"]["Project_List"]
     Project_List = Defaults_Lists.List_from_Dict(Dictionary=Project_dict, Key_Argument="Project")
-    Project_Variable = StringVar(master=Frame, value=Project_List[0])
+    if not Project_List:
+        Project_Variable = StringVar(master=Frame, value="")
+    else:
+        Project_Variable = StringVar(master=Frame, value=Project_List[0])
+
 
     Activity_All_List = list(Settings["Event_Handler"]["Activity"]["Activity_List"])
     Activity_All_List.insert(0, " ") # Because there might be not filled one in Calendar

@@ -1,4 +1,4 @@
-
+# BUG --> Location List in Settup file is filled sometime by " "
 # Import Libraries
 import os
 import time
