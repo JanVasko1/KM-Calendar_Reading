@@ -1,5 +1,6 @@
 # Import Libraries
 import sharepy
+from sharepy import SharePointSession
 import os
 
 from CTkMessagebox import CTkMessagebox
@@ -7,7 +8,7 @@ from CTkMessagebox import CTkMessagebox
 import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Init_authentication(Settings: dict, SP_Password: str|None) -> sharepy:
+def Init_authentication(Settings: dict, SP_Password: str|None) -> SharePointSession:
     User_Email = Settings["General"]["User"]["Email"]
     Auth_Address = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
 

@@ -154,7 +154,7 @@ def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
 def Get_Project(Settings: dict) -> None:
     SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
 
-    Projects_df = read_excel(io=f"Operational\\Downloads\\{SP_File_Name}.xlsm", sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
+    Projects_df = read_excel(io=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"), sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
     Projects_df.drop(columns=[1], inplace=True)
     Projects_df.rename(columns={0: "Project", 2: "Project_Type"}, inplace=True)
 
