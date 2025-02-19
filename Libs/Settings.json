@@ -259,7 +259,8 @@
                 }
             },
             "Colors": {
-                "Used": "Blue",
+                "Active_Color": "Blue",
+                "Non_Active_Color": "DarkBlue",
                 "Color_List": [
                     "Red",
                     "Orange",

@@ -1,5 +1,5 @@
 # Import Libraries
-import shutil
+import json
 from datetime import datetime
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -227,37 +227,20 @@ def Settings_General_Color(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
         else:
             CTkMessagebox(title="Error", message="Accent Color Method not allowed", icon="cancel", fade_in_duration=1)
 
-    def Appearance_Pick_Manual_Color(Color_Manual_Frame_Var: CTkEntry, Helper: str) -> None:
+    def Appearance_Pick_Manual_Color(Clicked_on: CTkButton, Color_Manual_Frame_Var: CTkEntry, Helper: str) -> None:
         def Quit_Save(Helper: str):
             Defaults_Lists.Save_Value(Settings=None, Configuration=Configuration, Variable=None, File_Name="Configuration", JSON_path=["Global_Appearance", "Window", "Colors", f"{Helper}", f"{Helper}_Color_Manual"], Information=Color_Picker_Frame.get())
             Color_Picker_window.destroy()
 
-        def drag_win():
-            x = Color_Picker_window.winfo_pointerx() - Color_Picker_window._offsetx
-            y = Color_Picker_window.winfo_pointery() - Color_Picker_window._offsety
-            Color_Picker_window.geometry(f"+{x}+{y}")
+        Import_window_geometry = (300, 250)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Clicked_on, New_Window_width=Import_window_geometry[0])
+        Color_Picker_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=True)
 
-        def click_win():
-            Color_Picker_window._offsetx = Color_Picker_window.winfo_pointerx() - Color_Picker_window.winfo_rootx()
-            Color_Picker_window._offsety = Color_Picker_window.winfo_pointery() - Color_Picker_window.winfo_rooty()
+        # Frame - General
+        Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Color_Picker_window, Name="", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="")
+        Frame_Body = Frame_Main.children["!ctkframe2"]
 
-            
-        Color_Picker_window = CTkToplevel()
-        #Color_Picker_window.configure(fg_color="#000001")
-        Color_Picker_window.title("Color Picker")
-        Color_Picker_window.geometry("295x240")
-        Color_Picker_window.bind(sequence="<Escape>", func=lambda event: Quit_Save(Helper=Helper))
-        #Color_Picker_window.bind(sequence="<Button-1>", func=lambda event:click_win())
-        #Color_Picker_window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
-        #Color_Picker_window.overrideredirect(boolean=True)
-        Color_Picker_window.iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
-        Color_Picker_window.resizable(width=False, height=False)
-
-        # Rounded corners 
-        #Color_Picker_window.config(background="#000001")
-        #Color_Picker_window.attributes("-transparentcolor", "#000001")
-
-        Color_Picker_Frame = Elements.Get_Color_Picker(Configuration=Configuration, Frame=Color_Picker_window, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
+        Color_Picker_Frame = Elements.Get_Color_Picker(Configuration=Configuration, Frame=Frame_Body, Color_Manual_Frame_Var=Color_Manual_Frame_Var)
 
         # Build look of Widget --> must be before inset
         Color_Picker_Frame.pack(padx=0, pady=0) 
@@ -284,7 +267,7 @@ def Settings_General_Color(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
     # Button - Color Picker
     Accent_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Accent_Color_Picker_Button_Var = Accent_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Appearance_Pick_Manual_Color(Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var, Helper="Accent"))
+    Accent_Color_Picker_Button_Var.configure(text="Accent Color Picker", command = lambda :Appearance_Pick_Manual_Color(Clicked_on=Accent_Color_Picker_Button_Var, Color_Manual_Frame_Var=Accent_Color_Manual_Frame_Var, Helper="Accent"))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Accent_Color_Picker_Button_Var, message="Select manually Accent color.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
@@ -305,7 +288,7 @@ def Settings_General_Color(Settings: dict, Configuration: dict, Frame: CTk|CTkFr
     # Button - Color Picker
     Hover_Color_Picker_Button = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=1, Button_Size="Small") 
     Hover_Color_Picker_Button_Var = Hover_Color_Picker_Button.children["!ctkframe"].children["!ctkbutton"]
-    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Appearance_Pick_Manual_Color(Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var, Helper="Hover"))
+    Hover_Color_Picker_Button_Var.configure(text="Hover Color Picker", command = lambda:Appearance_Pick_Manual_Color(Clicked_on=Hover_Color_Picker_Button_Var, Color_Manual_Frame_Var=Hover_Color_Manual_Frame_Var, Helper="Hover"))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Hover_Color_Picker_Button_Var, message="Select manually Hover Color.", ToolTip_Size="Normal")
 
     # Disabling fields --> Accent_Color_Mode_Variable
@@ -432,9 +415,11 @@ def Settings_General_Sharepoint(Settings: dict, Configuration: dict, Frame: CTk|
 def Settings_General_Exchange(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -> CTkFrame:
     # ---------------------------- Defaults ----------------------------#
     client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
-    Category_Color = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
+    Category_Active_Color = Settings["Event_Handler"]["Project"]["Colors"]["Active_Color"]
+    Category_Non_Active_Color = Settings["Event_Handler"]["Project"]["Colors"]["Non_Active_Color"]
     Category_Color_list = list(Settings["Event_Handler"]["Project"]["Colors"]["Color_List"])
-    Category_Color_Variable = StringVar(master=Frame, value=Category_Color)
+    Category_Active_Color_Variable = StringVar(master=Frame, value=Category_Active_Color)
+    Category_Non_Active_Color_Variable = StringVar(master=Frame, value=Category_Non_Active_Color)
 
 
     # ------------------------- Local Functions ------------------------#
@@ -448,11 +433,17 @@ def Settings_General_Exchange(Settings: dict, Configuration: dict, Frame: CTk|CT
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Exchange", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Exchange Server related settings.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
-    # Field - Category Color
-    Category_Color_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Category Color", Field_Type="Input_OptionMenu") 
+    # Field - Active Category Color
+    Category_Color_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Category Active Color", Field_Type="Input_OptionMenu") 
     Category_Color_Frame_Var = Category_Color_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Category_Color_Frame_Var.configure(variable=Category_Color_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Category_Color_Frame_Var, values=Category_Color_list, command=lambda Category_Color_Frame_Var: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=Category_Color_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Colors", "Used"], Information=Category_Color_Frame_Var))
+    Category_Color_Frame_Var.configure(variable=Category_Active_Color_Variable)
+    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Category_Color_Frame_Var, values=Category_Color_list, command=lambda Category_Color_Frame_Var: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=Category_Active_Color_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Colors", "Active_Color"], Information=Category_Color_Frame_Var))
+
+    # Field - Non Active Category Color
+    Category_Color_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Category Non-Active Color", Field_Type="Input_OptionMenu") 
+    Category_Color_Frame_Var = Category_Color_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
+    Category_Color_Frame_Var.configure(variable=Category_Non_Active_Color_Variable)
+    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Category_Color_Frame_Var, values=Category_Color_list, command=lambda Category_Color_Frame_Var: Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=Category_Non_Active_Color_Variable, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Colors", "Non_Active_Color"], Information=Category_Color_Frame_Var))
 
     # Field - Name
     EX_Client_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Client ID", Field_Type="Input_Normal") 
@@ -1282,24 +1273,29 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
 
     def Save_Skip():
         # Copy Settings file into Downloads Folder
-        # TODO --> Extract information from Settings.json and place it to Downloads
+        Export_dict = {
+            "Type": "TimeSheets_Skip_Events",
+            "Data": Events_Skip_list}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Skip_Events", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
         CTkMessagebox(title="Success", message="Skip Events has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-    def Load_Skip():
-        def MT_drop_func(file):
-            print(file)
-
-            # TODO --> process import 
-
-            CTkMessagebox(title="Success", message="Skip Events has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+    def Load_Skip(Button_Load_Skip: CTkButton):
+        def Skip_drop_func(file):
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Skip_Events", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Method="Add")
+            Import_window.destroy()
+            # BUG - Application crash
         
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Skip, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
-        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        pywinstyles.apply_dnd(widget=Frame_Body, func=Skip_drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -1349,7 +1345,7 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Skip, message="Save table content.", ToolTip_Size="Normal")
 
     Button_Load_Skip = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
-    Button_Load_Skip.configure(text="Load", command = lambda:Load_Skip())
+    Button_Load_Skip.configure(text="Load", command = lambda:Load_Skip(Button_Load_Skip=Button_Load_Skip))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Skip, message="Load and add new records to table.", ToolTip_Size="Normal")
 
     # Build look of Widget
@@ -1431,7 +1427,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         else:
             pass
     
-    def Del_Empty_Event_One(Header_List: list, Frame_Empty_General_Table_Var: CTkTable) -> None:
+    def Del_Empty_Event_One(Header_List: list, Frame_Empty_General_Table_Var: CTkTable, Button_Empty_Del_One_Var: CTkButton) -> None:
         def Delete_One_Confirm(Frame_Empty_General_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
             Selected_Line_To_Del = LineNo_Option_Var.get()
             Frame_Empty_General_Table_Var.delete_row(index=Selected_Line_To_Del)
@@ -1473,7 +1469,9 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_One_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=510, height=260)
+        Delete_One_Window_geometry = (510, 260)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Empty_Del_One_Var, New_Window_width=Delete_One_Window_geometry[0])
+        Delete_One_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=Delete_One_Window_geometry[0], height=Delete_One_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_One_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -1516,7 +1514,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
             Frame_Empty_General_Table_Var.delete_row(index=Table_index)
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "General"], Information={})
 
-    def Recalculate_Empty_Event(Header_List: list, Frame_Empty_General_Table_Var: CTkTable) -> None:
+    def Recalculate_Empty_Event(Header_List: list, Frame_Empty_General_Table_Var: CTkTable, Button_Empty_Recalculate_Var: CTkButton) -> None:
         def Recalculation_Confirm(Frame_Body: CTkFrame, Lines_No: int) -> None:
             Add_flag = True
             New_Values_list = []
@@ -1580,7 +1578,9 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
 
         Recalculate_window_height = (Lines_No * 40) + 100
 
-        Recalculate_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Recalculate", width=510, height=Recalculate_window_height)
+        Recalculate_window_geometry = (510, Recalculate_window_height)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Empty_Recalculate_Var, New_Window_width=Recalculate_window_geometry[0])
+        Recalculate_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Recalculate", width=Recalculate_window_geometry[0], height=Recalculate_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Recalculate_window, Name="Recalculate coverage", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Helps to recalculate Coverage percentage so sum is equal 100")
@@ -1605,24 +1605,29 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
 
     def Save_Empty():
         # Copy Settings file into Downloads Folder
-        # TODO --> Extract information from Settings.json and place it to Downloads
-        CTkMessagebox(title="Success", message="Empty Event logic has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Export_dict = {
+            "Type": "TimeSheets_Empty_Events",
+            "Data": Events_Empty_General_dict}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Empty_Events", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
+        CTkMessagebox(title="Success", message="Empty Events logic has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-    def Load_Empty():
-        def MT_drop_func(file):
-            print(file)
-
-            # TODO --> process import 
-
-            CTkMessagebox(title="Success", message="Empty Event logic has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+    def Load_Empty(Button_Load_Empty: CTkButton):
+        def Empty_drop_func(file):
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Empty_Events", JSON_path=["Event_Handler", "Events", "Empty", "General"], Method="Add")
+            Import_window.destroy()
+            # BUG - Application crash
         
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Empty, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
-        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        pywinstyles.apply_dnd(widget=Frame_Body, func=Empty_drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -1675,30 +1680,31 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
     Coverage_Text_Var.configure(placeholder_text="Add %")
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=6, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
     Button_Empty_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Empty_Add_Var.configure(text="Add", command = lambda:Add_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var1=Project_Option_Var1, Activity_Option_Var1=Activity_Option_Var1, Coverage_Text_Var=Coverage_Text_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Add_Var, message="Add selected subject to skip list", ToolTip_Size="Normal")
 
     Button_Empty_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_Empty_Del_One_Var.configure(text="Del", command = lambda:Del_Empty_Event_One(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
+    Button_Empty_Del_One_Var.configure(text="Del", command = lambda:Del_Empty_Event_One(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, Button_Empty_Del_One_Var=Button_Empty_Del_One_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     Button_Empty_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
     Button_Empty_Del_All_Var.configure(text="Del all", command = lambda:Del_Empty_Event_All(Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
-    Button_Empty_Recalculate_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
-    Button_Empty_Recalculate_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Recalculate_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
-
-    Button_Save_Empty = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Frame2 = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Save_Empty = Button_Frame2.children["!ctkframe"].children["!ctkbutton"]
     Button_Save_Empty.configure(text="Save", command = lambda:Save_Empty())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Empty, message="Save table content.", ToolTip_Size="Normal")
 
-    Button_Load_Empty = Button_Frame.children["!ctkframe"].children["!ctkbutton6"]
-    Button_Load_Empty.configure(text="Load", command = lambda:Load_Empty())
+    Button_Load_Empty = Button_Frame2.children["!ctkframe"].children["!ctkbutton2"]
+    Button_Load_Empty.configure(text="Load", command = lambda:Load_Empty(Button_Load_Empty=Button_Load_Empty))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Empty, message="Load and add new records to table.", ToolTip_Size="Normal")
+
+    Button_Empty_Recalculate_Var = Button_Frame2.children["!ctkframe"].children["!ctkbutton3"]
+    Button_Empty_Recalculate_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, Button_Empty_Recalculate_Var=Button_Empty_Recalculate_Var))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Recalculate_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
 
 
     # Build look of Widget
@@ -1828,7 +1834,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
         else:
             pass
 
-    def Del_Schedule_Event_One(Header_List: list, Frame_Empty_Schedules_Table_Var: CTkTable) -> None:
+    def Del_Schedule_Event_One(Header_List: list, Frame_Empty_Schedules_Table_Var: CTkTable, Button_Schedule_Del_One_Var: CTkButton) -> None:
         def Delete_Schedule_Confirm(Frame_Empty_Schedules_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
             Selected_Line_To_Del = LineNo_Option_Var.get()
             Frame_Empty_Schedules_Table_Var.delete_row(index=Selected_Line_To_Del)
@@ -1874,7 +1880,9 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_Scheduled_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one scheduled line", width=510, height=400)
+        Delete_Scheduled_Window_geometry = (510, 400)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Schedule_Del_One_Var, New_Window_width=Delete_Scheduled_Window_geometry[0])
+        Delete_Scheduled_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one scheduled line", width=Delete_Scheduled_Window_geometry[0], height=Delete_Scheduled_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Scheduled_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -1925,24 +1933,29 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
 
     def Save_Scheduler():
         # Copy Settings file into Downloads Folder
-        # TODO --> Extract information from Settings.json and place it to Downloads
+        Export_dict = {
+            "Type": "TimeSheets_Scheduler",
+            "Data": Events_Empty_Schedules_dict}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Scheduler", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
         CTkMessagebox(title="Success", message="Scheduler has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-    def Load_Scheduler():
-        def MT_drop_func(file):
-            print(file)
-
-            # TODO --> process import 
-
-            CTkMessagebox(title="Success", message="Schenduler has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+    def Load_Scheduler(Button_Load_Scheduler: CTkButton):
+        def Scheduler_drop_func(file):
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Scheduler", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Method="Add")
+            Import_window.destroy()
+            # BUG - Application crash
         
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Scheduler, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
-        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        pywinstyles.apply_dnd(widget=Frame_Body, func=Scheduler_drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -2042,7 +2055,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Schedule_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     Button_Schedule_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_Schedule_Del_One_Var.configure(text="Del", command = lambda:Del_Schedule_Event_One(Header_List=Header_List, Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var))
+    Button_Schedule_Del_One_Var.configure(text="Del", command = lambda:Del_Schedule_Event_One(Header_List=Header_List, Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, Button_Schedule_Del_One_Var=Button_Schedule_Del_One_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Schedule_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     Button_Schedule_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
@@ -2054,7 +2067,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Scheduler, message="Save table content.", ToolTip_Size="Normal")
 
     Button_Load_Scheduler = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
-    Button_Load_Scheduler.configure(text="Load", command = lambda:Load_Scheduler())
+    Button_Load_Scheduler.configure(text="Load", command = lambda:Load_Scheduler(Button_Load_Scheduler=Button_Load_Scheduler))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Scheduler, message="Load and add new records to table.", ToolTip_Size="Normal")
 
 
@@ -2195,7 +2208,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         else:
             pass
         
-    def Del_AutoFill_Event_One() -> None:
+    def Del_AutoFill_Event_One(Button_AutoFill_Del_One_Var: CTkButton) -> None:
         def Delete_AutoFill_Confirm(Frame_AutoFiller_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
             Selected_Line_To_Del = LineNo_Option_Var.get()
             Frame_AutoFiller_Table_Var.delete_row(index=Selected_Line_To_Del)
@@ -2237,7 +2250,9 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_AutoFill_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=510, height=260)
+        Delete_AutoFill_Window_geometry = (510, 260)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_AutoFill_Del_One_Var, New_Window_width=Delete_AutoFill_Window_geometry[0])
+        Delete_AutoFill_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=Delete_AutoFill_Window_geometry[0], height=Delete_AutoFill_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_AutoFill_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -2282,24 +2297,29 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
 
     def Save_AutoFill():
         # Copy Settings file into Downloads Folder
-        # TODO --> Extract information from Settings.json and place it to Downloads
+        Export_dict = {
+            "Type": "TimeSheets_Rules",
+            "Data": Events_AutoFill_dict}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Rules", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
         CTkMessagebox(title="Success", message="Rules has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-    def Load_AutoFill():
-        def MT_drop_func(file):
-            print(file)
-
-            # TODO --> process import 
-
-            CTkMessagebox(title="Success", message="Rules has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+    def Load_AutoFill(Button_Load_AutoFill: CTkButton):
+        def AutoFill_drop_func(file):
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Rules", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Method="Add")
+            Import_window.destroy()
+            # BUG - Application crash
         
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_AutoFill, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
-        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        pywinstyles.apply_dnd(widget=Frame_Body, func=AutoFill_drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -2365,7 +2385,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     Button_AutoFill_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_AutoFill_Del_One_Var.configure(text="Del", command = lambda:Del_AutoFill_Event_One())
+    Button_AutoFill_Del_One_Var.configure(text="Del", command = lambda:Del_AutoFill_Event_One(Button_AutoFill_Del_One_Var=Button_AutoFill_Del_One_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
@@ -2377,7 +2397,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_AutoFill, message="Save table content.", ToolTip_Size="Normal")
 
     Button_Load_AutoFill = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
-    Button_Load_AutoFill.configure(text="Load", command = lambda:Load_AutoFill())
+    Button_Load_AutoFill.configure(text="Load", command = lambda:Load_AutoFill(Button_Load_AutoFill=Button_Load_AutoFill))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_AutoFill, message="Load and add new records to table.", ToolTip_Size="Normal")
 
     # Build look of Widget
@@ -2469,7 +2489,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
         else:
             pass
 
-    def Del_Activity_Correct_Event_One():
+    def Del_Activity_Correct_Event_One(Button_Activity_Cor_Del_One_Var: CTkButton):
         def Delete_Activity_Correct_Confirm(Frame_Activity_Correct_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu) -> None:
             Selected_Line_To_Del = LineNo_Option_Var.get()
             Frame_Activity_Correct_Table_Var.delete_row(index=Selected_Line_To_Del)
@@ -2509,7 +2529,9 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_Activity_Correct_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one Activity", width=510, height=250)
+        Delete_Activity_Correct_Window_geometry = (510, 250)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Activity_Cor_Del_One_Var, New_Window_width=Delete_Activity_Correct_Window_geometry[0])
+        Delete_Activity_Correct_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one Activity", width=Delete_Activity_Correct_Window_geometry[0], height=Delete_Activity_Correct_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Activity_Correct_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -2552,24 +2574,29 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
 
     def Save_Activity_Correct():
         # Copy Settings file into Downloads Folder
-        # TODO --> Extract information from Settings.json and place it to Downloads
+        Export_dict = {
+            "Type": "TimeSheets_Activity_Correction",
+            "Data": Events_Activity_Correction_dict}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Activity_Correction", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
         CTkMessagebox(title="Success", message="Activity corrections has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-    def Load_Activity_Correct():
-        def MT_drop_func(file):
-            print(file)
+    def Load_Activity_Correct(Button_Load_Activity_Correct: CTkButton):
+        def Activity_Correct_drop_func(file):
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Activity_Correction", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Method="Add")
+            Import_window.destroy()
+            # BUG - Application crash
 
-            # TODO --> process import 
-
-            CTkMessagebox(title="Success", message="Activity corrections has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
-        
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Activity_Correct, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
-        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        pywinstyles.apply_dnd(widget=Frame_Body, func=Activity_Correct_drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -2633,7 +2660,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Activity_Cor_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     Button_Activity_Cor_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_Activity_Cor_Del_One_Var.configure(text="Del", command = lambda:Del_Activity_Correct_Event_One())
+    Button_Activity_Cor_Del_One_Var.configure(text="Del", command = lambda:Del_Activity_Correct_Event_One(Button_Activity_Cor_Del_One_Var=Button_Activity_Cor_Del_One_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Activity_Cor_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     Button_Activity_Cor_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
@@ -2645,7 +2672,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Activity_Correct, message="Save table content.", ToolTip_Size="Normal")
 
     Button_Load_Activity_Correct = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
-    Button_Load_Activity_Correct.configure(text="Load", command = lambda:Load_Activity_Correct())
+    Button_Load_Activity_Correct.configure(text="Load", command = lambda:Load_Activity_Correct(Button_Load_Activity_Correct=Button_Load_Activity_Correct))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Activity_Correct, message="Load and add new records to table.", ToolTip_Size="Normal")
 
 
@@ -2726,7 +2753,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         else:
             pass
 
-    def Del_Team_User_One():
+    def Del_Team_User_One(Button_MT_Del_One_Var: CTkButton):
         def Delete_Managed_Member_Confirm(Frame_Managed_Team_Table_Var: CTkTable, LineNo_Option_Var: CTkOptionMenu, User_ID_Label_Var: CTkLabel) -> None:
             Selected_Line_To_Del = LineNo_Option_Var.get()
             Delete_Folder_Name = User_ID_Label_Var.cget(attribute_name="text")
@@ -2768,7 +2795,9 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         Line_Option_Variable = IntVar(master=Frame, value=Lines_list[0])
 
         # TopUp Window
-        Delete_Managed_User_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one User", width=510, height=250)
+        Delete_Managed_User_Window_geometry = (510, 250)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_MT_Del_One_Var, New_Window_width=Delete_Managed_User_Window_geometry[0])
+        Delete_Managed_User_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one User", width=Delete_Managed_User_Window_geometry[0], height=Delete_Managed_User_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Managed_User_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.")
@@ -2811,25 +2840,31 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         Defaults_Lists.Delete_Folders(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team"))
 
     def Save_MT():
-        # Copy Settings file into Downloads Folder
-        # TODO --> Extract information from Settings.json and place it to Downloads
+        # Save My_Team Dict into Downloads Folder
+        Export_dict = {
+            "Type": "TimeSheets_Team",
+            "Data": Managed_Team_dict}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Team", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
         CTkMessagebox(title="Success", message="Managed Team has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
 
-    def Load_MT():
-        def MT_drop_func(file):
-            print(file)
+    def Load_MT(Button_Load_MT: CTkButton):
+        def MT_drop_func(file: str) -> None:
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Team", JSON_path=["General", "User", "Managed_Team"], Method="Add")
+            Import_window.destroy()  
+            CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            # BUG - Application crash
 
-            # TODO --> process import 
-
-            CTkMessagebox(title="Success", message="Managed Team has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
-        
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_MT, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
-        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        pywinstyles.apply_dnd(widget=Frame_Body, func=lambda file: MT_drop_func(file=file))
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -2883,7 +2918,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_MT_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
     Button_MT_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_MT_Del_One_Var.configure(text="Del", command = lambda:Del_Team_User_One())
+    Button_MT_Del_One_Var.configure(text="Del", command = lambda:Del_Team_User_One(Button_MT_Del_One_Var=Button_MT_Del_One_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_MT_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
     Button_MT_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
@@ -2891,11 +2926,11 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_MT_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
     Button_Save_Mt = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
-    Button_Save_Mt.configure(text="Save", command = lambda:Save_MT())
+    Button_Save_Mt.configure(text="Save", command = lambda: Save_MT())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Mt, message="Save table content.", ToolTip_Size="Normal")
 
     Button_Load_MT = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
-    Button_Load_MT.configure(text="Load", command = lambda:Load_MT())
+    Button_Load_MT.configure(text="Load", command = lambda: Load_MT(Button_Load_MT=Button_Load_MT))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_MT, message="Load and add new records to table.", ToolTip_Size="Normal")
 
     # Build look of Widget

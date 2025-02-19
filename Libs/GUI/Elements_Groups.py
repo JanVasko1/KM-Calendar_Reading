@@ -1,4 +1,8 @@
-from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEntry
+# Import Libraries
+from datetime import datetime
+import calendar
+
+from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEntry, CTkButton, CTkLabel
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Elements as Elements
@@ -254,7 +258,7 @@ def Get_Table_Frame(Configuration:dict, Frame: CTk|CTkFrame, Table_Size: str, Ta
 
     return Frame_Scrollable_Area
 
-def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -> CTkToplevel:
+def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int, Top_middle_point: list, Fixed: bool) -> CTkToplevel:
     def drag_win():
         x = Pop_Up_Window.winfo_pointerx() - Pop_Up_Window._offsetx
         y = Pop_Up_Window.winfo_pointery() - Pop_Up_Window._offsety
@@ -269,16 +273,17 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -
     Pop_Up_Window.configure(fg_color="#000001")
     Pop_Up_Window.title(title)
 
-    display_width = Pop_Up_Window.winfo_screenwidth()
-    display_height = Pop_Up_Window.winfo_screenheight()
-    left_position = int(display_width // 2 - width // 2)
-    top_position = int(display_height // 2 - height // 2)
-    Pop_Up_Window.geometry(f"{width}x{height}+{left_position}+{top_position}")
+    left_position = Top_middle_point[0]
+    top_position = Top_middle_point[1]
+    Pop_Up_Window.geometry("+%d+%d" % (left_position, top_position))
 
     #Pop_Up_Window.geometry(f"{width}x{height}")
     Pop_Up_Window.bind(sequence="<Escape>", func=lambda event: Pop_Up_Window.destroy())
-    Pop_Up_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
-    Pop_Up_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
+    if Fixed == False:
+        Pop_Up_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
+        Pop_Up_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
+    else:
+        pass
     Pop_Up_Window.overrideredirect(boolean=True)
     Pop_Up_Window.iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
     Pop_Up_Window.resizable(width=False, height=False)
@@ -289,15 +294,18 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -
 
     return Pop_Up_Window
 
-def Get_My_Dialog_Window(Settings: dict, Configuration:dict, title: str, tooltip: str, width: int, height: int, text: str, Password: bool) -> CTkFrame:
+def My_Dialog_Window(Settings: dict, Configuration:dict, Clicked_on_Button: CTkButton, title: str, tooltip: str, width: int, height: int, text: str, Password: bool, Fixed: bool) -> CTkFrame:
     # TODO --> must be finished to be used instead of Elements.Get_DialogWindow
     def Confirm_Choice(Field_Normal: CTkEntry):
         return Field_Normal.get()
 
     def Reject_Choice():
+        Dialog_Window.destroy()
         return ""
 
-    Dialog_Window = Get_Pop_up_window(Configuration=Configuration, title=title, width=width, height=height)
+    Dialog_Window_geometry = (width, height)
+    Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Dialog_Window_geometry[0])
+    Dialog_Window = Get_Pop_up_window(Configuration=Configuration, title=title,  width=Dialog_Window_geometry[0], height=Dialog_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
     # Frame - General
     Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Dialog_Window, Name=title, Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip=tooltip)
@@ -323,3 +331,87 @@ def Get_My_Dialog_Window(Settings: dict, Configuration:dict, title: str, tooltip
     Button_Reject_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
     Button_Reject_Var.configure(text="Reject", command = lambda:Reject_Choice())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Reject_Var, message="Reject.", ToolTip_Size="Normal")
+
+def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Clicked_on_Button: CTkButton, width: int, height: int, Fixed: bool) -> None:
+    # Based on https://github.com/maxverwiebe/CTkDatePicker
+
+    # TODO --> Make all Customtkinter elements to my my elements like "CTkLAble" --. Element.Lable ....
+
+    Date_format = Settings["General"]["Formats"]["Date"]
+
+    def prev_month(current_month: int, current_year: int):
+        if current_month == 1:
+            current_month = 12
+            current_year -= 1
+        else:
+            current_month -= 1
+        build_calendar(current_month=current_month, current_year=current_year)
+
+    def next_month(current_month: int, current_year: int):
+        if current_month == 12:
+            current_month = 1
+            current_year += 1
+        else:
+            current_month += 1
+        build_calendar(current_month=current_month, current_year=current_year)
+
+    def select_date(date_entry: CTkEntry, current_month: int, current_year: int, day: int):
+        selected_date = datetime(current_year, current_month, day)
+        # Temporarily enable the entry to set the date
+        date_entry.configure(state='normal')
+        date_entry.delete(0, 30)
+        date_entry.insert(0, selected_date.strftime(Date_format))
+        Picker_window.destroy()
+
+    def build_calendar(current_month: int, current_year: int) -> None:
+        calendar_frame = CTkFrame(master=Frame_Body)
+        calendar_frame.grid(row=0, column=0)
+
+        # Month and Year Selector
+        month_label = CTkLabel(master=calendar_frame, text=f"{calendar.month_name[current_month]}, {current_year}")
+        month_label.grid(row=0, column=1, columnspan=5)
+
+        prev_month_button = CTkButton(master=calendar_frame, text="<", width=5, command=lambda: prev_month(current_month=current_month, current_year=current_year))
+        prev_month_button.grid(row=0, column=0)
+
+        next_month_button = CTkButton(master=calendar_frame, text=">", width=5, command=lambda: next_month(current_month=current_month, current_year=current_year))
+        next_month_button.grid(row=0, column=6)
+
+        # Days of the week header
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        for i, day in enumerate(days):
+            lbl = CTkLabel(master=calendar_frame, text=day)
+            lbl.grid(row=1, column=i)
+
+        # Days in month
+        month_days = calendar.monthrange(current_year, current_month)[1]
+        start_day = calendar.monthrange(current_year, current_month)[0]
+        day = 1
+        for week in range(2, 8):
+            for day_col in range(7):
+                if week == 2 and day_col < start_day:
+                    lbl = CTkLabel(master=calendar_frame, text="")
+                    lbl.grid(row=week, column=day_col)
+                elif day > month_days:
+                    lbl = CTkLabel(master=calendar_frame, text="")
+                    lbl.grid(row=week, column=day_col)
+                else:
+                    btn = CTkButton(master=calendar_frame, text=str(day), width=3, command=lambda day=day: select_date(date_entry=date_entry, current_month=current_month, current_year=current_year, day=day), fg_color="transparent")
+                    btn.grid(row=week, column=day_col)
+                    day += 1
+
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
+    Picker_window_geometry = (width, height)
+    Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Picker_window_geometry[0])
+    Picker_window = Get_Pop_up_window(Configuration=Configuration, title="Date Picker", width=Picker_window_geometry[0], height=Picker_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed)
+
+    # Frame - General
+    Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Picker_window, Name="Date Picker", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Select date from calendar")
+    Frame_Body = Frame_Main.children["!ctkframe2"]
+    
+
+    build_calendar(current_month=current_month, current_year=current_year)
+
+    

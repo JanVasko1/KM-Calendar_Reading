@@ -3,10 +3,11 @@ from pandas import DataFrame, to_datetime
 from dotenv import load_dotenv
 import json
 import os
+import pyautogui
 from glob import glob
 from shutil import rmtree
 
-from customtkinter import StringVar, IntVar, BooleanVar, get_appearance_mode
+from customtkinter import CTkButton, StringVar, IntVar, BooleanVar, get_appearance_mode
 from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Elements as Elements
@@ -102,6 +103,47 @@ def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVa
     except Exception as Error:
         CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
 
+def Import_Data(Settings: dict, import_file_path: str, Import_Type: str,  JSON_path: list, Method: str) -> None:
+    Can_Import = True
+    # Check if file is json
+    File_Name = import_file_path[0]
+    File_Name_list = File_Name.split(".")
+
+    if File_Name_list[1] == "json":
+        pass
+    else:
+        Can_Import = False
+        CTkMessagebox(title="Error", message=f"Imported file is not .json you have to import only .json.", icon="cancel", fade_in_duration=1)
+
+    # Check if file contain Supported Type
+    if Can_Import == True:
+        with open(file=File_Name, mode="r") as json_file:
+            Import_file = json.load(json_file)
+        json_file.close()
+        
+        if Import_file["Type"] == Import_Type:
+            pass
+        else:
+            Can_Import = False
+            CTkMessagebox(title="Error", message=f"You try to import not supported file. Please check.", icon="cancel", fade_in_duration=1)
+    else:
+        pass
+
+    # Take content and place it to file and change settings
+    if Can_Import == True:
+        if Method == "Overwrite":
+            Upload_data = Import_file["Data"]
+        elif Method == "Add":
+            Import_Data = Import_file["Data"]
+            # TODO --> Load actual data and add to dictionary + sort + unique values
+            Upload_data = Import_Data
+
+        Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=JSON_path, Information=Upload_data)
+
+    else:
+        pass
+
+
 # --------------------------------------------- Folders / Files --------------------------------------------- #
 def Create_Folder(file_path: str) -> None:
     # Create Folder
@@ -166,6 +208,24 @@ def Dialog_Window_Request(Configuration: dict, title: str, text: str, Dialog_Typ
 def Get_Current_Theme() -> str:
     Current_Theme = get_appearance_mode()
     return Current_Theme
+
+def Count_coordinate_for_new_window(Clicked_on: CTkButton, New_Window_width: int) -> list:
+    # Click_on coordinate
+    Clicked_on_X = Clicked_on.winfo_pointerx() - Clicked_on.winfo_rootx()
+    Clicked_on_Y = Clicked_on.winfo_pointery() - Clicked_on.winfo_rooty()
+
+    Clicked_on_width = Clicked_on._current_width
+    Clicked_on_X_middle = Clicked_on_width // 2
+    Clicked_on_height = Clicked_on._current_height
+
+    Clicked_On_X_difference = Clicked_on_X_middle - Clicked_on_X - (New_Window_width // 2)
+    Clicked_on_Y_difference = Clicked_on_height - Clicked_on_Y
+
+    # Window coordinate
+    Window_X, Window_Y = pyautogui.position()
+
+    # Top middle coordinate for new window
+    return [Window_X + Clicked_On_X_difference, Window_Y + Clicked_on_Y_difference + 5]
 
 # --------------------------------------------- PyInstaller --------------------------------------------- #
 def Absolute_path(relative_path: str) -> str:

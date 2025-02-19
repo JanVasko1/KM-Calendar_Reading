@@ -64,14 +64,16 @@ def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame,
     SP_Date_To_Option_Var.configure(variable=SP_Date_To_Variable)
 
     # Field - Manual Date To
-    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="Input_Normal", Validation="Date") 
+    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="DatePicker", Validation="Date") 
     SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Button_SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
+    SM_Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
+    Button_SM_Man_Date_To_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=SM_Man_Date_To_Frame_Var, Clicked_on_Button=Button_SM_Man_Date_To_Frame_Var, width=200, height=230, Fixed=True))
 
     # Disabling fields --> Manual Date To 
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=SP_Date_To_Option_Var, values=SP_Date_To_Method_list, command = lambda SP_Date_To_Option_Var: Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Option_Var, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable))
     Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Method, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable)    # Must be here because of initial value
     
-
     # Field - Password
     SP_Password_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
     SP_Password_Frame_Var = SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
@@ -95,15 +97,19 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
     Use_Manual_Frame_Var = Use_Manual_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
     Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
-    # Field - User ID
-    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="DatePicker") 
+    # Field - Date From
+    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="DatePicker", Validation="Date") 
     Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Button_Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkbutton"]
     Man_Date_From_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
+    Button_Man_Date_From_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=Man_Date_From_Frame_Var, Clicked_on_Button=Button_Man_Date_From_Frame_Var, width=200, height=230, Fixed=True))
 
-    # Field - User Email
-    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="DatePicker")
+    # Field - Date To
+    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="DatePicker", Validation="Date")
     Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
+    Button_Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
     Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
+    Button_Man_Date_To_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=Man_Date_To_Frame_Var, Clicked_on_Button=Button_Man_Date_To_Frame_Var, width=200, height=230, Fixed=True))
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

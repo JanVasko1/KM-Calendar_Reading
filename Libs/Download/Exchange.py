@@ -169,13 +169,13 @@ def Get_All_Projects(access_token: str, username: str) -> dict:
     else:
         return {}, False
 
-def Create_Project(access_token: str, username: str, Preset_color: str, project: str) -> bool:
+def Create_Project(access_token: str, username: str, Preset_Active_color: str, project: str) -> bool:
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"}
     
     body = {
-        "color": f"{Preset_color}",
+        "color": f"{Preset_Active_color}",
         "displayName": f"{project}"}
     
     category_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories"
@@ -198,6 +198,21 @@ def Delete_Projects(access_token: str, username: str, category_id: str) -> bool:
     else:
         return False
 
+def Change_Project_Color(access_token: str, username: str, category_id: str, Color: str) -> bool:
+    headers_update = {
+        "Authorization": f"Bearer {access_token}"}
+    
+    body = {
+        "color": f"{Color}"}
+
+    update_url = f"https://graph.microsoft.com/v1.0/users/{username}/outlook/masterCategories/{category_id}"
+    update_response = requests.delete(url=update_url, headers=headers_update, json=body)
+
+    if update_response.status_code == 200 or update_response.status_code == 201:
+        return True
+    else:
+        return False
+
 def Push_Project(Settings: dict, Exchange_Password: str) -> None:
     User_Email = Settings["General"]["User"]["Email"]
     access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
@@ -207,8 +222,10 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
     Project_List = Defaults_Lists.List_from_Dict(Dictionary=Project_dict, Key_Argument="Project")
 
     # Preset Color
-    Color_Used = Settings["Event_Handler"]["Project"]["Colors"]["Used"]
-    Preset_color = Settings["Event_Handler"]["Project"]["Colors"]["Color_preset_map"][f"{Color_Used}"]
+    Category_Active_Color = Settings["Event_Handler"]["Project"]["Colors"]["Active_Color"]
+    Category_Non_Active_Color = Settings["Event_Handler"]["Project"]["Colors"]["Non_Active_Color"]
+    Preset_Active_color = Settings["Event_Handler"]["Project"]["Colors"]["Color_preset_map"][f"{Category_Active_Color}"]
+    Preset_Non_Active_color = Settings["Event_Handler"]["Project"]["Colors"]["Color_preset_map"][f"{Category_Non_Active_Color}"]
 
     # Exchange Categories --> Projects
     Exchange_Categories_dict, Can_Continue = Get_All_Projects(access_token=access_token, username=User_Email)
@@ -218,7 +235,7 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
         # Check missing in Exchange
         Exchange_Missing_list = Defaults_Lists.List_missing_values(Source_list=Exchange_Categories_Names_list, Compare_list=Project_List)
         for project in Exchange_Missing_list:
-            Created_Flag = Create_Project(access_token=access_token, username=User_Email, Preset_color=Preset_color, project=project)
+            Created_Flag = Create_Project(access_token=access_token, username=User_Email, Preset_Active_color=Preset_Active_color, project=project)
             if Created_Flag == True:
                 pass
             else:
@@ -233,7 +250,7 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
                     if value["displayName"] == project:
                         category_id = value["id"]
                         # Date check
-                        Question_Message = CTkMessagebox(title="Confirmation", message=f"This step will delete project from Exchange Categories which will also delete it from all of your Events where it was used?\n\n Project: {project}", icon="question", fade_in_duration=1, option_1="Delete", option_2="Keep")
+                        Question_Message = CTkMessagebox(title="Confirmation", message=f"This step will delete project from Exchange Categories which will also delete it from all of your Events where it was used?\n\n Project: {project}", icon="question", fade_in_duration=1, option_1="Delete", option_2="Keep", option_3="Change color")
                         response = Question_Message.get()
                         if response == "Delete":
                             Deleted_Flag = Delete_Projects(access_token=access_token, username=User_Email, category_id=category_id)
@@ -241,6 +258,12 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
                                 pass
                             else:
                                 CTkMessagebox(title="Error", message=f"""It was not possible to delete "{project}" from Category on Exchange, please delete it manually.""", icon="cancel", fade_in_duration=1)
+                        elif response == "Change color":
+                            Update_Flag = Change_Project_Color(access_token=access_token, username=User_Email, category_id=category_id, Color=Preset_Non_Active_color)
+                            if Update_Flag == True:
+                                pass
+                            else:
+                                CTkMessagebox(title="Error", message=f"""It was not possible to change color for "{project}" from Category on Exchange, please update it manually.""", icon="cancel", fade_in_duration=1)
                         elif response == "Keep":
                             break
                         else:

@@ -1,7 +1,7 @@
 # Import Libraries
-import shutil
+import json
 
-from customtkinter import CTk, CTkFrame
+from customtkinter import CTk, CTkFrame, CTkButton
 from CTkMessagebox import CTkMessagebox
 import pywinstyles
 
@@ -35,54 +35,31 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             CTkMessagebox(title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
 
     def Save_Settings():
-        # Copy Settings file into Downloads Folder
-        Source_File = Defaults_Lists.Absolute_path(relative_path=f"Libs\\Settings.json")
-        Destination_File = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
-        shutil.copyfile(src=Source_File, dst=Destination_File)
+        # Export Settings into Downloads Folder - backup
+        Export_dict = {
+            "Type": "Settings",
+            "Data": Settings}
+        Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
         CTkMessagebox(title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
         
-    def Load_Settings():
+    def Load_Settings(Button_Load_Settings: CTkButton):
         def drop_func(file):
-            print(file)
-            Can_Import = True
-            # Check if file is json
-            File_Name = file[0]
-            File_Name_list = File_Name.split(".")
-
-            if File_Name_list[1] == "json":
-                pass
-            else:
-                Can_Import = False
-                CTkMessagebox(title="Error", message=f"Imported file is not .json you have to import only .json.", icon="cancel", fade_in_duration=1)
-
-            # Check if file contain whole structure needed as 
-            if Can_Import == True:
-                pass
-            else:
-                pass
-
-            # Take content and place it to file
-            if Can_Import == True:
-                # TODO --> file is file path file itself
-                pass
-            else:
-                pass
-
-            # Change global Settings 
-            if Can_Import == True:
-                pass
-            else:
-                pass
-            
-            CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            # BUG - JSON_Path cannot upload whole structure
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Skip_Events", JSON_path=[], Method="Overwrite")
+            Import_window.destroy()
+            # BUG - Application crash
         
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+        Import_window_geometry = (200, 200)
+        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
         pywinstyles.apply_dnd(widget=Frame_Body, func=drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 
@@ -114,7 +91,7 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
     # Button - Load Settings
     Button_Load_Settings = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
-    Button_Load_Settings.configure(text="Load Settings", command = lambda:Load_Settings())
+    Button_Load_Settings.configure(text="Load Settings", command = lambda:Load_Settings(Button_Load_Settings=Button_Load_Settings))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Settings, message="Upload Settings files.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#

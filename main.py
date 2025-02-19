@@ -1,6 +1,6 @@
-# BUG --> Dont Read from Exchange to for Marek account
+# BUG --> Dont Read from Exchange to for Marek account --> Issue registered
 # BUG --> Outlook Client
-# TODO --> CTkDatePicker: https://github.com/maxverwiebe/CTkDatePicker --> maybee recreate my own Dialog and provide content and place it to Events_Groups as Date Picker
+# TODO --> Show project list and Activity list somewhere
 
 # Import Libraries
 import os
@@ -134,7 +134,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         window.update_idletasks()
 
     def Define_Icons_Top_Bottom_indent(Frame_Height: int, Icon_count: int, Icon_Button_Height: int, Icon_Default_pady: int, Logo_height: int, Logo_pady: int, ) -> list[int, int]:
-        # TODO --> wrong still not working button of side bar
+        # BUG --> wrong still not working button of side bar
         # Icons Count
         if (Icon_count % 2) == 0:
             Odd_Icon_Count = False

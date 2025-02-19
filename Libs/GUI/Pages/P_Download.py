@@ -30,6 +30,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
         Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
         Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
+        Sharepoint_Man_Date_Picker_Var =Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkbutton"]
         Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
 
         Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
@@ -48,12 +49,14 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Sharepoint_Password_Var.configure(state="disabled")
             Sharepoint_Date_From_Option_Var.configure(state="disabled")
             Sharepoint_Date_To_Option_Var.configure(state="disabled")
+            Sharepoint_Man_Date_Picker_Var.configure(state="disabled")
             Sharepoint_Man_Date_To_Var.configure(state="disabled")
         elif Download_Date_Range_Source.get() == "Sharepoint":
             Sharepoint_Password_Var.focus()
             Sharepoint_Password_Var.configure(state="normal")
             Sharepoint_Date_From_Option_Var.configure(state="normal")
             Sharepoint_Date_To_Option_Var.configure(state="normal")
+            Sharepoint_Man_Date_Picker_Var.configure(state="normal")
             Sharepoint_Man_Date_To_Var.configure(state="normal")
 
             Manual_Date_From_Entry_Var.delete(first_index=0, last_index=1000)
