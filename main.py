@@ -1,4 +1,7 @@
-# BUG --> Location List in Settup file is filled sometime by " "
+# BUG --> Dont Read from Exchange to for Marek account
+# BUG --> Outlook Client
+# TODO --> CTkDatePicker: https://github.com/maxverwiebe/CTkDatePicker --> maybee recreate my own Dialog and provide content and place it to Events_Groups as Date Picker
+
 # Import Libraries
 import os
 import time
@@ -58,6 +61,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     User_Type = Settings["General"]["User"]["User_Type"]
+    Program_Version = Settings["General"]["Program"]["Version"]
 
     global Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady, Icon_Default_pady, Logo_Height, Logo_width, Side_Bar_Frame_Height, Icon_Button_Height, Logo_pady
     
@@ -69,7 +73,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Icon_Default_pady = 10
     Logo_Height = 40
     Logo_width = 70
-    Logo_pady = 20
+    Logo_pady = 10
     
     Side_Bar_Frame_Height = Side_Bar_Frame._current_height
     Icon_Button_Height = Configuration["Buttons"]["Picture_SideBar"]["height"]
@@ -129,18 +133,38 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         P_Settings.Page_Settings(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Detail)
         window.update_idletasks()
 
-    def Define_Icons_Top_Bottom_indent(Frame_Height: int, Icon_count: int, Icon_Button_Height: int, Icon_Default_pady: int, Logo_height: int, Logo_pady: int) -> list[int, int]:
-        Total_Logo_Height = Logo_height + (2 * Logo_pady)
-        Total_Icons_Height = Icon_count * (Icon_Button_Height + (2 * Icon_Default_pady))
+    def Define_Icons_Top_Bottom_indent(Frame_Height: int, Icon_count: int, Icon_Button_Height: int, Icon_Default_pady: int, Logo_height: int, Logo_pady: int, ) -> list[int, int]:
+        # TODO --> wrong still not working button of side bar
+        # Icons Count
+        if (Icon_count % 2) == 0:
+            Odd_Icon_Count = False
+        else:
+            Odd_Icon_Count = True
+
+        # Define Starting and Ending point of Icons (Top, Bottom) 
+        if Odd_Icon_Count == False:
+            All_Icon_Height = Icon_Button_Height * Icon_count // 2
+            All_Icon_pady = (Icon_Default_pady * 2) * ((Icon_count // 2) - 1 ) + Icon_Default_pady
+            Height_Icon_End = All_Icon_Height + All_Icon_pady
+        else:
+            All_Icon_Height = ((Icon_Button_Height * Icon_count) // 2) + (Icon_Button_Height // 2)
+            All_Icon_pady = (Icon_Default_pady * 2) * (Icon_count // 2)
+            Height_Icon_End = All_Icon_Height + All_Icon_pady
+
+        # Logo definitions
+        Total_Logo_Height = Logo_height + Logo_pady
+
         Side_Bar_Middle_point = Frame_Height // 2
-        Side_Bar_Icon_top_pady = Side_Bar_Middle_point - (Total_Icons_Height // 2)
-        Side_Bar_Icon_Bottom_pady = Side_Bar_Middle_point - (Total_Icons_Height // 2) - Total_Logo_Height - Logo_pady
+        Side_Bar_Icon_top_pady = Side_Bar_Middle_point - Height_Icon_End - Total_Logo_Height
+        Side_Bar_Icon_Bottom_pady = (Frame_Height - 30) - (Side_Bar_Middle_point + Height_Icon_End)
 
         return Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady
 
     # ------------------------- Main Functions -------------------------#
     Active_Window = Elements.Get_Frame(Configuration=Configuration, Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
 
+    # Logo
+    Logo = Elements.Get_Custom_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
 
     # Page - Download
     Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
@@ -201,12 +225,15 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Icon_Frame_Close.configure(command = lambda: window.quit())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close application.", ToolTip_Size="Normal")
 
-    Konica_Logo = Elements.Get_Background_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
+    # Program Version
+    Program_Version_text = Elements.Get_Label(Configuration=Configuration, Frame=Side_Bar_Frame, Label_Size="Field_Label", Font_Size="Field_Label")
+    Program_Version_text.configure(text=f"{Program_Version}")
 
     # Define intend
     Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady = Define_Icons_Top_Bottom_indent(Frame_Height=Side_Bar_Frame_Height, Icon_count=Icon_count, Icon_Button_Height=Icon_Button_Height, Icon_Default_pady=Icon_Default_pady, Logo_height=Logo_Height, Logo_pady=Logo_pady)
 
     # Build look of Widget
+    Logo.grid(row=0, column=0, padx=(0, 0), pady=(Logo_pady, 0), sticky="n", columnspan=2)
     Active_Window.grid(row=1, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
     if User_Type == "User":
         Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
@@ -215,7 +242,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         Icon_Frame_Information.grid(row=3, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
         Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
         Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=(Icon_Default_pady, Side_Bar_Icon_Bottom_pady), sticky="w")
-        Konica_Logo.grid(row=6, column=0, padx=(0, 0), pady=Logo_pady, sticky="", columnspan=2)
+        Program_Version_text.grid(row=6, column=0, padx=(0, 0), pady=(0, 10), sticky="s", columnspan=2)
     elif User_Type == "Manager":
         Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
         Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
@@ -224,7 +251,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         Icon_Frame_Information.grid(row=4, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
         Icon_Frame_Settings.grid(row=5, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
         Icon_Frame_Close.grid(row=6, column=1, padx=(0, 10), pady=(Icon_Default_pady, Side_Bar_Icon_Bottom_pady), sticky="w")
-        Konica_Logo.grid(row=7, column=0, padx=(0, 0), pady=Logo_pady, sticky="", columnspan=2)
+        Program_Version_text.grid(row=7, column=0, padx=(0, 0), pady=(0, 10), sticky="s", columnspan=2)
 
     # Initiate default window
     Show_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Dashboard_Row)
@@ -259,7 +286,6 @@ if __name__ == "__main__":
     Settings = Defaults_Lists.Load_Settings()
     Configuration = Defaults_Lists.Load_Configuration() 
 
-    
     Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
     Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
     SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]

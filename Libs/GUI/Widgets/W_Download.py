@@ -96,12 +96,12 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
     Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - User ID
-    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Input_Normal", Validation="Date") 
+    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="DatePicker") 
     Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
     Man_Date_From_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
 
     # Field - User Email
-    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Input_Normal", Validation="Date")
+    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="DatePicker")
     Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
     Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
 

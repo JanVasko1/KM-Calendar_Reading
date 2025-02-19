@@ -1,4 +1,5 @@
 # Import Libraries
+import shutil
 from datetime import datetime
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -1279,6 +1280,31 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
             Frame_Skip_Table_Var.delete_row(index=Table_index)
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Skip", "Skip_List"], Information=[])
 
+    def Save_Skip():
+        # Copy Settings file into Downloads Folder
+        # TODO --> Extract information from Settings.json and place it to Downloads
+        CTkMessagebox(title="Success", message="Skip Events has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    def Load_Skip():
+        def MT_drop_func(file):
+            print(file)
+
+            # TODO --> process import 
+
+            CTkMessagebox(title="Success", message="Skip Events has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="List of text be skipped as TimeSheet Entry in the case that part of text is found in Event Subject.")
@@ -1305,7 +1331,7 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
     Frame_Skip_Table_Var.configure(wraplength=440)
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=5, Button_Size="Small") 
     Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Skip_Add_Var.configure(text="Add", command = lambda:Add_Skip_Event(Header_List=Header_List, Subject_Text_Text_Var=Subject_Text_Text_Var, Frame_Skip_Table_Var=Frame_Skip_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Skip_Add_Var, message="Add selected subject to skip list", ToolTip_Size="Normal")
@@ -1318,6 +1344,13 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
     Button_Skip_Del_all_Var.configure(text="Del all", command = lambda:Del_Skip_Event_all(Frame_Skip_Table_Var=Frame_Skip_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Skip_Del_all_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
 
+    Button_Save_Skip = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Save_Skip.configure(text="Save", command = lambda:Save_Skip())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Skip, message="Save table content.", ToolTip_Size="Normal")
+
+    Button_Load_Skip = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Load_Skip.configure(text="Load", command = lambda:Load_Skip())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Skip, message="Load and add new records to table.", ToolTip_Size="Normal")
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1570,6 +1603,32 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         Button_Reject_Var.configure(text="Reject", command = lambda:Recalculation_Reject())
         Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Reject_Var, message="Dont process, closing Window.", ToolTip_Size="Normal")
 
+    def Save_Empty():
+        # Copy Settings file into Downloads Folder
+        # TODO --> Extract information from Settings.json and place it to Downloads
+        CTkMessagebox(title="Success", message="Empty Event logic has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    def Load_Empty():
+        def MT_drop_func(file):
+            print(file)
+
+            # TODO --> process import 
+
+            CTkMessagebox(title="Success", message="Empty Event logic has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+        
+
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Empty Space coverage Events", Additional_Text="Sum of Coverage Percentage must equal 100%.", Widget_size="Triple_size", Widget_Label_Tooltip="For empty space (between Events in calendar) program use fill them by this setup.")
@@ -1616,7 +1675,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
     Coverage_Text_Var.configure(placeholder_text="Add %")
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=4, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=6, Button_Size="Small") 
     Button_Empty_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Empty_Add_Var.configure(text="Add", command = lambda:Add_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var1=Project_Option_Var1, Activity_Option_Var1=Activity_Option_Var1, Coverage_Text_Var=Coverage_Text_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Add_Var, message="Add selected subject to skip list", ToolTip_Size="Normal")
@@ -1632,6 +1691,15 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
     Button_Empty_Recalculate_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
     Button_Empty_Recalculate_Var.configure(text="Recalculate", command = lambda:Recalculate_Empty_Event(Header_List=Header_List, Frame_Empty_General_Table_Var=Frame_Empty_General_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Empty_Recalculate_Var, message="Recalculate coverage for all lines.", ToolTip_Size="Normal")
+
+    Button_Save_Empty = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Save_Empty.configure(text="Save", command = lambda:Save_Empty())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Empty, message="Save table content.", ToolTip_Size="Normal")
+
+    Button_Load_Empty = Button_Frame.children["!ctkframe"].children["!ctkbutton6"]
+    Button_Load_Empty.configure(text="Load", command = lambda:Load_Empty())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Empty, message="Load and add new records to table.", ToolTip_Size="Normal")
+
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -1712,7 +1780,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
             pass
         else:
             Add_flag = False
-            CTkMessagebox(title="Error", message=f"You didnt select any day of week, please update.", icon="cancel", fade_in_duration=1)
+            CTkMessagebox(title="Error", message=f"You didn't select any day of week, please update.", icon="cancel", fade_in_duration=1)
 
         # Time Checkers
         if Add_flag == True:
@@ -1855,6 +1923,32 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
             Frame_Empty_Schedules_Table_Var.delete_row(index=Table_index)
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Empty", "Scheduled"], Information={})
 
+    def Save_Scheduler():
+        # Copy Settings file into Downloads Folder
+        # TODO --> Extract information from Settings.json and place it to Downloads
+        CTkMessagebox(title="Success", message="Scheduler has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    def Load_Scheduler():
+        def MT_drop_func(file):
+            print(file)
+
+            # TODO --> process import 
+
+            CTkMessagebox(title="Success", message="Schenduler has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+        
+
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Events Scheduler", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple TimeSheet Entry planner.")
@@ -1942,7 +2036,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
     End_Time_Text_Var.configure(placeholder_text="HH:MM")
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=5, Button_Size="Small") 
     Button_Schedule_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_Schedule_Add_Var.configure(text="Add", command = lambda:Add_Schedule_Event(Header_List=Header_List, Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var2=Project_Option_Var2, Activity_Option_Var2=Activity_Option_Var2, Start_Time_Text_Var=Start_Time_Text_Var, End_Time_Text_Var=End_Time_Text_Var, Monday_Check_Frame_Var=Monday_Check_Frame_Var, Tuesday_Check_Frame_Var=Tuesday_Check_Frame_Var, Wednesday_Check_Frame_Var=Wednesday_Check_Frame_Var, Thursday_Check_Frame_Var=Thursday_Check_Frame_Var, Friday_Check_Frame_Var=Friday_Check_Frame_Var, Saturday_Check_Frame_Var=Saturday_Check_Frame_Var, Sunday_Check_Frame_Var=Sunday_Check_Frame_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Schedule_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
@@ -1954,6 +2048,15 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
     Button_Schedule_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
     Button_Schedule_Del_All_Var.configure(text="Del all", command = lambda:Del_Schedule_Event_All(Frame_Empty_Schedules_Table_Var=Frame_Empty_Schedules_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Schedule_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
+    Button_Save_Scheduler = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Save_Scheduler.configure(text="Save", command = lambda:Save_Scheduler())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Scheduler, message="Save table content.", ToolTip_Size="Normal")
+
+    Button_Load_Scheduler = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Load_Scheduler.configure(text="Load", command = lambda:Load_Scheduler())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Scheduler, message="Load and add new records to table.", ToolTip_Size="Normal")
+
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -2037,7 +2140,6 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Activity_All_List.sort()
 
     Location_List = Settings["Event_Handler"]["Location"]["Location_List"]
-    Location_List.insert(0, " ") # Because there might be not filled one in Calendar
 
     AutoFill_Use_Variable = BooleanVar(master=Frame, value=AutoFill_Rules_Enabled)
     Project_Variable = StringVar(master=Frame, value=Project_All_List[0])
@@ -2178,6 +2280,31 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
             Frame_AutoFiller_Table_Var.delete_row(index=Table_index)
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Information={})
 
+    def Save_AutoFill():
+        # Copy Settings file into Downloads Folder
+        # TODO --> Extract information from Settings.json and place it to Downloads
+        CTkMessagebox(title="Success", message="Rules has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    def Load_AutoFill():
+        def MT_drop_func(file):
+            print(file)
+
+            # TODO --> process import 
+
+            CTkMessagebox(title="Success", message="Rules has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="AutoFill rules", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Simple rules applied on TimeSheet Entry if part/whole Search Text is found in Subject. If empty then do not fill it or overwrite it.")
@@ -2232,7 +2359,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Location_Option_Var, values=Location_List, command=None)
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=5, Button_Size="Small") 
     Button_AutoFill_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_AutoFill_Add_Var.configure(text="Add", command = lambda:Add_AutoFill_Event(Header_List=Header_List, Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var, Subject_Text_Text_Var=Subject_Text_Text_Var, Project_Option_Var=Project_Option_Var, Activity_Option_Var=Activity_Option_Var, Location_Option_Var=Location_Option_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
@@ -2244,6 +2371,14 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
     Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
     Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_AutoFill_Event_All(Frame_AutoFiller_Table_Var=Frame_AutoFiller_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
+    Button_Save_AutoFill = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Save_AutoFill.configure(text="Save", command = lambda:Save_AutoFill())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_AutoFill, message="Save table content.", ToolTip_Size="Normal")
+
+    Button_Load_AutoFill = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Load_AutoFill.configure(text="Load", command = lambda:Load_AutoFill())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_AutoFill, message="Load and add new records to table.", ToolTip_Size="Normal")
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -2409,12 +2544,37 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
         Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Reject_Var, message="Dont process, closing Window.", ToolTip_Size="Normal")
 
 
-
     def Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var: CTkTable) -> None:
         Table_len = len(Frame_Activity_Correct_Table_Var.values)
         for Table_index in range(1, Table_len):
             Frame_Activity_Correct_Table_Var.delete_row(index=Table_index)
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Information={})
+
+    def Save_Activity_Correct():
+        # Copy Settings file into Downloads Folder
+        # TODO --> Extract information from Settings.json and place it to Downloads
+        CTkMessagebox(title="Success", message="Activity corrections has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    def Load_Activity_Correct():
+        def MT_drop_func(file):
+            print(file)
+
+            # TODO --> process import 
+
+            CTkMessagebox(title="Success", message="Activity corrections has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+        
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -2467,18 +2627,27 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Correct_Activity_Option_Var, values=Activity_All_List, command=None)
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
-    Button_AutoFill_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
-    Button_AutoFill_Add_Var.configure(text="Add", command = lambda:Add_Activity_Correct_Event(Header_List=Header_List, Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var, Project_Option_Var=Project_Option_Var, Wrong_Activity_Option_Var=Wrong_Activity_Option_Var, Correct_Activity_Option_Var=Correct_Activity_Option_Var))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Input_Area, Field_Frame_Type="Single_Column" , Buttons_count=5, Button_Size="Small") 
+    Button_Activity_Cor_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
+    Button_Activity_Cor_Add_Var.configure(text="Add", command = lambda:Add_Activity_Correct_Event(Header_List=Header_List, Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var, Project_Option_Var=Project_Option_Var, Wrong_Activity_Option_Var=Wrong_Activity_Option_Var, Correct_Activity_Option_Var=Correct_Activity_Option_Var))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Activity_Cor_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
 
-    Button_AutoFill_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_AutoFill_Del_One_Var.configure(text="Del", command = lambda:Del_Activity_Correct_Event_One())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
+    Button_Activity_Cor_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
+    Button_Activity_Cor_Del_One_Var.configure(text="Del", command = lambda:Del_Activity_Correct_Event_One())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Activity_Cor_Del_One_Var, message="Delete row from table based on input index.", ToolTip_Size="Normal")
 
-    Button_AutoFill_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
-    Button_AutoFill_Del_All_Var.configure(text="Del all", command = lambda:Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_AutoFill_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+    Button_Activity_Cor_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
+    Button_Activity_Cor_Del_All_Var.configure(text="Del all", command = lambda:Del_Activity_Correct_Event_all(Frame_Activity_Correct_Table_Var=Frame_Activity_Correct_Table_Var))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Activity_Cor_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
+    Button_Save_Activity_Correct = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Save_Activity_Correct.configure(text="Save", command = lambda:Save_Activity_Correct())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Activity_Correct, message="Save table content.", ToolTip_Size="Normal")
+
+    Button_Load_Activity_Correct = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Load_Activity_Correct.configure(text="Load", command = lambda:Load_Activity_Correct())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Activity_Correct, message="Load and add new records to table.", ToolTip_Size="Normal")
+
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -2641,6 +2810,32 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
         Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["General", "User", "Managed_Team"], Information={})
         Defaults_Lists.Delete_Folders(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team"))
 
+    def Save_MT():
+        # Copy Settings file into Downloads Folder
+        # TODO --> Extract information from Settings.json and place it to Downloads
+        CTkMessagebox(title="Success", message="Managed Team has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+
+    def Load_MT():
+        def MT_drop_func(file):
+            print(file)
+
+            # TODO --> process import 
+
+            CTkMessagebox(title="Success", message="Managed Team has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=MT_drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+        
+
     # ------------------------- Main Functions -------------------------#
     # Frame - General
     Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="My managed team", Additional_Text="", Widget_size="Triple_size", Widget_Label_Tooltip="Add / del user from my team, users are then visible on Managed Team dashboard.")
@@ -2682,7 +2877,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
     MT_User_Name_Frame_Var.configure(placeholder_text="Team member Name")
 
     # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Configuration=Configuration, Field_Frame_Type="Single_Column" , Buttons_count=3, Button_Size="Small") 
+    Button_Frame = Elements_Groups.Get_Widget_Button_row(Frame=Frame_Input_Area, Configuration=Configuration, Field_Frame_Type="Single_Column" , Buttons_count=5, Button_Size="Small") 
     Button_MT_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
     Button_MT_Add_Var.configure(text="Add", command = lambda:Add_Team_User(Header_List=Header_List, Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var, MT_SP_Teams_Frame_Var=MT_SP_Teams_Frame_Var, MT_User_ID_Frame_Var=MT_User_ID_Frame_Var, MT_User_Name_Frame_Var=MT_User_Name_Frame_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_MT_Add_Var, message="Add selected combination into the list", ToolTip_Size="Normal")
@@ -2694,6 +2889,14 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
     Button_MT_Del_All_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
     Button_MT_Del_All_Var.configure(text="Del all", command = lambda:Del_Team_User_all(Frame_Managed_Team_Table_Var=Frame_Managed_Team_Table_Var))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_MT_Del_All_Var, message="Delete all rows from table.", ToolTip_Size="Normal")
+
+    Button_Save_Mt = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
+    Button_Save_Mt.configure(text="Save", command = lambda:Save_MT())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Mt, message="Save table content.", ToolTip_Size="Normal")
+
+    Button_Load_MT = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
+    Button_Load_MT.configure(text="Load", command = lambda:Load_MT())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_MT, message="Load and add new records to table.", ToolTip_Size="Normal")
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)

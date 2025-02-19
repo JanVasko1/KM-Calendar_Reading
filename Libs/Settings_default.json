@@ -1,5 +1,8 @@
 {
     "General": {
+        "Program": {
+            "Version": "1.0.0"
+        },
         "User": {
             "Code": "",
             "Name": "",

@@ -379,6 +379,7 @@ def Get_CheckBox(Configuration:dict, Frame: CTk|CTkFrame) -> CTkCheckBox:
         text_color = tuple(Configuration_Check_Box["text_color"]),
         hover = Configuration_Check_Box["hover"])
     return Check_Box
+    
 
 
 # ---------------------------------------------- Frames ----------------------------------------------# 
@@ -693,10 +694,10 @@ def Get_CTk_Icon(Configuration:dict, Icon_Set: str, Icon_Name: str, Icon_Size: s
         size = (Icon_Size_px, Icon_Size_px))
     return Picture
 
-def Get_Background_Image(Configuration:dict, Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
+def Get_Custom_Image(Configuration:dict, Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
     Picture = CTkImage(
-        light_image = Image.open(Defaults_Lists.Absolute_path(relative_path=f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}")),
-        dark_image = Image.open(Defaults_Lists.Absolute_path(relative_path=f"D:\\KM-Calendar_Reading\\Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}")),
+        light_image = Image.open(Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}")),
+        dark_image = Image.open(Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}")),
         size = (width, heigh))
     Background_Image_Label = Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Main", Font_Size="Main")
     Background_Image_Label.configure(image=Picture, text="")

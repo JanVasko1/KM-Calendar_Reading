@@ -1,8 +1,12 @@
 # Import Libraries
+import shutil
+
 from customtkinter import CTk, CTkFrame
 from CTkMessagebox import CTkMessagebox
+import pywinstyles
 
 import Libs.GUI.Widgets.W_Settings as Settings_Widgets
+import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
 
@@ -28,8 +32,63 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             import Libs.Download.Exchange as Exchange
             Exchange.Push_Project(Settings=Settings, Exchange_Password=Exchange_Password)
             Exchange.Push_Activity(Settings=Settings, Exchange_Password=Exchange_Password)
-            CTkMessagebox(title="warning", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
+            CTkMessagebox(title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
 
+    def Save_Settings():
+        # Copy Settings file into Downloads Folder
+        Source_File = Defaults_Lists.Absolute_path(relative_path=f"Libs\\Settings.json")
+        Destination_File = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
+        shutil.copyfile(src=Source_File, dst=Destination_File)
+        CTkMessagebox(title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+    def Load_Settings():
+        def drop_func(file):
+            print(file)
+            Can_Import = True
+            # Check if file is json
+            File_Name = file[0]
+            File_Name_list = File_Name.split(".")
+
+            if File_Name_list[1] == "json":
+                pass
+            else:
+                Can_Import = False
+                CTkMessagebox(title="Error", message=f"Imported file is not .json you have to import only .json.", icon="cancel", fade_in_duration=1)
+
+            # Check if file contain whole structure needed as 
+            if Can_Import == True:
+                pass
+            else:
+                pass
+
+            # Take content and place it to file
+            if Can_Import == True:
+                # TODO --> file is file path file itself
+                pass
+            else:
+                pass
+
+            # Change global Settings 
+            if Can_Import == True:
+                pass
+            else:
+                pass
+            
+            CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+        
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=200, height=200)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="braces", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+        
+        
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
     Frame_Settings_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line")
@@ -47,6 +106,16 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Button_Upload_Pro_Act = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Upload_Pro_Act.configure(text="Upload Project/Activity", command = lambda:Upload_Project_Activities())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal")
+
+    # Button - Save Settings
+    Button_Save_Settings = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
+    Button_Save_Settings.configure(text="Save Settings", command = lambda:Save_Settings())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Settings, message="Save whole setup into Downloads.", ToolTip_Size="Normal")
+
+    # Button - Load Settings
+    Button_Load_Settings = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
+    Button_Load_Settings.configure(text="Load Settings", command = lambda:Load_Settings())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Settings, message="Upload Settings files.", ToolTip_Size="Normal")
 
     # ------------------------- Work Area -------------------------#
     # Tab View
@@ -145,6 +214,8 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=15, sticky="e")
     Button_Upload_Pro_Act.grid(row=0, column=1, padx=5, pady=15, sticky="e")
+    Button_Save_Settings.grid(row=0, column=2, padx=5, pady=15, sticky="e")
+    Button_Load_Settings.grid(row=0, column=3, padx=5, pady=15, sticky="e")
 
     TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
 

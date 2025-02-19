@@ -1,5 +1,8 @@
 {
     "General": {
+        "Program": {
+            "Version": "1.0.0"
+        },
         "User": {
             "Code": "CZ011845",
             "Name": "Jan Vasko",
@@ -405,7 +408,6 @@
             "Method": "Events",
             "Default": "Office",
             "Location_List": [
-                " ",
                 " ",
                 "Office",
                 "Customer"

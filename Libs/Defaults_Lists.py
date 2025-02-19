@@ -50,14 +50,6 @@ def Load_Exchange_env() -> list[str, str, str]:
     tenant_id = os.getenv("tenant_id")
     return client_id, client_secret, tenant_id
 
-# --------------------------------------------- Sorting Operations --------------------------------------------- #
-def Dataframe_sort(Sort_Dataframe: DataFrame, Columns_list: list, Accenting_list: list) -> None:
-    # Sort Dataframe and reindex 
-    Sort_Dataframe.sort_values(by=Columns_list, ascending=Accenting_list, axis=0, inplace = True)
-    Sort_Dataframe.reset_index(inplace=True)
-    Sort_Dataframe.drop(labels=["index"], inplace=True, axis=1)
-    return Sort_Dataframe
-
 # --------------------------------------------- List Operations --------------------------------------------- #
 def List_from_Dict(Dictionary: dict, Key_Argument: str) -> list:
     Return_List = []
@@ -110,7 +102,7 @@ def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVa
     except Exception as Error:
         CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
 
-# --------------------------------------------- Folders --------------------------------------------- #
+# --------------------------------------------- Folders / Files --------------------------------------------- #
 def Create_Folder(file_path: str) -> None:
     # Create Folder
     try: 
@@ -147,10 +139,22 @@ def Delete_All_Files(file_path: str, include_hidden: bool) -> None:
     except Exception as Error:
         print(Error)
 
+def Get_Downloads_File_Path(File_Name: str, File_postfix: str):
+    downloads_folder = os.path.join(os.path.expanduser('~'), 'Downloads')
+    Destination_File = os.path.join(downloads_folder, os.path.basename(f"{File_Name}.{File_postfix}"))
+    return Destination_File
+
 # --------------------------------------------- Pandas --------------------------------------------- #
 def PD_Column_to_DateTime(PD_DataFrame: DataFrame, Column: str, Covert_Format: str) -> DataFrame:
     PD_DataFrame[Column] = to_datetime(arg=PD_DataFrame[Column], format=Covert_Format)
     return PD_DataFrame
+
+def Dataframe_sort(Sort_Dataframe: DataFrame, Columns_list: list, Accenting_list: list) -> None:
+    # Sort Dataframe and reindex 
+    Sort_Dataframe.sort_values(by=Columns_list, ascending=Accenting_list, axis=0, inplace = True)
+    Sort_Dataframe.reset_index(inplace=True)
+    Sort_Dataframe.drop(labels=["index"], inplace=True, axis=1)
+    return Sort_Dataframe
 
 # --------------------------------------------- CustomTkinter --------------------------------------------- #
 def Dialog_Window_Request(Configuration: dict, title: str, text: str, Dialog_Type: str) -> str|None:

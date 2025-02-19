@@ -26,11 +26,23 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         else:
             pass
 
-    def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar, Manual_Date_From_Var: CTkEntry, Manual_Date_To_Var: CTkEntry, Sharepoint_Password_Var: CTkEntry, Sharepoint_Date_From_Option_Var: CTkOptionMenu, Sharepoint_Date_To_Option_Var: CTkOptionMenu, Sharepoint_Man_Date_To_Var: CTkEntry) -> None:
+    def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar,  Manual_Widget: CTkFrame, Sharepoint_Widget: CTkFrame) -> None:
+        Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
+        Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
+        Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
+        Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
+
+        Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
+        Manual_Date_From_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkbutton"]
+        Manual_Date_To_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
+        Manual_Date_To_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkbutton"]
+
         if Download_Date_Range_Source.get() == "Manual":
-            Manual_Date_From_Var.focus()
-            Manual_Date_From_Var.configure(state="normal")
-            Manual_Date_To_Var.configure(state="normal")
+            Manual_Date_From_Entry_Var.focus()
+            Manual_Date_From_Entry_Var.configure(state="normal")
+            Manual_Date_From_Picker_Var.configure(state="normal")
+            Manual_Date_To_Entry_Var.configure(state="normal")
+            Manual_Date_To_Picker_Var.configure(state="normal")
 
             Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
             Sharepoint_Password_Var.configure(state="disabled")
@@ -44,12 +56,14 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Sharepoint_Date_To_Option_Var.configure(state="normal")
             Sharepoint_Man_Date_To_Var.configure(state="normal")
 
-            Manual_Date_From_Var.delete(first_index=0, last_index=1000)
-            Manual_Date_From_Var.configure(placeholder_text="Date From")
-            Manual_Date_From_Var.configure(state="disabled")
-            Manual_Date_To_Var.delete(first_index=0, last_index=1000)
-            Manual_Date_To_Var.configure(placeholder_text="Date To")
-            Manual_Date_To_Var.configure(state="disabled")
+            Manual_Date_From_Entry_Var.delete(first_index=0, last_index=1000)
+            Manual_Date_From_Entry_Var.configure(placeholder_text="Date From")
+            Manual_Date_From_Entry_Var.configure(state="disabled")
+            Manual_Date_From_Picker_Var.configure(state="disabled")
+            Manual_Date_To_Entry_Var.delete(first_index=0, last_index=1000)
+            Manual_Date_To_Entry_Var.configure(placeholder_text="Date To")
+            Manual_Date_To_Entry_Var.configure(state="disabled")
+            Manual_Date_To_Picker_Var.configure(state="disabled")
         else:
             pass
 
@@ -68,8 +82,8 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"].get()
 
         # Manual
-        Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
-        Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkdatepicker"].get_date()
+        Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkdatepicker"].get_date()
         Input_Start_Date = Input_Start_Date.upper()
         Input_End_Date = Input_End_Date.upper()
         
@@ -254,21 +268,22 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
     Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
-    Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
-    Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
-    Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
     
     Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    Manual_Date_From_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
-    Manual_Date_To_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
-    Manual_Date_From_Var.configure(state="disabled")
-    Manual_Date_To_Var.configure(state="disabled")
+    Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
+    Manual_Date_From_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkbutton"]
+    Manual_Date_To_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
+    Manual_Date_To_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkbutton"]
+    Manual_Date_From_Entry_Var.configure(state="disabled")
+    Manual_Date_From_Picker_Var.configure(state="disabled")
+    Manual_Date_To_Entry_Var.configure(state="disabled")
+    Manual_Date_To_Picker_Var.configure(state="disabled")
 
     # Disabling fields --> Download_Date_Range_Source
-    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Date_From_Option_Var=Sharepoint_Date_From_Option_Var, Sharepoint_Date_To_Option_Var=Sharepoint_Date_To_Option_Var, Sharepoint_Man_Date_To_Var=Sharepoint_Man_Date_To_Var))
-    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Date_From_Var=Manual_Date_From_Var, Manual_Date_To_Var=Manual_Date_To_Var, Sharepoint_Password_Var=Sharepoint_Password_Var, Sharepoint_Date_From_Option_Var=Sharepoint_Date_From_Option_Var, Sharepoint_Date_To_Option_Var=Sharepoint_Date_To_Option_Var, Sharepoint_Man_Date_To_Var=Sharepoint_Man_Date_To_Var))
+    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Widget=Manual_Widget, Sharepoint_Widget=Sharepoint_Widget))
+    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Widget=Manual_Widget, Sharepoint_Widget=Sharepoint_Widget))
+    
 
     # Download Source
     Source_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")

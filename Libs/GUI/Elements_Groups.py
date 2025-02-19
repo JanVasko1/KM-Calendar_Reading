@@ -4,6 +4,7 @@ from CTkMessagebox import CTkMessagebox
 import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
 
+
 def Get_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str) -> CTkFrame:
     # Build base Frame for Widget
     Frame_Single_Body = Elements.Get_Widget_Frame_Body(Configuration=Configuration, Frame=Frame, Widget_size=Widget_size)
@@ -106,6 +107,13 @@ def Get_Widget_Input_row(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame
     elif Field_Type == "Input_CheckBox":
         Input_Check_Box = Elements.Get_CheckBox(Configuration=Configuration, Frame=Frame_Value)
         Input_Check_Box.pack(side="left", fill="x", expand=True)
+    elif Field_Type == "DatePicker":
+        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Value, Field_Size="Normal", Validation=Validation)
+        Date_Drop_Down = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Value, Button_Size="Tiny")
+        Date_Drop_Down.configure(text="▼")
+        Field_Normal.configure(width = Field_Normal._current_width - Date_Drop_Down._current_width)
+        Field_Normal.pack(side="left", fill="x", expand=True)
+        Date_Drop_Down.pack(side="left", fill="none", expand=True)
     else:
         CTkMessagebox(title="Error", message=f"Field type: {Field_Type} not supported.", icon="cancel", fade_in_duration=1)
 
@@ -260,7 +268,14 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int) -
     Pop_Up_Window = CTkToplevel()
     Pop_Up_Window.configure(fg_color="#000001")
     Pop_Up_Window.title(title)
-    Pop_Up_Window.geometry(f"{width}x{height}")
+
+    display_width = Pop_Up_Window.winfo_screenwidth()
+    display_height = Pop_Up_Window.winfo_screenheight()
+    left_position = int(display_width // 2 - width // 2)
+    top_position = int(display_height // 2 - height // 2)
+    Pop_Up_Window.geometry(f"{width}x{height}+{left_position}+{top_position}")
+
+    #Pop_Up_Window.geometry(f"{width}x{height}")
     Pop_Up_Window.bind(sequence="<Escape>", func=lambda event: Pop_Up_Window.destroy())
     Pop_Up_Window.bind(sequence="<Button-1>", func=lambda event:click_win())
     Pop_Up_Window.bind(sequence="<B1-Motion>", func=lambda event:drag_win())
