@@ -335,7 +335,7 @@ def My_Dialog_Window(Settings: dict, Configuration:dict, Clicked_on_Button: CTkB
 def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Clicked_on_Button: CTkButton, width: int, height: int, Fixed: bool) -> None:
     # Based on https://github.com/maxverwiebe/CTkDatePicker
 
-    # TODO --> Make all Customtkinter elements to my my elements like "CTkLAble" --. Element.Lable ....
+    # TODO --> Make all Customtkinter elements to my my elements like "CTkLAble" --. Element.Lable .... (and because of Theme changes)
 
     Date_format = Settings["General"]["Formats"]["Date"]
 
