@@ -3,7 +3,7 @@ from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Skip_Events(Settings: dict, Events: DataFrame, Type: str):
-    Skip_Enabled = Settings["Event_Handler"]["Events"]["Skip"]["Use"]
+    Skip_Enabled = Settings["0"]["Event_Handler"]["Events"]["Skip"]["Use"]
 
     if Skip_Enabled == True:
         Delete_Index_List = []
@@ -15,14 +15,14 @@ def Skip_Events(Settings: dict, Events: DataFrame, Type: str):
             Event_Subject = row_Series["Subject"]
 
             if Type == "Regular": 
-                Skip_Events_regular_list = list(Settings["Event_Handler"]["Events"]["Skip"]["Skip_List"])
+                Skip_Events_regular_list = list(Settings["0"]["Event_Handler"]["Events"]["Skip"]["Skip_List"])
                 Skip_list = Skip_Events_regular_list
             elif Type == "Special":
-                Day_Start_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
-                Day_End_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
-                HomeOffice_Subject = Settings["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Search_Text"]
-                Lunch_Subject = Settings["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
-                Private_Subject = Settings["Event_Handler"]["Events"]["Special_Events"]["Private"]["Search_Text"]
+                Day_Start_Subject = Settings["0"]["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
+                Day_End_Subject = Settings["0"]["Event_Handler"]["Events"]["Start_End_Events"]["End"]
+                HomeOffice_Subject = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Search_Text"]
+                Lunch_Subject = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
+                Private_Subject = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Search_Text"]
 
                 Skip_Events_special_list = []
                 Skip_Events_special_list.append(Day_Start_Subject)

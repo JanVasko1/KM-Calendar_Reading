@@ -13,11 +13,22 @@ from CTkMessagebox import CTkMessagebox
 import Libs.GUI.Elements as Elements
 
 # --------------------------------------------- Load defaults --------------------------------------------- #
+def Load_Application() -> dict:
+    File = open(file=Absolute_path(relative_path=f"Libs\\App\\Application.json"), mode="r", encoding="UTF-8", errors="ignore")
+    Application = json.load(fp=File)
+    File.close()
+    return Application
+
 def Load_Settings() -> dict:
     File = open(file=Absolute_path(relative_path=f"Libs\\Settings.json"), mode="r", encoding="UTF-8", errors="ignore")
     Settings = json.load(fp=File)
     File.close()
     return Settings
+
+def Load_Settings_Part(my_dict: dict, JSON_path: list) -> str|int|float|list|dict:
+    for key in JSON_path[:]:
+        my_dict = my_dict.setdefault(key, {})
+    return my_dict
 
 def Load_Configuration() -> dict:
     File = open(file=Absolute_path(relative_path=f"Libs\\GUI\\Configuration.json"), mode="r", encoding="UTF-8", errors="ignore")
@@ -85,6 +96,7 @@ def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVa
     # Globals update with every change of setup
     try:
         if File_Name == "Settings":
+            # Update current Settings
             Value_change(my_dict=Settings, JSON_path=JSON_path, Information=Information)
 
             # Save to file
@@ -92,6 +104,7 @@ def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVa
                 json.dump(obj=Settings, fp=file, indent=4, default=str, ensure_ascii=False)
             file.close()
         elif File_Name == "Configuration":
+            # Update current Configuration
             Value_change(my_dict=Configuration, JSON_path=JSON_path, Information=Information)
 
             # Save to file
@@ -101,7 +114,8 @@ def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVa
         else:
             pass
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message=f"Not possible to update {Information} into Field: {JSON_path} of {File_Name}", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
 
 def Import_Data(Settings: dict, import_file_path: str, Import_Type: str,  JSON_path: list, Method: str) -> None:
     Can_Import = True
@@ -113,7 +127,8 @@ def Import_Data(Settings: dict, import_file_path: str, Import_Type: str,  JSON_p
         pass
     else:
         Can_Import = False
-        CTkMessagebox(title="Error", message=f"Imported file is not .json you have to import only .json.", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message=f"Imported file is not .json you have to import only .json.", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
 
     # Check if file contain Supported Type
     if Can_Import == True:
@@ -125,7 +140,8 @@ def Import_Data(Settings: dict, import_file_path: str, Import_Type: str,  JSON_p
             pass
         else:
             Can_Import = False
-            CTkMessagebox(title="Error", message=f"You try to import not supported file. Please check.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"You try to import not supported file. Please check.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     else:
         pass
 
@@ -135,8 +151,23 @@ def Import_Data(Settings: dict, import_file_path: str, Import_Type: str,  JSON_p
             Upload_data = Import_file["Data"]
         elif Method == "Add":
             Import_Data = Import_file["Data"]
-            # TODO --> Load actual data and add to dictionary + sort + unique values
-            Upload_data = Import_Data
+            Current_Data = Load_Settings_Part(my_dict=Settings, JSON_path=JSON_path)
+            Upload_data = Import_Data | Current_Data
+
+            # Make Unique values and sort
+            if type(Upload_data) is dict:
+                new_dict = {}
+                counter = 0
+                for key, value in Upload_data.items():
+                    new_key = f"{counter}"
+                    new_dict[new_key] = value
+                    counter += 1
+                Upload_data = new_dict
+            elif type(Upload_data) is list:
+                Upload_data = list(set(Upload_data))
+                Upload_data.sort()
+            else:
+                pass
 
         Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=JSON_path, Information=Upload_data)
 
@@ -150,7 +181,8 @@ def Create_Folder(file_path: str) -> None:
     try: 
         os.makedirs(f"{file_path}")
     except Exception as Error:
-        CTkMessagebox(title="Error", message=f"Not possible to create folder int {file_path}", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message=f"Not possible to create folder int {file_path}", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
 
 def Delete_Folder(file_path: str) -> None:
     # Create Folder

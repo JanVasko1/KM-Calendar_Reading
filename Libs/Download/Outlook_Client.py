@@ -7,8 +7,8 @@ import Libs.Download.Downloader_Helpers as Downloader_Helpers
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str) -> DataFrame:
-    Date_format = Settings["General"]["Formats"]["Date"]
-    Time_format = Settings["General"]["Formats"]["Time"]
+    Date_format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_format = Settings["0"]["General"]["Formats"]["Time"]
     BusyStatus_List = Defaults_Lists.Busy_Status_List()
 
     # Access Outlook and get the events from the calendar

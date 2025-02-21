@@ -156,7 +156,7 @@ def Event_Middle_Cut(Conflict_df: DataFrame, Event_Index: int, Data: Series, Eve
         return False
 
 def Parallel_Events_Handler(Settings: dict, Conflict_df: DataFrame) -> DataFrame:
-    Start_Method = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
+    Start_Method = Settings["0"]["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
 
     # Sort because of 3 and more same start events
     if Start_Method == "Use Shorter":
@@ -239,7 +239,7 @@ def Parallel_Events_Handler(Settings: dict, Conflict_df: DataFrame) -> DataFrame
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Parallel_Events(Settings: dict, Events: DataFrame):
-    Parallel_Enabled = Settings["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
+    Parallel_Enabled = Settings["0"]["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
     
 
     if Parallel_Enabled == True:

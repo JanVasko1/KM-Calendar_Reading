@@ -1,5 +1,5 @@
-# BUG --> Dont Read from Exchange to for Marek account --> Issue registered
 # BUG --> Outlook Client
+# TODO -->Forecast according Calendar only when Start / End date is missing in CAlendar
 # TODO --> Show project list and Activity list somewhere
 
 # Import Libraries
@@ -14,9 +14,9 @@ import Libs.Defaults_Lists as Defaults_Lists
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
-    User_Name = Settings["General"]["User"]["Name"]
-    User_ID = Settings["General"]["User"]["Code"]
-    User_Email = Settings["General"]["User"]["Email"]
+    User_Name = Settings["0"]["General"]["User"]["Name"]
+    User_ID = Settings["0"]["General"]["User"]["Code"]
+    User_Email = Settings["0"]["General"]["User"]["Email"]
 
     # ------------------------- Local Functions -------------------------#
     def Theme_Change():
@@ -32,7 +32,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # ------------------------- Main Functions -------------------------#
     # Theme Change - Button
-    Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Set="lucide", Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
     Icon_Theme.configure(text="")
     Icon_Theme.configure(command = lambda: Theme_Change())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal")
@@ -60,8 +60,8 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
-    User_Type = Settings["General"]["User"]["User_Type"]
-    Program_Version = Settings["General"]["Program"]["Version"]
+    User_Type = Settings["0"]["General"]["User"]["User_Type"]
+    Program_Version = Application["Application"]["Version"]
 
     global Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady, Icon_Default_pady, Logo_Height, Logo_width, Side_Bar_Frame_Height, Icon_Button_Height, Logo_pady
     
@@ -134,7 +134,6 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         window.update_idletasks()
 
     def Define_Icons_Top_Bottom_indent(Frame_Height: int, Icon_count: int, Icon_Button_Height: int, Icon_Default_pady: int, Logo_height: int, Logo_pady: int, ) -> list[int, int]:
-        # BUG --> wrong still not working button of side bar
         # Icons Count
         if (Icon_count % 2) == 0:
             Odd_Icon_Count = False
@@ -156,7 +155,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
 
         Side_Bar_Middle_point = Frame_Height // 2
         Side_Bar_Icon_top_pady = Side_Bar_Middle_point - Height_Icon_End - Total_Logo_Height
-        Side_Bar_Icon_Bottom_pady = (Frame_Height - 30) - (Side_Bar_Middle_point + Height_Icon_End)
+        Side_Bar_Icon_Bottom_pady = (Frame_Height - 30) - (Side_Bar_Middle_point + Height_Icon_End) + Icon_Button_Height # Must add Icon heigh because coordinates are from top-left corner
 
         return Side_Bar_Icon_top_pady, Side_Bar_Icon_Bottom_pady
 
@@ -167,7 +166,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Logo = Elements.Get_Custom_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=Logo_width, heigh=Logo_Height)
 
     # Page - Download
-    Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Download_Row = 0
     elif User_Type == "Manager":
@@ -176,7 +175,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal")
 
     # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Dashboard_Row = 1
     elif User_Type == "Manager":
@@ -189,12 +188,12 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         pass
     elif User_Type == "Manager":
         Team_Row = 2
-        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
         Icon_Frame_Users_Dashboard.configure(command = lambda: Show_Team_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Team_Row))
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Users_Dashboard, message="My Team page.", ToolTip_Size="Normal")
 
     # Page - Data
-    Icon_Frame_Data = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Data = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Data_Row = 2
     elif User_Type == "Manager":
@@ -203,7 +202,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Data, message="Data to export page.", ToolTip_Size="Normal")
 
     # Page - Information
-    Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Information_Row = 3
     elif User_Type == "Manager":
@@ -212,7 +211,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Information, message="Application information page.", ToolTip_Size="Normal")
 
     # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
     if User_Type == "User":
         Settings_Row = 4
     elif User_Type == "Manager":
@@ -221,7 +220,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal")
 
     # Close Application
-    Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Set="lucide", Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
+    Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
     Icon_Frame_Close.configure(command = lambda: window.quit())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close application.", ToolTip_Size="Normal")
 
@@ -283,6 +282,7 @@ class Win(CTk):
         self._offsety = super().winfo_pointery() - super().winfo_rooty()
 
 if __name__ == "__main__":
+    Application = Defaults_Lists.Load_Application()
     Settings = Defaults_Lists.Load_Settings()
     Configuration = Defaults_Lists.Load_Configuration() 
 

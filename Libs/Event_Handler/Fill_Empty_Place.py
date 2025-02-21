@@ -14,9 +14,9 @@ import Libs.Defaults_Lists as Defaults_Lists
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:
     Random_Num = randrange(start=0, stop=Gen_Event_Counter, step=1)
-    General_Empty_Project = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Project"]
-    General_Empty_Activity = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Activity"]
-    General_Empty_Description = Settings["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Description"]
+    General_Empty_Project = Settings["0"]["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Project"]
+    General_Empty_Activity = Settings["0"]["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Activity"]
+    General_Empty_Description = Settings["0"]["Event_Handler"]["Events"]["Empty"]["General"][f"{Random_Num}"]["Description"]
     return General_Empty_Project, General_Empty_Activity, General_Empty_Description
 
 def Dataframe_timedelta_to_minutes(Timedelta) -> int:
@@ -119,12 +119,12 @@ def Get_Day_Start_End_Time(Day_Start_Subject: str, Day_End_Subject: str, Day_Eve
 def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
     Cumulated_Events = DataFrame()
 
-    Date_format = Settings["General"]["Formats"]["Date"]
-    Time_format = Settings["General"]["Formats"]["Time"]
-    Day_Start_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
-    Day_End_Subject = Settings["Event_Handler"]["Events"]["Start_End_Events"]["End"]
-    Events_Empty_Scheduled = Settings["Event_Handler"]["Events"]["Empty"]["Scheduled"]
-    Gen_Event_Counter = int(len(Settings["Event_Handler"]["Events"]["Empty"]["General"]))
+    Date_format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_format = Settings["0"]["General"]["Formats"]["Time"]
+    Day_Start_Subject = Settings["0"]["Event_Handler"]["Events"]["Start_End_Events"]["Start"]
+    Day_End_Subject = Settings["0"]["Event_Handler"]["Events"]["Start_End_Events"]["End"]
+    Events_Empty_Scheduled = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Scheduled"]
+    Gen_Event_Counter = int(len(Settings["0"]["Event_Handler"]["Events"]["Empty"]["General"]))
     
     # Get Days details from Events
     Days_List = Days_Handler(Events)
@@ -326,7 +326,7 @@ def Fill_Events_Coverage(Settings: dict, Events: DataFrame) -> DataFrame:
     Fill_Event_cover_list = []
     Fill_Event_counted_duration_list = []
     Fill_Event_actual_duration_list = []
-    Fill_Events_dict = Settings["Event_Handler"]["Events"]["Empty"]["General"]
+    Fill_Events_dict = Settings["0"]["Event_Handler"]["Events"]["Empty"]["General"]
     Fill_Events_Keys = list(Fill_Events_dict.keys())
 
     for key in Fill_Events_Keys:
@@ -422,5 +422,6 @@ def Fill_Events_Coverage(Settings: dict, Events: DataFrame) -> DataFrame:
 
         return Events
     else:
-        CTkMessagebox(title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
         return Events

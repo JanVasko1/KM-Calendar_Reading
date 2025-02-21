@@ -18,8 +18,8 @@ def Get_Table_Data(ws, data_boundary) -> DataFrame:
     return TimeSheets_df
 
 def Download_Excel(Settings: dict, s_aut: sharepy, SP_Link: str, Type: str, Name: str|None) -> str:
-    SP_Link_domain = Settings["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
-    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+    SP_Link_domain = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Auth"]["Auth_Address"]
+    SP_File_Name = Settings["0"]["General"]["Downloader"]["Sharepoint"]["File_name"]
 
     # Download
     if Type == "Current":
@@ -37,7 +37,7 @@ def Download_Excel(Settings: dict, s_aut: sharepy, SP_Link: str, Type: str, Name
         return False
 
 def Get_WorkSheet(Settings: dict, Sheet_Name: str, Type: str, Name: str|None):
-    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+    SP_File_Name = Settings["0"]["General"]["Downloader"]["Sharepoint"]["File_name"]
 
     if Type == "Current":
         WorkBook = load_workbook(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"))
@@ -111,8 +111,8 @@ def Time_sheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
 
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
 def Upload(Settings: dict, Events: DataFrame, SP_Password: str|None) -> None:
-    SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-    SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
+    SP_Team_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
     # Authentication
     s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
@@ -134,12 +134,13 @@ def Upload(Settings: dict, Events: DataFrame, SP_Password: str|None) -> None:
         A_Cell, E_Cell = Time_sheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
 
         # TODO --> automatically upload to Sharepoint only to new lines "Paste as text only"
-        CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")
+        Warning_Message = CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")
+        Warning_Message.get()
         
 
 def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
-    SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-    SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
+    SP_Team_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
     # Authentication
     s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
@@ -152,7 +153,7 @@ def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
         Get_Activity(Settings=Settings)
         
 def Get_Project(Settings: dict) -> None:
-    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+    SP_File_Name = Settings["0"]["General"]["Downloader"]["Sharepoint"]["File_name"]
 
     Projects_df = read_excel(io=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"), sheet_name="Projects", usecols="A:C", skiprows=1, nrows=100, header=None)
     Projects_df.drop(columns=[1], inplace=True)
@@ -162,10 +163,10 @@ def Get_Project(Settings: dict) -> None:
     Projects_dict = Projects_df.to_dict()
 
     # Save to Settings.json
-    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Project", "Project_List"], Information=Projects_dict)
+    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Project", "Project_List"], Information=Projects_dict)
     
 def Get_Activity(Settings: dict) -> None:
-    SP_File_Name = Settings["General"]["Downloader"]["Sharepoint"]["File_name"]
+    SP_File_Name = Settings["0"]["General"]["Downloader"]["Sharepoint"]["File_name"]
 
     Activities_df = read_excel(io=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\{SP_File_Name}.xlsm"), sheet_name="Activity", usecols="A:B", skiprows=1, nrows=100, header=None)
     Column_List = Activities_df[1].to_list()
@@ -197,5 +198,5 @@ def Get_Activity(Settings: dict) -> None:
         Counter += 1
 
     # Save to Settings.json
-    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_List"], Information=Activity_list)
-    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["Event_Handler", "Activity", "Activity_by_Type_dict"], Information=Activity_by_Type_dict)
+    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Activity", "Activity_List"], Information=Activity_list)
+    Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Activity", "Activity_by_Type_dict"], Information=Activity_by_Type_dict)

@@ -82,11 +82,13 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
     def Data_Upload(Events: DataFrame):
         SP_Password = Defaults_Lists.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         if SP_Password == None:
-            CTkMessagebox(title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
             Sharepoint.Upload(Events=Events, SP_Password=SP_Password)
-            CTkMessagebox(title="Success", message="Successfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message = CTkMessagebox(title="Success", message="Successfully uploaded to Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
 
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts

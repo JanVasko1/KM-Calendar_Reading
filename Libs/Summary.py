@@ -14,16 +14,16 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     else:
         pass
 
-    Date_Format = Settings["General"]["Formats"]["Date"]
-    Time_Format = Settings["General"]["Formats"]["Time"]
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
     
-    My_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Work_Hours"]["Day_Duration"]) / 60
-    My_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Day_Duration"]) / 60
-    My_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Day_Duration"]) / 60
-    My_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Work_Hours"]["Day_Duration"]) / 60
-    My_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Work_Hours"]["Day_Duration"]) / 60
-    My_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Work_Hours"]["Day_Duration"]) / 60
-    My_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Monday_WH = int(Settings["0"]["General"]["Calendar"]["Monday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Tuesday_WH = int(Settings["0"]["General"]["Calendar"]["Tuesday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Wednesday_WH = int(Settings["0"]["General"]["Calendar"]["Wednesday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Thursday_WH = int(Settings["0"]["General"]["Calendar"]["Thursday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Friday_WH = int(Settings["0"]["General"]["Calendar"]["Friday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Saturday_WH = int(Settings["0"]["General"]["Calendar"]["Saturday"]["Work_Hours"]["Day_Duration"]) / 60
+    My_Sunday_WH = int(Settings["0"]["General"]["Calendar"]["Sunday"]["Work_Hours"]["Day_Duration"]) / 60
 
     My_WH_dict = {
         "Monday": My_Monday_WH,
@@ -35,13 +35,13 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
         "Sunday": My_Sunday_WH,
         }
 
-    KM_Monday_WH = int(Settings["General"]["Calendar"]["Monday"]["Vacation"]["Day_Duration"]) / 60
-    KM_Tuesday_WH = int(Settings["General"]["Calendar"]["Tuesday"]["Vacation"]["Day_Duration"]) / 60
-    KM_Wednesday_WH = int(Settings["General"]["Calendar"]["Wednesday"]["Vacation"]["Day_Duration"]) / 60
-    KM_Thursday_WH = int(Settings["General"]["Calendar"]["Thursday"]["Vacation"]["Day_Duration"]) / 60
-    KM_Friday_WH = int(Settings["General"]["Calendar"]["Friday"]["Vacation"]["Day_Duration"]) / 60
-    KM_Saturday_WH = int(Settings["General"]["Calendar"]["Saturday"]["Vacation"]["Day_Duration"]) / 60
-    KM_Sunday_WH = int(Settings["General"]["Calendar"]["Sunday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Monday_WH = int(Settings["0"]["General"]["Calendar"]["Monday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Tuesday_WH = int(Settings["0"]["General"]["Calendar"]["Tuesday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Wednesday_WH = int(Settings["0"]["General"]["Calendar"]["Wednesday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Thursday_WH = int(Settings["0"]["General"]["Calendar"]["Thursday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Friday_WH = int(Settings["0"]["General"]["Calendar"]["Friday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Saturday_WH = int(Settings["0"]["General"]["Calendar"]["Saturday"]["Vacation"]["Day_Duration"]) / 60
+    KM_Sunday_WH = int(Settings["0"]["General"]["Calendar"]["Sunday"]["Vacation"]["Day_Duration"]) / 60
 
     KM_WH_dict = {
         "Monday": KM_Monday_WH,

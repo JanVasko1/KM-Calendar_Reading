@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Change(Settings: dict, Events_downloaded: dict, key:int, value: dict) -> None:
-    Date_format = Settings["General"]["Formats"]["Date"]
-    Time_format = Settings["General"]["Formats"]["Time"]
+    Date_format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_format = Settings["0"]["General"]["Formats"]["Time"]
 
     Start_Date_Time = f"""{value["Start_Date"]}_{value["Start_Time"]}"""
     End_Date_Time = f"""{value["End_Date"]}_{value["End_Time"]}"""
@@ -19,7 +19,7 @@ def Duration_Change(Settings: dict, Events_downloaded: dict, key:int, value: dic
     Events_downloaded[key]["Duration"] = Duration
 
 def Crop_edge_days_Events(Settings: dict, Events_downloaded: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime) -> dict:
-    Date_format = Settings["General"]["Formats"]["Date"]
+    Date_format = Settings["0"]["General"]["Formats"]["Date"]
 
     Events_Process = {}
     Counter = 0
@@ -84,7 +84,7 @@ def Project_handler(Settings: dict, Project: str) -> str:
     """
     This Local function helps with processing of Project.
     """
-    Project_Method = Settings["Event_Handler"]["Project"]["Method"]
+    Project_Method = Settings["0"]["Event_Handler"]["Project"]["Method"]
 
     if Project_Method == "Events":
         Multiple_Projects = Project.find("; ")
@@ -101,7 +101,7 @@ def Activity_handler(Settings: dict, Body: str) -> str:
     """
     This Local function helps with processing of Activity.
     """
-    Activity_Method = Settings["Event_Handler"]["Activity"]["Method"]
+    Activity_Method = Settings["0"]["Event_Handler"]["Activity"]["Method"]
     
     if Activity_Method == "Events":
         Activity_occurrence = Body.find("Activity: ")
@@ -129,7 +129,7 @@ def Location_handler(Settings: dict, Location: str) -> str:
     return Location
 
 def All_Day_Event_End_Handler(Settings: dict, Events_downloaded: dict, Counter: int, Subject: str, Start_Date: str, End_Date: str, End_Date_dt: datetime, Start_Time: str, End_Time: str, Duration: int, Project: str, Activity: str, Recurring: bool, Busy_Status: str, Location: str, All_Day_Event: bool) -> list[dict, int]:
-    Date_format = Settings["General"]["Formats"]["Date"]
+    Date_format = Settings["0"]["General"]["Formats"]["Date"]
 
     if (All_Day_Event == True) and (End_Time == "00:00"):
         End_Date_dt = End_Date_dt - timedelta(days=1)

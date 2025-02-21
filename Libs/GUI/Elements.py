@@ -16,24 +16,26 @@ import winaccent
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def Time_Validate(Settings: dict, Value: str) -> None:
-    Time_Format = Settings["General"]["Formats"]["Time"]
+    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
 
     if Value != "":
         try:
             datetime.strptime(Value, Time_Format)
         except:
-            CTkMessagebox(title="Error", message=f"Value: {Value} in not proper Time format, should be: HH:MM.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Value: {Value} in not proper Time format, should be: HH:MM.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     else:
         pass
 
 def Date_Validate(Settings: dict, Value: str) -> None:
-    Date_Format = Settings["General"]["Formats"]["Date"]
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
 
     if Value != "":
         try:
             datetime.strptime(Value, Date_Format)
         except:
-            CTkMessagebox(title="Error", message=f"Value: {Value} in not in proper Date format, should be: YYYY-MM-DD.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Value: {Value} in not in proper Date format, should be: YYYY-MM-DD.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     else:
         pass
 
@@ -42,7 +44,8 @@ def Int_Validate(Settings: dict, Value: str) -> None:
         try:
             int(Value)
         except:
-            CTkMessagebox(title="Error", message=f"Value: {Value} in not whole number.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Value: {Value} in not whole number.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     else:
         pass
 
@@ -51,7 +54,8 @@ def Float_Validate(Settings: dict, Value: str) -> None:
         try:
             float(Value)
         except:
-            CTkMessagebox(title="Error", message=f"Value: {Value} in not float number.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Value: {Value} in not float number.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     else:
         pass
 
@@ -147,9 +151,9 @@ def Get_Label(Configuration:dict, Frame: CTk|CTkFrame, Label_Size: str, Font_Siz
         wraplength = Configuration_Text_Main["wraplength"])
     return Text_Main
 
-def Get_Label_Icon(Configuration: dict, Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str, Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkLabel:
+def Get_Label_Icon(Configuration: dict, Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str, Icon_Name: str, Icon_Size: str) -> CTkLabel:
     Frame_Label = Get_Label(Configuration=Configuration, Frame=Frame, Label_Size=Label_Size, Font_Size=Font_Size)
-    CTK_Image = Get_CTk_Icon(Configuration=Configuration, Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
+    CTK_Image = Get_CTk_Icon(Configuration=Configuration, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
     Frame_Label.configure(image=CTK_Image, text="", anchor="e")
     return Frame_Label
 
@@ -157,8 +161,13 @@ def Get_Label_Icon(Configuration: dict, Frame: CTk|CTkFrame, Label_Size: str, Fo
 def Get_Button(Configuration:dict, Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
     Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
 
-    fg_color = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_Button_Normal["fg_color"])
-    hover_color = Define_Hover_Color(Configuration=Configuration, Color_json=Configuration_Button_Normal["hover_color"], Accent_Color=fg_color)
+    if Button_Size == "DatePicker_Days":
+        fg_color = Configuration_Button_Normal["fg_color"]
+        Accent_Color_help = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_Button_Normal["Accent_Color_help"])
+        hover_color = Define_Hover_Color(Configuration=Configuration, Color_json=Configuration_Button_Normal["hover_color"], Accent_Color=Accent_Color_help)
+    else:
+        fg_color = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_Button_Normal["fg_color"])
+        hover_color = Define_Hover_Color(Configuration=Configuration, Color_json=Configuration_Button_Normal["hover_color"], Accent_Color=fg_color)
 
     Button_Normal = CTkButton(
         master = Frame,
@@ -176,7 +185,7 @@ def Get_Button(Configuration:dict, Frame: CTk|CTkFrame, Button_Size: str) -> CTk
         text_color = tuple(Configuration_Button_Normal["text_color"]))
     return Button_Normal
 
-def Get_Button_Icon(Configuration:dict, Frame: CTk|CTkFrame, Icon_Set: str, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
+def Get_Button_Icon(Configuration:dict, Frame: CTk|CTkFrame, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
     Configuration_Button_Icon = Configuration["Buttons"][f"{Button_Size}"]
 
     if Button_Size == "Picture_SideBar":
@@ -197,7 +206,7 @@ def Get_Button_Icon(Configuration:dict, Frame: CTk|CTkFrame, Icon_Set: str, Icon
         hover_color = hover_color,
         anchor = Configuration_Button_Icon["anchor"],
         text = "")
-    CTK_Image = Get_CTk_Icon(Configuration=Configuration, Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
+    CTK_Image = Get_CTk_Icon(Configuration=Configuration, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
     Frame_Button.configure(image=CTK_Image, text="")
     return Frame_Button
 
@@ -669,12 +678,12 @@ def Get_Table(Configuration:dict, Frame: CTk|CTkFrame, Table_size: str, rows: in
     return Table_Single
 
 # ---------------------------------------------- Icons ----------------------------------------------# 
-def Create_Icon(Configuration:dict, Icon_Set: str, Icon_Name: str, Icon_Size: str, Theme_index: int) -> Image:
+def Create_Icon(Configuration:dict, Icon_Name: str, Icon_Size: str, Theme_index: int) -> Image:
     # Theme_Index: 0 --> light, 1 --> dark
     Configuration_Icon = Configuration["Icons"][f"{Icon_Size}"]
     
     Icon_Fact = IconFactory(
-        icon_set = Icon_Set,
+        icon_set = "lucide",
         icon_size = Configuration_Icon["icon_size"],
         font_size = Configuration_Icon["font_size"],
         font_color = Configuration_Icon["font_color"][Theme_index],
@@ -685,12 +694,12 @@ def Create_Icon(Configuration:dict, Icon_Set: str, Icon_Name: str, Icon_Size: st
     Icon_PIL = Icon_Fact.asPil(Icon_Name)
     return Icon_PIL
 
-def Get_CTk_Icon(Configuration:dict, Icon_Set: str, Icon_Name: str, Icon_Size: str) -> CTkImage:
+def Get_CTk_Icon(Configuration:dict, Icon_Name: str, Icon_Size: str) -> CTkImage:
     Configuration_Icon = Configuration["Icons"][f"{Icon_Size}"]
     Icon_Size_px = Configuration_Icon["icon_size"]
     Picture = CTkImage(
-        light_image = Create_Icon(Configuration=Configuration, Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size, Theme_index=0),
-        dark_image =Create_Icon(Configuration=Configuration, Icon_Set=Icon_Set, Icon_Name=Icon_Name, Icon_Size=Icon_Size, Theme_index=1),
+        light_image = Create_Icon(Configuration=Configuration, Icon_Name=Icon_Name, Icon_Size=Icon_Size, Theme_index=0),
+        dark_image =Create_Icon(Configuration=Configuration, Icon_Name=Icon_Name, Icon_Size=Icon_Size, Theme_index=1),
         size = (Icon_Size_px, Icon_Size_px))
     return Picture
 

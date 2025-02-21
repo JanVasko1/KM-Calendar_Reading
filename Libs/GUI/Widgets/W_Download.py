@@ -3,29 +3,32 @@ from datetime import datetime
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 
-from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar
+from customtkinter import CTk, CTkFrame, CTkEntry, CTkButton, StringVar, IntVar
 from CTkMessagebox import CTkMessagebox
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Download Page Widgets -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Date_Range_Source: StringVar) -> CTkFrame:
-    User_Email = Settings["General"]["User"]["Email"]
-    User_ID = Settings["General"]["User"]["Code"]
-    SP_Date_From_Method = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method"]
-    SP_Date_From_Method_list = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method_List"]
-    SP_Date_To_Method = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method"]
-    SP_Date_To_Method_list = Settings["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method_List"]
+    User_Email = Settings["0"]["General"]["User"]["Email"]
+    User_ID = Settings["0"]["General"]["User"]["Code"]
+    SP_Date_From_Method = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method"]
+    SP_Date_From_Method_list = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method_List"]
+    SP_Date_To_Method = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method"]
+    SP_Date_To_Method_list = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method_List"]
 
-    def Sharepoint_Disabling_Man_Date_To(Selected_Value: str, Entry_Field: CTkEntry, Variable: StringVar) -> None:
+    def Sharepoint_Disabling_Man_Date_To(Selected_Value: str, Entry_Field: CTkEntry, Drop_Down_But: CTkButton, Variable: StringVar) -> None:
         Variable.set(value=Selected_Value)
         if (Selected_Value == "Today") or (Selected_Value == "Last Report Day"):
             Entry_Field.delete(first_index=0, last_index=1000)
             Entry_Field.configure(placeholder_text="")
             Entry_Field.configure(state="disabled")
+            Drop_Down_But.configure(state="disabled")
         elif Selected_Value == "Manual":
             Entry_Field.configure(state="normal")
             Entry_Field.configure(placeholder_text="YYYY-MM-DD")
+            Drop_Down_But.configure(state="normal")
         else:
-            CTkMessagebox(title="Error", message="Download To Method not allowed.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Download To Method not allowed.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
 
     SP_Date_From_Variable = StringVar(master=Frame, value=SP_Date_From_Method)
     SP_Date_To_Variable = StringVar(master=Frame, value=SP_Date_To_Method)
@@ -64,15 +67,16 @@ def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame,
     SP_Date_To_Option_Var.configure(variable=SP_Date_To_Variable)
 
     # Field - Manual Date To
-    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="DatePicker", Validation="Date") 
+    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="Entry_DropDown", Validation="Date") 
     SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
     Button_SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
     SM_Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
     Button_SM_Man_Date_To_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=SM_Man_Date_To_Frame_Var, Clicked_on_Button=Button_SM_Man_Date_To_Frame_Var, width=200, height=230, Fixed=True))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_SM_Man_Date_To_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal")
 
     # Disabling fields --> Manual Date To 
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=SP_Date_To_Option_Var, values=SP_Date_To_Method_list, command = lambda SP_Date_To_Option_Var: Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Option_Var, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable))
-    Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Method, Entry_Field=SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable)    # Must be here because of initial value
+    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=SP_Date_To_Option_Var, values=SP_Date_To_Method_list, command = lambda SP_Date_To_Option_Var: Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Option_Var, Entry_Field=SM_Man_Date_To_Frame_Var, Drop_Down_But=Button_SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable))
+    Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Method, Entry_Field=SM_Man_Date_To_Frame_Var, Drop_Down_But=Button_SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable)    # Must be here because of initial value
     
     # Field - Password
     SP_Password_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
@@ -98,18 +102,20 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
     Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - Date From
-    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="DatePicker", Validation="Date") 
+    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Entry_DropDown", Validation="Date") 
     Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
     Button_Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkbutton"]
     Man_Date_From_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
     Button_Man_Date_From_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=Man_Date_From_Frame_Var, Clicked_on_Button=Button_Man_Date_From_Frame_Var, width=200, height=230, Fixed=True))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Man_Date_From_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal")
 
     # Field - Date To
-    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="DatePicker", Validation="Date")
+    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Entry_DropDown", Validation="Date")
     Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
     Button_Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
     Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
     Button_Man_Date_To_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=Man_Date_To_Frame_Var, Clicked_on_Button=Button_Man_Date_To_Frame_Var, width=200, height=230, Fixed=True))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Man_Date_To_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal")
 
     # Build look of Widget
     Frame_Main.pack(side="top", padx=15, pady=15)
@@ -119,7 +125,7 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
 
 
 def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
-    User_Email = Settings["General"]["User"]["Email"]
+    User_Email = Settings["0"]["General"]["User"]["Email"]
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -150,7 +156,7 @@ def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, D
 
 
 def Download_Outlook(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Data_Source: StringVar) -> CTkFrame:
-    User_Email = Settings["General"]["User"]["Email"]
+    User_Email = Settings["0"]["General"]["User"]["Email"]
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
@@ -222,8 +228,8 @@ def Per_Period_Selection(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame
 
 
 def Pre_Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame) -> CTkFrame:
-    User_Email = Settings["General"]["User"]["Email"]
-    User_ID = Settings["General"]["User"]["Code"]
+    User_Email = Settings["0"]["General"]["User"]["Email"]
+    User_ID = Settings["0"]["General"]["User"]["Code"]
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General

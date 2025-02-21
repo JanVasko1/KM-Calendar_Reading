@@ -24,7 +24,7 @@
             "Colors": {
                 "Accent": {
                     "Accent_Color_Mode": "Windows",
-                    "Accent_Color_Manual": "#853123",
+                    "Accent_Color_Manual": "#ff2c67",
                     "Accent_Color_List": [
                         "Windows",
                         "Manual",
@@ -33,7 +33,7 @@
                 },
                 "Hover": {
                     "Hover_Color_Mode": "Accent Lighter",
-                    "Hover_Color_Manual": "#ffe344",
+                    "Hover_Color_Manual": "#00A9FF",
                     "Hover_Color_List": [
                         "Accent Lighter",
                         "Manual",
@@ -211,7 +211,7 @@
             ]
         },
         "Tiny": {
-            "width": 30,
+            "width": 28,
             "height": 28,
             "corner_radius": 10,
             "border_width": 0,
@@ -224,6 +224,32 @@
                 "#00A9FF",
                 "#00A9FF"
             ],
+            "hover": true,
+            "hover_color": [
+                "#33BAff",
+                "#33BAff"
+            ],
+            "anchor": "center",
+            "text_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ]
+        },
+        "DatePicker_Days": {
+            "Accent_Color_help": [
+                "#00A9FF",
+                "#00A9FF"
+            ],
+            "width": 3,
+            "height": 3,
+            "corner_radius": 2,
+            "border_width": 0,
+            "border_color": [
+                "#2C2C2C",
+                "#FFFFFF"
+            ],
+            "bg_color": "transparent",
+            "fg_color": "transparent",
             "hover": true,
             "hover_color": [
                 "#33BAff",
@@ -1610,6 +1636,24 @@
         "Side_Bar_regular": {
             "icon_size": 30,
             "font_size": 30,
+            "font_color": [
+                "#FFFFFF",
+                "#FFFFFF"
+            ],
+            "outline_width": 0,
+            "outline_color": [
+                null,
+                null
+            ],
+            "background_color": [
+                null,
+                null
+            ],
+            "background_radius": 0
+        },
+        "Entry_DropDown": {
+            "icon_size": 15,
+            "font_size": 15,
             "font_color": [
                 "#FFFFFF",
                 "#FFFFFF"

@@ -3,7 +3,7 @@ from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Join_Events(Settings: dict, Events: DataFrame) -> DataFrame:
-    Join_Events_Enabled = Settings["Event_Handler"]["Events"]["Join_method"]["Use"]
+    Join_Events_Enabled = Settings["0"]["Event_Handler"]["Events"]["Join_method"]["Use"]
 
     if Join_Events_Enabled == True:
         Cumulated_Events = DataFrame(columns=list(Events.columns))

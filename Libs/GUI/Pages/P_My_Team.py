@@ -5,7 +5,7 @@ import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
 
 def Page_User_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
-    Members_dict = Settings["General"]["User"]["Managed_Team"]
+    Members_dict = Settings["0"]["General"]["User"]["Managed_Team"]
     Member_List = Defaults_Lists.List_from_Dict(Dictionary=Members_dict, Key_Argument="User Name")
 
     # ------------------------- Main Functions -------------------------#

@@ -36,10 +36,10 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
     window.update_idletasks()
 
 def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_df: DataFrame) -> DataFrame:
-    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
-    Time_Format = Settings["General"]["Formats"]["Time"]
-    User_ID = Settings["General"]["User"]["Code"]
+    Sharepoint_Time_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Time1"]
+    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
+    User_ID = Settings["0"]["General"]["User"]["Code"]
 
     # Delete File before generation
     Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"))
@@ -152,21 +152,22 @@ def Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressB
         Summary.Generate_Summary(Settings=Settings, Calculation_source="Current", Events=Cumulated_Events,  Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Team_Member_ID=None)
 
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Done", value=1) 
-        CTkMessagebox(title="Success", message="Successfully downloaded and processed new data.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Success_Message = CTkMessagebox(title="Success", message="Successfully downloaded and processed new data.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Success_Message.get()
     else:
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Canceled", value=0) 
 
 def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str, Download_Periods: list) -> None:
-    User_ID = Settings["General"]["User"]["Code"]
-    SP_Team = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-    SP_Link_History = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["History_Links"][f"{SP_Team}"]
-    Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
-    Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
-    Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
-    Date_Format = Settings["General"]["Formats"]["Date"]
-    Time_Format = Settings["General"]["Formats"]["Time"]
+    User_ID = Settings["0"]["General"]["User"]["Code"]
+    SP_Team = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_History = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["History_Links"][f"{SP_Team}"]
+    Sharepoint_Date_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Date_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Date1"]
+    Sharepoint_Date_Format2 = Settings["0"]["General"]["Formats"]["Sharepoint_Date2"]
+    Sharepoint_Time_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Time1"]
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
 
     Events_History_df = DataFrame()
 
@@ -207,7 +208,8 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
             Events_Month_df = Events_Month_df[mask1 & mask2]
             Events_History_df = concat(objs=[Events_History_df, Events_Month_df], axis=0)
         else:
-            CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     
     # Dates/Time correct
     # Date
@@ -237,19 +239,20 @@ def Pre_Periods_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: 
     # ----------------------- Summary Dataframe ----------------------- #
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
     Summary.Generate_Summary(Settings=Settings, Calculation_source="History", Events=Events_History_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=None)
-    CTkMessagebox(title="Success", message="Successfully downloaded and processed your history.", icon="check", option_1="Thanks", fade_in_duration=1)
+    Success_Message = CTkMessagebox(title="Success", message="Successfully downloaded and processed your history.", icon="check", option_1="Thanks", fade_in_duration=1)
+    Success_Message.get()
 
 
 def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str) -> None:
-    Managed_Team = Settings["General"]["User"]["Managed_Team"]
-    Link_History_dict = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"]
-    Date_Format = Settings["General"]["Formats"]["Date"]
-    Time_Format = Settings["General"]["Formats"]["Time"]
-    Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
-    Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
-    Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
+    Managed_Team = Settings["0"]["General"]["User"]["Managed_Team"]
+    Link_History_dict = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"]
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
+    Sharepoint_Date_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Date_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Date1"]
+    Sharepoint_Date_Format2 = Settings["0"]["General"]["Formats"]["Sharepoint_Date2"]
+    Sharepoint_Time_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Time1"]
 
     # Team List and members
     Teams_list = Defaults_Lists.List_from_Dict(Dictionary=Managed_Team, Key_Argument="User Team")
@@ -285,7 +288,8 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
             mask2 = Events_Member_df["Personnel number"] != "None"
             Events_Member_df = Events_Member_df[mask1 & mask2]
         else:
-            CTkMessagebox(title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
 
         # Dates/Time correct
         # Date
@@ -328,7 +332,8 @@ def My_Team_Download_and_Process(Settings: dict, window: CTk, Progress_Bar: CTkP
         # ----------------------- Summary Dataframe ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
         Summary.Generate_Summary(Settings=Settings, Calculation_source="Team", Events=Member_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=Team_Member_ID)
-        CTkMessagebox(title="Success", message="Successfully downloaded and processed all team members.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Success_Message = CTkMessagebox(title="Success", message="Successfully downloaded and processed all team members.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Success_Message.get()
 
             
             

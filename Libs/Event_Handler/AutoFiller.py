@@ -3,8 +3,8 @@ from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def AutoFiller(Settings: dict, Events: DataFrame):
-    AutoFiller_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Use"]
-    AutoFiller_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Dictionary"]
+    AutoFiller_Enabled = Settings["0"]["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Use"]
+    AutoFiller_dict = Settings["0"]["Event_Handler"]["Events"]["Auto_Filler"]["Search_Text"]["Dictionary"]
 
     if AutoFiller_Enabled == True:
         for row in Events.iterrows():
@@ -49,8 +49,8 @@ def AutoFiller(Settings: dict, Events: DataFrame):
         return Events
 
 def Auto_Activity_Corrections(Settings: dict, Events: DataFrame):
-    Activity_Correction_Enabled = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Use"]
-    Activity_Correction_dict = Settings["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Dictionary"]
+    Activity_Correction_Enabled = Settings["0"]["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Use"]
+    Activity_Correction_dict = Settings["0"]["Event_Handler"]["Events"]["Auto_Filler"]["Activity_Correction"]["Dictionary"]
 
     if Activity_Correction_Enabled == True:
         for row in Events.iterrows():

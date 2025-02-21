@@ -32,9 +32,9 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
         My_Calendar_Utilization = float(round(number=Totals_Summary_Df.iloc[0]["My_Calendar_Utilization"], ndigits=2))
         Utilization_Surplus_hours = float(Totals_Summary_Df.iloc[0]["Utilization_Surplus_hours"])
 
-        Creation_Date = Settings["General"]["DashBoard"]["DashBoard"]["Creation_Date"]
-        Data_Period = Settings["General"]["DashBoard"]["DashBoard"]["Data_Period"]
-        Data_Source = Settings["General"]["DashBoard"]["DashBoard"]["Data_Source"]
+        Creation_Date = Settings["0"]["General"]["DashBoard"]["DashBoard"]["Creation_Date"]
+        Data_Period = Settings["0"]["General"]["DashBoard"]["DashBoard"]["Data_Period"]
+        Data_Source = Settings["0"]["General"]["DashBoard"]["DashBoard"]["Data_Source"]
         DashBoard_text_Additional = Elements.Get_Label(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
         DashBoard_text_Additional.configure(text=f"""Generated on: {Creation_Date} -- Period: {Data_Period} -- Dates Source: {Data_Source}.""")
 
@@ -125,4 +125,5 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
         Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
     except:
-        CTkMessagebox(title="Error", message=f"Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message=f"Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1)
+        Error_Message.get()

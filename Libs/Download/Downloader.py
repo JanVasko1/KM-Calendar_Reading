@@ -16,16 +16,16 @@ BusyStatus_List = Defaults_Lists.Busy_Status_List()
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> DataFrame:
     # Default
-    Date_Format = Settings["General"]["Formats"]["Date"]
-    Time_Format = Settings["General"]["Formats"]["Time"]
-    Sharepoint_Date_Format = Settings["General"]["Formats"]["Sharepoint_Date"]
-    Sharepoint_Date_Format1 = Settings["General"]["Formats"]["Sharepoint_Date1"]
-    Sharepoint_Date_Format2 = Settings["General"]["Formats"]["Sharepoint_Date2"]
-    Sharepoint_Time_Format = Settings["General"]["Formats"]["Sharepoint_Time"]
-    Sharepoint_Time_Format1 = Settings["General"]["Formats"]["Sharepoint_Time1"]
-    User_ID = Settings["General"]["User"]["Code"]
-    SP_Team_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
-    SP_Link_Current = Settings["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
+    Sharepoint_Date_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Date"]
+    Sharepoint_Date_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Date1"]
+    Sharepoint_Date_Format2 = Settings["0"]["General"]["Formats"]["Sharepoint_Date2"]
+    Sharepoint_Time_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Time"]
+    Sharepoint_Time_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Time1"]
+    User_ID = Settings["0"]["General"]["User"]["Code"]
+    SP_Team_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
+    SP_Link_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
     Report_Period_Active_Days = None
     Report_Period_Start = None
@@ -101,7 +101,8 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
 
                 if My_Last_Day_dt >= Today:
                     # Skip whole automatic because it should not load anything
-                    CTkMessagebox(title="Error", message=f"Last Day Reported is: {My_Last_Day_dt} --> cannot perform automatic Download. Use Manual.", icon="cancel", fade_in_duration=1)
+                    Error_Message = CTkMessagebox(title="Error", message=f"Last Day Reported is: {My_Last_Day_dt} --> cannot perform automatic Download. Use Manual.", icon="cancel", fade_in_duration=1)
+                    Error_Message.get()
                 else:
                     pass
 
@@ -112,7 +113,8 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
                 Input_Start_Date_dt = Report_Period_Start
                 Events_Registered_df = DataFrame()
             else:
-                CTkMessagebox(title="Error", message=f"Cannot define Start date as not know method selected. Method: {SP_Date_From_Method}", icon="cancel", fade_in_duration=1)
+                Error_Message = CTkMessagebox(title="Error", message=f"Cannot define Start date as not know method selected. Method: {SP_Date_From_Method}", icon="cancel", fade_in_duration=1)
+                Error_Message.get()
 
             # Date-To Selection
             if SP_Date_To_Method == "Today":
@@ -122,36 +124,41 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
 
                 # Check if Manual date is smaller than Report End Date
                 if Input_End_Date_dt > Report_Period_End:
-                    Question_Message = CTkMessagebox(title="Information", message=f"Manual Date you entered {Input_End_Date_dt} is after Period End date {Report_Period_End}, will be automatically switched to Report End date. Do you agree?", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
+                    Question_Message = CTkMessagebox(title="Question", message=f"Manual Date you entered {Input_End_Date_dt} is after Period End date {Report_Period_End}, will be automatically switched to Report End date. Do you agree?", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
                     response = Question_Message.get()
                     if response == "Confirm":
                         Input_End_Date_dt = Report_Period_End
                     else:
                         Download_canceled = True
-                        CTkMessagebox(title="Error", message="Download process canceled by user.", icon="cancel", fade_in_duration=1)
+                        Error_Message = CTkMessagebox(title="Error", message="Download process canceled by user.", icon="cancel", fade_in_duration=1)
+                        Error_Message.get()
 
                 # Check if manual is higher than Input_Start_Date_dt
                 if Input_End_Date_dt >= Input_Start_Date_dt:
                     pass
                 else:
                     Download_canceled = True
-                    CTkMessagebox(title="Error", message="Download process canceled End date is before Start Date.", icon="cancel", fade_in_duration=1)
+                    Error_Message = CTkMessagebox(title="Error", message="Download process canceled End date is before Start Date.", icon="cancel", fade_in_duration=1)
+                    Error_Message.get()
 
             elif SP_Date_To_Method == "Last Report Day":
                 Input_End_Date_dt = Report_Period_End
             else:
-                CTkMessagebox(title="Error", message=f"Cannot define End date as not know method selected. Method: {SP_Date_To_Method}", icon="cancel", fade_in_duration=1)
+                Error_Message = CTkMessagebox(title="Error", message=f"Cannot define End date as not know method selected. Method: {SP_Date_To_Method}", icon="cancel", fade_in_duration=1)
+                Error_Message.get()
         else:
-            CTkMessagebox(title="Error", message="It was not possible to automatically download the master data from Sharepoint, please select Start Date and End Date manually.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="It was not possible to automatically download the master data from Sharepoint, please select Start Date and End Date manually.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
 
         # Date check
-        Question_Message = CTkMessagebox(title="Information", message=f"Dates range to download: \n Date From: {Input_Start_Date_dt.strftime(Date_Format)}\n Date To: {Input_End_Date_dt.strftime(Date_Format)}", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
+        Question_Message = CTkMessagebox(title="Question", message=f"Dates range to download: \n Date From: {Input_Start_Date_dt.strftime(Date_Format)}\n Date To: {Input_End_Date_dt.strftime(Date_Format)}", icon="question", fade_in_duration=1, option_1="Confirm", option_2="Reject")
         response = Question_Message.get()
         if response == "Confirm":
             pass
         else:
             Download_canceled = True
-            CTkMessagebox(title="Error", message="Download process canceled by user.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Download process canceled by user.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
         
         Events_Registered_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
@@ -164,7 +171,8 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         Input_Start_Date_dt = datetime.strptime(Input_Start_Date, Date_Format)
         Input_End_Date_dt = datetime.strptime(Input_End_Date, Date_Format)
     else:
-        CTkMessagebox(title="Error", message=f"Date source: {Download_Date_Range_Source} is not compatible, should be Sharepoint or Manual. Try again.", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message=f"Date source: {Download_Date_Range_Source} is not compatible, should be Sharepoint or Manual. Try again.", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
     
     # -------------- Dates Checker  -------------- #
     try:
@@ -172,7 +180,8 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         if Input_Start_Date_dt <= Input_End_Date_dt:
             pass
         else:
-            CTkMessagebox(title="Error", message="Start Date is after End Date --> try again.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Start Date is after End Date --> try again.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
 
         # add 1 day 
         Filter_Start_Date_dt = Input_Start_Date_dt - timedelta(days=1)
@@ -180,7 +189,8 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         Filter_Start_Date = Filter_Start_Date_dt.strftime(Date_Format)
         Filter_End_Date = Filter_End_Date_dt.strftime(Date_Format)
     except:
-        CTkMessagebox(title="Error", message="Something went wrong, try again.", icon="cancel", fade_in_duration=1)
+        Error_Message = CTkMessagebox(title="Error", message="Something went wrong, try again.", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
 
     # Engine selection
     if Download_canceled == False:
@@ -189,7 +199,8 @@ def Download_Events(Settings: dict, Download_Date_Range_Source: str, Download_Da
         elif Download_Data_Source == "Exchange":
             Events = Exchange.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
         else:
-            CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_Client, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message=f"Download source is not supported (Outlook_Client, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
     else:
         pass
     

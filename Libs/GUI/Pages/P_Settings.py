@@ -11,55 +11,58 @@ import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
 
 def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFrame):
-    User_Type = Settings["General"]["User"]["User_Type"]
+    User_Type = Settings["0"]["General"]["User"]["User_Type"]
     # ------------------------- Local Functions -------------------------#
     def Download_Project_Activities():
         SP_Password = Defaults_Lists.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         
         if SP_Password == None:
-            CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
             Sharepoint.Get_Project_and_Activity(Settings=Settings, SP_Password=SP_Password)
-            CTkMessagebox(title="warning", message="Project and Activity downloaded from Sharepoint. Restart app!!", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message = CTkMessagebox(title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
 
     def Upload_Project_Activities():
         Exchange_Password = Defaults_Lists.Dialog_Window_Request(Configuration=Configuration, title="Exchange Login", text="Write your password", Dialog_Type="Password")
         
         if Exchange_Password == None:
-            CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
         else:
             import Libs.Download.Exchange as Exchange
             Exchange.Push_Project(Settings=Settings, Exchange_Password=Exchange_Password)
             Exchange.Push_Activity(Settings=Settings, Exchange_Password=Exchange_Password)
-            CTkMessagebox(title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message = CTkMessagebox(title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
 
     def Save_Settings():
         # Export Settings into Downloads Folder - backup
         Export_dict = {
             "Type": "Settings",
-            "Data": Settings}
+            "Data": Settings["0"]}
         Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
         with open(file=Save_Path, mode="w") as file: 
             json.dump(Export_dict, file)
-        CTkMessagebox(title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Success_Message = CTkMessagebox(title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
+        Success_Message.get()
         
     def Load_Settings(Button_Load_Settings: CTkButton):
         def drop_func(file):
-            # BUG - JSON_Path cannot upload whole structure
-            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Skip_Events", JSON_path=[], Method="Overwrite")
+            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
             Import_window.destroy()
-            # BUG - Application crash
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
         pywinstyles.apply_dnd(widget=Frame_Body, func=drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
-        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Set="lucide", Icon_Name="cross", Icon_Size="Header", Button_Size="Picture_Theme")
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Name="circle-fading-plus", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
 

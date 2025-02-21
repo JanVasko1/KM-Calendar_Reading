@@ -3,7 +3,7 @@ from pandas import DataFrame, Series
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Location_Set(Settings: dict, Events: DataFrame):
-    Default_Location = Settings["Event_Handler"]["Location"]["Default"]
+    Default_Location = Settings["0"]["Event_Handler"]["Location"]["Default"]
 
     for row in Events.iterrows():
         row_Series = Series(row[1])

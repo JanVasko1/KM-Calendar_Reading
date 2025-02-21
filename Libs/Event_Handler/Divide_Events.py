@@ -34,8 +34,8 @@ def Days_Handler(Date_format: str, Event_Start_Date: str, Event_End_Date: str) -
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def OverMidnight_Events(Settings: dict, Events: DataFrame):
-    Date_format = Settings["General"]["Formats"]["Date"]
-    Time_format = Settings["General"]["Formats"]["Time"]
+    Date_format = Settings["0"]["General"]["Formats"]["Date"]
+    Time_format = Settings["0"]["General"]["Formats"]["Time"]
 
 
     # Handle Meetings which are for more days / over midnight --> splits them
@@ -79,7 +79,8 @@ def OverMidnight_Events(Settings: dict, Events: DataFrame):
                 
                 # Should not happened
                 else:
-                    CTkMessagebox(title="Error", message="Divide_Events.py: This should not happened.", icon="cancel", fade_in_duration=1)
+                    Error_Message = CTkMessagebox(title="Error", message="Divide_Events.py: This should not happened.", icon="cancel", fade_in_duration=1)
+                    Error_Message.get()
 
             # Add index to list of indexes to be deleted
             Event_Indexes.append(row[0])
@@ -93,10 +94,10 @@ def OverMidnight_Events(Settings: dict, Events: DataFrame):
     return Events
 
 def Empty_Split_Events(Settings: dict, Events: DataFrame):
-    Events_Empty_Split_Enabled = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
-    Split_duration = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
-    Split_Minimal_Time = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
-    Split_method = Settings["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
+    Events_Empty_Split_Enabled = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
+    Split_duration = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
+    Split_Minimal_Time = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
+    Split_method = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
 
     def Find_Split_Events(Events: DataFrame) -> DataFrame:
         if (Events["Event_Empty_Insert"] == True) and (Events["Event_Empty_Method"] == "General") and (Events["Duration"] >= Split_duration):
@@ -114,9 +115,11 @@ def Empty_Split_Events(Settings: dict, Events: DataFrame):
                 first_duration = random.randrange(start=Split_Minimal_Time, stop=(init_duration - Split_Minimal_Time), step=Split_Minimal_Time)
                 second_duration = init_duration - first_duration        
             except:
-                CTkMessagebox(title="Error", message=f"Cannot perform split as minimal time is {Split_Minimal_Time} and split duration is {Split_duration}. You need to keep Split Duration > Minimal Time", icon="cancel", fade_in_duration=1)
+                Error_Message = CTkMessagebox(title="Error", message=f"Cannot perform split as minimal time is {Split_Minimal_Time} and split duration is {Split_duration}. You need to keep Split Duration > Minimal Time", icon="cancel", fade_in_duration=1)
+                Error_Message.get()
         else:
-            CTkMessagebox(title="Error", message="Not supported Split Empty Events method used.", icon="cancel", fade_in_duration=1)
+            Error_Message = CTkMessagebox(title="Error", message="Not supported Split Empty Events method used.", icon="cancel", fade_in_duration=1)
+            Error_Message.get()
         
         # First row
         insert_first_row = Row.copy()
