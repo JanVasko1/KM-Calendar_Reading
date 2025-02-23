@@ -242,6 +242,9 @@ Program settings page
 ### Skip Events
 - This is the list of evens which should be skipped from registering them into TimeSheets
 - Text is compared with Event subject and if a part of subject contain text then is recognized and event is not considerate for Time Sheets
+- Export / import function available
+    - **Export** --> Create .json file to Download folder
+    - **Import** --> Drag&Drop file to marked area
 
 
 ### Joining Events
@@ -307,6 +310,9 @@ Program settings page
 
 ![Fill Empty General](Libs\\Readme\\Empty_General.png)
 
+- Export / import function available
+    - **Export** --> Create .json file to Download folder
+    - **Import** --> Drag&Drop file to marked area
 
 ### Empty Spiting
 This handler splits Empty space between 2 Events into multiple parts
@@ -324,17 +330,24 @@ This handler splits Empty space between 2 Events into multiple parts
 - This agenda is used for regular record planning like if I have Administration and Emails done after lunch at 11:30 – 12:00 of the week day
 - Agenda can have multiple rows
 - If in the period is another Event then this scheduled is not filled / cut
-
+- Export / import function available
+    - **Export** --> Create .json file to Download folder
+    - **Import** --> Drag&Drop file to marked area
 
 ## ---------- Settings - Events - Rules ----------
 ### AutoFill Rules
 - This special function to help automatically fill: **Project**, **Activity**, **Location**
 - Program apply rule when find a **Search Text** in the Event Subject
 - If there is empty text int one of the field --> then is not applied
-
+- Export / import function available
+    - **Export** --> Create .json file to Download folder
+    - **Import** --> Drag&Drop file to marked area
 
 ### Activity corrections
 - Change Activity in the processing of Events, when non-proper activity for Project is selected in calendar.
+- Export / import function available
+    - **Export** --> Create .json file to Download folder
+    - **Import** --> Drag&Drop file to marked area
 
 ## ---------- Settings - Not Settable ----------
 ### Overnights

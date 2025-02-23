@@ -1,12 +1,17 @@
 
+# 1.0.5
+- Settings Tables, nut the "Update" button is available
+- Drag&Drop into local settings (tables) updates the values in tables in GUI not only on Backend
+
 # 1.0.4
 - DatePicker Issue correction for get() during download
 - ColorPicker Issue with save value to Configuration.json
 - Settings import split by 2 methods
     * Overwrite --> overwrite all and use only imported information
     * Add --> Add new and keep unique values only
-- Settings Tables, nut the "Update" button is available
 - Pop-Up windows are always "OnTop"
+- Join Events corrected one issue with missing data
+- Join Events joining decision based on Busy status
 
 # 1.0.3
 - DatePicker correction to react to Theme

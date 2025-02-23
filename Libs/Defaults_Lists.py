@@ -9,6 +9,7 @@ from shutil import rmtree
 
 from customtkinter import CTkButton, StringVar, IntVar, BooleanVar, get_appearance_mode
 from CTkMessagebox import CTkMessagebox
+from CTkTable import CTkTable
 
 import Libs.GUI.Elements as Elements
 
@@ -62,7 +63,7 @@ def Load_Exchange_env() -> list[str, str, str]:
     tenant_id = os.getenv("tenant_id")
     return client_id, client_secret, tenant_id
 
-# --------------------------------------------- List Operations --------------------------------------------- #
+# --------------------------------------------- List / Dict Operations --------------------------------------------- #
 def List_from_Dict(Dictionary: dict, Key_Argument: str) -> list:
     Return_List = []
     for key, value in Dictionary.items():
@@ -75,6 +76,14 @@ def List_missing_values(Source_list, Compare_list):
     set_compare = set(Compare_list)
     missing_values = set_compare - set_source
     return list(missing_values)
+
+def Dict_Main_Key_Change(Dictionary: dict, counter: int) -> dict:
+    new_dict = {}
+    for key, value in Dictionary.items():
+        new_key = f"{counter}"
+        new_dict[new_key] = value
+        counter += 1
+    return new_dict
 
 # --------------------------------------------- Global Settings update --------------------------------------------- #
 def Save_Value(Settings: dict|None, Configuration: dict|None, Variable: StringVar|IntVar|BooleanVar|None, File_Name: str, JSON_path: list, Information: bool|int|str|list|dict) -> None:
@@ -148,28 +157,47 @@ def Import_Data(Settings: dict, import_file_path: str, Import_Type: str,  JSON_p
     # Take content and place it to file and change settings
     if Can_Import == True:
         if Method == "Overwrite":
-            Upload_data = Import_file["Data"]
+            Upload_updated_data = Import_file["Data"]
         elif Method == "Add":
-            Import_Data = Import_file["Data"]
-            Current_Data = Load_Settings_Part(my_dict=Settings, JSON_path=JSON_path)
-            Upload_data = Import_Data | Current_Data
+            Import_New_Data = Import_file["Data"]
+            Current_Saved_Data = Load_Settings_Part(my_dict=Settings, JSON_path=JSON_path)
+            
+            if type(Current_Saved_Data) is dict:
+                # Change Keys for imported Dictionary --> because for or operand for same key would be deleted
+                Current_Saved_Data_len = len(Current_Saved_Data)
+                Import_New_Data = Dict_Main_Key_Change(Dictionary=Import_New_Data, counter=Current_Saved_Data_len)
 
-            # Make Unique values and sort
-            if type(Upload_data) is dict:
-                new_dict = {}
-                counter = 0
-                for key, value in Upload_data.items():
-                    new_key = f"{counter}"
-                    new_dict[new_key] = value
-                    counter += 1
-                Upload_data = new_dict
-            elif type(Upload_data) is list:
-                Upload_data = list(set(Upload_data))
-                Upload_data.sort()
+                Concatenate_dict = Import_New_Data | Current_Saved_Data
+                Upload_dict_len = len(Concatenate_dict)
+
+                # Check each value of key for duplicate values
+                Upload_updated_data = {}
+                for key in range(0, Upload_dict_len):
+                    Found = False
+                    Base_Dict = Concatenate_dict[f"{key}"]
+                    for sub_key in range(key + 1, Upload_dict_len):
+                        if Base_Dict == Concatenate_dict[f"{sub_key}"]:
+                            Found = True
+                        else:
+                            pass
+                    if Found == False:
+                        Dict_with_index = {
+                            f"{key}": Base_Dict
+                        }
+                        Upload_updated_data.update(Dict_with_index)
+                    else:
+                        pass
+                Upload_updated_data = Dict_Main_Key_Change(Dictionary=Upload_updated_data, counter=0)
+
+            elif type(Current_Saved_Data) is list:
+                # Put together
+                Upload_updated_data = Import_New_Data + Current_Saved_Data
+                Upload_updated_data = list(set(Upload_updated_data))
+                Upload_updated_data.sort()
             else:
                 pass
 
-        Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=JSON_path, Information=Upload_data)
+        Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=JSON_path, Information=Upload_updated_data)
 
     else:
         pass
@@ -258,6 +286,35 @@ def Count_coordinate_for_new_window(Clicked_on: CTkButton, New_Window_width: int
 
     # Top middle coordinate for new window
     return [Window_X + Clicked_On_X_difference, Window_Y + Clicked_on_Y_difference + 5]
+
+def Insert_Data_to_Table(Settings: dict, Table: CTkTable, JSON_path: list) -> None:
+    # Delete data in table just keep header
+    Table_rows = Table.cget("row")
+
+    for row_index in range(1, Table_rows):
+        Table.delete_row(row_index)
+
+    # Get Data
+    Current_Data = Load_Settings_Part(my_dict=Settings, JSON_path=JSON_path)
+
+    if type(Current_Data) is dict:
+        row_index = 1
+        for key, value in Current_Data.items():
+            # Prepare Values into list
+            Add_row = list(value.values())
+
+            # Insert
+            Table.add_row(index=row_index, values=Add_row)
+            row_index += 1
+
+    elif type(Current_Data) is list:
+        row_index = 1
+        for data in Current_Data:
+            Table.add_row(index=row_index, values=[data])
+            row_index += 1
+    else:
+        Error_Message = CTkMessagebox(title="Error", message=f"It is not possible to insert data to table. DAta are uploaded, just restart application.", icon="cancel", fade_in_duration=1)
+        Error_Message.get()
 
 # --------------------------------------------- PyInstaller --------------------------------------------- #
 def Absolute_path(relative_path: str) -> str:

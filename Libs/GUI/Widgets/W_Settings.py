@@ -8,7 +8,7 @@ import Libs.GUI.Elements as Elements
 
 import pywinstyles
 
-from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, BooleanVar, CTkToplevel, CTkOptionMenu, CTkButton, CTkCheckBox, CTkLabel, set_appearance_mode
+from customtkinter import CTk, CTkFrame, CTkEntry, StringVar, IntVar, BooleanVar, CTkOptionMenu, CTkButton, CTkCheckBox, CTkLabel, set_appearance_mode
 from CTkTable import CTkTable
 from CTkMessagebox import CTkMessagebox
 
@@ -607,7 +607,7 @@ def Settings_Join_events(Settings: dict, Configuration: dict, Frame: CTk|CTkFram
     # ------------------------- Main Functions -------------------------#
     
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Joining Events", Additional_Text="Under Construction", Widget_size="Single_size", Widget_Label_Tooltip="Joining Events belonging to same Visibility group.")
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Joining Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Joining Events belonging to same Visibility group.")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use
@@ -1291,7 +1291,10 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
             Question_Message = CTkMessagebox(title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add")
             response = Question_Message.get()
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Skip_Events", JSON_path=["0", "Event_Handler", "Events", "Skip", "Skip_List"], Method=response)
+            Defaults_Lists.Insert_Data_to_Table(Settings=Settings, Table=Frame_Skip_Table_Var, JSON_path=["0", "Event_Handler", "Events", "Skip", "Skip_List"])
             Import_window.destroy()
+            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Skip, New_Window_width=Import_window_geometry[0])
@@ -1630,7 +1633,10 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
             Question_Message = CTkMessagebox(title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add")
             response = Question_Message.get()
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Empty_Events", JSON_path=["0", "Event_Handler", "Events", "Empty", "General"], Method=response)
+            Defaults_Lists.Insert_Data_to_Table(Settings=Settings, Table=Frame_Empty_General_Table_Var, JSON_path=["0", "Event_Handler", "Events", "Empty", "General"])
             Import_window.destroy()
+            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Empty, New_Window_width=Import_window_geometry[0])
@@ -1964,7 +1970,10 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
             Question_Message = CTkMessagebox(title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add")
             response = Question_Message.get()
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Scheduler", JSON_path=["0", "Event_Handler", "Events", "Empty", "Scheduled"], Method=response)
+            Defaults_Lists.Insert_Data_to_Table(Settings=Settings, Table=Frame_Empty_Schedules_Table_Var, JSON_path=["0", "Event_Handler", "Events", "Empty", "Scheduled"])
             Import_window.destroy()
+            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Scheduler, New_Window_width=Import_window_geometry[0])
@@ -2332,7 +2341,10 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
             Question_Message = CTkMessagebox(title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add")
             response = Question_Message.get()
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Rules", JSON_path=["0", "Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"], Method=response)
+            Defaults_Lists.Insert_Data_to_Table(Settings=Settings, Table=Frame_AutoFiller_Table_Var, JSON_path=["0", "Event_Handler", "Events", "Auto_Filler", "Search_Text", "Dictionary"])
             Import_window.destroy()
+            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_AutoFill, New_Window_width=Import_window_geometry[0])
@@ -2615,7 +2627,10 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
             Question_Message = CTkMessagebox(title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add")
             response = Question_Message.get()
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Activity_Correction", JSON_path=["0", "Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"], Method=response)
+            Defaults_Lists.Insert_Data_to_Table(Settings=Settings, Table=Frame_Activity_Correct_Table_Var, JSON_path=["0", "Event_Handler", "Events", "Auto_Filler", "Activity_Correction", "Dictionary"])
             Import_window.destroy()
+            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
 
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Activity_Correct, New_Window_width=Import_window_geometry[0])
@@ -2890,6 +2905,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame) -
             Question_Message = CTkMessagebox(title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add")
             response = Question_Message.get()
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="TimeSheets_Team", JSON_path=["0", "General", "User", "Managed_Team"], Method=response)
+            Defaults_Lists.Insert_Data_to_Table(Settings=Settings, Table=Frame_Managed_Team_Table_Var, JSON_path=["0", "General", "User", "Managed_Team"])
             Import_window.destroy()  
             Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window.", icon="check", option_1="Thanks", fade_in_duration=1)
             Success_Message.get()

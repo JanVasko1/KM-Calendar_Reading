@@ -21,7 +21,6 @@ from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Local Function ---------------------------------------------------------- #
 def Progress_Bar_step(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Label: str) -> None:
-    # BUG --> not updated when manuall datest used --> always skip to Done
     Progress_Bar.step()
     Progress_text.configure(text="                                                        ")
     window.update_idletasks()

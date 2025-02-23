@@ -368,8 +368,12 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
     Reported_Cumulative_Time_by_Date = Utilization_Event_Calendar_df.loc[f"{Input_End_Date_str}"]["Reported_Cumulative_Time"]
     Utilization_Surplus_hours = float(round(number=Reported_Cumulative_Time_by_Date - KM_Cumulative_Util_by_Date, ndigits=2))
 
-    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+    # Prevents chart to crash interpolation
+    if Total_Days_w > 1:
+        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+    else:
+        pass
 
     # ---------------------------------------------------------------------------------- Totals ---------------------------------------------------------------------------------- #
     # Calculation

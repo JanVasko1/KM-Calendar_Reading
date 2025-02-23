@@ -64,5 +64,5 @@ def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Dat
     Events_Process = Downloader_Helpers.Crop_edge_days_Events(Settings=Settings, Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)
     Events_Process_df = DataFrame(data=Events_Process, columns=list(Events_Process.keys()))
     Events_Process_df = Events_Process_df.T
-    print(Events_Process_df)
+
     return Events_Process_df

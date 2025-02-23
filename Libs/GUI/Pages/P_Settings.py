@@ -53,6 +53,8 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         def drop_func(file):
             Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
             Import_window.destroy()
+            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window and restart app.", icon="check", option_1="Thanks", fade_in_duration=1)
+            Success_Message.get()
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])
