@@ -5,9 +5,8 @@ from datetime import datetime
 
 import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Defaults_Lists as Defaults_Lists
+import Libs.GUI.Elements as Elements
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
-
-from CTkMessagebox import CTkMessagebox
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 Exchange_Busy_Status_List = Defaults_Lists.Exchange_Busy_Status_List()
@@ -73,18 +72,15 @@ def Add_Events_downloaded(Settings: dict, Events_downloaded: dict, Events: dict,
 
     return Counter
 
-def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
+def Exchange_OAuth(Settings: dict, Configuration: dict, Exchange_Password: str) -> str:
     User_Email = Settings["0"]["General"]["User"]["Email"]
 
     if not client_id:
-        Error_Message = CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     if not client_secret:
-        Error_Message = CTkMessagebox(title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     if not tenant_id:
-        Error_Message = CTkMessagebox(title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
     # OAuth2 authentication at KM Azure
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
@@ -102,11 +98,11 @@ def Exchange_OAuth(Settings: dict, Exchange_Password: str) -> str:
     return access_token
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
-def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
+def Download_Events(Settings: dict, Configuration: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:
     User_Email = Settings["0"]["General"]["User"]["Email"]
 
     # OAuth2 Access
-    access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
+    access_token = Exchange_OAuth(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
 
     # Update filters
     Filter_Start_Date = Filter_Start_Date + "T00:00:00Z"
@@ -143,13 +139,11 @@ def Download_Events(Settings: dict, Input_Start_Date_dt: datetime, Input_End_Dat
                 Events = response.json()
                 Counter = Add_Events_downloaded(Settings=Settings, Events_downloaded=Events_downloaded, Events=Events, Counter=Counter)       
     elif events_response.status_code == 503:
-        Information_Message = CTkMessagebox(title="Information", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), Exchange is temporary unavailable, try few moments later.", fade_in_duration=1)
-        Information_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), Exchange is temporary unavailable, try few moments later.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         Events_downloaded = {}
         Events_Process_df = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
     else:
-        Information_Message = CTkMessagebox(title="Information", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), will try to download from Outlook Classic Client.", fade_in_duration=1)
-        Information_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), will try to download from Outlook Classic Client.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         Events_downloaded = {}
         Events_Process_df = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 
@@ -218,9 +212,9 @@ def Change_Project_Color(access_token: str, username: str, category_id: str, Col
     else:
         return False
 
-def Push_Project(Settings: dict, Exchange_Password: str) -> None:
+def Push_Project(Settings: dict, Configuration: dict, Exchange_Password: str) -> None:
     User_Email = Settings["0"]["General"]["User"]["Email"]
-    access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
+    access_token = Exchange_OAuth(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
 
     # Get list of Projects
     Project_dict = Settings["0"]["Event_Handler"]["Project"]["Project_List"]
@@ -244,8 +238,7 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
             if Created_Flag == True:
                 pass
             else:
-                Error_Message = CTkMessagebox(title="Error", message=f"""It was not possible to crate "{project}" as Category on Exchange, please create it manually.""", icon="cancel", fade_in_duration=1)
-                Error_Message.get()
+                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"""It was not possible to crate "{project}" as Category on Exchange, please create it manually.""", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
         # Check for surplus in Exchange
         Exchange_Surplus_list = Defaults_Lists.List_missing_values(Source_list=Project_List, Compare_list=Exchange_Categories_Names_list)
@@ -256,39 +249,33 @@ def Push_Project(Settings: dict, Exchange_Password: str) -> None:
                     if value["displayName"] == project:
                         category_id = value["id"]
                         # Date check
-                        Question_Message = CTkMessagebox(title="Question", message=f"This step will delete project from Exchange Categories which will also delete it from all of your Events where it was used?\n\n Project: {project}", icon="question", fade_in_duration=1, option_1="Delete", option_2="Keep", option_3="Change color")
-                        response = Question_Message.get()
+                        response = Elements.Get_MessageBox(Configuration=Configuration, title="Question", message=f"This step will delete project from Exchange Categories which will also delete it from all of your Events where it was used?\n\n Project: {project}", icon="question", fade_in_duration=1, GUI_Level_ID=1, option_1="Delete", option_2="Keep", option_3="Change color")
                         if response == "Delete":
                             Deleted_Flag = Delete_Projects(access_token=access_token, username=User_Email, category_id=category_id)
                             if Deleted_Flag == True:
                                 pass
                             else:
-                                Error_Message = CTkMessagebox(title="Error", message=f"""It was not possible to delete "{project}" from Category on Exchange, please delete it manually.""", icon="cancel", fade_in_duration=1)
-                                Error_Message.get()
+                                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"""It was not possible to delete "{project}" from Category on Exchange, please delete it manually.""", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
                         elif response == "Change color":
                             Update_Flag = Change_Project_Color(access_token=access_token, username=User_Email, category_id=category_id, Color=Preset_Non_Active_color)
                             if Update_Flag == True:
                                 pass
                             else:
-                                Error_Message = CTkMessagebox(title="Error", message=f"""It was not possible to change color for "{project}" from Category on Exchange, please update it manually.""", icon="cancel", fade_in_duration=1)
-                                Error_Message.get()
+                                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"""It was not possible to change color for "{project}" from Category on Exchange, please update it manually.""", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
                         elif response == "Keep":
                             break
                         else:
-                            Error_Message = CTkMessagebox(title="Error", message="Delete Categories on Exchange stopped by user.", icon="cancel", fade_in_duration=1)   
-                            Error_Message.get()
+                            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Delete Categories on Exchange stopped by user.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
                     else:
                         pass
         else:
             pass         
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
-
-def Push_Activity(Settings: dict, Exchange_Password: str) -> None:
+def Push_Activity(Settings: dict, Configuration: dict, Exchange_Password: str) -> None:
     User_Email = Settings["0"]["General"]["User"]["Email"]
-    access_token = Exchange_OAuth(Settings=Settings, Exchange_Password=Exchange_Password)
+    access_token = Exchange_OAuth(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
 
     # Get list of Projects
     Activity_List = Settings["0"]["Event_Handler"]["Activity"]["Activity_List"]

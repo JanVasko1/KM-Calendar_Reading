@@ -1,11 +1,11 @@
 # Import Libraries
-import Libs.Sharepoint.Authentication as Authentication
-import Libs.Defaults_Lists as Defaults_Lists
 from openpyxl import load_workbook
 from pandas import DataFrame, Series, read_excel
 import sharepy
 
-from CTkMessagebox import CTkMessagebox
+import Libs.GUI.Elements as Elements
+import Libs.Sharepoint.Authentication as Authentication
+import Libs.Defaults_Lists as Defaults_Lists
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_Table_Data(ws, data_boundary) -> DataFrame:
@@ -110,12 +110,12 @@ def Time_sheets_Identify_empty_row(TimeSheets_df: DataFrame) -> list[str, str]:
     return A_Cell, E_Cell
 
 # ---------------------------------------------------------- Main Functions ---------------------------------------------------------- #
-def Upload(Settings: dict, Events: DataFrame, SP_Password: str|None) -> None:
+def Upload(Settings: dict, Configuration: dict, Events: DataFrame, SP_Password: str|None) -> None:
     SP_Team_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
     # Authentication
-    s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
+    s_aut = Authentication.Authentication(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
 
     # Download
     Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="Current", Name=None)
@@ -134,16 +134,15 @@ def Upload(Settings: dict, Events: DataFrame, SP_Password: str|None) -> None:
         A_Cell, E_Cell = Time_sheets_Identify_empty_row(TimeSheets_df=TimeSheets_df)
 
         # TODO --> automatically upload to Sharepoint only to new lines "Paste as text only"
-        Warning_Message = CTkMessagebox(title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, option_1="OK")
-        Warning_Message.get()
-        
+        Elements.Get_MessageBox(Configuration=Configuration, title="Warning Message!", message=f"First Cell: {A_Cell}, {E_Cell} --> Not finished development", icon="warning", fade_in_duration=1, GUI_Level_ID=1)
 
-def Get_Project_and_Activity(Settings: dict, SP_Password: str|None) -> None:
+
+def Get_Project_and_Activity(Settings: dict, Configuration: dict, SP_Password: str|None) -> None:
     SP_Team_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["My_Team"]
     SP_Link_Current = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Teams"]["Team_Links"][f"{SP_Team_Current}"]
 
     # Authentication
-    s_aut = Authentication.Authentication(Settings=Settings, SP_Password=SP_Password)
+    s_aut = Authentication.Authentication(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
 
     # Download
     Downloaded = Download_Excel(Settings=Settings, s_aut=s_aut, SP_Link=SP_Link_Current, Type="Current", Name=None)

@@ -7,9 +7,8 @@ from random import randrange, choice
 from  warnings import filterwarnings
 filterwarnings('ignore')
 
-from CTkMessagebox import CTkMessagebox
-
 import Libs.Defaults_Lists as Defaults_Lists
+import Libs.GUI.Elements as Elements
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:
@@ -318,7 +317,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
 
     return Cumulated_Events
 
-def Fill_Events_Coverage(Settings: dict, Events: DataFrame) -> DataFrame:
+def Fill_Events_Coverage(Settings: dict, Configuration: dict, Events: DataFrame) -> DataFrame:
     # Get Coverage for setup event 2 list 
     Fill_Event_desc_list = []
     Fill_Event_project_list = []
@@ -422,6 +421,5 @@ def Fill_Events_Coverage(Settings: dict, Events: DataFrame) -> DataFrame:
 
         return Events
     else:
-        Error_Message = CTkMessagebox(title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         return Events

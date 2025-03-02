@@ -2,46 +2,30 @@
     "0": {
         "General": {
             "User": {
-                "Code": "CZ011845",
-                "Name": "Jan Vasko",
-                "Email": "Jan.Vasko@konicaminolta.eu",
-                "User_Type": "Manager",
+                "Code": "",
+                "Name": "",
+                "Email": "",
+                "User_Type": "User",
                 "User_Type_list": [
                     "User",
                     "Manager"
                 ],
-                "Managed_Team": {
-                    "0": {
-                        "User Team": "CRM",
-                        "User ID": "CZ011834",
-                        "User Name": "Petra Souckova"
-                    },
-                    "1": {
-                        "User Team": "Portals B2B",
-                        "User ID": "CZ100348",
-                        "User Name": "Denis Puchovcev"
-                    },
-                    "2": {
-                        "User Team": "NAV BPC",
-                        "User ID": "CZ010183",
-                        "User Name": "Jan Svenda"
-                    }
-                }
+                "Managed_Team": {}
             },
             "DashBoard": {
                 "DashBoard": {
-                    "Creation_Date": "2025-02-20",
-                    "Data_Period": "Current",
-                    "Data_Source": "Sharepoint"
+                    "Creation_Date": "",
+                    "Data_Period": "",
+                    "Data_Source": ""
                 },
                 "My_Team": {
-                    "Creation_Date": "2025-02-12"
+                    "Creation_Date": ""
                 }
             },
             "Downloader": {
                 "Sharepoint": {
                     "Teams": {
-                        "My_Team": "NAV BPC",
+                        "My_Team": "",
                         "Team_List": [
                             "CRM BPL",
                             "CRM",
@@ -113,9 +97,9 @@
                 "Monday": {
                     "Working_Day": true,
                     "Work_Hours": {
-                        "Start_Time": "7:00",
-                        "End_Time": "18:00",
-                        "Day_Duration": 630
+                        "Start_Time": "",
+                        "End_Time": "",
+                        "Day_Duration": 0
                     },
                     "Vacation": {
                         "Start_Time": "8:00",
@@ -126,9 +110,9 @@
                 "Tuesday": {
                     "Working_Day": true,
                     "Work_Hours": {
-                        "Start_Time": "7:00",
-                        "End_Time": "17:00",
-                        "Day_Duration": 570
+                        "Start_Time": "",
+                        "End_Time": "",
+                        "Day_Duration": 0
                     },
                     "Vacation": {
                         "Start_Time": "8:00",
@@ -139,9 +123,9 @@
                 "Wednesday": {
                     "Working_Day": true,
                     "Work_Hours": {
-                        "Start_Time": "7:00",
-                        "End_Time": "15:30",
-                        "Day_Duration": 480
+                        "Start_Time": "",
+                        "End_Time": "",
+                        "Day_Duration": 0
                     },
                     "Vacation": {
                         "Start_Time": "8:00",
@@ -152,9 +136,9 @@
                 "Thursday": {
                     "Working_Day": true,
                     "Work_Hours": {
-                        "Start_Time": "8:00",
-                        "End_Time": "15:30",
-                        "Day_Duration": 420
+                        "Start_Time": "",
+                        "End_Time": "",
+                        "Day_Duration": 0
                     },
                     "Vacation": {
                         "Start_Time": "8:00",
@@ -165,9 +149,9 @@
                 "Friday": {
                     "Working_Day": true,
                     "Work_Hours": {
-                        "Start_Time": "8:00",
-                        "End_Time": "15:00",
-                        "Day_Duration": 390
+                        "Start_Time": "",
+                        "End_Time": "",
+                        "Day_Duration": 0
                     },
                     "Vacation": {
                         "Start_Time": "8:00",
@@ -202,60 +186,15 @@
                     }
                 },
                 "Totals": {
-                    "Work": "41:30",
-                    "Vacation": "40:00"
+                    "Work": "",
+                    "Vacation": ""
                 }
             }
         },
         "Event_Handler": {
             "Project": {
                 "Method": "Events",
-                "Project_List": {
-                    "0": {
-                        "Project": "Other Internal activities - BPC Brno",
-                        "Project_Type": "INT"
-                    },
-                    "1": {
-                        "Project": "CR Processing - BPC Brno",
-                        "Project_Type": "CRQ"
-                    },
-                    "2": {
-                        "Project": "Incident handling / support - BPC Brno",
-                        "Project_Type": "INC"
-                    },
-                    "3": {
-                        "Project": "NUS (CE) harm.&bus. Support",
-                        "Project_Type": "PROJECT"
-                    },
-                    "4": {
-                        "Project": "NUS (CN) harm.&bus. Support",
-                        "Project_Type": "PROJECT"
-                    },
-                    "5": {
-                        "Project": "NUS Product  Enhancement",
-                        "Project_Type": "PROJECT"
-                    },
-                    "6": {
-                        "Project": "ITS (WPH, Cloud, Solution, SW Delivery)",
-                        "Project_Type": "PROJECT"
-                    },
-                    "7": {
-                        "Project": "Roll-out support (CRM/ITSM/Portals)",
-                        "Project_Type": "PROJECT"
-                    },
-                    "8": {
-                        "Project": "BBG NUS Cloud Roll-out",
-                        "Project_Type": "PROJECT"
-                    },
-                    "9": {
-                        "Project": "BGE NUS Cloud roll-out",
-                        "Project_Type": "PROJECT"
-                    },
-                    "10": {
-                        "Project": "CLN Support",
-                        "Project_Type": "PROJECT"
-                    }
-                },
+                "Project_List": {},
                 "Colors": {
                     "Active_Color": "Blue",
                     "Non_Active_Color": "DarkBlue",
@@ -317,91 +256,8 @@
             },
             "Activity": {
                 "Method": "Events",
-                "Activity_List": [
-                    "Admin",
-                    "Analysis",
-                    "Bug Fixing",
-                    "Conference and Training Lead",
-                    "Consultancy",
-                    "Data Migration",
-                    "Design",
-                    "Development (programming)",
-                    "Illness",
-                    "Parametrization",
-                    "Project Management",
-                    "Sick Leave",
-                    "Technical Support",
-                    "Testing",
-                    "Training",
-                    "Travel Time (Other)",
-                    "Travel Time (Project)",
-                    "User Training",
-                    "Vacation"
-                ],
-                "Activity_by_Type_dict": {
-                    "0": {
-                        "Project_Type": "CRQ",
-                        "Activity": [
-                            "Analysis",
-                            "Bug Fixing",
-                            "Consultancy",
-                            "Data Migration",
-                            "Design",
-                            "Development (programming)",
-                            "Parametrization",
-                            "Project Management",
-                            "Technical Support",
-                            "Testing",
-                            "User Training"
-                        ]
-                    },
-                    "1": {
-                        "Project_Type": "INC",
-                        "Activity": [
-                            "Analysis",
-                            "Bug Fixing",
-                            "Consultancy",
-                            "Data Migration",
-                            "Design",
-                            "Development (programming)",
-                            "Parametrization",
-                            "Technical Support",
-                            "Testing",
-                            "User Training"
-                        ]
-                    },
-                    "2": {
-                        "Project_Type": "INT",
-                        "Activity": [
-                            "Admin",
-                            "Analysis",
-                            "Conference and Training Lead",
-                            "Consultancy",
-                            "Illness",
-                            "Sick Leave",
-                            "Training",
-                            "Travel Time (Other)",
-                            "Vacation"
-                        ]
-                    },
-                    "3": {
-                        "Project_Type": "PROJECT",
-                        "Activity": [
-                            "Analysis",
-                            "Bug Fixing",
-                            "Consultancy",
-                            "Data Migration",
-                            "Design",
-                            "Development (programming)",
-                            "Parametrization",
-                            "Project Management",
-                            "Technical Support",
-                            "Testing",
-                            "Travel Time (Project)",
-                            "User Training"
-                        ]
-                    }
-                }
+                "Activity_List": [],
+                "Activity_by_Type_dict": {}
             },
             "Location": {
                 "Method": "Events",
@@ -414,8 +270,8 @@
             },
             "Events": {
                 "Start_End_Events": {
-                    "Start": "Work - Start",
-                    "End": "Work - End"
+                    "Start": "",
+                    "End": ""
                 },
                 "Special_Events": {
                     "Vacation": {
@@ -491,42 +347,8 @@
                     ]
                 },
                 "Empty": {
-                    "General": {
-                        "0": {
-                            "Project": "Other Internal activities - BPC Brno",
-                            "Activity": "Admin",
-                            "Description": "Administration and Emails",
-                            "Coverage Percentage": 50
-                        },
-                        "1": {
-                            "Project": "Incident handling / support - BPC Brno",
-                            "Activity": "Consultancy",
-                            "Description": "Support of Support Team",
-                            "Coverage Percentage": 15
-                        },
-                        "2": {
-                            "Project": "NUS Product  Enhancement",
-                            "Activity": "Testing",
-                            "Description": "General NUS Cloud Testing",
-                            "Coverage Percentage": 35
-                        }
-                    },
-                    "Scheduled": {
-                        "0": {
-                            "Project": "Other Internal activities - BPC Brno",
-                            "Activity": "Admin",
-                            "Description": "Administration and Emails",
-                            "Day of Week": [
-                                1,
-                                2,
-                                3,
-                                4,
-                                5
-                            ],
-                            "Start": "11:30",
-                            "End": "12:00"
-                        }
-                    },
+                    "General": {},
+                    "Scheduled": {},
                     "Split": {
                         "Use": true,
                         "Split_Duration": 60,
@@ -540,93 +362,12 @@
                 },
                 "Skip": {
                     "Use": true,
-                    "Skip_List": [
-                        "Car Blocker",
-                        "Christmas party",
-                        "Deadline pro TimeSheet",
-                        "FG Targets Evaluation ",
-                        "Grilovačka",
-                        "HEALH FIRST",
-                        "HEALTH FIRST",
-                        "KONTROLA DOCHÁZKY",
-                        "On-Call Duty",
-                        "Save the date ",
-                        "Teambuilding",
-                        "Teambulding",
-                        "TimeSheets - Upload"
-                    ]
+                    "Skip_List": []
                 },
                 "Auto_Filler": {
                     "Search_Text": {
                         "Use": true,
-                        "Dictionary": {
-                            "0": {
-                                "Search Text": "NAV ERP Team Meeting:",
-                                "Project": "Other Internal activities - BPC Brno",
-                                "Activity": "Admin",
-                                "Location": "Office"
-                            },
-                            "1": {
-                                "Search Text": "TDO - Team Meeting",
-                                "Project": "Other Internal activities - BPC Brno",
-                                "Activity": "Admin",
-                                "Location": "Office"
-                            },
-                            "2": {
-                                "Search Text": "NUS Cloud - Testing",
-                                "Project": "NUS Product  Enhancement",
-                                "Activity": "Testing",
-                                "Location": "Office"
-                            },
-                            "3": {
-                                "Search Text": "NUS Cloud - Sync call",
-                                "Project": "NUS Product  Enhancement",
-                                "Activity": "Project Management",
-                                "Location": "Office"
-                            },
-                            "4": {
-                                "Search Text": "NUS Cloud - Integrations: Status",
-                                "Project": "NUS Product  Enhancement",
-                                "Activity": "Project Management",
-                                "Location": "Office"
-                            },
-                            "5": {
-                                "Search Text": "BBL: ",
-                                "Project": "NUS (CE) harm.&bus. Support",
-                                "Activity": "",
-                                "Location": ""
-                            },
-                            "6": {
-                                "Search Text": "Product Backlog Item",
-                                "Project": "",
-                                "Activity": "Testing",
-                                "Location": ""
-                            },
-                            "7": {
-                                "Search Text": "INC",
-                                "Project": "Incident handling / support - BPC Brno",
-                                "Activity": "Consultancy",
-                                "Location": ""
-                            },
-                            "8": {
-                                "Search Text": "Travel Time",
-                                "Project": "",
-                                "Activity": "Travel Time (Project)",
-                                "Location": "Customer"
-                            },
-                            "9": {
-                                "Search Text": "Dovolená",
-                                "Project": "Other Internal activities - BPC Brno",
-                                "Activity": "Vacation",
-                                "Location": "Office"
-                            },
-                            "10": {
-                                "Search Text": "Sick Day",
-                                "Project": "Other Internal activities - BPC Brno",
-                                "Activity": "Sick Leave",
-                                "Location": "Office"
-                            }
-                        }
+                        "Dictionary": {}
                     },
                     "Activity_Correction": {
                         "Use": false,

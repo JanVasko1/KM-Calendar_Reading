@@ -2,10 +2,9 @@
 import json
 
 from customtkinter import CTk, CTkFrame, CTkButton
-from CTkMessagebox import CTkMessagebox
 import pywinstyles
 
-import Libs.GUI.Widgets.W_Settings as Settings_Widgets
+import Libs.GUI.Widgets.W_Settings as W_Settings
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
@@ -17,26 +16,22 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         SP_Password = Defaults_Lists.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         
         if SP_Password == None:
-            Error_Message = CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
-            Error_Message.get()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
-            Sharepoint.Get_Project_and_Activity(Settings=Settings, SP_Password=SP_Password)
-            Success_Message = CTkMessagebox(title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", option_1="Thanks", fade_in_duration=1)
-            Success_Message.get()
+            Sharepoint.Get_Project_and_Activity(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
     def Upload_Project_Activities():
         Exchange_Password = Defaults_Lists.Dialog_Window_Request(Configuration=Configuration, title="Exchange Login", text="Write your password", Dialog_Type="Password")
         
         if Exchange_Password == None:
-            Error_Message = CTkMessagebox(title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1)
-            Error_Message.get()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             import Libs.Download.Exchange as Exchange
-            Exchange.Push_Project(Settings=Settings, Exchange_Password=Exchange_Password)
-            Exchange.Push_Activity(Settings=Settings, Exchange_Password=Exchange_Password)
-            Success_Message = CTkMessagebox(title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", option_1="Thanks", fade_in_duration=1)
-            Success_Message.get()
+            Exchange.Push_Project(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
+            Exchange.Push_Activity(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
     def Save_Settings():
         # Export Settings into Downloads Folder - backup
@@ -46,85 +41,70 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Save_Path = Defaults_Lists.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
         with open(file=Save_Path, mode="w") as file: 
             json.dump(Export_dict, file)
-        Success_Message = CTkMessagebox(title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", option_1="Thanks", fade_in_duration=1)
-        Success_Message.get()
-        
+        Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+
     def Load_Settings(Button_Load_Settings: CTkButton):
         def drop_func(file):
-            Defaults_Lists.Import_Data(Settings=Settings, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
+            Defaults_Lists.Import_Data(Settings=Settings, Configuration=Configuration, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
             Import_window.destroy()
-            Success_Message = CTkMessagebox(title="Success", message="Your settings file has been imported. You can close Window and restart app.", icon="check", option_1="Thanks", fade_in_duration=1)
-            Success_Message.get()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Your settings file has been imported. You can close Window and restart app.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
         
         Import_window_geometry = (200, 200)
         Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])
         Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
-        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop")
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=2)
+        Frame_Body.configure(bg_color = "#000001")
         pywinstyles.apply_dnd(widget=Frame_Body, func=drop_func)
         Frame_Body.pack(side="top", padx=15, pady=15)
 
         Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Name="circle-fading-plus", Icon_Size="Header", Button_Size="Picture_Theme")
         Icon_Theme.configure(text="")
-        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal", GUI_Level_ID=2)
 
         Icon_Theme.pack(side="top", padx=50, pady=50)
         
         
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts
-    Frame_Settings_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line")
-
-    Frame_Settings_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Settings_Work_Detail_Area.grid_propagate(flag=False)
+    Frame_Settings_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line", GUI_Level_ID=1)
 
     # ------------------------- State Area -------------------------#
     # Button - Download New Project and Activities
     Button_Download_Pro_Act = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Download_Pro_Act.configure(text="Get Project/Activity", command = lambda:Download_Project_Activities())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities inside the app from actual Sharepoint.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities inside the app from actual Sharepoint.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
     # Button - Download New Project and Activities
     Button_Upload_Pro_Act = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Upload_Pro_Act.configure(text="Upload Project/Activity", command = lambda:Upload_Project_Activities())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
     # Button - Save Settings
     Button_Save_Settings = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Save_Settings.configure(text="Save Settings", command = lambda:Save_Settings())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Settings, message="Save whole setup into Downloads.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Settings, message="Save whole setup into Downloads.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
     # Button - Load Settings
     Button_Load_Settings = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Settings_State_Area, Button_Size="Normal")
     Button_Load_Settings.configure(text="Load Settings", command = lambda:Load_Settings(Button_Load_Settings=Button_Load_Settings))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Settings, message="Upload Settings files.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Settings, message="Upload Settings files.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
     # ------------------------- Work Area -------------------------#
     # Tab View
-    TabView = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame_Settings_Work_Detail_Area, Tab_size="Normal")
-    TabView.pack_propagate(flag=False)
+    TabView = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame, Tab_size="Normal", GUI_Level_ID=1)
     Tab_Gen = TabView.add("General")
-    Tab_Gen.pack_propagate(flag=False)
     Tab_Dat = TabView.add("Data Source")
-    Tab_Dat.pack_propagate(flag=False)
     Tab_Cal = TabView.add("Calendar")
-    Tab_Cal.pack_propagate(flag=False)
     Tab_E_G = TabView.add("Events - General")
-    Tab_E_G.pack_propagate(flag=False)
     Tab_E_Spec = TabView.add("Events - Special")
-    Tab_E_Spec.pack_propagate(flag=False)
     Tab_E_E = TabView.add("Events - Empty")
-    Tab_E_E.pack_propagate(flag=False)
-    Tab_E_S = TabView.add("Events - Empty Scheduler")
-    Tab_E_S.pack_propagate(flag=False)
     Tab_E_A = TabView.add("Events - Rules")
-    Tab_E_A.pack_propagate(flag=False)
     if User_Type == "Manager":
         Tab_Team = TabView.add("My Team")
-        Tab_Team.pack_propagate(flag=False)
 
-        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton9"]
-        Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Team_ToolTip_But, message="MY Team base setup.", ToolTip_Size="Normal")
+        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton8"]
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Team_ToolTip_But, message="MY Team base setup.", ToolTip_Size="Normal", GUI_Level_ID=1)
     else:
         pass
     TabView.set("General")
@@ -135,104 +115,142 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Tab_E_G_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton4"]
     Tab_E_Spec_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton5"]
     Tab_E_E_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton6"]
-    Tab_E_S_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton7"]
-    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton8"]
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Gen_ToolTip_But, message="Application General Setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_Spec_ToolTip_But, message="Special Events which needs special treatment.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Split too long Empty place.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_S_ToolTip_But, message="Basic Scheduler setup.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal")
+    Tab_E_A_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton7"]
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Gen_ToolTip_But, message="Application General Setup.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Dat_ToolTip_But, message="Setup related to Downloading date.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Cal_ToolTip_But, message="Base calendar From/To + Day Starting and Ending Event setup.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_G_ToolTip_But, message="Multiple general setup related to Events.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_Spec_ToolTip_But, message="Special Events which needs special treatment.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_E_ToolTip_But, message="Filling Empty time Tool and Split too long Empty place.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_E_A_ToolTip_But, message="Rule base Event Handling tools setup.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
-    # General
-    Theme_Widget = Settings_Widgets.Settings_General_Theme(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen, window=window)
-    Color_Palette_Widget = Settings_Widgets.Settings_General_Color(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen)
-    Program_User_Type_Widget = Settings_Widgets.Settings_User_Widget(Settings=Settings, Configuration=Configuration, Frame=Tab_Gen)
+    # ---------- General ---------- #
+    Frame_Tab_Gen_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Gen_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Gen_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    # General Page
-    Sharepoint_Widget = Settings_Widgets.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
-    Exchange_Widget = Settings_Widgets.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
-    Formats_Widget = Settings_Widgets.Settings_General_Formats(Settings=Settings, Configuration=Configuration, Frame=Tab_Dat)
+    Theme_Widget = W_Settings.Settings_General_Theme(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_A, window=window, GUI_Level_ID=2)
+    Color_Palette_Widget = W_Settings.Settings_General_Color(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
+    Program_User_Type_Widget = W_Settings.Settings_User_Widget(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_C, GUI_Level_ID=2)
 
-    # Calendar Page
-    Calendar_Working_Widget = Settings_Widgets.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, Frame=Tab_Cal)
-    Calendar_Vacation_Widget = Settings_Widgets.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, Frame=Tab_Cal)
-    Calendar_Start_End_Widget = Settings_Widgets.Settings_Calendar_Start_End_Time(Settings=Settings, Configuration=Configuration, Frame=Tab_Cal)
+    # ---------- General Page ---------- #
+    Frame_Tab_Dat_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Dat, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Dat_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Dat, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Dat_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Dat, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    # Event-General Page
-    Event_Skip_Widget = Settings_Widgets.Settings_Events_General_Skip(Settings=Settings, Configuration=Configuration, Frame=Tab_E_G)
-    Event_Join_Widget = Settings_Widgets.Settings_Join_events(Settings=Settings, Configuration=Configuration, Frame=Tab_E_G)
-    Event_Parallel_Widget = Settings_Widgets.Settings_Parallel_events(Settings=Settings, Configuration=Configuration, Frame=Tab_E_G)
+    Sharepoint_Widget = W_Settings.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Dat_Column_A, GUI_Level_ID=2)
+    Exchange_Widget = W_Settings.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Dat_Column_B, GUI_Level_ID=2)
+    Formats_Widget = W_Settings.Settings_General_Formats(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Dat_Column_C, GUI_Level_ID=2)
 
-    # Event-Special Page
-    Event_Lunch_Widget = Settings_Widgets.Settings_Events_General_Lunch(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
-    Event_Vacation_Widget = Settings_Widgets.Settings_Events_General_Vacation(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
-    Event_SickDay_Widget = Settings_Widgets.Settings_Events_General_SickDay(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
-    Event_HomeOffice_Widget = Settings_Widgets.Settings_Events_General_HomeOffice(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
-    Event_Private_Widget = Settings_Widgets.Settings_Events_General_Private(Settings=Settings, Configuration=Configuration, Frame=Tab_E_Spec)
+    # ---------- Calendar Page ---------- #
+    Frame_Tab_Cal_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Cal_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Cal_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    # Event-Empty Page
-    Event_Empty_General_Widget = Settings_Widgets.Settings_Events_Empty_Generally(Settings=Settings, Configuration=Configuration, Frame=Tab_E_E)
-    Event_Split_Widget = Settings_Widgets.Settings_Events_Split(Settings=Settings, Configuration=Configuration, Frame=Tab_E_E)
+    Calendar_Working_Widget = W_Settings.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Cal_Column_A, GUI_Level_ID=2)
+    Calendar_Vacation_Widget = W_Settings.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Cal_Column_B, GUI_Level_ID=2)
+    Calendar_Start_End_Widget = W_Settings.Settings_Calendar_Start_End_Time(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Cal_Column_C, GUI_Level_ID=2)
 
-    # Event-Empty Splitting Page
-    Event_Scheduler_Widget = Settings_Widgets.Settings_Events_Empty_Schedule(Settings=Settings, Configuration=Configuration, Frame=Tab_E_S)
+    # ---------- Event-General Page ---------- #
+    Frame_Tab_E_G_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_G, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_E_G_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_G, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_E_G_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_G, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    # Event-AutoFill Page
-    Event_AutoFiller_Widget = Settings_Widgets.Settings_Events_AutoFill(Settings=Settings, Configuration=Configuration, Frame=Tab_E_A)
-    Event_Activity_Correction_Widget = Settings_Widgets.Settings_Events_Activity_Correction(Settings=Settings, Configuration=Configuration, Frame=Tab_E_A)
+    Event_Skip_Widget = W_Settings.Settings_Events_General_Skip(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_A, GUI_Level_ID=2)
+    Event_Join_Widget = W_Settings.Settings_Join_events(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_B, GUI_Level_ID=2)
+    Event_Split_Widget = W_Settings.Settings_Events_Split(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_B, GUI_Level_ID=2)
+    Event_Parallel_Widget = W_Settings.Settings_Parallel_events(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_C, GUI_Level_ID=2)
+
+    # ---------- Event-Special Page ---------- #
+    Frame_Tab_E_Spec_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_Spec, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_E_Spec_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_Spec, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_E_Spec_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_Spec, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+
+    Event_Lunch_Widget = W_Settings.Settings_Events_General_Lunch(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_A, GUI_Level_ID=2)
+    Event_Vacation_Widget = W_Settings.Settings_Events_General_Vacation(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_A, GUI_Level_ID=2)
+    Event_SickDay_Widget = W_Settings.Settings_Events_General_SickDay(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_B, GUI_Level_ID=2)
+    Event_HomeOffice_Widget = W_Settings.Settings_Events_General_HomeOffice(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_B, GUI_Level_ID=2)
+    Event_Private_Widget = W_Settings.Settings_Events_General_Private(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_C, GUI_Level_ID=2)
+
+    # ---------- Event-Empty Page ---------- #
+    Frame_Tab_E_E_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_E, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+
+    Event_Empty_General_Widget = W_Settings.Settings_Events_Empty_Generally(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_E_Column_A, GUI_Level_ID=2)
+    Event_Scheduler_Widget = W_Settings.Settings_Events_Empty_Schedule(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_E_Column_A, GUI_Level_ID=2)
+
+    # ---------- Event-AutoFill Page ---------- #
+    Frame_Tab_E_A_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_A, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+
+    Event_AutoFiller_Widget = W_Settings.Settings_Events_AutoFill(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_A_Column_A, GUI_Level_ID=2)
+    Event_Activity_Correction_Widget = W_Settings.Settings_Events_Activity_Correction(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_A_Column_A, GUI_Level_ID=2)
 
     if User_Type == "Manager":
-        # Managed Team
-        Managed_Team_Widget = Settings_Widgets.Settings_My_Team(Settings=Settings, Configuration=Configuration, Frame=Tab_Team)
+        # ---------- Managed Team ---------- #
+        Frame_Tab_Team_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Team, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+
+        Managed_Team_Widget = W_Settings.Settings_My_Team(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2)
     else:
         pass
     
     # Build look of Widget
-    Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
-    Frame_Settings_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
+    Frame_Settings_State_Area.pack(side="top", fill="x", expand=False, padx=10, pady=10)
 
     Button_Download_Pro_Act.grid(row=0, column=0, padx=5, pady=15, sticky="e")
     Button_Upload_Pro_Act.grid(row=0, column=1, padx=5, pady=15, sticky="e")
     Button_Save_Settings.grid(row=0, column=2, padx=5, pady=15, sticky="e")
     Button_Load_Settings.grid(row=0, column=3, padx=5, pady=15, sticky="e")
 
-    TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
+    TabView.pack(side="top", fill="both", expand=True, padx=10, pady=10)
 
-    Theme_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Color_Palette_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Program_User_Type_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Frame_Tab_Gen_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_Gen_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_Gen_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Theme_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Color_Palette_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Program_User_Type_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Sharepoint_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Exchange_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Formats_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Frame_Tab_Dat_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_Dat_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_Dat_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Exchange_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Formats_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Calendar_Working_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Calendar_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Calendar_Start_End_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Frame_Tab_Cal_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_Cal_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_Cal_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Calendar_Working_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Calendar_Vacation_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Calendar_Start_End_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Event_Skip_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Join_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Event_Parallel_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
+    Frame_Tab_E_G_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_E_G_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_E_G_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Event_Skip_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Join_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Split_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Parallel_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Event_Lunch_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Vacation_Widget.grid(row=0, column=1, padx=5, pady=5, sticky="nw")
-    Event_SickDay_Widget.grid(row=0, column=2, padx=5, pady=5, sticky="nw")
-    Event_HomeOffice_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-    Event_Private_Widget.grid(row=1, column=1, padx=5, pady=5, sticky="nw")
+    Frame_Tab_E_Spec_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_E_Spec_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Frame_Tab_E_Spec_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Event_Lunch_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Vacation_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_SickDay_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_HomeOffice_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Private_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Event_Empty_General_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Split_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Frame_Tab_E_E_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Event_Empty_General_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Scheduler_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Event_Scheduler_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-
-    Event_AutoFiller_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Event_Activity_Correction_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
+    Frame_Tab_E_A_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+    Event_AutoFiller_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Event_Activity_Correction_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
     if User_Type == "Manager":
         # Managed Team
-        Managed_Team_Widget.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+        Frame_Tab_Team_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+        Managed_Team_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     else:
         pass

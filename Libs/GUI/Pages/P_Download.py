@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from customtkinter import CTk, CTkFrame, StringVar, CTkEntry, CTkProgressBar, CTkLabel
-from CTkMessagebox import CTkMessagebox
 
 import Libs.GUI.Widgets.W_Download as W_Download
 import Libs.GUI.Elements as Elements
@@ -12,6 +11,11 @@ import Libs.Process as Process
 def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFrame):
     User_Type = Settings["0"]["General"]["User"]["User_Type"]
     Date_format = Settings["0"]["General"]["Formats"]["Date"]
+
+    # Default
+    Download_Date_Range_Source = StringVar(master=Frame, value="Sharepoint", name="Download_Date_Range_Source")
+    Download_Data_Source = StringVar(master=Frame, value="Exchange", name="Download_Data_Source")
+
 
     Today = datetime.now()
     Today_str = Today.strftime(Date_format)
@@ -101,8 +105,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         if Download_Date_Range_Source == "Sharepoint":
             if SP_Password == "":
                 Can_Download = False
-                Error_Message = CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
-                Error_Message.get()
+                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
             else:
                 Input_Start_Date = None
                 Input_End_Date = None
@@ -114,42 +117,36 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
                 datetime.strptime(Input_End_Date, Format_Date)
             except:
                 Can_Download = False
-                Error_Message = CTkMessagebox(title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1)
-                Error_Message.get()
+                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             Can_Download = False
-            Error_Message = CTkMessagebox(title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1)
-            Error_Message.get()
-
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         # Data source
         if Can_Download == True:
             if Download_Data_Source == "Exchange":
                 if Exchange_Password == "":
                     Can_Download = False
-                    Error_Message = CTkMessagebox(title="Error", message="You forgot to insert Exchange password.", icon="cancel", fade_in_duration=1)
-                    Error_Message.get()
+                    Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Exchange password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
                 else:
                     pass
             elif Download_Data_Source == "Outlook_Client":
                 Exchange_Password = None
             else:
                 Can_Download = False
-                Error_Message = CTkMessagebox(title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1)
-                Error_Message.get()
+                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             pass
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+            Process.Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
             
             # Save into Settings --> to be displayed on Dashboard later 
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
-            Error_Message = CTkMessagebox(title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1)
-            Error_Message.get()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
     def Pre_Download_Data(Previous_Period_Def_Widget: CTkFrame, Previous_Sharepoint_Widget: CTkFrame) -> None:
         def get_year_month_list(start_date: datetime, end_date: datetime):
@@ -181,8 +178,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         if Download_Date_Range_Source == "Sharepoint":
             if SP_Password == "":
                 Can_Download = False
-                Error_Message = CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
-                Error_Message.get()
+                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
             else:
                 pass
 
@@ -190,12 +186,11 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Download_Periods = get_year_month_list(start_date=From_DateTime, end_date=To_DateTime)
         else:
             Can_Download = False
-            Error_Message = CTkMessagebox(title="Error", message=f"Cannot download as From Period is sooner To Period, please check.", icon="cancel", fade_in_duration=1)
-            Error_Message.get()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot download as From Period is sooner To Period, please check.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.Pre_Periods_Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
+            Process.Pre_Periods_Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
 
             # Save into Settings --> to be displayed on Dashboard later 
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
@@ -214,14 +209,13 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         # Check filled password
         if SP_Password == "":
             Can_Download = False
-            Error_Message = CTkMessagebox(title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1)
-            Error_Message.get()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             pass
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.My_Team_Download_and_Process(Settings=Settings, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password)
+            Process.My_Team_Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password)
 
             # Save into Settings --> to be displayed on Dashboard later 
             Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)
@@ -230,49 +224,38 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
 
     # ------------------------- Main Functions -------------------------#
-    # Default
-    Download_Date_Range_Source = StringVar(master=Frame, value="Sharepoint", name="Download_Date_Range_Source")
-    Download_Data_Source = StringVar(master=Frame, value="Exchange", name="Download_Data_Source")
-
     # Divide Working Page into 2 parts
-    Frame_Download_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line")
-    Frame_Download_State_Area.pack_propagate(flag=False)
+    Frame_Download_State_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line", GUI_Level_ID=1)
 
-    Frame_Download_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Download_Work_Detail_Area.grid_propagate(flag=False)
+    # ------------------------- State Area -------------------------#
+    # Progress Bar
+    Progress_Bar = Elements.Get_ProgressBar(Configuration=Configuration, Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process", GUI_Level_ID=1)
+    Progress_Bar.set(value=0)
 
+    Progress_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
+    Progress_text.configure(text=f"Download progress", width=200)
+    
     # ------------------------- Work Area -------------------------#
     # Tab View
-    TabView = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame_Download_Work_Detail_Area, Tab_size="Normal")
-    TabView.pack_propagate(flag=False)
-    Tab_New = TabView.add("New")
-    Tab_New.pack_propagate(flag=False)
-    Tab_Pre = TabView.add("Past")
-    Tab_Pre.pack_propagate(flag=False)
-    if User_Type == "Manager":
-        Tab_Team = TabView.add("My Team")
-        Tab_Team.pack_propagate(flag=False)
-
-        Tab_Team_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton3"]
-        Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Team_ToolTip_But, message="Used to download data from my team wit current reporting period.", ToolTip_Size="Normal")
-    else:
-        pass
-    TabView.set("New")
-
-    Tab_New_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton"]
-    Tab_Pre_ToolTip_But = TabView.children["!ctksegmentedbutton"].children["!ctkbutton2"]
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_New_ToolTip_But, message="Used to download new data to be registered, or Current Period checking.", ToolTip_Size="Normal")
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Pre_ToolTip_But, message="Used to download already registered date in Time Sheets --> download from Sharepoint previous periods.", ToolTip_Size="Normal")
-
+    TabView_New = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame, Tab_size="Normal", GUI_Level_ID=1)
+    Tab_New = TabView_New.add("New")
+    TabView_New.set("New")
+    Tab_New_ToolTip_But = TabView_New.children["!ctksegmentedbutton"].children["!ctkbutton"]
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_New_ToolTip_But, message="Used to download new data to be registered, or Current Period checking.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    
     # ---------- New Download ---------- #
-    # Download Method
-    Method_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")
-    Method_Text.configure(text="Step 1 - Date Range Source")
+    Frame_Tab_New_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_New, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_New_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_New, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    # Download Method
+    Method_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_New_Column_A, Label_Size="H1", Font_Size="H1")
+    Method_Text.configure(text="Step 1 - Date Range Source")
+    Method_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+
+    Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     
-    Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Date_Range_Source=Download_Date_Range_Source)
+    Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_From_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkbutton"]
@@ -289,14 +272,15 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     
 
     # Download Source
-    Source_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Source_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Download Data Source")
+    Source_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Exchange_Widget = W_Download.Download_Exchange(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Exchange_Widget = W_Download.Download_Exchange(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
-    Outlook_Widget = W_Download.Download_Outlook(Settings=Settings, Configuration=Configuration, Frame=Tab_New, Download_Data_Source=Download_Data_Source)
+    Outlook_Widget = W_Download.Download_Outlook(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
     Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
 
     # Disabling fields --> Download_Data_Source
@@ -304,87 +288,97 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Outlook_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
 
     # Download button
-    Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_New, Label_Size="H1", Font_Size="H1")
+    Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Label_Size="H1", Font_Size="H1")
     Download_Text.configure(text="Step 3 - Download and process")
+    Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_New, Button_Size="Normal")
+    Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Button_Size="Normal")
     Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal", GUI_Level_ID=2)
     
     # ---------- Previous periods ---------- #
-    Previous_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    TabView_Past = Elements.Get_Tab_View(Configuration=Configuration, Frame=Frame, Tab_size="Normal", GUI_Level_ID=1)
+    Tab_Pre = TabView_Past.add("Past")
+    TabView_Past.set("Past")
+    if User_Type == "Manager":
+        Tab_Team = TabView_Past.add("My Team")
+        Tab_Team_ToolTip_But = TabView_Past.children["!ctksegmentedbutton"].children["!ctkbutton2"]
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Team_ToolTip_But, message="Used to download data from my team wit current reporting period.", ToolTip_Size="Normal", GUI_Level_ID=1)
+    else:
+        pass
+    Tab_Pre_ToolTip_But = TabView_Past.children["!ctksegmentedbutton"].children["!ctkbutton"]
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Tab_Pre_ToolTip_But, message="Used to download already registered date in Time Sheets --> download from Sharepoint previous periods.", ToolTip_Size="Normal", GUI_Level_ID=1)
+
+
+    Frame_Tab_Pre_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Pre, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Previous_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
     Previous_Text.configure(text="Step 1 - Define previous periods")
+    Previous_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Previous_Period_Def_Widget = W_Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, Frame=Tab_Pre)
+    Previous_Period_Def_Widget = W_Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
 
-    Pre_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
+    Pre_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
     Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
+    Pre_Sharepoint_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Previous_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Pre)
+    Previous_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
 
     # Download button
-    Pre_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Pre, Label_Size="H1", Font_Size="H1")
-    Pre_Download_Text.configure(text="Step 2 - Download and process")
+    Pre_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
+    Pre_Download_Text.configure(text="Step 3 - Download and process")
+    Pre_Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Pre_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_Pre, Button_Size="Normal")
+    Pre_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Button_Size="Normal")
     Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Period_Def_Widget, Previous_Sharepoint_Widget=Previous_Sharepoint_Widget))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Pre_Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal")
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Pre_Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal", GUI_Level_ID=2)
     
-    # ---------- Previous periods ---------- #
+    # ---------- My Team ---------- #
     if User_Type == "Manager":
-        Team_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
+        Frame_Tab_Team_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Team, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+        Team_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Label_Size="H1", Font_Size="H1")
         Team_Sharepoint_Text.configure(text="Step 1 - Sharepoint credential")
+        Team_Sharepoint_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-        My_Team_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Tab_Team) # Can most probably by identical as downloads needs to connect same ways as in Pre
+        My_Team_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2) # Can most probably by identical as downloads needs to connect same ways as in Pre
 
         # Download button
-        Team_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Tab_Team, Label_Size="H1", Font_Size="H1")
+        Team_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Label_Size="H1", Font_Size="H1")
         Team_Download_Text.configure(text="Step 2 - Download and process")
+        Team_Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-        Team_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Tab_Team, Button_Size="Normal")
+        Team_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Button_Size="Normal")
         Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data(My_Team_Sharepoint_Widget=My_Team_Sharepoint_Widget))
-        Elements.Get_ToolTip(Configuration=Configuration, widget=Team_Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Team_Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal", GUI_Level_ID=2)
     else:
         pass
-
-    # ------------------------- State Area -------------------------#
-    # Progress Bar
-    Progress_Bar = Elements.Get_ProgressBar(Configuration=Configuration, Frame=Frame_Download_State_Area, orientation="Horizontal", Progress_Size="Download_Process")
-    Progress_Bar.set(value=0)
-
-    Progress_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Download_State_Area, Label_Size="Field_Label", Font_Size="Field_Label")
-    Progress_text.configure(text=f"Download progress", width=200)
-
 
     # Build look of Widget
-    Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=0, pady=0)
-    Frame_Download_Work_Detail_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
-    TabView.grid(row=0, column=0, padx=5, pady=15, sticky="n")
+    Frame_Download_State_Area.pack(side="top", fill="x", expand=False, padx=10, pady=10)
+
+    Progress_text.pack(side="left", fill="none", expand=False, padx=5, pady=10)
+    Progress_Bar.pack(side="left", fill="none", expand=False, padx=5, pady=10)
+
+    TabView_New.pack(side="left", fill="y", expand=False, padx=10, pady=10)
+    Frame_Tab_New_Column_A.pack(side="left", fill="y", expand=False, padx=5, pady=5)
+    Frame_Tab_New_Column_B.pack(side="left", fill="y", expand=False, padx=5, pady=5)
+    Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Manual_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Exchange_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Outlook_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     
-    Method_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Sharepoint_Widget.grid(row=1, column=0, padx=20, pady=(5, 20), sticky="n")
-    Manual_Widget.grid(row=1, column=1, padx=20, pady=(5, 20), sticky="n")
-    Source_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
-    Exchange_Widget.grid(row=3, column=0, padx=20, pady=(5, 20), sticky="n")
-    Outlook_Widget.grid(row=3, column=1, padx=20, pady=(5, 20), sticky="n")
-    Download_Text.grid(row=4, column=0, padx=5, pady=5, sticky="nw")
-    Button_Download.grid(row=5, column=0, padx=5, pady=15, sticky="nw")
-    
-    Previous_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-    Previous_Period_Def_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-    Pre_Sharepoint_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
-    Previous_Sharepoint_Widget.grid(row=3, column=0, padx=5, pady=5, sticky="nw")
-    Pre_Download_Text.grid(row=4, column=0, padx=5, pady=5, sticky="nw")
-    Pre_Button_Download.grid(row=5, column=0, padx=5, pady=15, sticky="nw")
+    TabView_Past.pack(side="left", fill="y", expand=False, padx=10, pady=10)
+    Frame_Tab_Pre_Column_A.pack(side="left", fill="y", expand=False, padx=5, pady=5)
+    Previous_Period_Def_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Previous_Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Pre_Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
     if User_Type == "Manager":
-        Team_Sharepoint_Text.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-        My_Team_Sharepoint_Widget.grid(row=1, column=0, padx=5, pady=5, sticky="nw")
-        Team_Download_Text.grid(row=2, column=0, padx=5, pady=5, sticky="nw")
-        Team_Button_Download.grid(row=3, column=0, padx=5, pady=15, sticky="nw")
+        Frame_Tab_Team_Column_A.pack(side="left", fill="y", expand=False, padx=5, pady=5)
+        My_Team_Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+        Team_Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     else:
         pass
 
-    Progress_text.grid(row=0, column=1, padx=5, pady=15, sticky="w")
-    Progress_Bar.grid(row=0, column=2, padx=5, pady=15, sticky="w")
+    
     

@@ -8,14 +8,10 @@ import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
 
 def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
-    Work_Area_Detail_Background = Configuration["Frames"]["Widgets"]["Widget_Frames"]["Scrollable_Frames"]["Triple_size"]["fg_color"]
-    
     Work_Area_Detail_Font = Configuration["Labels"]["Main"]["text_color"]
+    Work_Area_Detail_Background = list(Configuration["Global_Appearance"]["GUI_Level_ID"]["1"]["fg_color"])
 
     # ------------------------- Main Functions -------------------------#
-    Frame_Information_Work_Detail_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Detail")
-    Frame_Information_Work_Detail_Area.grid_propagate(flag=False)
-
     # Get Theme --> because of background color
     Current_Theme = Defaults_Lists.Get_Current_Theme() 
 
@@ -34,16 +30,17 @@ def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
     # ------------------------- Info Text Area -------------------------#
     # Description
-    Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame_Information_Work_Detail_Area, Frame_Size="Triple_size")
+    Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Triple_size", GUI_Level_ID=1)
 
     with open(Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Information.md"), "r", encoding="UTF-8") as file:
         html_markdown=markdown(text=file.read())
     file.close()
 
+    # BUG --> Not properly provide text color - always black now
     Information_html = HTMLLabel(Frame_Information_Scrollable_Area, html=f"{html_markdown}", background=HTML_Background_Color, font="Roboto", fg=HTML_Font_Color)
     Information_html.configure(height=700)
 
     # Build look of Widget
-    Frame_Information_Work_Detail_Area.pack(side="top", fill="both", expand=True, padx=0, pady=0)
     Frame_Information_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+
     Information_html.pack(side="top", fill="both", expand=True, padx=10, pady=10)

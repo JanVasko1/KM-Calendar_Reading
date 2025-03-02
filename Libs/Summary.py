@@ -6,7 +6,7 @@ from holidays import country_holidays
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Charts as Charts
 
-def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Team_Member_ID: str|None) -> None:
+def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: str, Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Team_Member_ID: str|None) -> None:
     # ------------------------------------------------------------ Defaults ------------------------------------------------------------ #
     File_Sub_Path = "DashBoard"
     if Calculation_source == "Team":
@@ -349,10 +349,10 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
 
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
     # Generate charts - Project And Activity
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Project", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Project", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Activity", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Calculation_source=Calculation_source, Category="Activity", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Project", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Project", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Activity", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Activity", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
 
     # Utilization
     Utilization_Start_Date = min(Events["Date"])
@@ -370,8 +370,8 @@ def Generate_Summary(Settings: dict, Calculation_source: str, Events: DataFrame,
 
     # Prevents chart to crash interpolation
     if Total_Days_w > 1:
-        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
-        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, Configuration=Configuration, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, Configuration=Configuration, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
     else:
         pass
 

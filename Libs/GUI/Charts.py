@@ -5,13 +5,12 @@ from warnings import filterwarnings
 from datetime import datetime, timedelta
 
 import Libs.Defaults_Lists as Defaults_Lists
+import Libs.GUI.Elements as Elements
 import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
 
 from bokeh.plotting import save, figure
 from bokeh.layouts import layout
 from bokeh.models import DataRange1d, ColumnDataSource, Span, Label, Block, HoverTool
-
-from CTkMessagebox import CTkMessagebox
 
 filterwarnings("ignore")
 # ---------------------------------------------------------- Local Functions---------------------------------------------------------- #
@@ -57,7 +56,7 @@ def Chart_update_html(Chart: str, color: str, opacity: float):
 
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
-def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category: str, theme: str, Events: DataFrame, Report_Period_End: datetime|None, File_Sub_Path: str) -> None:
+def Gen_Chart_Project_Activity(Settings: dict, Configuration: dict, Calculation_source: str, Category: str, theme: str, Events: DataFrame, Report_Period_End: datetime|None, File_Sub_Path: str) -> None:
     # ---------------------------- Defaults ----------------------------#
     Date_Format = Settings["0"]["General"]["Formats"]["Date"]
     X_Series_Column = "Date"  
@@ -67,8 +66,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
         Figure_sizing_mode = "stretch_width"
         Chart_Settings = Defaults_Lists.Load_Figures(Theme=theme)
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         
     # General information about Game
     Chart_Area_Properties = DataFrame(Chart_Settings["Bar_Vertical_Stacked_xTime_Charts"]["Chart_Area_Properties"], columns=["Column_Color_Single", "Column_Color_Fill_1", "Column_Color_Fill_2", "Colors_Palette_Range", "Line_Column_Color", "Line_Thickness", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
@@ -137,8 +135,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
         Min_Range_Len = Max_range_len - Active_Area_size
         Min_range = Value_df.iloc[Min_Range_Len]["Date"]
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
     x_range_set = DataRange1d(start=Min_range, end=Max_range, bounds=(Min_range_bound, Max_range))
 
@@ -231,10 +228,9 @@ def Gen_Chart_Project_Activity(Settings: dict, Calculation_source: str, Category
         save(obj=Chart_Layout, filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), title=f"{Category}")
         Chart_update_html(Chart=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     
-def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calendar_df: DataFrame, File_Sub_Path: str):
+def Gen_Chart_Calendar_Utilization(Settings: dict, Configuration: dict, theme: str, Utilization_Calendar_df: DataFrame, File_Sub_Path: str):
     Date_Format = Settings["0"]["General"]["Formats"]["Date"]
 
     # Variable Defaults
@@ -247,8 +243,7 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
         Figure_sizing_mode = "stretch_width"
         Chart_Settings = Defaults_Lists.Load_Figures(Theme=theme)
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Theme not supported as program cannot load Figure settings.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     
     Chart_Area_Properties = DataFrame(Chart_Settings["Basic_Multi_Line_Charts"]["Chart_Area_Properties"], columns=["Line_Color_start_Range", "Line_Color_end_Range", "Line_Thickness", "Under_Line_Area_Opacity", "Under_Line_Area_Fill_Color", "Tick_Symbol", "Tick_Size", "Active_Area_size", "Active_Area_indented_percent", "Total_Area_size", "Interpolation", "Background_Color", "Background_opacity", "Border_left", "Border_right", "Border_top", "Border_bottom"], index=[0])
     Chart_Area_Properties.Name = "Chart_Area_Properties"
@@ -310,8 +305,7 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
         Min_Range_Len = Max_range_len - Active_Area_size
         Min_range = Value_df.iloc[Min_Range_Len][X_Series_Column]
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Calculation of X Axis Range finish in the else statement, should not be.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     
     x_range_set = DataRange1d(start=Min_range, end=Max_range, bounds=(Min_range_bound, Max_range))
 
@@ -369,5 +363,4 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, theme: str, Utilization_Calen
         save(obj=Chart_Layout, filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), title=f"Report Rage utilization compare")
         Chart_update_html(Chart=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
-        Error_Message = CTkMessagebox(title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1)
-        Error_Message.get()
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
