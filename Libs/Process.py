@@ -15,6 +15,10 @@ import Libs.Event_Handler.AutoFiller as AutoFiller
 import Libs.Event_Handler.Special_Events as Special_Events
 import Libs.Event_Handler.Join_Events as Join_Events
 import Libs.Summary as Summary
+
+import Libs.Pandas_Functions as Pandas_Functions
+import Libs.Data_Functions as Data_Functions
+import Libs.File_Manipulation as File_Manipulation
 import Libs.Defaults_Lists as Defaults_Lists
 
 from customtkinter import CTkProgressBar, CTk, CTkLabel
@@ -41,7 +45,7 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
     User_ID = Settings["0"]["General"]["User"]["Code"]
 
     # Delete File before generation
-    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"))
+    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"))
 
     # Calculation
     Events_df["Personnel number"] = User_ID
@@ -50,20 +54,20 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
     Events_df = Events_df[["Personnel number", "Date", "Network Description", "Activity", "Activity description", "Start Time", "End Time", "Location"]]
     # Time
     try:
-        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
-        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+        Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+        Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
     except:
-        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
-        Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
     Events_df["Start Time"] = Events_df["Start Time"].dt.strftime(Time_Format)
     Events_df["End Time"] = Events_df["End Time"].dt.strftime(Time_Format)
 
     # Save only new values --> what is registered should not be available as new data
-    Events_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_df.to_csv(path_or_buf=Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # Cumulate with Event Registered
     Cumulated_Events = concat(objs=[Events_df, Events_Registered_df], axis=0)
-    Cumulated_Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Cumulated_Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+    Cumulated_Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Cumulated_Events, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
 
     return Cumulated_Events
 
@@ -77,72 +81,72 @@ def Download_and_Process(Settings: dict, Configuration: dict, window: CTk, Progr
     Events, Events_Registered_df, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Download_canceled = Downloader.Download_Events(Settings=Settings, Configuration=Configuration, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     
     if Download_canceled == False:
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         # ----------------------- Process Events ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Overnight Events") 
         Events = Divide_Events.OverMidnight_Events(Settings=Settings, Configuration=Configuration, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Skip Events") 
         Events = Skip_Events.Skip_Events(Settings=Settings, Events=Events, Type="Regular")
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Fill Empty") 
         Events = Fill_Empty_Place.Fill_Events(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Too long Empty Events") 
         Events = Divide_Events.Empty_Split_Events(Settings=Settings, Configuration=Configuration, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Fill Empty Coverage") 
         Events = Fill_Empty_Place.Fill_Events_Coverage(Settings=Settings, Configuration=Configuration, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True])
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True])
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Location set") 
         Events = Location_Set.Location_Set(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Lunch") 
         Events = Special_Events.Lunch(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Private") 
         Events = Special_Events.Private(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Skip Events") 
         Events = Skip_Events.Skip_Events(Settings=Settings, Events=Events, Type="Special")
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Parallel Events") 
         Events = Parallel_Events.Parallel_Events(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="AutoFilling") 
         Events = AutoFiller.AutoFiller(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Auto Activity Corrections") 
         Events = AutoFiller.Auto_Activity_Corrections(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Vacation") 
         Events = Special_Events.Vacation(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Sick Day") 
         Events = Special_Events.SickDay(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="HomeOffice") 
         Events = Special_Events.HomeOffice(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Joining Events") 
         Events = Join_Events.Join_Events(Settings=Settings, Events=Events)
-        Events = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Cumulated_Events = Events_Summary_Save(Settings=Settings, Events_df=Events, Events_Registered_df=Events_Registered_df)
 
@@ -170,7 +174,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
     Events_History_df = DataFrame()
 
     # Delete previous files 
-    Defaults_Lists.Delete_All_Files(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\"), include_hidden=True)
+    File_Manipulation.Delete_All_Files(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\History\\"), include_hidden=True)
 
     # Progress bar
     Download_Periods_Count = len(Download_Periods)
@@ -211,27 +215,27 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
     # Dates/Time correct
     # Date
     try:
-        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
+        Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
     except:
         try:
-            Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
+            Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
         except:
-            Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+            Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
     Events_History_df["Date"] = Events_History_df["Date"].dt.strftime(Date_Format)
 
     # Time
     try:
-        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
-        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+        Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+        Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
     except:
-        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
-        Events_History_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+        Events_History_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_History_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
     Events_History_df["Start Time"] = Events_History_df["Start Time"].dt.strftime(Time_Format)
     Events_History_df["End Time"] = Events_History_df["End Time"].dt.strftime(Time_Format)
 
     # Save
-    Events_History_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_History_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-    Events_History_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\Events.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+    Events_History_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events_History_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+    Events_History_df.to_csv(path_or_buf=Data_Functions.Absolute_path(relative_path=f"Operational\\History\\Events.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # ----------------------- Summary Dataframe ----------------------- #
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
@@ -289,27 +293,27 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
         # Dates/Time correct
         # Date
         try:
-            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
+            Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
         except:
             try:
-                Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
+                Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
             except:
-                Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+                Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
         Events_Member_df["Date"] = Events_Member_df["Date"].dt.strftime(Date_Format)
 
         # Time
         try:
-            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
-            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+            Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+            Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
         except:
-            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
-            Events_Member_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
+            Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+            Events_Member_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Member_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
         Events_Member_df["Start Time"] = Events_Member_df["Start Time"].dt.strftime(Time_Format)
         Events_Member_df["End Time"] = Events_Member_df["End Time"].dt.strftime(Time_Format)
 
         # Save
-        Events_Member_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Events_Member_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
-        Events_Member_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{team}.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+        Events_Member_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events_Member_df, Columns_list=["Date", "Start Time"], Accenting_list=[True, True]) 
+        Events_Member_df.to_csv(path_or_buf=Data_Functions.Absolute_path(relative_path=f"Operational\\My_Team\\{team}.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # Process each team member on its own TimeSheets
     for key, value in Managed_Team.items():
@@ -319,7 +323,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label=f"Processing: {Team_Member_name}") 
 
-        Member_df = read_csv(filepath_or_buffer=Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\{Team_Member_team}.csv"), sep=";", header=0)
+        Member_df = read_csv(filepath_or_buffer=Data_Functions.Absolute_path(relative_path=f"Operational\\My_Team\\{Team_Member_team}.csv"), sep=";", header=0)
         mask1 = Member_df["Personnel number"] == Team_Member_ID
         mask2 = Member_df["Activity description"] != "User included in TimeSpent"
         Member_df = Member_df[mask1 & mask2]

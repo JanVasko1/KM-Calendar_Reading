@@ -3,7 +3,7 @@ from pandas import read_csv
 
 from customtkinter import CTk, CTkFrame
 
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.Data_Functions as Data_Functions
 import Libs.GUI.Widgets.W_DashBoard as W_DashBoard
 import Libs.GUI.Elements as Elements
 
@@ -14,11 +14,11 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
     # ------------------------- Dashboard work Area -------------------------#
     try:
-        Totals_Summary_Df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Totals.csv"), sep=";")
-        Project_DF = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Project.csv"), sep=";")
-        Activity_Df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Activity.csv"), sep=";")
-        WeekDays_Df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_WeekDays.csv"), sep=";")
-        Weeks_DF = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Weeks.csv"), sep=";")
+        Totals_Summary_Df = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Totals.csv"), sep=";")
+        Project_DF = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Project.csv"), sep=";")
+        Activity_Df = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Activity.csv"), sep=";")
+        WeekDays_Df = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_WeekDays.csv"), sep=";")
+        Weeks_DF = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\Events_Weeks.csv"), sep=";")
 
         # Total Line
         Total_Duration_hours = float(Totals_Summary_Df.iloc[0]["Total_Duration_hours"])
@@ -85,10 +85,9 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
         # Build look of Widget
         Frame_DashBoard_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+        DashBoard_text_Additional.pack(side="top", fill="none", expand=False, padx=(1250, 20), pady=(0, 0))
 
-        DashBoard_text_Additional.pack(side="top", fill="none", expand=True, padx=(1250, 20), pady=(0, 0))
-
-        Frame_Dashboard_Total_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
+        Frame_Dashboard_Total_Line.pack(side="top", fill="both", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Totals_Counter.pack(side="left", fill="none", expand=True, padx=0, pady=0)
         Frame_DashBoard_Totals_Total.pack(side="left", fill="none", expand=True, padx=0, pady=0)
         Frame_DashBoard_Totals_Average.pack(side="left", fill="none", expand=True, padx=0, pady=0)
@@ -99,25 +98,25 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
         Frame_Dashboard_Project_Activity_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
         Frame_Dashboard_Project_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
         Frame_Dashboard_Project_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-        Frame_DashBoard_Project_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-        Frame_Dashboard_Project_Side_Section.pack(side="left", fill="x", expand=True, padx=5, pady=5)
-        Frame_DashBoard_Project_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-        Frame_DashBoard_Project_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-        Frame_DashBoard_Project_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Frame.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Project_Side_Section.pack(side="left", fill="y", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Detail1_Frame.pack(side="top", fill="y", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Detail2_Frame.pack(side="top", fill="y", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Project_Detail3_Frame.pack(side="top", fill="y", expand=True, padx=5, pady=5)
 
         Frame_Dashboard_Activity_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
         Frame_Dashboard_Activity_Detail_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-        Frame_DashBoard_Activity_Frame.pack(side="left", fill="none", expand=True, padx=0, pady=0)
-        Frame_Dashboard_Activity_Side_Section.pack(side="left", fill="x", expand=True, padx=0, pady=0)
-        Frame_DashBoard_Activity_Detail1_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-        Frame_DashBoard_Activity_Detail2_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
-        Frame_DashBoard_Activity_Detail3_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Activity_Frame.pack(side="left", fill="x", expand=True, padx=0, pady=0)
+        Frame_Dashboard_Activity_Side_Section.pack(side="left", fill="y", expand=True, padx=0, pady=0)
+        Frame_DashBoard_Activity_Detail1_Frame.pack(side="top", fill="y", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Activity_Detail2_Frame.pack(side="top", fill="y", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Activity_Detail3_Frame.pack(side="top", fill="y", expand=True, padx=5, pady=5)
 
         Frame_Dashboard_WeekDay_Weeks_Line.pack(side="top", fill="x", expand=True, padx=5, pady=(10, 0))
-        Frame_DashBoard_WeekDays_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
-        Frame_DashBoard_Weeks_Frame.pack(side="left", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_WeekDays_Frame.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Weeks_Frame.pack(side="left", fill="x", expand=True, padx=5, pady=5)
 
         Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
-        Frame_DashBoard_Chart_Frame.pack(side="top", fill="none", expand=True, padx=5, pady=5)
+        Frame_DashBoard_Chart_Frame.pack(side="top", fill="x", expand=False, padx=5, pady=5)
     except:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)

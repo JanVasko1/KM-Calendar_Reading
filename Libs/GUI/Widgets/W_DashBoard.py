@@ -4,20 +4,21 @@ from pandas import DataFrame
 
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.CustomTkinter_Functions as CustomTkinter_Functions
+import Libs.Data_Functions as Data_Functions
 
 import webview 
 from customtkinter import CTk, CTkFrame
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
 def DashBoard_Project(Configuration: dict):
-    Theme = Defaults_Lists.Get_Current_Theme()
+    Theme = CustomTkinter_Functions.Get_Current_Theme()
     if Theme == "System":
         Theme = "Dark"
     else:
         pass
 
-    Chart_path = Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Project_{Theme}.html")
+    Chart_path = Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Project_{Theme}.html")
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Project Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -26,13 +27,13 @@ def DashBoard_Project(Configuration: dict):
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Chart of Project not available, please download data first.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
 def DashBoard_Activity(Configuration: dict):
-    Theme = Defaults_Lists.Get_Current_Theme()
+    Theme = CustomTkinter_Functions.Get_Current_Theme()
     if Theme == "System":
         Theme = "Dark"
     else:
         pass
 
-    Chart_path = Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Activity_{Theme}.html")
+    Chart_path = Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Activity_{Theme}.html")
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Activity Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 
@@ -41,13 +42,13 @@ def DashBoard_Activity(Configuration: dict):
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Chart of Activity not available, please download data first.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
 def DashBoard_Utilization(Configuration: dict):
-    Theme = Defaults_Lists.Get_Current_Theme()
+    Theme = CustomTkinter_Functions.Get_Current_Theme()
     if Theme == "System":
         Theme = "Dark"
     else:
         pass
 
-    Chart_path = Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Utilization_{Theme}.html")
+    Chart_path = Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\DashBoard_Utilization_{Theme}.html")
     Chart_Exist = os.path.isfile(Chart_path)
     if Chart_Exist == True:
         webview.create_window(title="Utilization Detail", width=1645, height=428, url=Chart_path, frameless=True, easy_drag=True, resizable=True, shadow=True) 

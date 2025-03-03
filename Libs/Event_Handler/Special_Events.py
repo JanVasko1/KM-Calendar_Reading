@@ -3,7 +3,7 @@ from pandas import DataFrame, Series, concat
 from datetime import datetime
 
 import Libs.Event_Handler.Parallel_Events as Parallel_Events
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.Pandas_Functions as Pandas_Functions
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
@@ -42,7 +42,7 @@ def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataF
     for Day in Days_List:
         mask1 = Events["Start_Date"] == Day
         Day_Events_df = Events.loc[mask1]
-        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         
         # Get Lunch Conflict
         Day_Events_df = Parallel_Events.Find_Conflict_in_DF(Check_DF=Day_Events_df)
@@ -79,7 +79,7 @@ def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataF
                 # SubEvent is inside totally of Event no borders
                 Parallel_Events.Event_Middle_Cut(Conflict_df=Day_Events_df, Event_Index=Conflict_index, Data=Event_Series, Event_Start_Time=Event_Start_Time, Event_End_Time=Event_End_Time, Sub_Event_Start_Time=Sub_Event_Start_Time, Sub_Event_End_Time=Sub_Event_End_Time)
 
-        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         for row in Day_Events_df.iterrows():
             row_Series = Series(row[1])
             Event_Start_Time = row_Series["Start_Time"]

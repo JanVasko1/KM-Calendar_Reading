@@ -7,7 +7,9 @@ from random import randrange, choice
 from  warnings import filterwarnings
 filterwarnings('ignore')
 
+import Libs.Pandas_Functions as Pandas_Functions
 import Libs.Defaults_Lists as Defaults_Lists
+
 import Libs.GUI.Elements as Elements
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
@@ -133,13 +135,13 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
         Day_Events_df = Events.loc[mask1]
 
         # Sorting
-        Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+        Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         
         Day_Start_Time, Day_End_Time = Get_Day_Start_End_Time(Day_Start_Subject=Day_Start_Subject, Day_End_Subject=Day_End_Subject, Day_Events_df=Day_Events_df, Day=Day)
         if Day_Start_Time == None or Day_End_Time == None:
             # Do not make input to the day when day does not have Work Start / Work End Time
-            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
-            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
+            Day_Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
+            Day_Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
             Cumulated_Events = concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             continue
         else:
@@ -181,11 +183,11 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
                     pass
 
             # Sorting
-            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+            Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             
             #! Insert General - only between Day_Start_Time, Day_End_Time
-            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
-            Day_Events_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
+            Day_Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="Start_Time", Covert_Format=Time_format)
+            Day_Events_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Day_Events_df, Column="End_Time", Covert_Format=Time_format)
             Define_Event_within_Working_Hours(Dataframe=Day_Events_df, Day_Start_Time_dt=Day_Start_Time_dt, Day_End_Time_dt=Day_End_Time_dt)
             mask1 = Day_Events_df["Within_Working_Hours"] == True
             mask2 = Day_Events_df["All_Day_Event"] == False
@@ -194,7 +196,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             General_Empty_df = Day_Events_df.loc[mask1 & mask2 & mask3 & mask4]
 
             # Fill between events
-            General_Empty_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=General_Empty_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+            General_Empty_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=General_Empty_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             for row in General_Empty_df.iterrows():
                 # Define current row as pandas Series
                 row_Series = Series(row[1])
@@ -225,11 +227,11 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
                 Convert_time_delta_to_int(Differences_list=Differences_to_Start_list)
                 Convert_time_delta_to_int(Differences_list=Differences_to_End_list)
                 Find_Close_Sub_Event(Day_Events_df=Day_Events_df, General_Empty_df=General_Empty_df, Day=Day, Start_Time=Event_End_time, Differences_to_Start_list=Differences_to_Start_list, Differences_to_End_list=Differences_to_End_list, Sub_event_DF_Index_list=Sub_event_DF_Index_list, General_Empty_Project=General_Empty_Project, General_Empty_Activity=General_Empty_Activity, General_Empty_Description=General_Empty_Description)
-                Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+                Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             del General_Empty_df
 
             # Fill start of the day if needed
-            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+            Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             mask1 = Day_Events_df["Subject"] != Day_Start_Subject
             mask2 = Day_Events_df["Subject"] != Day_End_Subject
             mask3 = Day_Events_df["Within_Working_Hours"] == True
@@ -270,7 +272,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             del General_Empty_df
 
             # Fill end of the day if needed
-            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+            Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             mask1 = Day_Events_df["Subject"] != Day_Start_Subject
             mask2 = Day_Events_df["Subject"] != Day_End_Subject
             mask3 = Day_Events_df["Within_Working_Hours"] == True
@@ -311,7 +313,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             del General_Empty_df
             
             # Add to cumulated Dataframe
-            Day_Events_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+            Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
             Cumulated_Events = concat(objs=[Cumulated_Events, Day_Events_df], axis=0)
             del Day_Events_df
 

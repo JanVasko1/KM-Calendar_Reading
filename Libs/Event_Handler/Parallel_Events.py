@@ -2,7 +2,7 @@
 from pandas import DataFrame, Series, concat
 from datetime import datetime
 
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.Pandas_Functions as Pandas_Functions
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
@@ -88,7 +88,7 @@ def Find_Conflict_in_DF(Check_DF: DataFrame) -> DataFrame:
         Check_DF.at[Event_Index, "Conflict_indexes"] = Event_Conflict_indexes
         Check_DF.at[Event_Index, "Start_with_Event"] = Event_Start_with_indexes
         
-    Check_DF = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Check_DF, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+    Check_DF = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Check_DF, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
     return Check_DF
 
 def removing_elements(my_list: list, element) -> list:
@@ -160,11 +160,11 @@ def Parallel_Events_Handler(Settings: dict, Conflict_df: DataFrame) -> DataFrame
 
     # Sort because of 3 and more same start events
     if Start_Method == "Use Shorter":
-        Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time", "Duration"], Accenting_list=[False, False, False]) 
+        Conflict_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time", "Duration"], Accenting_list=[False, False, False]) 
     elif Start_Method == "Use Longer":
-        Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time", "Duration"], Accenting_list=[False, False, True]) 
+        Conflict_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time", "Duration"], Accenting_list=[False, False, True]) 
     else:
-        Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[False, False]) 
+        Conflict_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[False, False]) 
 
     Return = False
     for row in Conflict_df.iterrows():
@@ -346,7 +346,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                         Conflict_df = Parallel_Events_Handler(Settings=Settings, Conflict_df=Conflict_df)
                                 
                         # Duration change
-                        Conflict_df = Defaults_Lists.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
+                        Conflict_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Conflict_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
                         for row in Conflict_df.iterrows():
                             row_Series = Series(row[1])
                             Event_Start_Time = row_Series["Start_Time"]

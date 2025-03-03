@@ -2,10 +2,11 @@
 from datetime import datetime
 import calendar
 
-from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEntry, CTkButton, CTkLabel
+from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEntry, CTkButton
 
 import Libs.GUI.Elements as Elements
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.Data_Functions as Data_Functions
+import Libs.CustomTkinter_Functions as CustomTkinter_Functions
 
 
 def Get_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str, GUI_Level_ID: int|None = None) -> CTkFrame:
@@ -151,7 +152,7 @@ def Get_Widget_Button_row(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_T
     Frame_Buttons.pack(side="right", fill="x", expand=True, padx=0, pady=0)
 
     for Button in range(Buttons_count): 
-        Button_Normal = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Buttons, Button_Size=Button_Size)
+        Button_Normal = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Buttons, Button_Size=Button_Size)
         Button_Normal.pack(side="right", fill="none", expand=False, padx=(10,0))
 
     return Frame_Area
@@ -299,7 +300,7 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int, T
     else:
         pass
     Pop_Up_Window.overrideredirect(boolean=True)
-    Pop_Up_Window.iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
+    Pop_Up_Window.iconbitmap(bitmap=Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
     Pop_Up_Window.resizable(width=False, height=False)
 
     # Rounded corners 
@@ -318,7 +319,7 @@ def My_Dialog_Window(Settings: dict, Configuration:dict, Clicked_on_Button: CTkB
         return ""
 
     Dialog_Window_geometry = (width, height)
-    Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Dialog_Window_geometry[0])
+    Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Dialog_Window_geometry[0])
     Dialog_Window = Get_Pop_up_window(Configuration=Configuration, title=title,  width=Dialog_Window_geometry[0], height=Dialog_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed, Always_on_Top=False)
 
     # Frame - General
@@ -379,7 +380,7 @@ def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Cli
         Picker_window.destroy()
 
     def build_calendar(Shown_Month: int, Shown_Year: int) -> None:
-        calendar_frame = Elements.Get_Frame(Configuration=Configuration, Frame=Frame_Body, Frame_Size="DatePicker", GUI_Level_ID=GUI_Level_ID)
+        calendar_frame = Elements.Get_Frame(Configuration=Configuration, Frame=Frame_Body, Frame_Size="DatePicker", GUI_Level_ID=GUI_Level_ID + 1)
         calendar_frame.grid(row=0, column=0)
 
         # Month and Year Selector
@@ -387,11 +388,11 @@ def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Cli
         month_label.configure(text=f"{calendar.month_name[Shown_Month]}, {Shown_Year}")
         month_label.grid(row=0, column=1, columnspan=5)
 
-        prev_month_button = Elements.Get_Button(Configuration=Configuration, Frame=calendar_frame, Button_Size="Tiny")
+        prev_month_button = Elements.Get_Button_Text(Configuration=Configuration, Frame=calendar_frame, Button_Size="Tiny")
         prev_month_button.configure(text="<", command=lambda: prev_month(Shown_Month=Shown_Month, Shown_Year=Shown_Year))
         prev_month_button.grid(row=0, column=0)
 
-        next_month_button = Elements.Get_Button(Configuration=Configuration, Frame=calendar_frame, Button_Size="Tiny")
+        next_month_button = Elements.Get_Button_Text(Configuration=Configuration, Frame=calendar_frame, Button_Size="Tiny")
         next_month_button.configure(text=">", command=lambda: next_month(Shown_Month=Shown_Month, Shown_Year=Shown_Year))
         next_month_button.grid(row=0, column=6)
 
@@ -417,7 +418,7 @@ def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Cli
                     lbl.configure(text=f"")
                     lbl.grid(row=week, column=day_col)
                 else:
-                    btn = Elements.Get_Button(Configuration=Configuration, Frame=calendar_frame, Button_Size="DatePicker_Days")
+                    btn = Elements.Get_Button_Text(Configuration=Configuration, Frame=calendar_frame, Button_Size="DatePicker_Days")
                     # Today with red color
                     if (Shown_Year==Current_Year) and (Shown_Month==Current_Month) and (day==Current_Day):
                         btn.configure(text_color="#FF9797")
@@ -428,11 +429,11 @@ def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Cli
                     day += 1
 
     Picker_window_geometry = (width, height)
-    Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Picker_window_geometry[0])
+    Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Picker_window_geometry[0])
     Picker_window = Get_Pop_up_window(Configuration=Configuration, title="Date Picker", width=Picker_window_geometry[0], height=Picker_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed, Always_on_Top=False)
 
     # Frame - General
-    Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Picker_window, Name="Date Picker", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Select date from calendar", GUI_Level_ID=GUI_Level_ID)
+    Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Picker_window, Name="Date Picker", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Select date from calendar", GUI_Level_ID=GUI_Level_ID + 1)
     Frame_Main.configure(bg_color = "#000001")
     Frame_Body = Frame_Main.children["!ctkframe2"]
 

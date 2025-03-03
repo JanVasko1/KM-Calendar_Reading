@@ -5,8 +5,9 @@ from customtkinter import CTk, CTkFrame, StringVar, CTkEntry, CTkProgressBar, CT
 
 import Libs.GUI.Widgets.W_Download as W_Download
 import Libs.GUI.Elements as Elements
-import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Process as Process
+
+import Libs.Data_Functions as Data_Functions
 
 def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFrame):
     User_Type = Settings["0"]["General"]["User"]["User_Type"]
@@ -142,9 +143,9 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Process.Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
             
             # Save into Settings --> to be displayed on Dashboard later 
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
@@ -193,9 +194,9 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Process.Pre_Periods_Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
 
             # Save into Settings --> to be displayed on Dashboard later 
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Past")
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Past")
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             pass
 
@@ -218,7 +219,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Process.My_Team_Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password)
 
             # Save into Settings --> to be displayed on Dashboard later 
-            Defaults_Lists.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)
         else:
             pass
 
@@ -292,7 +293,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Download_Text.configure(text="Step 3 - Download and process")
     Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Button_Size="Normal")
+    Button_Download = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Button_Size="Normal")
     Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal", GUI_Level_ID=2)
     
@@ -328,7 +329,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Pre_Download_Text.configure(text="Step 3 - Download and process")
     Pre_Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Pre_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Button_Size="Normal")
+    Pre_Button_Download = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Button_Size="Normal")
     Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Period_Def_Widget, Previous_Sharepoint_Widget=Previous_Sharepoint_Widget))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Pre_Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal", GUI_Level_ID=2)
     
@@ -346,7 +347,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Team_Download_Text.configure(text="Step 2 - Download and process")
         Team_Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-        Team_Button_Download = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Button_Size="Normal")
+        Team_Button_Download = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Button_Size="Normal")
         Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data(My_Team_Sharepoint_Widget=My_Team_Sharepoint_Widget))
         Elements.Get_ToolTip(Configuration=Configuration, widget=Team_Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal", GUI_Level_ID=2)
     else:

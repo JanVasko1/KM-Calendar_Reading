@@ -1,21 +1,6 @@
 {
     "Global_Appearance": {
         "Window": {
-            "Style": "dark",
-            "Style_List": [
-                "dark",
-                "mica",
-                "aero",
-                "transparent",
-                "acrylic",
-                "win7",
-                "inverse",
-                "popup",
-                "native",
-                "optimised",
-                "light",
-                "normal"
-            ],
             "Theme": "Dark",
             "Theme_List": [
                 "Dark",
@@ -23,8 +8,8 @@
             ],
             "Colors": {
                 "Accent": {
-                    "Accent_Color_Mode": "Windows",
-                    "Accent_Color_Manual": "#00A9FF",
+                    "Accent_Color_Mode": "App Default",
+                    "Accent_Color_Manual": "#a0a25b",
                     "Accent_Color_List": [
                         "Windows",
                         "Manual",
@@ -33,7 +18,7 @@
                 },
                 "Hover": {
                     "Hover_Color_Mode": "Accent Lighter",
-                    "Hover_Color_Manual": "#00A9FF",
+                    "Hover_Color_Manual": "#4f7c94",
                     "Hover_Color_List": [
                         "Accent Lighter",
                         "Manual",
@@ -42,7 +27,7 @@
                 }
             },
             "Init_Page": {
-                "Selected": "Dashboard",
+                "Selected": "Downloads",
                 "Page_List": [
                     "Downloads",
                     "Dashboard",
@@ -223,13 +208,13 @@
             ],
             "bg_color": "transparent",
             "fg_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "hover": true,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "anchor": "center",
             "text_color": [
@@ -248,13 +233,13 @@
             ],
             "bg_color": "transparent",
             "fg_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "hover": true,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "anchor": "center",
             "text_color": [
@@ -273,13 +258,13 @@
             ],
             "bg_color": "transparent",
             "fg_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "hover": true,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "anchor": "center",
             "text_color": [
@@ -289,8 +274,8 @@
         },
         "DatePicker_Days": {
             "Accent_Color_help": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "width": 3,
             "height": 3,
@@ -304,8 +289,8 @@
             "fg_color": "transparent",
             "hover": true,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "anchor": "center",
             "text_color": [
@@ -313,10 +298,10 @@
                 "#efefef"
             ]
         },
-        "Picture_SideBar": {
+        "Picture_Transparent": {
             "Accent_Color_help": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "width": 30,
             "height": 30,
@@ -325,62 +310,17 @@
             "border_color": null,
             "bg_color": "transparent",
             "fg_color": "transparent",
-            "hover": true,
-            "hover_color": [
-                "#33BAff",
-                "#33BAff"
-            ],
-            "anchor": "center"
-        },
-        "Picture_Active_SideBar": {
-            "width": 2,
-            "height": 40,
-            "corner_radius": 0,
-            "border_width": 0,
-            "border_color": null,
-            "bg_color": "transparent",
-            "fg_color": "transparent",
             "hover": false,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
-            ],
-            "anchor": "center"
-        },
-        "Picture_Logo": {
-            "width": 100,
-            "height": 100,
-            "corner_radius": 0,
-            "border_width": 0,
-            "border_color": null,
-            "bg_color": "transparent",
-            "fg_color": "transparent",
-            "hover": false,
-            "hover_color": [
-                "#33BAff",
-                "#33BAff"
-            ],
-            "anchor": "center"
-        },
-        "Picture_Theme": {
-            "width": 40,
-            "height": 40,
-            "corner_radius": 0,
-            "border_width": 0,
-            "border_color": null,
-            "bg_color": "transparent",
-            "fg_color": "transparent",
-            "hover": false,
-            "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "anchor": "center"
         },
         "Chart_Button": {
             "Accent_Color_help": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "width": 40,
             "height": 20,
@@ -389,13 +329,13 @@
             "border_color": null,
             "bg_color": "transparent",
             "fg_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "hover": true,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "anchor": "center",
             "text_color": [
@@ -463,16 +403,16 @@
                 "border_width_unchecked": 3,
                 "border_width_checked": 6,
                 "fg_color": [
-                    "#00A9FF",
-                    "#00A9FF"
+                    "#446b80",
+                    "#446b80"
                 ],
                 "border_color": [
                     "#efefef",
                     "#111219"
                 ],
                 "hover_color": [
-                    "#33BAff",
-                    "#33BAff"
+                    "#4f7c94",
+                    "#4f7c94"
                 ],
                 "hover": true
             }
@@ -489,12 +429,12 @@
                         "#111219"
                     ],
                     "button_color": [
-                        "#00A9FF",
-                        "#00A9FF"
+                        "#446b80",
+                        "#446b80"
                     ],
                     "button_hover_color": [
-                        "#33BAff",
-                        "#33BAff"
+                        "#4f7c94",
+                        "#4f7c94"
                     ],
                     "text_color": [
                         "#2C2C2C",
@@ -509,8 +449,8 @@
                         "#2C2C2C"
                     ],
                     "dropdown_hover_color": [
-                        "#33BAff",
-                        "#33BAff"
+                        "#4f7c94",
+                        "#4f7c94"
                     ],
                     "dropdown_text_color": [
                         "#2C2C2C",
@@ -535,8 +475,8 @@
                         "#111219"
                     ],
                     "hover_color": [
-                        "#33BAff",
-                        "#33BAff"
+                        "#4f7c94",
+                        "#4f7c94"
                     ],
                     "button_height": 28,
                     "justify": "center",
@@ -552,8 +492,8 @@
                         "#B4B4B7"
                     ],
                     "scrollbar_button_hover_color": [
-                        "#33BAff",
-                        "#33BAff"
+                        "#4f7c94",
+                        "#4f7c94"
                     ],
                     "resize": true,
                     "text_color": [
@@ -575,12 +515,12 @@
                 "border_width": 3,
                 "bg_color": "transparent",
                 "fg_color": [
-                    "#00A9FF",
-                    "#00A9FF"
+                    "#446b80",
+                    "#446b80"
                 ],
                 "hover_color": [
-                    "#33BAff",
-                    "#33BAff"
+                    "#4f7c94",
+                    "#4f7c94"
                 ],
                 "border_color": [
                     "#efefef",
@@ -632,8 +572,8 @@
                     "#000001"
                 ],
                 "fg_color": [
-                    "#00A9FF",
-                    "#00A9FF"
+                    "#446b80",
+                    "#446b80"
                 ]
             },
             "SideBar_active": {
@@ -925,8 +865,8 @@
                 "Scrollable_Frames": {
                     "Single_size": {
                         "Accent_Color_help": [
-                            "#00A9FF",
-                            "#00A9FF"
+                            "#446b80",
+                            "#446b80"
                         ],
                         "width": 450,
                         "corner_radius": 10,
@@ -944,14 +884,14 @@
                             "#B4B4B7"
                         ],
                         "scrollbar_button_hover_color": [
-                            "#33BAff",
-                            "#33BAff"
+                            "#4f7c94",
+                            "#4f7c94"
                         ]
                     },
                     "Double_size": {
                         "Accent_Color_help": [
-                            "#00A9FF",
-                            "#00A9FF"
+                            "#446b80",
+                            "#446b80"
                         ],
                         "width": 1000,
                         "corner_radius": 10,
@@ -969,14 +909,14 @@
                             "#B4B4B7"
                         ],
                         "scrollbar_button_hover_color": [
-                            "#33BAff",
-                            "#33BAff"
+                            "#4f7c94",
+                            "#4f7c94"
                         ]
                     },
                     "Triple_size": {
                         "Accent_Color_help": [
-                            "#00A9FF",
-                            "#00A9FF"
+                            "#446b80",
+                            "#446b80"
                         ],
                         "width": 1600,
                         "corner_radius": 10,
@@ -997,8 +937,8 @@
                             "#B4B4B7"
                         ],
                         "scrollbar_button_hover_color": [
-                            "#33BAff",
-                            "#33BAff"
+                            "#4f7c94",
+                            "#4f7c94"
                         ]
                     }
                 }
@@ -1111,7 +1051,7 @@
         "Dashboard": {
             "Background_Frames": {
                 "Totals_Line": {
-                    "width": 1600,
+                    "width": 1500,
                     "height": 100,
                     "corner_radius": 0,
                     "border_width": 0,
@@ -1123,7 +1063,7 @@
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Line": {
-                    "width": 1600,
+                    "width": 1500,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0,
@@ -1131,11 +1071,14 @@
                         "#ecf0f1",
                         "#111219"
                     ],
-                    "bg_color": "transparent",
+                    "bg_color": [
+                        "#000001",
+                        "#000001"
+                    ],
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Section": {
-                    "width": 800,
+                    "width": 750,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0,
@@ -1143,7 +1086,10 @@
                         "#ecf0f1",
                         "#111219"
                     ],
-                    "bg_color": "transparent",
+                    "bg_color": [
+                        "#000001",
+                        "#000001"
+                    ],
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Detail_Section": {
@@ -1155,11 +1101,14 @@
                         "#ecf0f1",
                         "#111219"
                     ],
-                    "bg_color": "transparent",
+                    "bg_color": [
+                        "#000001",
+                        "#000001"
+                    ],
                     "fg_color": "transparent"
                 },
                 "Project_Activity_Side_Section": {
-                    "width": 200,
+                    "width": 150,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0,
@@ -1167,11 +1116,14 @@
                         "#ecf0f1",
                         "#111219"
                     ],
-                    "bg_color": "transparent",
+                    "bg_color": [
+                        "#000001",
+                        "#000001"
+                    ],
                     "fg_color": "transparent"
                 },
                 "WeekDay_Weeks_Line": {
-                    "width": 1600,
+                    "width": 1500,
                     "height": 300,
                     "corner_radius": 0,
                     "border_width": 0,
@@ -1179,11 +1131,14 @@
                         "#ecf0f1",
                         "#111219"
                     ],
-                    "bg_color": "transparent",
+                    "bg_color": [
+                        "#000001",
+                        "#000001"
+                    ],
                     "fg_color": "transparent"
                 },
                 "Day_Chart_Line": {
-                    "width": 1600,
+                    "width": 1500,
                     "height": 500,
                     "corner_radius": 0,
                     "border_width": 0,
@@ -1191,7 +1146,10 @@
                         "#ecf0f1",
                         "#111219"
                     ],
-                    "bg_color": "transparent",
+                    "bg_color": [
+                        "#000001",
+                        "#000001"
+                    ],
                     "fg_color": "transparent"
                 }
             },
@@ -1250,8 +1208,8 @@
                         },
                         "Body_Scrollable": {
                             "Accent_Color_help": [
-                                "#00A9FF",
-                                "#00A9FF"
+                                "#446b80",
+                                "#446b80"
                             ],
                             "width": 560,
                             "height": 280,
@@ -1273,8 +1231,8 @@
                                 "#B4B4B7"
                             ],
                             "scrollbar_button_hover_color": [
-                                "#33BAff",
-                                "#33BAff"
+                                "#4f7c94",
+                                "#4f7c94"
                             ]
                         },
                         "Header": {
@@ -1296,7 +1254,7 @@
                     },
                     "Project_Activity_Details": {
                         "Body": {
-                            "width": 180,
+                            "width": 160,
                             "height": 80,
                             "corner_radius": 10,
                             "border_width": 1,
@@ -1311,7 +1269,7 @@
                             ]
                         },
                         "Header": {
-                            "width": 178,
+                            "width": 158,
                             "height": 30,
                             "corner_radius": 0,
                             "border_width": 0,
@@ -1319,7 +1277,7 @@
                             "fg_color": "transparent"
                         },
                         "Data_Area": {
-                            "width": 178,
+                            "width": 158,
                             "height": 50,
                             "corner_radius": 0,
                             "border_width": 0,
@@ -1331,7 +1289,7 @@
                 "WeekDay_Weeks": {
                     "Normal": {
                         "Body": {
-                            "width": 785,
+                            "width": 7,
                             "height": 300,
                             "corner_radius": 10,
                             "border_width": 1,
@@ -1347,8 +1305,8 @@
                         },
                         "Body_Scrollable": {
                             "Accent_Color_help": [
-                                "#00A9FF",
-                                "#00A9FF"
+                                "#446b80",
+                                "#446b80"
                             ],
                             "width": 785,
                             "height": 300,
@@ -1370,8 +1328,8 @@
                                 "#B4B4B7"
                             ],
                             "scrollbar_button_hover_color": [
-                                "#33BAff",
-                                "#33BAff"
+                                "#4f7c94",
+                                "#4f7c94"
                             ]
                         },
                         "Header": {
@@ -1395,7 +1353,7 @@
                 "WeekChart": {
                     "Normal": {
                         "Body": {
-                            "width": 1645,
+                            "width": 10,
                             "height": 400,
                             "corner_radius": 10,
                             "border_width": 1,
@@ -1411,8 +1369,8 @@
                         },
                         "Body_Scrollable": {
                             "Accent_Color_help": [
-                                "#00A9FF",
-                                "#00A9FF"
+                                "#446b80",
+                                "#446b80"
                             ],
                             "width": 1645,
                             "height": 400,
@@ -1434,8 +1392,8 @@
                                 "#B4B4B7"
                             ],
                             "scrollbar_button_hover_color": [
-                                "#33BAff",
-                                "#33BAff"
+                                "#4f7c94",
+                                "#4f7c94"
                             ]
                         },
                         "Header": {
@@ -1479,20 +1437,20 @@
                 "#efefef"
             ],
             "segmented_button_selected_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "segmented_button_selected_hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "segmented_button_unselected_color": [
                 "#EDEDED",
                 "#2C2C2C"
             ],
             "segmented_button_unselected_hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "text_color": [
                 "#2C2C2C",
@@ -1519,11 +1477,11 @@
             ],
             "color_phase": "horizontal",
             "orientation": "horizontal",
-            "header_color": "#00A9FF",
+            "header_color": "#446b80",
             "corner_radius": 10,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "wraplength": 1000,
             "justify": "center",
@@ -1542,11 +1500,11 @@
             ],
             "color_phase": "horizontal",
             "orientation": "horizontal",
-            "header_color": "#00A9FF",
+            "header_color": "#446b80",
             "corner_radius": 10,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "wraplength": 200,
             "justify": "center",
@@ -1565,18 +1523,18 @@
             ],
             "color_phase": "horizontal",
             "orientation": "horizontal",
-            "header_color": "#00A9FF",
+            "header_color": "#446b80",
             "corner_radius": 10,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "wraplength": 1000,
             "justify": "center",
             "anchor": "l"
         },
         "Dashboard_Project_Activity": {
-            "width": 550,
+            "width": 500,
             "colors": [
                 "#d0d0d0",
                 "#2C2C2C"
@@ -1588,18 +1546,18 @@
             ],
             "color_phase": "horizontal",
             "orientation": "horizontal",
-            "header_color": "#00A9FF",
+            "header_color": "#446b80",
             "corner_radius": 10,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "wraplength": 120,
             "justify": "center",
             "anchor": "l"
         },
         "Dashboard_WeekDays": {
-            "width": 780,
+            "width": 750,
             "colors": [
                 "#d0d0d0",
                 "#2C2C2C"
@@ -1611,18 +1569,18 @@
             ],
             "color_phase": "horizontal",
             "orientation": "horizontal",
-            "header_color": "#00A9FF",
+            "header_color": "#446b80",
             "corner_radius": 10,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "wraplength": 110,
             "justify": "center",
             "anchor": "l"
         },
         "Dashboard_Weeks": {
-            "width": 780,
+            "width": 750,
             "colors": [
                 "#d0d0d0",
                 "#2C2C2C"
@@ -1634,11 +1592,11 @@
             ],
             "color_phase": "horizontal",
             "orientation": "horizontal",
-            "header_color": "#00A9FF",
+            "header_color": "#446b80",
             "corner_radius": 10,
             "hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "wraplength": 95,
             "justify": "center",
@@ -1684,12 +1642,12 @@
                 "#FF9797"
             ],
             "button_fg_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "button_hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "button_text_color": [
                 "#2C2C2C",
@@ -1719,12 +1677,12 @@
                 "#FF9797"
             ],
             "button_fg_color": [
-                "#00A9FF",
-                "#00A9FF"
+                "#446b80",
+                "#446b80"
             ],
             "button_hover_color": [
-                "#33BAff",
-                "#33BAff"
+                "#4f7c94",
+                "#4f7c94"
             ],
             "button_text_color": [
                 "#2C2C2C",
@@ -1748,7 +1706,7 @@
     "Sliders": {},
     "Color_Picker": {
         "width": 300,
-        "initial_color": "#00A9FF",
+        "initial_color": "#446b80",
         "fg_color": [
             "#f7f9f9",
             "#2C2C2C"

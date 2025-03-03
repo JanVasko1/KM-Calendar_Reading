@@ -5,7 +5,8 @@ from customtkinter import CTk, CTkFrame
 from tkhtmlview import HTMLLabel
 
 import Libs.GUI.Elements as Elements
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.CustomTkinter_Functions as CustomTkinter_Functions
+import Libs.Data_Functions as Data_Functions
 
 def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
     Work_Area_Detail_Font = Configuration["Labels"]["Main"]["text_color"]
@@ -13,7 +14,7 @@ def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
     # ------------------------- Main Functions -------------------------#
     # Get Theme --> because of background color
-    Current_Theme = Defaults_Lists.Get_Current_Theme() 
+    Current_Theme = CustomTkinter_Functions.Get_Current_Theme() 
 
     if Current_Theme == "Dark":
         HTML_Background_Color = Work_Area_Detail_Background[1]
@@ -32,7 +33,7 @@ def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
     # Description
     Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Triple_size", GUI_Level_ID=1)
 
-    with open(Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Information.md"), "r", encoding="UTF-8") as file:
+    with open(Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Information.md"), "r", encoding="UTF-8") as file:
         html_markdown=markdown(text=file.read())
     file.close()
 

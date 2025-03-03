@@ -8,6 +8,7 @@
 # Import Libraries
 import os
 import time
+import json
 from  markdown import markdown
 
 from customtkinter import CTk, CTkFrame, CTkButton, set_appearance_mode, deactivate_automatic_dpi_awareness
@@ -16,7 +17,11 @@ import pywinstyles
 
 import Libs.GUI.Elements as Elements
 import Libs.GUI.Elements_Groups as Elements_Groups
+
 import Libs.Defaults_Lists as Defaults_Lists
+import Libs.CustomTkinter_Functions as CustomTkinter_Functions
+import Libs.Data_Functions as Data_Functions
+import Libs.File_Manipulation as File_Manipulation
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
@@ -26,7 +31,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
     # ------------------------- Local Functions -------------------------#
     def Theme_Change():
-        Current_Theme = Defaults_Lists.Get_Current_Theme() 
+        Current_Theme = CustomTkinter_Functions.Get_Current_Theme() 
         if Current_Theme == "Dark":
             set_appearance_mode(mode_string="light")
         elif Current_Theme == "Light":
@@ -42,11 +47,11 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
         # TopUp Window
         Version_List_Window_geometry = (2000, 800)
-        Top_middle_point = Defaults_Lists.Count_coordinate_for_new_window(Clicked_on=Clicked_on, New_Window_width=Version_List_Window_geometry[0])
+        Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on, New_Window_width=Version_List_Window_geometry[0])
         Version_List_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Version List", width=Version_List_Window_geometry[0], height=Version_List_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=True, Always_on_Top=False)
 
          # Get Theme --> because of background color
-        Current_Theme = Defaults_Lists.Get_Current_Theme() 
+        Current_Theme = CustomTkinter_Functions.Get_Current_Theme() 
 
         if Current_Theme == "Dark":
             HTML_Background_Color = Work_Area_Detail_Background[1]
@@ -68,7 +73,7 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
 
         Frame_Information_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame_Body, Frame_Size="Double_size", GUI_Level_ID=2)
 
-        with open(Defaults_Lists.Absolute_path(relative_path=f"Libs\\App\\Version_list.md"), "r", encoding="UTF-8") as file:
+        with open(Data_Functions.Absolute_path(relative_path=f"Libs\\App\\Version_list.md"), "r", encoding="UTF-8") as file:
             html_markdown=markdown(text=file.read())
         file.close()
 
@@ -79,22 +84,74 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
         Frame_Information_Scrollable_Area.pack(side="top", fill="none", expand=False, padx=10, pady=10)
         Information_html.pack(side="top", fill="both", expand=False, padx=10, pady=10)
 
+    def Download_Project_Activities():
+        SP_Password = CustomTkinter_Functions.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+        
+        if SP_Password == None:
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        else:
+            import Libs.Sharepoint.Sharepoint as Sharepoint
+            Sharepoint.Get_Project_and_Activity(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+
+    def Upload_Project_Activities():
+        Exchange_Password = CustomTkinter_Functions.Dialog_Window_Request(Configuration=Configuration, title="Exchange Login", text="Write your password", Dialog_Type="Password")
+        
+        if Exchange_Password == None:
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        else:
+            import Libs.Download.Exchange as Exchange
+            Exchange.Push_Project(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
+            Exchange.Push_Activity(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+
+    def Save_Settings():
+        # Export Settings into Downloads Folder - backup
+        Export_dict = {
+            "Type": "Settings",
+            "Data": Settings["0"]}
+        Save_Path = File_Manipulation.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
+        with open(file=Save_Path, mode="w") as file: 
+            json.dump(Export_dict, file)
+        Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+
+    def Load_Settings(Button_Load_Settings: CTkButton):
+        def drop_func(file):
+            Data_Functions.Import_Data(Settings=Settings, Configuration=Configuration, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
+            Import_window.destroy()
+            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Your settings file has been imported. You can close Window and restart app.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+        
+        Import_window_geometry = (200, 200)
+        Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+
+        Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=2)
+        Frame_Body.configure(bg_color = "#000001")
+        pywinstyles.apply_dnd(widget=Frame_Body, func=drop_func)
+        Frame_Body.pack(side="top", padx=15, pady=15)
+
+        Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Body, Icon_Name="circle-fading-plus", Icon_Size="Header", Button_Size="Picture_Transparent")
+        Icon_Theme.configure(text="")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Drop file here.", ToolTip_Size="Normal", GUI_Level_ID=2)
+
+        Icon_Theme.pack(side="top", padx=50, pady=50)
+        
+
     # ------------------------- Main Functions -------------------------#
     # Theme Change - Button
-    Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Theme = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="sun-moon", Icon_Size="Header", Button_Size="Picture_Transparent")
     Icon_Theme.configure(text="")
     Icon_Theme.configure(command = lambda: Theme_Change())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Theme, message="Change theme.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Version list
-    Icon_Versions = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="file-stack", Icon_Size="Header", Button_Size="Picture_Theme")
+    Icon_Versions = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="file-stack", Icon_Size="Header", Button_Size="Picture_Transparent")
     Icon_Versions.configure(command = lambda: Show_Version_List(Clicked_on=Icon_Versions))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Versions, message="Show version changes log.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Account Mail
     Frame_User_Email = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_User_Email.configure(text=User_Email)
-    Frame_User_Email.pack_propagate(flag=False)
 
     # Account ID
     Frame_User_ID = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
@@ -104,7 +161,35 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     # Account Name
     Frame_User_Name = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
     Frame_User_Name.configure(text=User_Name)
-    Frame_User_Name.pack_propagate(flag=False)
+
+    # Account Mail
+    Frame_User_Email = Elements.Get_Label(Configuration=Configuration, Frame=Frame, Label_Size="Column_Header", Font_Size="Column_Header")
+    Frame_User_Email.configure(text=User_Email)
+
+    # Button - Download New Project and Activities
+    Button_Download_Pro_Act = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="list-plus", Icon_Size="Header", Button_Size="Picture_Transparent")
+    Button_Download_Pro_Act.configure(text="")
+    Button_Download_Pro_Act.configure(command = lambda: Download_Project_Activities())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download_Pro_Act, message="Actualize the list of Projects and Activities inside the app from actual Sharepoint.", ToolTip_Size="Normal", GUI_Level_ID=0)
+
+    # Button - Upload New Project and Activities
+    Button_Upload_Pro_Act = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="server", Icon_Size="Header", Button_Size="Picture_Transparent")
+    Button_Upload_Pro_Act.configure(text="")
+    Button_Upload_Pro_Act.configure(command = lambda: Upload_Project_Activities())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload_Pro_Act, message="Upload the list of Projects and Activities into Exchange.", ToolTip_Size="Normal", GUI_Level_ID=0)
+
+    # Button - Save Settings
+    Button_Save_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="cloud-upload", Icon_Size="Header", Button_Size="Picture_Transparent")
+    Button_Save_Settings.configure(text="")
+    Button_Save_Settings.configure(command = lambda: Save_Settings())
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Settings, message="Save whole setup into Downloads.", ToolTip_Size="Normal", GUI_Level_ID=0)
+
+    # Button - Load Settings
+    Button_Load_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame, Icon_Name="cloud-download", Icon_Size="Header", Button_Size="Picture_Transparent")
+    Button_Load_Settings.configure(text="")
+    Button_Load_Settings.configure(command = lambda: Load_Settings(Button_Load_Settings=Button_Load_Settings))
+    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Settings, message="Load Settings files.", ToolTip_Size="Normal", GUI_Level_ID=0)
+
 
     # Build look of Widget
     Icon_Theme.pack(side="right", fill="none", expand=False, padx=5, pady=5)
@@ -112,6 +197,11 @@ def Get_Header(Frame: CTk|CTkFrame) -> CTkFrame:
     Frame_User_Email.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_User_ID.pack(side="right", fill="none", expand=False, padx=5, pady=5)
     Frame_User_Name.pack(side="right", fill="none", expand=False, padx=5, pady=5)
+
+    Button_Download_Pro_Act.pack(side="left", fill="none", expand=False, padx=5, pady=5)
+    Button_Upload_Pro_Act.pack(side="left", fill="none", expand=False, padx=5, pady=5)
+    Button_Save_Settings.pack(side="left", fill="none", expand=False, padx=5, pady=5)
+    Button_Load_Settings.pack(side="left", fill="none", expand=False, padx=5, pady=5)
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Side Bar ------------------------------------------------------------------------------------------------------------------------------------ #
 def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
@@ -190,7 +280,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Logo = Elements.Get_Custom_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=40)
 
     # Page - Download
-    Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
     if User_Type == "User":
         Download_Row = 0
     elif User_Type == "Manager":
@@ -199,7 +289,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
     if User_Type == "User":
         Dashboard_Row = 1
     elif User_Type == "Manager":
@@ -212,12 +302,12 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
         pass
     elif User_Type == "Manager":
         Team_Row = 2
-        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
         Icon_Frame_Users_Dashboard.configure(command = lambda: Show_Team_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Team_Row))
         Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Users_Dashboard, message="My Team page.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Page - Data
-    Icon_Frame_Data = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Data = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
     if User_Type == "User":
         Data_Row = 2
     elif User_Type == "Manager":
@@ -226,7 +316,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Data, message="Data to export page.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Page - Information
-    Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
     if User_Type == "User":
         Information_Row = 3
     elif User_Type == "Manager":
@@ -235,7 +325,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Information, message="Application information page.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_SideBar")
+    Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
     if User_Type == "User":
         Settings_Row = 4
     elif User_Type == "Manager":
@@ -244,7 +334,7 @@ def Get_Side_Bar(Side_Bar_Frame: CTk|CTkFrame) -> CTkFrame:
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal", GUI_Level_ID=0)
 
     # Close Application
-    Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_SideBar")
+    Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_Transparent")
     Icon_Frame_Close.configure(command = lambda: window.quit())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close application.", ToolTip_Size="Normal")
 
@@ -293,7 +383,7 @@ class Win(CTk):
         super().__init__()
         super().overrideredirect(True)
         super().title("Time Sheets")
-        super().iconbitmap(bitmap=Defaults_Lists.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
+        super().iconbitmap(bitmap=Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
 
         display_width = self.winfo_screenwidth()
         display_height = self.winfo_screenheight()
@@ -331,17 +421,16 @@ if __name__ == "__main__":
     Settings = Defaults_Lists.Load_Settings()
     Configuration = Defaults_Lists.Load_Configuration() 
 
-    Win_Style_Actual = Configuration["Global_Appearance"]["Window"]["Style"]
     Theme_Actual = Configuration["Global_Appearance"]["Window"]["Theme"]
     SideBar_Width = Configuration["Frames"]["Page_Frames"]["SideBar"]["width"]
 
     # Create folders if do not exists
     try:
-        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\"))
-        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\DashBoard\\"))
-        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\"))
-        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\My_Team\\"))
-        os.mkdir(Defaults_Lists.Absolute_path(relative_path=f"Operational\\History\\"))
+        os.mkdir(Data_Functions.Absolute_path(relative_path=f"Operational\\"))
+        os.mkdir(Data_Functions.Absolute_path(relative_path=f"Operational\\DashBoard\\"))
+        os.mkdir(Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\"))
+        os.mkdir(Data_Functions.Absolute_path(relative_path=f"Operational\\My_Team\\"))
+        os.mkdir(Data_Functions.Absolute_path(relative_path=f"Operational\\History\\"))
     except:
         pass
 
@@ -350,7 +439,6 @@ if __name__ == "__main__":
     # Base Windows style setup --> always keep normal before change
     set_appearance_mode(mode_string=Theme_Actual)
     pywinstyles.apply_style(window=window, style="normal")
-    pywinstyles.apply_style(window=window, style=Win_Style_Actual)
 
     # ---------------------------------- Content ----------------------------------#
     # Background

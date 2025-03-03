@@ -4,7 +4,10 @@ from warnings import filterwarnings
 
 from datetime import datetime, timedelta
 
+import Libs.Pandas_Functions as Pandas_Functions
+import Libs.Data_Functions as Data_Functions
 import Libs.Defaults_Lists as Defaults_Lists
+
 import Libs.GUI.Elements as Elements
 import Libs.GUI.Bokeh_draw_chart as Bokeh_draw_chart
 
@@ -108,7 +111,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Configuration: dict, Calculation_
     Active_Area_indented = round((int(Active_Area_size) / 100) * int(Chart_Area_Properties.iloc[0]["Active_Area_indented_percent"]),0)
 
     Value_df["Date"] = to_datetime(Value_df[X_Series_Column], format=Date_Format)
-    Value_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Value_df, Column="Date", Covert_Format=Date_Format)
+    Value_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Value_df, Column="Date", Covert_Format=Date_Format)
     Max_range = max(Value_df["Date"]) + timedelta(days=Active_Area_indented)
 
     # ToolTip
@@ -171,7 +174,7 @@ def Gen_Chart_Project_Activity(Settings: dict, Configuration: dict, Calculation_
     # Registered Area
     if Calculation_source == "Current":
         try:
-            Events_Registered_df = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), sep=";")
+            Events_Registered_df = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), sep=";")
             if Events_Registered_df.empty:
                 pass
             else:
@@ -225,8 +228,8 @@ def Gen_Chart_Project_Activity(Settings: dict, Configuration: dict, Calculation_
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
-        save(obj=Chart_Layout, filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), title=f"{Category}")
-        Chart_update_html(Chart=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
+        save(obj=Chart_Layout, filename=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), title=f"{Category}")
+        Chart_update_html(Chart=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_{Category}_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     
@@ -360,7 +363,7 @@ def Gen_Chart_Calendar_Utilization(Settings: dict, Configuration: dict, theme: s
 
     # Split Value DF if production "Dummy = False" or just examples on common web "Dummy = True"
     if (theme == "Light") or (theme == "Dark"):
-        save(obj=Chart_Layout, filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), title=f"Report Rage utilization compare")
-        Chart_update_html(Chart=Defaults_Lists.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
+        save(obj=Chart_Layout, filename=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), title=f"Report Rage utilization compare")
+        Chart_update_html(Chart=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_{theme}.html"), color=Chart_Area_Properties.iloc[0]["Background_Color"], opacity=Chart_Area_Properties.iloc[0]["Background_opacity"])
     else:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot save as them is not supported.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)

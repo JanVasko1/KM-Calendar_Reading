@@ -6,7 +6,8 @@ from CTkTable import CTkTable
 
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.Data_Functions as Data_Functions
+import Libs.CustomTkinter_Functions as CustomTkinter_Functions
 
 def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFrame):
     # ------------------------- Local Functions -------------------------#
@@ -79,7 +80,7 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
         subprocess.run('start excel "Operational\\Downloads\\Events.csv"', shell=True, capture_output=False, text=False)
 
     def Data_Upload(Events: DataFrame):
-        SP_Password = Defaults_Lists.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
+        SP_Password = CustomTkinter_Functions.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         if SP_Password == None:
             Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
@@ -92,16 +93,16 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
     Frame_Data_Button_Area = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line", GUI_Level_ID=1)
     Frame_Data_Work_Detail_Area_Buttons = Elements.Get_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Work_Area_Status_Line", GUI_Level_ID=1)
 
-    Events = read_csv(Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"), sep=";")
+    Events = read_csv(Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"), sep=";")
 
     # ------------------------- Buttons Area -------------------------#
     # Download Button
-    Button_Upload = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Button_Area, Button_Size="Normal")
+    Button_Upload = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Upload.configure(text="Upload", command = lambda:Data_Upload(Events=Events))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Upload, message="Upload processed data directly to Sharepoint TimeSheets.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
     # Download Button
-    Button_Excel = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Button_Area, Button_Size="Normal")
+    Button_Excel = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Data_Button_Area, Button_Size="Normal")
     Button_Excel.configure(text="Excel", command = lambda:Data_Excel())
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Excel, message="Show generated Excel file.", ToolTip_Size="Normal", GUI_Level_ID=1)
 
@@ -126,24 +127,24 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
     change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len)
 
     # Beginning Button
-    Button_First = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
+    Button_First = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
     Button_First.configure(text="<<", command = lambda: change_first(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_First, message="First page", ToolTip_Size="Normal", GUI_Level_ID=1)
     Button_First.pack(side="left", fill="none", expand=False, padx=(620,5), pady=5)
 
     # Pre Button
-    Button_Pre = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
+    Button_Pre = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
     Button_Pre.configure(text="<", command = lambda: change_left(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Pre, message="Previous page", ToolTip_Size="Normal", GUI_Level_ID=1)
     Button_Pre.pack(side="left", fill="none", expand=False, padx=5, pady=5)
 
     # next Button
-    Button_Next = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
+    Button_Next = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
     Button_Next.configure(text=">", command = lambda: change_right(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Next, message="Next page", ToolTip_Size="Normal", GUI_Level_ID=1)
 
     # End Button
-    Button_Last = Elements.Get_Button(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
+    Button_Last = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Data_Work_Detail_Area_Buttons, Button_Size="Small")
     Button_Last.configure(text=">>", command = lambda: change_last(Table=Frame_Events_Table_Var, Current_Rows=Page_text, Events_list_len=Events_list_len))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Last, message="Last page", ToolTip_Size="Normal", GUI_Level_ID=1)
 

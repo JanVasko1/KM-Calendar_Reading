@@ -4,10 +4,14 @@ from datetime import datetime, timedelta
 
 import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Download.Exchange as Exchange
-import Libs.Defaults_Lists as Defaults_Lists
 import Libs.Sharepoint.Authentication as Authentication
 import Libs.Sharepoint.Sharepoint as Sharepoint
 import Libs.GUI.Elements as Elements
+
+import Libs.Defaults_Lists as Defaults_Lists
+import Libs.File_Manipulation as File_Manipulation
+import Libs.Pandas_Functions as Pandas_Functions
+import Libs.Data_Functions as Data_Functions
 
 # ---------------------------------------------------------- Set Defaults ---------------------------------------------------------- #
 BusyStatus_List = Defaults_Lists.Busy_Status_List()
@@ -33,7 +37,7 @@ def Download_Events(Settings: dict, Configuration: dict, Download_Date_Range_Sou
 
     Events = DataFrame()
     Events_Registered_df = DataFrame()  # Because of case when it is not downloaded from Sharepoint, but output must exists
-    Defaults_Lists.Delete_File(file_path=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"))
+    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"))
 
     Today = datetime.today()
     Today = Today.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -71,21 +75,21 @@ def Download_Events(Settings: dict, Configuration: dict, Download_Date_Range_Sou
             # Dates/Time correct
             # Date
             try:
-                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
+                Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format)
             except:
                 try:
-                    Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
+                    Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format1)
                 except:
-                    Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
+                    Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Date", Covert_Format=Sharepoint_Date_Format2)
             Events_Registered_df["Date"] = Events_Registered_df["Date"].dt.strftime(Date_Format)
 
             # Time
             try:
-                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
-                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
+                Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format)
+                Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="End Time", Covert_Format=Sharepoint_Time_Format)
             except:
-                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
-                Events_Registered_df = Defaults_Lists.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
+                Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="Start Time", Covert_Format=Sharepoint_Time_Format1)
+                Events_Registered_df = Pandas_Functions.PD_Column_to_DateTime(PD_DataFrame=Events_Registered_df, Column="End Time", Covert_Format=Sharepoint_Time_Format1)
             Events_Registered_df["Start Time"] = Events_Registered_df["Start Time"].dt.strftime(Time_Format)
             Events_Registered_df["End Time"] = Events_Registered_df["End Time"].dt.strftime(Time_Format)
                 
@@ -150,7 +154,7 @@ def Download_Events(Settings: dict, Configuration: dict, Download_Date_Range_Sou
             Download_canceled = True
             Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Download process canceled by user.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         
-        Events_Registered_df.to_csv(path_or_buf=Defaults_Lists.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
+        Events_Registered_df.to_csv(path_or_buf=Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events_Registered.csv"), index=False, sep=";", header=True, encoding="utf-8-sig")
 
     # -------------- Manual  -------------- #
     elif Download_Date_Range_Source == "Manual":

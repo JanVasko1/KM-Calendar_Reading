@@ -3,7 +3,7 @@ import sharepy
 from sharepy import SharePointSession
 import os
 
-import Libs.Defaults_Lists as Defaults_Lists
+import Libs.Data_Functions as Data_Functions
 import Libs.GUI.Elements as Elements
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
@@ -13,7 +13,7 @@ def Init_authentication(Settings: dict, Configuration: dict, SP_Password: str|No
 
     try:
         s_aut = sharepy.connect(site=Auth_Address, username=User_Email, password=SP_Password)
-        s_aut.save(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\SP_Auth.pkl"))
+        s_aut.save(filename=Data_Functions.Absolute_path(relative_path=f"Operational\\SP_Auth.pkl"))
     except Exception as Error:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="It is not possible to connect and save now, try later.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         s_aut = ""
@@ -21,7 +21,7 @@ def Init_authentication(Settings: dict, Configuration: dict, SP_Password: str|No
 
 def Delete_Authentication(Configuration: dict) -> None:
     try:
-        os.remove(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\SP_Auth.pkl"))
+        os.remove(filename=Data_Functions.Absolute_path(relative_path=f"Operational\\SP_Auth.pkl"))
     except:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Sharepoint authentication file already deleted", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
@@ -29,7 +29,7 @@ def Authentication(Settings: dict, Configuration: dict, SP_Password: str|None) -
     while True:
         # Authentication
         try:
-            s_aut = sharepy.load(filename=Defaults_Lists.Absolute_path(relative_path=f"Operational\\SP_Auth.pkl"))
+            s_aut = sharepy.load(filename=Data_Functions.Absolute_path(relative_path=f"Operational\\SP_Auth.pkl"))
         except:
             s_aut = Init_authentication(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
 
