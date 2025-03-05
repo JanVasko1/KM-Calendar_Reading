@@ -1,11 +1,13 @@
-#### 1.1.0
-- Advance option menu same width as attached base CTk field
-- Windows scaling suppress (when program start)
-- Global GUI visual change (GUI Levels, SideBar, colors, packaging widget into self columns and many more)
-- bug Automatic rules Table loads only first column corrected
-- Download page rebuild
+##### 1.1.1
 - Re-distribute local libraries to separate files to speed-up 
 - Buttons from Settings page moved to Header
+
+#### 1.1.0
+- Global GUI visual change (GUI Levels, SideBar, colors, packaging widget into self columns and many more)
+- Advance option menu same width as attached base CTk field
+- Windows scaling suppress (when program start)
+- bug Automatic rules Table loads only first column corrected
+- Download page rebuild
 
 ##### 1.0.5
 - <small>Settings Tables, nut the "Update" button is available

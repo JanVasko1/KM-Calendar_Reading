@@ -884,7 +884,7 @@ def Get_ProgressBar(Configuration:dict, Frame: CTk|CTkFrame, orientation: str, P
         corner_radius = Configuration_ProgressBar["corner_radius"],
         bg_color = Configuration_ProgressBar["bg_color"],
         fg_color = tuple(Configuration_ProgressBar["fg_color"]),
-        progress_color = tuple(Configuration_ProgressBar["progress_color"]),
+        progress_color = tuple(Configuration_ProgressBar["fg_color"]),
         orientation = Configuration_ProgressBar["orientation"],
         determinate_speed = Configuration_ProgressBar["determinate_speed"],
         indeterminate_speed = Configuration_ProgressBar["indeterminate_speed"],

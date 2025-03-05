@@ -113,6 +113,14 @@
             "underline": false,
             "overstrike": false
         },
+        "Section_Separator": {
+            "family": "Roboto",
+            "size": 11,
+            "weight": "bold",
+            "slant": "roman",
+            "underline": true,
+            "overstrike": false
+        },
         "Field_Label": {
             "family": "Roboto",
             "size": 11,

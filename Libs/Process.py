@@ -74,7 +74,7 @@ def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_
 
 # ---------------------------------------------------------- Main Program ---------------------------------------------------------- #
 def Download_and_Process(Settings: dict, Configuration: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: str, Download_Data_Source: str, SP_Date_From_Method: str, SP_Date_To_Method: str, SP_Man_Date_To: str, SP_Password: str|None, Exchange_Password: str|None, Input_Start_Date: str|None, Input_End_Date: str|None) -> None:
-    Progress_Bar.configure(determinate_speed = round(number=50 / 17, ndigits=3))
+    Progress_Bar.configure(determinate_speed = round(number=50 / 17, ndigits=3), progress_color="#517A31")
     
     # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
@@ -178,7 +178,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
 
     # Progress bar
     Download_Periods_Count = len(Download_Periods)
-    Progress_Bar.configure(determinate_speed = round(number=50 / (Download_Periods_Count), ndigits=3))      # Counts only with downloads as Summary set it to 1
+    Progress_Bar.configure(determinate_speed = round(number=50 / (Download_Periods_Count), ndigits=3), progress_color="#517A31")      # Counts only with downloads as Summary set it to 1
 
     # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
@@ -261,7 +261,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
     Team_Members_Count = len(Managed_Team)
 
     # Progress bar
-    Progress_Bar.configure(determinate_speed = round(number=50 / (Teams_list_Count + Team_Members_Count), ndigits=3))      # Counts only with downloads as Summary set it to 1
+    Progress_Bar.configure(determinate_speed = round(number=50 / (Teams_list_Count + Team_Members_Count), ndigits=3), progress_color="#517A31")      # Counts only with downloads as Summary set it to 1
 
     # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
