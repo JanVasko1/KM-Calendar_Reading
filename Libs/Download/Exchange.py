@@ -13,7 +13,7 @@ Exchange_Busy_Status_List = Defaults_Lists.Exchange_Busy_Status_List()
 Busy_Status_List = Defaults_Lists.Busy_Status_List()
 
 # Load OAuth2 info
-client_id, client_secret, tenant_id = Defaults_Lists.Load_Exchange_env()
+Display_name, client_id, client_secret, tenant_id = Defaults_Lists.Load_Azure_Auth()
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Duration_Counter(Time1: datetime, Time2: datetime) -> int:
@@ -96,6 +96,30 @@ def Exchange_OAuth(Settings: dict, Configuration: dict, Exchange_Password: str) 
     access_token = tokens["access_token"]
 
     return access_token
+
+def Exchange_OAuth_Test(Configuration: dict) -> str:
+    try:
+        if not client_id:
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        if not client_secret:
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        if not tenant_id:
+            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+
+        # OAuth2 authentication at KM Azure
+        url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+        payload = {
+            "grant_type": "client_credentials",
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "scope": "https://graph.microsoft.com/.default"}
+        response = requests.post(url=url, data=payload)
+        if (response.status_code >= 200) and (response.status_code < 300):
+            return True
+        else:
+            return False
+    except:
+        return False
 
 # ---------------------------------------------------------- Main Function ---------------------------------------------------------- #
 def Download_Events(Settings: dict, Configuration: dict, Input_Start_Date_dt: datetime, Input_End_Date_dt: datetime, Filter_Start_Date: str, Filter_End_Date: str, Exchange_Password: str) -> DataFrame:

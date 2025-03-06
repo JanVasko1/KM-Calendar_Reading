@@ -1,7 +1,6 @@
 # Import Libraries
-from dotenv import load_dotenv
+import pickle
 import json
-import os
 
 import Libs.Data_Functions as Data_Functions
 
@@ -48,12 +47,23 @@ def Busy_Status_Priorities_List() -> list[str]:
     Busy_Statuses_Priorities = ["Busy", "Working elsewhere", "Tentative", "Free", "Out of Office"]
     return Busy_Statuses_Priorities
 
-def Load_Exchange_env() -> list[str, str, str]:
-    load_dotenv(dotenv_path=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Exchange.env"))
-    client_id = os.getenv("client_id")
-    client_secret = os.getenv("client_secret")
-    tenant_id = os.getenv("tenant_id")
-    return client_id, client_secret, tenant_id
+def Load_Azure_Auth() -> list[str, str, str]:
+    with open(file=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Authorization.pkl"), mode="rb") as Authorization:
+        Aut_Data = pickle.load(Authorization)
+    Display_name = Aut_Data["Display_name"]
+    client_id = Aut_Data["client_id"]
+    client_secret = Aut_Data["client_secret"]
+    tenant_id = Aut_Data["tenant_id"]
+    return Display_name, client_id, client_secret, tenant_id
+
+def Save_set_key_Auth(Key: str, Value: str) -> None:
+    with open(file=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Authorization.pkl"), mode="rb") as Authorization:
+        Auth_Data = pickle.load(Authorization)
+
+    Auth_Data[Key] = Value
+
+    with open(file=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Authorization.pkl"), mode="wb") as Authorization:
+        pickle.dump(obj=Auth_Data, file=Authorization)
 
 # --------------------------------------------- List / Dict Operations --------------------------------------------- #
 def List_from_Dict(Dictionary: dict, Key_Argument: str) -> list:

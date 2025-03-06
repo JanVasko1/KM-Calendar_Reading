@@ -127,7 +127,7 @@ def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, D
 
     # ------------------------- Main Functions -------------------------#
     # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Exchange Server", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Konica Minolta Exchange server directly.", GUI_Level_ID=GUI_Level_ID)
+    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Exchange Server", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Konica Minolta Exchange server directly.", GUI_Level_ID=GUI_Level_ID)
     Frame_Body = Frame_Main.children["!ctkframe2"]
 
     # Field - Use

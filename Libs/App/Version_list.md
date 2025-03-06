@@ -1,6 +1,7 @@
 ##### 1.1.1
 - Re-distribute local libraries to separate files to speed-up 
 - Buttons from Settings page moved to Header
+- Exchange Authorization information stored in binary file format (not readable from outside)
 
 #### 1.1.0
 - Global GUI visual change (GUI Levels, SideBar, colors, packaging widget into self columns and many more)
@@ -45,4 +46,4 @@
 - SideBar prints Application Version
 
 #### 1.0.0
-- describe all program
+- First functional stage of program
