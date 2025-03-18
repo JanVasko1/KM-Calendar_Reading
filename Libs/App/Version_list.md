@@ -1,3 +1,16 @@
+### Contact
+**Author**: Jan Vaško<br>
+**Email**: Jan.Vasko@konicaminolta.eu<br>
+**Mobile**: +420 601 383 301<br>
+
+### Version List
+##### 1.1.2
+- threading implemented for all major processes of Download and process 
+    * Download current 
+    * Download past Period
+    * Download for My Team
+- Better Authorization secure
+
 ##### 1.1.1
 - Re-distribute local libraries to separate files to speed-up 
 - Buttons from Settings page moved to Header

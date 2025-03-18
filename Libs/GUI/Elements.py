@@ -15,43 +15,53 @@ from iconipy import IconFactory
 import winaccent
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
-def Time_Validate(Settings: dict, Configuration: dict, Value: str) -> None:
+def Time_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
     Time_Format = Settings["0"]["General"]["Formats"]["Time"]
+    Value = Field.get()
 
     if Value != "":
         try:
             datetime.strptime(Value, Time_Format)
         except:
             Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not proper Time format, should be: HH:MM.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Field.delete(first_index=0, last_index=100)
     else:
         pass
 
-def Date_Validate(Settings: dict, Configuration: dict, Value: str) -> None:
+def Date_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
     Date_Format = Settings["0"]["General"]["Formats"]["Date"]
+    Value = Field.get()
 
     if Value != "":
         try:
             datetime.strptime(Value, Date_Format)
         except:
             Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not in proper Date format, should be: YYYY-MM-DD.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Field.delete(first_index=0, last_index=100)
     else:
         pass
 
-def Int_Validate(Settings: dict, Configuration: dict, Value: str) -> None:
+def Int_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
+    Value = Field.get()
+
     if Value != "":
         try:
             int(Value)
         except:
             Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not whole number.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Field.delete(first_index=0, last_index=100)
     else:
         pass
 
-def Float_Validate(Settings: dict, Configuration: dict, Value: str) -> None:
+def Float_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
+    Value = Field.get()
+
     if Value != "":
         try:
             float(Value)
         except:
             Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not float number.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Field.delete(first_index=0, last_index=100)
     else:
         pass
 
@@ -249,13 +259,13 @@ def Get_Entry_Field(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Fie
         validate="focusout")
     
     if Validation == "Time":
-        Field.configure(validatecommand=lambda: Time_Validate(Settings=Settings, Configuration=Configuration, Value=Field.get()))
+        Field.configure(validatecommand=lambda: Time_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
     elif Validation == "Date":
-        Field.configure(validatecommand=lambda: Date_Validate(Settings=Settings, Configuration=Configuration, Value=Field.get()))
+        Field.configure(validatecommand=lambda: Date_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
     elif Validation == "Integer":
-        Field.configure(validatecommand=lambda: Int_Validate(Settings=Settings, Configuration=Configuration, Value=Field.get()))
+        Field.configure(validatecommand=lambda: Int_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
     elif Validation == "Float":
-        Field.configure(validatecommand=lambda: Float_Validate(Settings=Settings, Configuration=Configuration, Value=Field.get()))
+        Field.configure(validatecommand=lambda: Float_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
     else:
         pass
 

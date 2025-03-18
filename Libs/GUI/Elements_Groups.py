@@ -2,6 +2,8 @@
 from datetime import datetime
 import calendar
 
+import pyautogui
+
 from customtkinter import CTk, CTkFrame, CTkScrollableFrame, CTkToplevel, CTkEntry, CTkButton
 
 import Libs.GUI.Elements as Elements
@@ -12,6 +14,39 @@ import Libs.CustomTkinter_Functions as CustomTkinter_Functions
 def Get_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     # Build base Frame for Widget
     Frame_Single_Body = Elements.Get_Widget_Frame_Body(Configuration=Configuration, Frame=Frame, Widget_size=Widget_size, GUI_Level_ID=GUI_Level_ID)
+
+    Frame_Single_Header = Elements.Get_Widget_Frame_Header(Configuration=Configuration, Frame=Frame_Single_Body, Widget_size=Widget_size)
+    
+    Header_text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header")
+    Header_text.configure(text=f"{Name}")
+
+    Header_text_Additional = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Single_Header, Label_Size="Column_Header_Additional", Font_Size="Column_Header_Additional")
+    Header_text_Additional.configure(text=f"{Additional_Text}")
+
+    if Widget_Label_Tooltip == "":
+        pass
+    else:
+        Icon_Label_text = Elements.Get_Label_Icon(Configuration=Configuration, Frame=Frame_Single_Header, Label_Size="Column_Header", Font_Size="Column_Header", Icon_Name="circle-help", Icon_Size="Question")
+        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Label_text, message=Widget_Label_Tooltip, ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+
+    Frame_Single_Data_Area = Elements.Get_Widget_Frame_Area(Configuration=Configuration, Frame=Frame_Single_Body, Widget_size=Widget_size)
+
+    # Build look of Widget
+    Frame_Single_Body.pack(side="top", fill="none", expand=False, padx=0, pady=0)
+    Frame_Single_Header.pack(side="top", fill="x", expand=False, padx=7, pady=7)
+    Header_text.pack(side="left", fill="x")
+    if Widget_Label_Tooltip == "":
+        pass
+    else:
+        Icon_Label_text.pack(side="left", fill="none", expand=False, padx=1, pady=0)
+    Header_text_Additional.pack(side="right", fill="x")
+    Frame_Single_Data_Area.pack(side="top", fill="y", expand=True, padx=7, pady=7)
+
+    return Frame_Single_Body
+
+def Get_Widget_Scrollable_Frame(Configuration:dict, Frame: CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+    # Build base Frame for Widget
+    Frame_Single_Body = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame, Frame_Size=Widget_size, GUI_Level_ID=GUI_Level_ID)
 
     Frame_Single_Header = Elements.Get_Widget_Frame_Header(Configuration=Configuration, Frame=Frame_Single_Body, Widget_size=Widget_size)
     
@@ -276,7 +311,7 @@ def Get_Table_Frame(Configuration:dict, Frame: CTk|CTkFrame, Table_Size: str, Ta
 
     return Frame_Scrollable_Area
 
-def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int, Top_middle_point: list, Fixed: bool, Always_on_Top: bool) -> CTkToplevel:
+def Get_Pop_up_window(Configuration:dict, title: str, max_width: int, max_height: int, Top_middle_point: list, Fixed: bool, Always_on_Top: bool) -> CTkToplevel:
     def drag_win():
         x = Pop_Up_Window.winfo_pointerx() - Pop_Up_Window._offsetx
         y = Pop_Up_Window.winfo_pointery() - Pop_Up_Window._offsety
@@ -294,6 +329,7 @@ def Get_Pop_up_window(Configuration:dict, title: str, width: int, height: int, T
     left_position = Top_middle_point[0]
     top_position = Top_middle_point[1]
     Pop_Up_Window.geometry("+%d+%d" % (left_position, top_position))
+    Pop_Up_Window.maxsize(width=max_width, height=max_height)
 
     #Pop_Up_Window.geometry(f"{width}x{height}")
     Pop_Up_Window.bind(sequence="<Escape>", func=lambda event: Pop_Up_Window.destroy())
@@ -324,7 +360,7 @@ def My_Dialog_Window(Settings: dict, Configuration:dict, Clicked_on_Button: CTkB
 
     Dialog_Window_geometry = (width, height)
     Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Dialog_Window_geometry[0])
-    Dialog_Window = Get_Pop_up_window(Configuration=Configuration, title=title,  width=Dialog_Window_geometry[0], height=Dialog_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed, Always_on_Top=False)
+    Dialog_Window = Get_Pop_up_window(Configuration=Configuration, title=title, max_width=Dialog_Window_geometry[0], max_height=Dialog_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed, Always_on_Top=False)
 
     # Frame - General
     Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Dialog_Window, Name=title, Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip=tooltip, GUI_Level_ID=GUI_Level_ID)
@@ -381,6 +417,8 @@ def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Cli
         date_entry.configure(state='normal')
         date_entry.delete(0, 30)
         date_entry.insert(0, selected_date.strftime(Date_format))
+        date_entry.focus_force()
+        pyautogui.press("tab") 
         Picker_window.destroy()
 
     def build_calendar(Shown_Month: int, Shown_Year: int) -> None:
@@ -434,7 +472,7 @@ def My_Date_Picker(Settings: dict, Configuration:dict, date_entry: CTkEntry, Cli
 
     Picker_window_geometry = (width, height)
     Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on_Button, New_Window_width=Picker_window_geometry[0])
-    Picker_window = Get_Pop_up_window(Configuration=Configuration, title="Date Picker", width=Picker_window_geometry[0], height=Picker_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed, Always_on_Top=False)
+    Picker_window = Get_Pop_up_window(Configuration=Configuration, title="Date Picker", max_width=Picker_window_geometry[0], max_height=Picker_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=Fixed, Always_on_Top=False)
 
     # Frame - General
     Frame_Main = Get_Widget_Frame(Configuration=Configuration, Frame=Picker_window, Name="Date Picker", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Select date from calendar", GUI_Level_ID=GUI_Level_ID + 1)

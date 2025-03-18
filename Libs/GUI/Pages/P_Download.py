@@ -1,5 +1,6 @@
 # Import Libraries
 from datetime import datetime
+import threading
 
 from customtkinter import CTk, CTkFrame, StringVar, CTkEntry, CTkProgressBar, CTkLabel
 
@@ -140,8 +141,9 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
-            
+            task_thread = threading.Thread(target=Process.Download_and_Process, args=(Settings, Configuration, window, Progress_Bar, Progress_text, Download_Date_Range_Source, Download_Data_Source, SP_Date_From_Method, SP_Date_To_Method, SP_Man_Date_To, SP_Password, Exchange_Password, Input_Start_Date, Input_End_Date))
+            task_thread.start()
+
             # Save into Settings --> to be displayed on Dashboard later 
             Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
             Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
@@ -191,7 +193,8 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.Pre_Periods_Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password, Download_Periods=Download_Periods)
+            task_thread = threading.Thread(target=Process.Pre_Periods_Download_and_Process, args=(Settings, Configuration, window, Progress_Bar, Progress_text, SP_Password, Download_Periods))
+            task_thread.start()
 
             # Save into Settings --> to be displayed on Dashboard later 
             Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
@@ -216,7 +219,8 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
         # -------------- Download  -------------- #
         if Can_Download == True:
-            Process.My_Team_Download_and_Process(Settings=Settings, Configuration=Configuration, window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, SP_Password=SP_Password)
+            task_thread = threading.Thread(target=Process.My_Team_Download_and_Process, args=(Settings, Configuration, window, Progress_Bar, Progress_text, SP_Password))
+            task_thread.start()
 
             # Save into Settings --> to be displayed on Dashboard later 
             Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)

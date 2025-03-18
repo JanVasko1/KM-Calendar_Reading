@@ -43,7 +43,7 @@ def Get_Header(Settings: dict, Configuration: dict, Frame: CTkFrame) -> CTkFrame
         # TopUp Window
         Version_List_Window_geometry = (2000, 800)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on, New_Window_width=Version_List_Window_geometry[0])
-        Version_List_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Version List", width=Version_List_Window_geometry[0], height=Version_List_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=True, Always_on_Top=False)
+        Version_List_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Version List", max_width=Version_List_Window_geometry[0], max_height=Version_List_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=True, Always_on_Top=False)
 
          # Get Theme --> because of background color
         Current_Theme = CustomTkinter_Functions.Get_Current_Theme() 
@@ -118,7 +118,7 @@ def Get_Header(Settings: dict, Configuration: dict, Frame: CTkFrame) -> CTkFrame
         
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=2)
         Frame_Body.configure(bg_color = "#000001")
@@ -135,7 +135,7 @@ def Get_Header(Settings: dict, Configuration: dict, Frame: CTkFrame) -> CTkFrame
     # ------------------------- Main Functions -------------------------#
     # Authorization OAuth2 Flag
     try:
-        Auth_Result = Exchange_OAuth_Test(Configuration=Configuration)
+        Auth_Result = Exchange_OAuth_Test()
     except:
         Auth_Result = False
     Auth_Result_Variable = IntVar(master=Frame, value=Auth_Result, name="Auth_Result_Variable")

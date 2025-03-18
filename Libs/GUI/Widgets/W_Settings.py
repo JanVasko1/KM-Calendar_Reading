@@ -196,7 +196,7 @@ def Settings_General_Appearance(Settings: dict, Configuration: dict, Frame: CTk|
 
         Import_window_geometry = (300, 250)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Clicked_on, New_Window_width=Import_window_geometry[0])
-        Color_Picker_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Color Picker", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=True, Always_on_Top=False)
+        Color_Picker_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Color Picker", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=True, Always_on_Top=False)
         Color_Picker_window.bind(sequence="<Escape>", func=lambda event: Quit_Save(Helper=Helper))
 
         # Frame - General
@@ -1275,7 +1275,7 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, Frame: CTk
         
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Skip, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=GUI_Level_ID + 1)
         Frame_Body.configure(bg_color = "#000001")
@@ -1458,7 +1458,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         # TopUp Window
         Delete_One_Window_geometry = (510, 260)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Empty_Del_One_Var, New_Window_width=Delete_One_Window_geometry[0])
-        Delete_One_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=Delete_One_Window_geometry[0], height=Delete_One_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
+        Delete_One_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Delete one line", max_width=Delete_One_Window_geometry[0], max_height=Delete_One_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_One_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.", GUI_Level_ID=GUI_Level_ID + 1)
@@ -1568,7 +1568,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
 
         Recalculate_window_geometry = (510, Recalculate_window_height)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Empty_Recalculate_Var, New_Window_width=Recalculate_window_geometry[0])
-        Recalculate_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Recalculate", width=Recalculate_window_geometry[0], height=Recalculate_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
+        Recalculate_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Recalculate", max_width=Recalculate_window_geometry[0], max_height=Recalculate_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Recalculate_window, Name="Recalculate coverage", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Helps to recalculate Coverage percentage so sum is equal 100", GUI_Level_ID=GUI_Level_ID + 1)
@@ -1612,7 +1612,7 @@ def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, Frame: 
         
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Empty, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=GUI_Level_ID + 1)
         Frame_Body.configure(bg_color = "#000001")
@@ -1872,7 +1872,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
         # TopUp Window
         Delete_Scheduled_Window_geometry = (510, 400)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Schedule_Del_One_Var, New_Window_width=Delete_Scheduled_Window_geometry[0])
-        Delete_Scheduled_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one scheduled line", width=Delete_Scheduled_Window_geometry[0], height=Delete_Scheduled_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
+        Delete_Scheduled_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Delete one scheduled line", max_width=Delete_Scheduled_Window_geometry[0], max_height=Delete_Scheduled_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Scheduled_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.", GUI_Level_ID=GUI_Level_ID + 1)
@@ -1942,7 +1942,7 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, Frame: C
         
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Scheduler, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=GUI_Level_ID + 1)
         Frame_Body.configure(bg_color = "#000001")
@@ -2244,7 +2244,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         # TopUp Window
         Delete_AutoFill_Window_geometry = (510, 260)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_AutoFill_Del_One_Var, New_Window_width=Delete_AutoFill_Window_geometry[0])
-        Delete_AutoFill_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one line", width=Delete_AutoFill_Window_geometry[0], height=Delete_AutoFill_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
+        Delete_AutoFill_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Delete one line", max_width=Delete_AutoFill_Window_geometry[0], max_height=Delete_AutoFill_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_AutoFill_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.", GUI_Level_ID=GUI_Level_ID + 1)
@@ -2308,7 +2308,7 @@ def Settings_Events_AutoFill(Settings: dict, Configuration: dict, Frame: CTk|CTk
         
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_AutoFill, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=GUI_Level_ID + 1)
         Frame_Body.configure(bg_color = "#000001")
@@ -2521,7 +2521,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
         # TopUp Window
         Delete_Activity_Correct_Window_geometry = (510, 250)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Activity_Cor_Del_One_Var, New_Window_width=Delete_Activity_Correct_Window_geometry[0])
-        Delete_Activity_Correct_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one Activity", width=Delete_Activity_Correct_Window_geometry[0], height=Delete_Activity_Correct_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
+        Delete_Activity_Correct_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Delete one Activity", max_width=Delete_Activity_Correct_Window_geometry[0], max_height=Delete_Activity_Correct_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Activity_Correct_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.", GUI_Level_ID=GUI_Level_ID + 1)
@@ -2583,7 +2583,7 @@ def Settings_Events_Activity_Correction(Settings: dict, Configuration: dict, Fra
 
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Activity_Correct, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=GUI_Level_ID + 1)
         Frame_Body.configure(bg_color = "#000001")
@@ -2788,7 +2788,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame, G
         # TopUp Window
         Delete_Managed_User_Window_geometry = (510, 250)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_MT_Del_One_Var, New_Window_width=Delete_Managed_User_Window_geometry[0])
-        Delete_Managed_User_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration ,title="Delete one User", width=Delete_Managed_User_Window_geometry[0], height=Delete_Managed_User_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
+        Delete_Managed_User_Window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Delete one User", max_width=Delete_Managed_User_Window_geometry[0], max_height=Delete_Managed_User_Window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=False)
 
         # Frame - General
         Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Delete_Managed_User_Window, Name="Delete Line", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="To delete one line from table.", GUI_Level_ID=GUI_Level_ID + 1)
@@ -2851,7 +2851,7 @@ def Settings_My_Team(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame, G
 
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_MT, New_Window_width=Import_window_geometry[0])
-        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", width=Import_window_geometry[0], height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
+        Import_window = Elements_Groups.Get_Pop_up_window(Configuration=Configuration, title="Drop file", max_width=Import_window_geometry[0], max_height=Import_window_geometry[1], Top_middle_point=Top_middle_point, Fixed=False, Always_on_Top=True)
 
         Frame_Body = Elements.Get_Frame(Configuration=Configuration, Frame=Import_window, Frame_Size="Import_Drop", GUI_Level_ID=GUI_Level_ID + 1)
         Frame_Body.configure(bg_color = "#000001")

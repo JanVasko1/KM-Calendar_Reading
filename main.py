@@ -1,5 +1,4 @@
 # BUG --> Outlook Client
-# BUG --> flickering cause slow program and some times also non updating the not updating the 
 # TODO --> Forecast according Calendar only when Start / End date is missing in CAlendar
 # TODO --> Show project list and Activity list somewhere
 
@@ -9,8 +8,6 @@ import os
 from customtkinter import CTk, set_appearance_mode, deactivate_automatic_dpi_awareness
 import pywinstyles
 
-import Libs.GUI.Pages.P_Header as P_Header
-import Libs.GUI.Pages.P_Side_Bar as P_Side_Bar
 import Libs.GUI.Elements as Elements
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -72,6 +69,15 @@ if __name__ == "__main__":
         os.mkdir(Data_Functions.Absolute_path(relative_path=f"Operational\\History\\"))
     except:
         pass
+    try:
+        # Crate authentication file if not exists
+        File_Exists = os.path.isfile(path=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Authorization.pkl"))
+        if File_Exists == True:
+            pass
+        else:
+            Defaults_Lists.Create_Azure_Auth()
+    except:
+        pass
 
     window = Win()
     
@@ -80,6 +86,8 @@ if __name__ == "__main__":
     pywinstyles.apply_style(window=window, style="normal")
 
     # ---------------------------------- Content ----------------------------------#
+    import Libs.GUI.Pages.P_Header as P_Header
+    import Libs.GUI.Pages.P_Side_Bar as P_Side_Bar
     # Background
     Frame_Background = Elements.Get_Frame(Configuration=Configuration, Frame=window, Frame_Size="Background", GUI_Level_ID=0)
     Frame_Background.pack(side="top", fill="none", expand=False)

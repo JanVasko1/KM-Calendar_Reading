@@ -47,6 +47,17 @@ def Busy_Status_Priorities_List() -> list[str]:
     Busy_Statuses_Priorities = ["Busy", "Working elsewhere", "Tentative", "Free", "Out of Office"]
     return Busy_Statuses_Priorities
 
+# --------------------------------------------- OAuth2 --------------------------------------------- #
+def Create_Azure_Auth() -> None:
+    Auth_Data = {
+        "Display_name": "", 
+        "client_id": "", 
+        "object_id": "0dc98f9d-26eb-4085-8a26-0d1d8abd21e1", 
+        "tenant_id": "17f69c66-2114-4826-9fb1-6e496607aebc", 
+        "client_secret": ""}
+    with open(file=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Authorization.pkl"), mode="wb") as Authorization:
+        pickle.dump(obj=Auth_Data, file=Authorization)
+
 def Load_Azure_Auth() -> list[str, str, str]:
     with open(file=Data_Functions.Absolute_path(relative_path=f"Libs\\Download\\Authorization.pkl"), mode="rb") as Authorization:
         Aut_Data = pickle.load(Authorization)

@@ -76,11 +76,11 @@ def Exchange_OAuth(Settings: dict, Configuration: dict, Exchange_Password: str) 
     User_Email = Settings["0"]["General"]["User"]["Email"]
 
     if not client_id:
-        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_id found. Check your Settings.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     if not client_secret:
-        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_secret found. Check your Settings.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     if not tenant_id:
-        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No tenant_id found. Check your Settings.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
     # OAuth2 authentication at KM Azure
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
@@ -97,15 +97,8 @@ def Exchange_OAuth(Settings: dict, Configuration: dict, Exchange_Password: str) 
 
     return access_token
 
-def Exchange_OAuth_Test(Configuration: dict) -> str:
+def Exchange_OAuth_Test() -> str:
     try:
-        if not client_id:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-        if not client_secret:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No client_secret found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-        if not tenant_id:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"No tenant_id found. Check your .env file.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-
         # OAuth2 authentication at KM Azure
         url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
         payload = {
