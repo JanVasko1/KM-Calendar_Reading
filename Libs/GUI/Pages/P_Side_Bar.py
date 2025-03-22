@@ -27,7 +27,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         # Find
         for widget in Pre_Working_Frame.winfo_children():
             widget.destroy()
-            window.update_idletasks()
 
     def Show_Download_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Download as P_Download
@@ -35,7 +34,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="e")
         time.sleep(0.1)
         P_Download.Page_Download(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
-        window.update_idletasks()
 
     def Show_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_DashBoard as P_DashBoard
@@ -43,7 +41,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         P_DashBoard.Page_Dashboard(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
-        window.update_idletasks()
 
     def Show_Team_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_My_Team as P_My_Team
@@ -51,7 +48,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         P_My_Team.Page_User_Dashboard(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
-        window.update_idletasks()
 
     def Show_Data_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Data as P_Data
@@ -59,7 +55,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         P_Data.Page_Data(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
-        window.update_idletasks()
 
     def Show_Information_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Information as P_Information
@@ -67,7 +62,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         P_Information.Page_Information(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
-        window.update_idletasks()
 
     def Show_Settings_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Settings as P_Settings
@@ -75,7 +69,6 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
         time.sleep(0.1)
         P_Settings.Page_Settings(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
-        window.update_idletasks()
 
     # ------------------------- Main Functions -------------------------#
     Active_Window = Elements.Get_Frame(Configuration=Configuration, Frame=Side_Bar_Frame, Frame_Size="SideBar_active")

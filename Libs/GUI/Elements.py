@@ -2,7 +2,7 @@
 from PIL import Image
 from datetime import datetime
 
-from customtkinter import CTkButton, CTk, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkComboBox, get_appearance_mode
+from customtkinter import CTk, CTkButton, CTkFrame, CTkScrollableFrame, CTkEntry, CTkLabel, CTkFont, CTkImage, CTkRadioButton, CTkTabview, CTkOptionMenu, CTkCheckBox, CTkProgressBar, CTkInputDialog, CTkComboBox, get_appearance_mode
 from CTkTable import CTkTable
 from CTkColorPicker import CTkColorPicker
 from CTkToolTip import CTkToolTip
@@ -1004,7 +1004,7 @@ def Get_ToolTip(Configuration:dict, widget: any, message: str, ToolTip_Size, GUI
         padding = tuple(Configuration_ToolTip["padding"]))
     return ToolTip
 
-def Get_MessageBox(Configuration:dict, title: str, message: str, icon: str, fade_in_duration: int, GUI_Level_ID: int, option_1: str = "OK", option_2: str|None = None, option_3: str|None = None) -> None:
+def Get_MessageBox(Configuration:dict, title: str, message: str, icon: str, fade_in_duration: int, GUI_Level_ID: int, option_1: str = "OK", option_2: str|None = None, option_3: str|None = None, window: CTk|None = None) -> None:
     Button_Normal = Configuration["Buttons"]["Small"]
     Label_Title_Label = Configuration["Labels"]["Field_Label"]
     if title == "Error":
@@ -1020,6 +1020,7 @@ def Get_MessageBox(Configuration:dict, title: str, message: str, icon: str, fade
     bg_color = tuple(Configuration["Global_Appearance"]["GUI_Level_ID"][f"{GUI_Level_ID - 1}"]["fg_color"])
 
     MessageBox = CTkMessagebox(
+        master=window,
         title = title,
         message = message,
         font = Get_Font(Configuration=Configuration, Font_Size="Field_Label"),

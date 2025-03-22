@@ -10,6 +10,7 @@
     * Download past Period
     * Download for My Team
 - Better Authorization secure
+- Slight application speed-up
 
 ##### 1.1.1
 - Re-distribute local libraries to separate files to speed-up 
