@@ -70,7 +70,7 @@ def Download_Events(Settings: dict, Configuration: dict, Download_Date_Range_Sou
             mask1 = Events_Registered_df["Personnel number"] == User_ID
             mask2 = Events_Registered_df["Activity description"] != "User included in TimeSpent"
             mask3 = Events_Registered_df["Date"] != "=Utilization!$G$2"
-            Events_Registered_df = Events_Registered_df[mask1 & mask2 & mask3]
+            Events_Registered_df = DataFrame(Events_Registered_df[mask1 & mask2 & mask3])
 
             # Dates/Time correct
             # Date

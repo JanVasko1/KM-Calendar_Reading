@@ -216,7 +216,7 @@ def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: st
         KM_Day_Utilization = 0
 
         mask =  Events_WeekDays_GR["WeekDay"] == WeekDay
-        Filtered_Df = Events_WeekDays_GR[mask]
+        Filtered_Df = DataFrame(Events_WeekDays_GR[mask])
 
         if Filtered_Df.empty:
             pass
@@ -313,7 +313,7 @@ def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: st
         mask1 =  Events_Weeks_GR["Week"] == Week
         mask2 =  Events_Weeks_GR["WeekDay"] != "Saturday"
         mask3 =  Events_Weeks_GR["WeekDay"] != "Sunday"
-        Filtered_Df = Events_Weeks_GR[mask1]
+        Filtered_Df = DataFrame(Events_Weeks_GR[mask1])
 
         if Filtered_Df.empty:
             pass

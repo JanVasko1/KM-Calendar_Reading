@@ -249,19 +249,19 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
 
         for Day in Days_List:
             mask1 = Events["Start_Date"] == Day
-            Day_Events_df = Events.loc[mask1]
+            Day_Events_df = DataFrame(Events.loc[mask1])
 
             # Define Conflict within the day
             Day_Events_df = Find_Conflict_in_DF(Check_DF=Day_Events_df)
 
             # Add non-Conflict to Cumulated
             mask1 = Day_Events_df["Conflict"] == False
-            Non_Conflict_df = Day_Events_df.loc[mask1]
+            Non_Conflict_df = DataFrame(Day_Events_df.loc[mask1])
             Cumulated_Events = concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
             
             # Splitting --> done only for Events within same Busy_Status_Priorities_List
             mask1 = Day_Events_df["Conflict"] == True
-            Conflict_df = Day_Events_df.loc[mask1]
+            Conflict_df = DataFrame(Day_Events_df.loc[mask1])
 
             if Conflict_df.empty:
                 pass
@@ -331,12 +331,12 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                 # ------------------------------ Conflict_df update after Function ------------------------------ #
                 # Add non-Conflict to Cumulated --> might be changed as previous function change it
                 mask1 = Conflict_df["Conflict"] == False
-                Non_Conflict_df = Conflict_df.loc[mask1]
+                Non_Conflict_df = DataFrame(Conflict_df.loc[mask1])
                 Cumulated_Events = concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
 
                 # Update Conflict_df
                 mask1 = Conflict_df["Conflict"] == True
-                Conflict_df = Conflict_df.loc[mask1]
+                Conflict_df = DataFrame(Conflict_df.loc[mask1])
 
                 # ------------------------------ Parallel Events Handler ------------------------------ #
                 while True:
@@ -356,12 +356,12 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
                         Conflict_df = Find_Conflict_in_DF(Check_DF=Conflict_df)
 
                         mask1 = Conflict_df["Conflict"] == False
-                        Non_Conflict_df = Conflict_df.loc[mask1]
+                        Non_Conflict_df = DataFrame(Conflict_df.loc[mask1])
                         Cumulated_Events = concat(objs=[Cumulated_Events, Non_Conflict_df], axis=0)
 
                         # Update Conflict_df
                         mask1 = Conflict_df["Conflict"] == True
-                        Conflict_df = Conflict_df.loc[mask1]
+                        Conflict_df = DataFrame(Conflict_df.loc[mask1])
                                     
             # Delete variables
             del Non_Conflict_df, Conflict_df, Day_Events_df
@@ -371,7 +371,7 @@ def Parallel_Events(Settings: dict, Events: DataFrame):
 
         # Get Rid of Duration = 0
         mask = Cumulated_Events["Duration"] == 0
-        Cumulated_Events = Cumulated_Events[~mask]
+        Cumulated_Events = DataFrame(Cumulated_Events[~mask])
 
         return Cumulated_Events
 

@@ -132,7 +132,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
 
     for Day in Days_List:
         mask1 = Events["Start_Date"] == Day
-        Day_Events_df = Events.loc[mask1]
+        Day_Events_df = DataFrame(Events.loc[mask1])
 
         # Sorting
         Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -193,7 +193,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             mask2 = Day_Events_df["All_Day_Event"] == False
             mask3 = Day_Events_df["Subject"] != Day_Start_Subject
             mask4 = Day_Events_df["Subject"] != Day_End_Subject
-            General_Empty_df = Day_Events_df.loc[mask1 & mask2 & mask3 & mask4]
+            General_Empty_df = DataFrame(Day_Events_df.loc[mask1 & mask2 & mask3 & mask4])
 
             # Fill between events
             General_Empty_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=General_Empty_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
@@ -235,7 +235,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             mask1 = Day_Events_df["Subject"] != Day_Start_Subject
             mask2 = Day_Events_df["Subject"] != Day_End_Subject
             mask3 = Day_Events_df["Within_Working_Hours"] == True
-            General_Empty_df = Day_Events_df.loc[mask1 & mask2 & mask3]
+            General_Empty_df = DataFrame(Day_Events_df.loc[mask1 & mask2 & mask3])
 
             Event_Over = False
             Events_Start_Times_list = []
@@ -276,7 +276,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
             mask1 = Day_Events_df["Subject"] != Day_Start_Subject
             mask2 = Day_Events_df["Subject"] != Day_End_Subject
             mask3 = Day_Events_df["Within_Working_Hours"] == True
-            General_Empty_df = Day_Events_df.loc[mask1 & mask2 & mask3]
+            General_Empty_df = DataFrame(Day_Events_df.loc[mask1 & mask2 & mask3])
 
             Event_Over = False
             Events_End_Times_list = []
@@ -340,14 +340,14 @@ def Fill_Events_Coverage(Settings: dict, Configuration: dict, Events: DataFrame)
     if sum(Fill_Event_cover_list) == 100:
         # Get only Fill Events --> Dataframe preparation
         mask = Events["Event_Empty_Insert"] == True
-        Fill_Empty_Df = Events[mask]
+        Fill_Empty_Df = DataFrame(Events[mask])
         Duration_Total = sum(Fill_Empty_Df["Duration"])
 
         mask = Fill_Empty_Df["Event_Empty_Method"] == "Scheduled"
-        Scheduled_df = Fill_Empty_Df[mask]
+        Scheduled_df = DataFrame(Fill_Empty_Df[mask])
 
         mask = Fill_Empty_Df["Event_Empty_Method"] == "General"
-        General_df = Fill_Empty_Df[mask]
+        General_df = DataFrame(Fill_Empty_Df[mask])
         del Fill_Empty_Df
 
         # Count Minutes per Coverage from Duration Total
@@ -385,7 +385,7 @@ def Fill_Events_Coverage(Settings: dict, Configuration: dict, Events: DataFrame)
             # Find maximal Duration in the DF + list of index containing this maximal duration
             Max_General_Duration = max(General_df["Duration"])
             mask = General_df["Duration"] == Max_General_Duration
-            General_Sub_df = General_df[mask]
+            General_Sub_df = DataFrame(General_df[mask])
 
             # Random choice from list of index
             while True:

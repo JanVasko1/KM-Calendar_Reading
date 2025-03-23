@@ -150,11 +150,11 @@ def Empty_Split_Events(Settings: dict, Configuration: dict, Events: DataFrame):
 
         # Define events to be splitted DF
         mask1 = Events["Empty_Split"] == True
-        Events_to_Split_df = Events.loc[mask1]
+        Events_to_Split_df = DataFrame(Events.loc[mask1])
 
         # Add non-Conflict to Cumulated
         mask1 = Events["Empty_Split"] == False
-        Non_Split_df = Events.loc[mask1]
+        Non_Split_df = DataFrame(Events.loc[mask1])
         Cumulated_Events = concat(objs=[Cumulated_Events, Non_Split_df], axis=0, ignore_index=True)
 
         if Events_to_Split_df.empty:

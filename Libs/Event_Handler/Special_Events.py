@@ -18,7 +18,7 @@ def Delete_Event_during_KM_Calendar(Dataframe: DataFrame, Event_Day: str, KM_Sta
     mask3 = Dataframe["Start_Time"] <= KM_End_Time_dt
     mask4 = Dataframe["End_Time"] >= KM_Start_Time_dt
     mask5 = Dataframe["End_Time"] <= KM_End_Time_dt
-    To_Delete_df = Dataframe.loc[mask1 & mask2 & mask3 &mask4 & mask5]
+    To_Delete_df = DataFrame(Dataframe.loc[mask1 & mask2 & mask3 &mask4 & mask5])
     Event_Indexes = To_Delete_df.index.values.tolist() 
     Event_Indexes.remove(Vacation_Index)
 
@@ -41,13 +41,13 @@ def Subtract_Parallel_Events(Events: DataFrame, Event_Search_Text: str) -> DataF
 
     for Day in Days_List:
         mask1 = Events["Start_Date"] == Day
-        Day_Events_df = Events.loc[mask1]
+        Day_Events_df = DataFrame(Events.loc[mask1])
         Day_Events_df = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Day_Events_df, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
         
         # Get Lunch Conflict
         Day_Events_df = Parallel_Events.Find_Conflict_in_DF(Check_DF=Day_Events_df)
         mask1 = Day_Events_df["Subject"] == Event_Search_Text
-        Filtered_df = Day_Events_df.loc[mask1]
+        Filtered_df = DataFrame(Day_Events_df.loc[mask1])
 
         # Test if there is Lunch within Day
         try:
@@ -192,7 +192,7 @@ def Private(Settings: dict, Events: DataFrame) -> DataFrame:
             return Cumulated_Events
         elif Private_Details["Method"] == "Just delete Private":
             mask = Events["Subject"] == Private_Details["Search_Text"]
-            Events_Subtracted = Events[~mask]
+            Events_Subtracted = DataFrame(Events[~mask])
             return Events_Subtracted
         else:
             pass

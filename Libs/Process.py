@@ -207,7 +207,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
 
             mask1 = Events_Month_df["Personnel number"] == User_ID
             mask2 = Events_Month_df["Activity description"] != "User included in TimeSpent"
-            Events_Month_df = Events_Month_df[mask1 & mask2]
+            Events_Month_df = DataFrame(Events_Month_df[mask1 & mask2])
             Events_History_df = concat(objs=[Events_History_df, Events_Month_df], axis=0)
         else:
             Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
@@ -286,7 +286,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
 
             mask1 = Events_Member_df["Activity description"] != "User included in TimeSpent"
             mask2 = Events_Member_df["Personnel number"] != "None"
-            Events_Member_df = Events_Member_df[mask1 & mask2]
+            Events_Member_df = DataFrame(Events_Member_df[mask1 & mask2])
         else:
             Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
@@ -326,7 +326,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
         Member_df = read_csv(filepath_or_buffer=Data_Functions.Absolute_path(relative_path=f"Operational\\My_Team\\{Team_Member_team}.csv"), sep=";", header=0)
         mask1 = Member_df["Personnel number"] == Team_Member_ID
         mask2 = Member_df["Activity description"] != "User included in TimeSpent"
-        Member_df = Member_df[mask1 & mask2]
+        Member_df = DataFrame(Member_df[mask1 & mask2])
 
         # ----------------------- Summary Dataframe ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 

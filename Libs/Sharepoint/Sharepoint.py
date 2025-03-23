@@ -186,7 +186,7 @@ def Get_Activity(Settings: dict) -> None:
     Counter = 0
     for Project_Type in Project_Type_list:
         mask =  Activities_df["Project_Type"] == Project_Type
-        Filtered_Df = Activities_df[mask]
+        Filtered_Df = DataFrame(Activities_df[mask])
         Activity_by_Type_list = Filtered_Df["Activity"].to_list()
         Activity_by_Type_list.sort()
 
