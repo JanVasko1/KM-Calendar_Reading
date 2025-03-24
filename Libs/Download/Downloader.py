@@ -2,7 +2,6 @@
 from pandas import DataFrame as DataFrame
 from datetime import datetime, timedelta
 
-import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Download.Exchange as Exchange
 import Libs.Sharepoint.Authentication as Authentication
 import Libs.Sharepoint.Sharepoint as Sharepoint
@@ -184,9 +183,7 @@ def Download_Events(Settings: dict, Configuration: dict, Download_Date_Range_Sou
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Something went wrong, try again.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     # Engine selection
     if Download_canceled == False:
-        if Download_Data_Source == "Outlook_Client":
-            Events = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
-        elif Download_Data_Source == "Exchange":
+        if Download_Data_Source == "Exchange":
             Events = Exchange.Download_Events(Settings=Settings, Configuration=Configuration, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date, Exchange_Password=Exchange_Password) 
         else:
             Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Download source is not supported (Outlook_Client, API_Exchange_server), current is {Download_Data_Source}", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)

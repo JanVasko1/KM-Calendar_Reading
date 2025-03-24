@@ -285,12 +285,8 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
-    Outlook_Widget = W_Download.Download_Outlook(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
-    Outlook_Usage_Var = Outlook_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-
     # Disabling fields --> Download_Data_Source
     Exchange_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
-    Outlook_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
 
     # Download button
     Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Label_Size="H1", Font_Size="H1")
@@ -369,7 +365,6 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     Manual_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     Exchange_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Outlook_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     
     TabView_Past.pack(side="left", fill="y", expand=False, padx=10, pady=10)

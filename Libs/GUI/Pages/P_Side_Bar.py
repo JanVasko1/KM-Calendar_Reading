@@ -32,42 +32,36 @@ def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Ar
         import Libs.GUI.Pages.P_Download as P_Download
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="e")
-        time.sleep(0.1)
         P_Download.Page_Download(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
 
     def Show_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_DashBoard as P_DashBoard
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        time.sleep(0.1)
         P_DashBoard.Page_Dashboard(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
 
     def Show_Team_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_My_Team as P_My_Team
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        time.sleep(0.1)
         P_My_Team.Page_User_Dashboard(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
 
     def Show_Data_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Data as P_Data
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        time.sleep(0.1)
         P_Data.Page_Data(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
 
     def Show_Information_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Information as P_Information
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        time.sleep(0.1)
         P_Information.Page_Information(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
 
     def Show_Settings_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
         import Libs.GUI.Pages.P_Settings as P_Settings
         Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
         Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        time.sleep(0.1)
         P_Settings.Page_Settings(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
 
     # ------------------------- Main Functions -------------------------#

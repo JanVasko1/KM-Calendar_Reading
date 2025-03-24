@@ -4,6 +4,10 @@
 **Mobile**: +420 601 383 301<br>
 
 ### Version List
+##### 1.2.0
+- Python upgrade to 3.13.2
+- significant space reduce
+
 ##### 1.1.2
 - threading implemented for all major processes of Download and process 
     * Download current 

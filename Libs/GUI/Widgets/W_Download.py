@@ -65,7 +65,7 @@ def Download_Sharepoint(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame,
     SP_Date_To_Option_Var.configure(variable=SP_Date_To_Variable)
 
     # Field - Manual Date To
-    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="Entry_DropDown", Validation="Date") 
+    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="Date_Picker", Validation="Date") 
     SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
     Button_SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
     SM_Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
@@ -100,7 +100,7 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
     Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
 
     # Field - Date From
-    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Entry_DropDown", Validation="Date") 
+    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Date_Picker", Validation="Date") 
     Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
     Button_Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkbutton"]
     Man_Date_From_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
@@ -108,7 +108,7 @@ def Download_Manual(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Dow
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Man_Date_From_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
 
     # Field - Date To
-    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Entry_DropDown", Validation="Date")
+    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Date_Picker", Validation="Date")
     Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
     Button_Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
     Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
@@ -150,33 +150,6 @@ def Download_Exchange(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, D
     Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
-
-
-
-def Download_Outlook(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Download_Data_Source: StringVar, GUI_Level_ID: int|None = None) -> CTkFrame:
-    User_Email = Settings["0"]["General"]["User"]["Email"]
-
-    # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Outlook Classic Client", Additional_Text="Must be updated before download", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Windows installation of Outlook Classic client.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Use
-    Use_Outlook_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Outlook_Client") 
-    Use_Outlook_Frame_Var = Use_Outlook_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Outlook_Frame_Var.configure(text="", variable=Download_Data_Source)
-
-    # Field - User ID
-    Out_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Out_Email_Frame_Var = Out_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Out_Email_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
-    Out_Email_Frame_Var.configure(state="disabled")
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
 
 def Per_Period_Selection(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
     Today = datetime.now()

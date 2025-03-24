@@ -3,7 +3,6 @@ from pandas import DataFrame as DataFrame
 import requests
 from datetime import datetime
 
-import Libs.Download.Outlook_Client as Outlook_Client
 import Libs.Defaults_Lists as Defaults_Lists
 import Libs.GUI.Elements as Elements
 import Libs.Download.Downloader_Helpers as Downloader_Helpers
@@ -158,11 +157,9 @@ def Download_Events(Settings: dict, Configuration: dict, Input_Start_Date_dt: da
     elif events_response.status_code == 503:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), Exchange is temporary unavailable, try few moments later.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         Events_downloaded = {}
-        Events_Process_df = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
     else:
         Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Not possible to download from Exchange (Response Code: {events_response.status_code}), will try to download from Outlook Classic Client.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         Events_downloaded = {}
-        Events_Process_df = Outlook_Client.Download_Events(Settings=Settings, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt, Filter_Start_Date=Filter_Start_Date, Filter_End_Date=Filter_End_Date) 
 
     # Crop edge dates as they were added in previous step
     Events_Process = Downloader_Helpers.Crop_edge_days_Events(Settings=Settings, Events_downloaded=Events_downloaded, Input_Start_Date_dt=Input_Start_Date_dt, Input_End_Date_dt=Input_End_Date_dt)

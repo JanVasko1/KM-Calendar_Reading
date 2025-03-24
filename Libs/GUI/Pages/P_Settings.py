@@ -5,11 +5,7 @@ from customtkinter import CTk, CTkFrame, CTkButton
 import pywinstyles
 
 import Libs.GUI.Widgets.W_Settings as W_Settings
-import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
-import Libs.Data_Functions as Data_Functions
-import Libs.CustomTkinter_Functions as CustomTkinter_Functions
-import Libs.File_Manipulation as File_Manipulation
 
 def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFrame):
     User_Type = Settings["0"]["General"]["User"]["User_Type"]
