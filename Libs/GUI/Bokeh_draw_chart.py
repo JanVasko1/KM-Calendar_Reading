@@ -320,17 +320,16 @@ def Chart_General_Setup(Chart, Chart_Area_Properties, Grid_properties, X_Axis_Pr
         from bokeh.models import HoverTool
 
         for i in range(0, ToolTip_list_count):
-            exec(f"""Hover_Tool{i} = HoverTool()""")
-            exec(f"""Hover_Tool{i}.tooltips = ToolTip_list[i]""")
-            exec(f"""Hover_Tool{i}.muted_policy = Tool_Properties.iloc[0]["HoverTool_mute_policy"]""")
-            #exec(f"""Hover_Tool{i}.tooltips.backgroundColor = Chart_Area_Properties.iloc[0]["Background_Color"]""")
-            exec(f"""Hover_Tool{i}.formatters = ToolTip_Format""")
+            Hover_Tool = HoverTool()
+            Hover_Tool.tooltips = ToolTip_list[i]
+            Hover_Tool.muted_policy = Tool_Properties.iloc[0]["HoverTool_mute_policy"]
+            Hover_Tool.formatters = ToolTip_Format
             if Tool_Properties.iloc[0]["HoverTool_mode"] != "":
-                exec(f"""Hover_Tool{i}.mode = Tool_Properties.iloc[0]["HoverTool_mode"]""")
+                Hover_Tool.mode = Tool_Properties.iloc[0]["HoverTool_mode"]
             else:
                 pass
-            exec(f"""Chart.add_tools(Hover_Tool{i})""")
-            exec(f"""Active_Inspect_list.append(Hover_Tool{i})""")
+            Chart.add_tools(Hover_Tool)
+            Active_Inspect_list.append(Hover_Tool)
     else:
         pass
 
