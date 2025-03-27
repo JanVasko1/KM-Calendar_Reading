@@ -1,168 +1,196 @@
 # Import Libraries
-import time
-
 from customtkinter import CTk, CTkFrame
 
 import Libs.Defaults_Lists as Defaults_Lists
+import Libs.GUI.Pages.P_Download as P_Download
+import Libs.GUI.Pages.P_DashBoard as P_DashBoard
+import Libs.GUI.Pages.P_My_Team as P_My_Team
+import Libs.GUI.Pages.P_Data as P_Data
+import Libs.GUI.Pages.P_Information as P_Information
+import Libs.GUI.Pages.P_Settings as P_Settings
 
 import Libs.GUI.Elements as Elements
+class SidebarApp:
+    def __init__(self, Side_Bar_Frame: CTkFrame, Settings: dict, Configuration: dict, window: CTk, Frame_Work_Area_Main: CTkFrame):
+        self.Side_Bar_Frame = Side_Bar_Frame
+        self.Settings = Settings
+        self.Configuration = Configuration
+        self.window = window
+        self.Frame_Work_Area_Main = Frame_Work_Area_Main
 
-def Get_Side_Bar(Settings: dict, Configuration: dict, window: CTk, Frame_Work_Area_Main: CTkFrame, Side_Bar_Frame: CTkFrame) -> None:
-    User_Type = Settings["0"]["General"]["User"]["User_Type"]
-    Application = Defaults_Lists.Load_Application()
-    Program_Version = Application["Application"]["Version"]
-    Initial_Page = Configuration["Global_Appearance"]["Window"]["Init_Page"]["Selected"]
+        # Application
+        self.Application = Defaults_Lists.Load_Application()
+        self.Program_Version = self.Application["Application"]["Version"]
 
-    if User_Type == "User":
-        Side_Bar_Icon_top_pady = 290
-        Side_Bar_Icon_Bottom_pady = 260
-    elif User_Type == "Manager":
-        Side_Bar_Icon_top_pady = 250
-        Side_Bar_Icon_Bottom_pady = 240
+        # User Type
+        User_Type = Settings["0"]["General"]["User"]["User_Type"]
+            
+        # Add buttons to the sidebar
+        if User_Type == "User":
+            self.names = ["Download", 
+                            "Dashboard", 
+                            "Data", 
+                            "Information", 
+                            "Settings",
+                            "Close"]
+            
+            self.icons = ["download", 
+                        "layout-dashboard", 
+                        "file-spreadsheet", 
+                        "info", 
+                        "settings",
+                        "power"]
+            
+            self.messages = ["Download new data.", 
+                            "My dashboard page.", 
+                            "Data to export page.", 
+                            "Application information page.",
+                            "Application settings page.", 
+                            "Close application."]
+            
+            # Icons
+            self.Icon_Default_pady = 10
+            self.Side_Bar_Top_pady = 225
+            self.Side_Bar_Bottom_pady = 260
+        elif User_Type == "Manager":
+            self.names = ["Download", 
+                            "Dashboard", 
+                            "Team_Dashboard", 
+                            "Data", 
+                            "Information", 
+                            "Settings",
+                            "Close"]
+            
+            self.icons = ["download", 
+                        "layout-dashboard", 
+                        "users", 
+                        "file-spreadsheet", 
+                        "info", 
+                        "settings",
+                        "power"]
+            
+            self.messages = ["Download new data.", 
+                            "My dashboard page.", 
+                            "My Team page.", 
+                            "Data to export page.", 
+                            "Application information page.",
+                            "Application settings page.", 
+                            "Close application."]
+            
+            # Icons
+            self.Icon_Default_pady = 10
+            self.Side_Bar_Top_pady = 200
+            self.Side_Bar_Bottom_pady = 230
 
-    Icon_Default_pady = 10
+        self.Icon_count = len(self.names)
 
-    # ------------------------- Local Functions -------------------------#
-    def Clear_Frame(Pre_Working_Frame:CTk|CTkFrame) -> None:
+        # Active button tracker
+        self.active_button = "Download"
+        
+        # Build SideBar
+        self.create_company_logo()
+        self.create_sidebar_buttons()
+        self.create_Application_version()
+        self.Show_Download_Page()
+
+    def create_company_logo(self):
+        Logo = Elements.Get_Custom_Image(Configuration=self.Configuration, Frame=self.Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=50)
+        Logo.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+
+    def create_sidebar_buttons(self):
+        self.Active_Window = 0
+        self.buttons = []
+        for button_index, button_name in enumerate(self.names):
+            if button_name == "Close":
+                # TurnOff wit red color
+                button = Elements.Get_Button_Icon(Configuration=self.Configuration, Frame=self.Side_Bar_Frame, Icon_Name=self.icons[button_index], Icon_Size="Side_Bar_close", Button_Size="Picture_Transparent")
+            elif  button_name == self.active_button:
+                # Initiate Active Button
+                button = Elements.Get_Button_Icon(Configuration=self.Configuration, Frame=self.Side_Bar_Frame, Icon_Name=self.icons[button_index], Icon_Size="Side_Bar_Active", Button_Size="Picture_Transparent")
+            else:
+                button = Elements.Get_Button_Icon(Configuration=self.Configuration, Frame=self.Side_Bar_Frame, Icon_Name=self.icons[button_index], Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
+            button.configure(command = self.create_command(button_index=button_index, button_name=button_name))
+            Elements.Get_ToolTip(Configuration=self.Configuration, widget=button, message=self.messages[button_index], ToolTip_Size="Normal", GUI_Level_ID=0)
+
+            # Place button 
+            if button_index == 0:
+                # First Icon
+                button.pack(side="top", fill="none", expand=False, padx=5, pady=(self.Side_Bar_Top_pady, self.Icon_Default_pady))
+            elif (button_index > 0) and (button_index < self.Icon_count - 1):
+                # Middle Icons
+                button.pack(side="top", fill="none", expand=False, padx=5, pady=self.Icon_Default_pady)
+            else:
+                # Last Icon
+                button.pack(side="top", fill="none", expand=False, padx=5, pady=(self.Icon_Default_pady, self.Side_Bar_Bottom_pady))
+            self.buttons.append(button)
+
+    def create_Application_version(self):
+        Program_Version_text = Elements.Get_Label(Configuration=self.Configuration, Frame=self.Side_Bar_Frame, Label_Size="Field_Label", Font_Size="Field_Label")
+        Program_Version_text.configure(text=f"{self.Program_Version}")
+        Program_Version_text.pack(side="top", fill="none", expand=False, padx=5, pady=(0, 10))
+
+    def create_command(self, button_index, button_name):
+        """Return a command function for the given page."""
+        def command():
+            self.change_page(button_index=button_index, button_name=button_name)
+        return command
+
+    def change_page(self, button_index, button_name):
+        # Reset the color of all buttons
+        for button_index_intern, button in enumerate(self.buttons):
+            if button_index_intern < self.Icon_count - 1:
+                button.configure(image=Elements.Get_CTk_Icon(Configuration=self.Configuration, Icon_Name=self.icons[button_index_intern], Icon_Size="Side_Bar_regular"))
+
+        # Mark Active button
+        self.buttons[button_index].configure(image=Elements.Get_CTk_Icon(Configuration=self.Configuration, Icon_Name=self.icons[button_index], Icon_Size="Side_Bar_Active"))
+
+
+        if button_name == "Download":
+            self.Show_Download_Page()
+        elif button_name == "Dashboard":
+            self.Show_Dashboard_Page()
+        elif button_name == "Team_Dashboard":
+            self.Show_Team_Dashboard_Page()
+        elif button_name == "Data":
+            self.Show_Data_Page()
+        elif button_name == "Information":
+            self.Show_Information_Page()
+        elif button_name == "Settings":
+            self.Show_Settings_Page()
+        elif button_name == "Close":
+            self.Show_Close_Page()
+        else:
+            pass
+
+    def Clear_Frame(self, Pre_Working_Frame: CTkFrame) -> None:
         # Find
         for widget in Pre_Working_Frame.winfo_children():
             widget.destroy()
 
-    def Show_Download_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
-        import Libs.GUI.Pages.P_Download as P_Download
-        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
-        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="e")
-        P_Download.Page_Download(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
+    def Show_Download_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_Download.Page_Download(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
 
-    def Show_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
-        import Libs.GUI.Pages.P_DashBoard as P_DashBoard
-        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
-        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        P_DashBoard.Page_Dashboard(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
-
-    def Show_Team_Dashboard_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
-        import Libs.GUI.Pages.P_My_Team as P_My_Team
-        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
-        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        P_My_Team.Page_User_Dashboard(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
-
-    def Show_Data_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
-        import Libs.GUI.Pages.P_Data as P_Data
-        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
-        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        P_Data.Page_Data(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
-
-    def Show_Information_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
-        import Libs.GUI.Pages.P_Information as P_Information
-        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
-        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        P_Information.Page_Information(Settings=Settings, Configuration=Configuration, Frame=Frame_Work_Area_Main)
-
-    def Show_Settings_Page(Active_Window: CTkFrame, Side_Bar_Row: int) -> None:
-        import Libs.GUI.Pages.P_Settings as P_Settings
-        Clear_Frame(Pre_Working_Frame=Frame_Work_Area_Main)
-        Active_Window.grid(row=Side_Bar_Row, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-        P_Settings.Page_Settings(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Work_Area_Main)
-
-    # ------------------------- Main Functions -------------------------#
-    Active_Window = Elements.Get_Frame(Configuration=Configuration, Frame=Side_Bar_Frame, Frame_Size="SideBar_active")
-
-    # Logo
-    Logo = Elements.Get_Custom_Image(Configuration=Configuration, Frame=Side_Bar_Frame, Image_Name="Company", postfix="png", width=70, heigh=40)
-
-    # Page - Download
-    Icon_Frame_Download = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="download", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
-    if User_Type == "User":
-        Download_Row = 0
-    elif User_Type == "Manager":
-        Download_Row = 0
-    Icon_Frame_Download.configure(command = lambda: Show_Download_Page(Active_Window = Active_Window, Side_Bar_Row=Download_Row))    
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Download, message="Download new data.", ToolTip_Size="Normal", GUI_Level_ID=0)
-
-    # Page - Dashboard
-    Icon_Frame_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="layout-dashboard", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
-    if User_Type == "User":
-        Dashboard_Row = 1
-    elif User_Type == "Manager":
-        Dashboard_Row = 1
-    Icon_Frame_Dashboard.configure(command = lambda: Show_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Dashboard_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Dashboard, message="My dashboard page.", ToolTip_Size="Normal", GUI_Level_ID=0)
-
-    # Page - Users Dashboard
-    if User_Type == "User":
-        pass
-    elif User_Type == "Manager":
-        Team_Row = 2
-        Icon_Frame_Users_Dashboard = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="users", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
-        Icon_Frame_Users_Dashboard.configure(command = lambda: Show_Team_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Team_Row))
-        Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Users_Dashboard, message="My Team page.", ToolTip_Size="Normal", GUI_Level_ID=0)
-
-    # Page - Data
-    Icon_Frame_Data = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="file-spreadsheet", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
-    if User_Type == "User":
-        Data_Row = 2
-    elif User_Type == "Manager":
-        Data_Row = 3
-    Icon_Frame_Data.configure(command = lambda: Show_Data_Page(Active_Window = Active_Window, Side_Bar_Row=Data_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Data, message="Data to export page.", ToolTip_Size="Normal", GUI_Level_ID=0)
-
-    # Page - Information
-    Icon_Frame_Information = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="info", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
-    if User_Type == "User":
-        Information_Row = 3
-    elif User_Type == "Manager":
-        Information_Row = 4
-    Icon_Frame_Information.configure(command = lambda: Show_Information_Page(Active_Window = Active_Window, Side_Bar_Row=Information_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Information, message="Application information page.", ToolTip_Size="Normal", GUI_Level_ID=0)
-
-    # Page - Settings
-    Icon_Frame_Settings = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="settings", Icon_Size="Side_Bar_regular", Button_Size="Picture_Transparent")
-    if User_Type == "User":
-        Settings_Row = 4
-    elif User_Type == "Manager":
-        Settings_Row = 5
-    Icon_Frame_Settings.configure(command = lambda: Show_Settings_Page(Active_Window = Active_Window, Side_Bar_Row=Settings_Row))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Settings, message="Settings page.", ToolTip_Size="Normal", GUI_Level_ID=0)
-
-    # Close Application
-    Icon_Frame_Close = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Side_Bar_Frame, Icon_Name="power", Icon_Size="Side_Bar_close", Button_Size="Picture_Transparent")
-    Icon_Frame_Close.configure(command = lambda: window.quit())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Icon_Frame_Close, message="Close application.", ToolTip_Size="Normal")
-
-    # Program Version
-    Program_Version_text = Elements.Get_Label(Configuration=Configuration, Frame=Side_Bar_Frame, Label_Size="Field_Label", Font_Size="Field_Label")
-    Program_Version_text.configure(text=f"{Program_Version}")
-
-
-    # Build look of Widget
-    Logo.grid(row=0, column=0, padx=(0, 0), pady=(10, 0), sticky="n", columnspan=2)
-    Active_Window.grid(row=1, column=0, padx=(10, 2), pady=Icon_Default_pady, sticky="e")
-    if User_Type == "User":
-        Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
-        Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Data.grid(row=2, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Information.grid(row=3, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Settings.grid(row=4, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Close.grid(row=5, column=1, padx=(0, 10), pady=(Icon_Default_pady, Side_Bar_Icon_Bottom_pady), sticky="w")
-        Program_Version_text.grid(row=6, column=0, padx=(0, 0), pady=(0, 10), sticky="s", columnspan=2)
-    elif User_Type == "Manager":
-        Icon_Frame_Download.grid(row=0, column=1, padx=(0, 0), pady=(Side_Bar_Icon_top_pady, Icon_Default_pady), sticky="w")
-        Icon_Frame_Dashboard.grid(row=1, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Users_Dashboard.grid(row=2, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Data.grid(row=3, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Information.grid(row=4, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Settings.grid(row=5, column=1, padx=(0, 10), pady=Icon_Default_pady, sticky="w")
-        Icon_Frame_Close.grid(row=6, column=1, padx=(0, 10), pady=(Icon_Default_pady, Side_Bar_Icon_Bottom_pady), sticky="w")
-        Program_Version_text.grid(row=7, column=0, padx=(0, 0), pady=(0, 10), sticky="s", columnspan=2)
-
-    # Initiate default window
-    if Initial_Page == "Downloads":
-        Show_Download_Page(Active_Window = Active_Window, Side_Bar_Row=Download_Row)
-    elif Initial_Page == "Dashboard":
-        Show_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Dashboard_Row)
-    elif Initial_Page == "My Team":
-        Show_Team_Dashboard_Page(Active_Window = Active_Window, Side_Bar_Row=Team_Row)
-    elif Initial_Page == "Data":
-        Show_Data_Page(Active_Window = Active_Window, Side_Bar_Row=Data_Row)
-    elif Initial_Page == "Settings":
-        Show_Settings_Page(Active_Window = Active_Window, Side_Bar_Row=Settings_Row)
+    def Show_Dashboard_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_DashBoard.Page_Dashboard(Settings=self.Settings, Configuration=self.Configuration, Frame=self.Frame_Work_Area_Main)
+        
+    def Show_Team_Dashboard_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_My_Team.Page_User_Dashboard(Settings=self.Settings, Configuration=self.Configuration, Frame=self.Frame_Work_Area_Main)
+        
+    def Show_Data_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_Data.Page_Data(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
+        
+    def Show_Information_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_Information.Page_Information(Settings=self.Settings, Configuration=self.Configuration, Frame=self.Frame_Work_Area_Main)
+        
+    def Show_Settings_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_Settings.Page_Settings(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
+        
+    def Show_Close_Page(self) -> None:
+        # Delete Operational data from Settings
+        self.window.quit()

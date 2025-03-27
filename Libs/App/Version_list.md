@@ -4,6 +4,9 @@
 **Mobile**: +420 601 383 301<br>
 
 ### Version List
+##### 1.2.1
+- SideBar as Class
+
 ##### 1.2.0
 - Python upgrade to 3.13.2
 - significant space reduce

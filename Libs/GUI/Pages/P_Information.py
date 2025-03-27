@@ -43,5 +43,4 @@ def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
     # Build look of Widget
     Frame_Information_Scrollable_Area.pack(side="top", fill="both", expand=True, padx=10, pady=10)
-
     Information_html.pack(side="top", fill="both", expand=True, padx=10, pady=10)

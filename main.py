@@ -8,6 +8,8 @@ import os
 from customtkinter import CTk, set_appearance_mode, deactivate_automatic_dpi_awareness
 import pywinstyles
 
+import Libs.GUI.Pages.P_Header as P_Header
+import Libs.GUI.Pages.P_Side_Bar as P_Side_Bar
 import Libs.GUI.Elements as Elements
 
 import Libs.Defaults_Lists as Defaults_Lists
@@ -86,8 +88,6 @@ if __name__ == "__main__":
     pywinstyles.apply_style(window=window, style="normal")
 
     # ---------------------------------- Content ----------------------------------#
-    import Libs.GUI.Pages.P_Header as P_Header
-    import Libs.GUI.Pages.P_Side_Bar as P_Side_Bar
     # Background
     Frame_Background = Elements.Get_Frame(Configuration=Configuration, Frame=window, Frame_Size="Background", GUI_Level_ID=0)
     Frame_Background.pack(side="top", fill="none", expand=False)
@@ -109,7 +109,8 @@ if __name__ == "__main__":
     Frame_Work_Area_Main.pack(side="left", fill="none", expand=False)
 
     P_Header.Get_Header(Settings=Settings, Configuration=Configuration, Frame=Frame_Header)
-    P_Side_Bar.Get_Side_Bar(Settings=Settings, Configuration=Configuration, window=window, Frame_Work_Area_Main=Frame_Work_Area_Main, Side_Bar_Frame=Frame_Side_Bar)
+    #P_Side_Bar.Get_Side_Bar(Settings=Settings, Configuration=Configuration, window=window, Frame_Work_Area_Main=Frame_Work_Area_Main, Side_Bar_Frame=Frame_Side_Bar)
+    SideBar = P_Side_Bar.SidebarApp(Settings=Settings, Configuration=Configuration, window=window, Frame_Work_Area_Main=Frame_Work_Area_Main, Side_Bar_Frame=Frame_Side_Bar)
 
     # run
     window.mainloop()
