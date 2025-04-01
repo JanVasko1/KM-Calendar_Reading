@@ -7,7 +7,9 @@ import Libs.Data_Functions as Data_Functions
 import Libs.File_Manipulation as File_Manipulation
 import Libs.GUI.Charts as Charts
 
-def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: str, Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Team_Member_ID: str|None) -> None:
+from customtkinter import CTk
+
+def Generate_Summary(Settings: dict, Configuration: dict, window: CTk|None, Calculation_source: str, Events: DataFrame, Report_Period_Active_Days: int|None, Report_Period_Start: datetime|None, Report_Period_End: datetime|None, Team_Member_ID: str|None) -> None:
     # ------------------------------------------------------------ Defaults ------------------------------------------------------------ #
     File_Sub_Path = "DashBoard"
     if Calculation_source == "Team":
@@ -144,17 +146,17 @@ def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: st
     Events["Duration_H"] = Events["Duration"].map(lambda x: round(x/60, 2))
 
     # Deletion
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Project.csv"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Activity.csv"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Totals.csv"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Light.html"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Dark.html"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Light.html"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Dark.html"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Light.html"))
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Dark.html"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Project.csv"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Activity.csv"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_WeekDays.csv"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Weeks.csv"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\Events_Totals.csv"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Light.html"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Project_Dark.html"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Light.html"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Activity_Dark.html"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Light.html"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\{File_Sub_Path}\\DashBoard_Utilization_Dark.html"))
 
     # ---------------------------------------------------------------------------------- Projects ---------------------------------------------------------------------------------- #
     # Calculation
@@ -350,10 +352,10 @@ def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: st
 
     # ---------------------------------------------------------------------------------- Day Charts ---------------------------------------------------------------------------------- #
     # Generate charts - Project And Activity
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Project", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Project", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Activity", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
-    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, Calculation_source=Calculation_source, Category="Activity", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, window=window, Calculation_source=Calculation_source, Category="Project", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, window=window, Calculation_source=Calculation_source, Category="Project", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, window=window, Calculation_source=Calculation_source, Category="Activity", theme="Dark", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
+    Charts.Gen_Chart_Project_Activity(Settings=Settings, Configuration=Configuration, window=window, Calculation_source=Calculation_source, Category="Activity", theme="Light", Events=Events, Report_Period_End=Report_Period_End, File_Sub_Path=File_Sub_Path)
 
     # Utilization
     Utilization_Start_Date = min(Events["Date"])
@@ -371,8 +373,8 @@ def Generate_Summary(Settings: dict, Configuration: dict, Calculation_source: st
 
     # Prevents chart to crash interpolation
     if Total_Days_w > 1:
-        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, Configuration=Configuration, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
-        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, Configuration=Configuration, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, Configuration=Configuration, window=window, theme="Dark", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
+        Charts.Gen_Chart_Calendar_Utilization(Settings=Settings, Configuration=Configuration, window=window, theme="Light", Utilization_Calendar_df=Utilization_Event_Calendar_df, File_Sub_Path=File_Sub_Path)
     else:
         pass
 

@@ -7,7 +7,7 @@ import Libs.Data_Functions as Data_Functions
 import Libs.GUI.Widgets.W_DashBoard as W_DashBoard
 import Libs.GUI.Elements as Elements
 
-def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
+def Page_Dashboard(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTk|CTkFrame):
     # ------------------------- Main Functions -------------------------#
     # Define Frames
     Frame_DashBoard_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame, Frame_Size="Triple_size", GUI_Level_ID=1)
@@ -53,7 +53,7 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
         Frame_Dashboard_Project_Activity_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Project_Activity_Line", GUI_Level_ID=1)
         Frame_Dashboard_Project_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section", GUI_Level_ID=1)
         Frame_Dashboard_Project_Detail_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Detail_Section", GUI_Level_ID=1)
-        Frame_DashBoard_Project_Frame = W_DashBoard.DashBoard_Project_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Project_DF=Project_DF, GUI_Level_ID=2)
+        Frame_DashBoard_Project_Frame = W_DashBoard.DashBoard_Project_Widget(Configuration=Configuration, window=window, Frame=Frame_Dashboard_Project_Detail_Section, Label="Projects", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Project_DF=Project_DF, GUI_Level_ID=2)
         Frame_Dashboard_Project_Side_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Section, Frame_Size="Project_Activity_Side_Section", GUI_Level_ID=1)
         Frame_DashBoard_Project_Detail1_Frame = W_DashBoard.DashBoard_Project_Detail1_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Project_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Project_DF=Project_DF, GUI_Level_ID=2)
         Frame_DashBoard_Project_Detail1_Frame.pack_propagate(flag=False)
@@ -64,7 +64,7 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
         Frame_Dashboard_Activity_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Project_Activity_Line, Frame_Size="Project_Activity_Section", GUI_Level_ID=1)
         Frame_Dashboard_Activity_Detail_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Detail_Section", GUI_Level_ID=1)
-        Frame_DashBoard_Activity_Frame = W_DashBoard.DashBoard_Activity_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df, GUI_Level_ID=2)
+        Frame_DashBoard_Activity_Frame = W_DashBoard.DashBoard_Activity_Widget(Configuration=Configuration, window=window, Frame=Frame_Dashboard_Activity_Detail_Section, Label="Activity", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity", Activity_Df=Activity_Df, GUI_Level_ID=2)
         Frame_Dashboard_Activity_Side_Section = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Section, Frame_Size="Project_Activity_Side_Section", GUI_Level_ID=1)
         Frame_DashBoard_Activity_Detail1_Frame = W_DashBoard.DashBoard_Activity_Detail1_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Activity_Side_Section, Label="Most Occurrence", Widget_Line="Project_Activity_Line", Widget_size="Project_Activity_Details", Activity_Df=Activity_Df, GUI_Level_ID=2)
         Frame_DashBoard_Activity_Detail1_Frame.pack_propagate(flag=False)
@@ -75,12 +75,12 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
 
         # WeekDay and Weeks Line
         Frame_Dashboard_WeekDay_Weeks_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="WeekDay_Weeks_Line", GUI_Level_ID=1)
-        Frame_DashBoard_WeekDays_Frame = W_DashBoard.DashBoard_WeekDays_Widget(Configuration=Configuration, Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df, GUI_Level_ID=2)
-        Frame_DashBoard_Weeks_Frame = W_DashBoard.DashBoard_Weeks_Widget(Configuration=Configuration, Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF, GUI_Level_ID=2)
+        Frame_DashBoard_WeekDays_Frame = W_DashBoard.DashBoard_WeekDays_Widget(Configuration=Configuration, window=window, Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="WeekDays", Widget_Line="WeekDay_Weeks", Widget_size="Normal", WeekDays_Df=WeekDays_Df, GUI_Level_ID=2)
+        Frame_DashBoard_Weeks_Frame = W_DashBoard.DashBoard_Weeks_Widget(Configuration=Configuration, window=window, Frame=Frame_Dashboard_WeekDay_Weeks_Line, Label="Weeks", Widget_Line="WeekDay_Weeks", Widget_size="Normal", Weeks_DF=Weeks_DF, GUI_Level_ID=2)
 
         # Day Chart Line
         Frame_Dashboard_Day_Chart_Line = Elements.Get_Dashboards_Frame(Configuration=Configuration, Frame=Frame_DashBoard_Scrollable_Area, Frame_Size="Day_Chart_Line", GUI_Level_ID=1)
-        Frame_DashBoard_Chart_Frame = W_DashBoard.DashBoard_Chart_Widget(Configuration=Configuration, Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal", GUI_Level_ID=2)
+        Frame_DashBoard_Chart_Frame = W_DashBoard.DashBoard_Chart_Widget(Configuration=Configuration, window=window, Frame=Frame_Dashboard_Day_Chart_Line, Label="Charts", Widget_Line="WeekChart", Widget_size="Normal", GUI_Level_ID=2)
         Frame_DashBoard_Chart_Frame.pack_propagate(flag=False)
 
         # Build look of Widget
@@ -119,4 +119,4 @@ def Page_Dashboard(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
         Frame_Dashboard_Day_Chart_Line.pack(side="top", fill="x", expand=True, padx=0, pady=(10, 0))
         Frame_DashBoard_Chart_Frame.pack(side="top", fill="x", expand=False, padx=5, pady=5)
     except:
-        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Dashboard not all data available, please run Downloader first.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)

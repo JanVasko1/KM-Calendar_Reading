@@ -108,7 +108,7 @@ if __name__ == "__main__":
     Frame_Work_Area_Main.pack_propagate(flag=False)
     Frame_Work_Area_Main.pack(side="left", fill="none", expand=False)
 
-    P_Header.Get_Header(Settings=Settings, Configuration=Configuration, Frame=Frame_Header)
+    P_Header.Get_Header(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Header)
     #P_Side_Bar.Get_Side_Bar(Settings=Settings, Configuration=Configuration, window=window, Frame_Work_Area_Main=Frame_Work_Area_Main, Side_Bar_Frame=Frame_Side_Bar)
     SideBar = P_Side_Bar.SidebarApp(Settings=Settings, Configuration=Configuration, window=window, Frame_Work_Area_Main=Frame_Work_Area_Main, Side_Bar_Frame=Frame_Side_Bar)
 

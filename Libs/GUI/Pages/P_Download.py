@@ -107,7 +107,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         if Download_Date_Range_Source == "Sharepoint":
             if SP_Password == "":
                 Can_Download = False
-                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+                Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
             else:
                 Input_Start_Date = None
                 Input_End_Date = None
@@ -119,23 +119,23 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
                 datetime.strptime(Input_End_Date, Format_Date)
             except:
                 Can_Download = False
-                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+                Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Date format is not supported date format, should be {Format_Date}", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             Can_Download = False
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Download Date Range Source: {Download_Date_Range_Source} is not supported. Must be Sharepoint/Manual", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         # Data source
         if Can_Download == True:
             if Download_Data_Source == "Exchange":
                 if Exchange_Password == "":
                     Can_Download = False
-                    Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Exchange password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+                    Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="You forgot to insert Exchange password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
                 else:
                     pass
             elif Download_Data_Source == "Outlook_Client":
                 Exchange_Password = None
             else:
                 Can_Download = False
-                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+                Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Download Data Source: {Download_Data_Source} is not supported. Must be Exchange/Outlook_Client", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             pass
 
@@ -145,11 +145,11 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             task_thread.start()
 
             # Save into Settings --> to be displayed on Dashboard later 
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Current")
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
     def Pre_Download_Data(Previous_Period_Def_Widget: CTkFrame, Previous_Sharepoint_Widget: CTkFrame) -> None:
         def get_year_month_list(start_date: datetime, end_date: datetime):
@@ -181,7 +181,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         if Download_Date_Range_Source == "Sharepoint":
             if SP_Password == "":
                 Can_Download = False
-                Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+                Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
             else:
                 pass
 
@@ -189,7 +189,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             Download_Periods = get_year_month_list(start_date=From_DateTime, end_date=To_DateTime)
         else:
             Can_Download = False
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot download as From Period is sooner To Period, please check.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Cannot download as From Period is sooner To Period, please check.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
         # -------------- Download  -------------- #
         if Can_Download == True:
@@ -197,9 +197,9 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             task_thread.start()
 
             # Save into Settings --> to be displayed on Dashboard later 
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Past")
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Creation_Date"], Information=Today_str)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Period"], Information="Past")
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "DashBoard", "Data_Source"], Information=Download_Date_Range_Source)
         else:
             pass
 
@@ -213,7 +213,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         # Check filled password
         if SP_Password == "":
             Can_Download = False
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="You forgot to insert Sharepoint password.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             pass
 
@@ -223,7 +223,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             task_thread.start()
 
             # Save into Settings --> to be displayed on Dashboard later 
-            Data_Functions.Save_Value(Settings=Settings, Configuration=None, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)
+            Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "DashBoard", "My_Team", "Creation_Date"], Information=Today_str)
         else:
             pass
 
@@ -257,10 +257,10 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Method_Text.configure(text="Step 1 - Date Range Source")
     Method_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
+    Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
     Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     
-    Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
+    Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
     Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
     Manual_Date_From_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkbutton"]
@@ -281,7 +281,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Source_Text.configure(text="Step 2 - Download Data Source")
     Source_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Exchange_Widget = W_Download.Download_Exchange(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
+    Exchange_Widget = W_Download.Download_Exchange(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
     Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
     Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
 
@@ -316,13 +316,13 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Previous_Text.configure(text="Step 1 - Define previous periods")
     Previous_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Previous_Period_Def_Widget = W_Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
+    Previous_Period_Def_Widget = W_Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
 
     Pre_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
     Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
     Pre_Sharepoint_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Previous_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
+    Previous_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
 
     # Download button
     Pre_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
@@ -340,7 +340,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Team_Sharepoint_Text.configure(text="Step 1 - Sharepoint credential")
         Team_Sharepoint_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-        My_Team_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2) # Can most probably by identical as downloads needs to connect same ways as in Pre
+        My_Team_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2) # Can most probably by identical as downloads needs to connect same ways as in Pre
 
         # Download button
         Team_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Label_Size="H1", Font_Size="H1")

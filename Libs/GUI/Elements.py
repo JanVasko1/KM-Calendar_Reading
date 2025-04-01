@@ -15,57 +15,6 @@ from iconipy import IconFactory
 import winaccent
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Local Functions -------------------------------------------------------------------------------------------------------------------------------------------------- #
-def Time_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
-    Time_Format = Settings["0"]["General"]["Formats"]["Time"]
-    Value = Field.get()
-
-    if Value != "":
-        try:
-            datetime.strptime(Value, Time_Format)
-        except:
-            Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not proper Time format, should be: HH:MM.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-            Field.delete(first_index=0, last_index=100)
-    else:
-        pass
-
-def Date_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
-    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
-    Value = Field.get()
-
-    if Value != "":
-        try:
-            datetime.strptime(Value, Date_Format)
-        except:
-            Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not in proper Date format, should be: YYYY-MM-DD.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-            Field.delete(first_index=0, last_index=100)
-    else:
-        pass
-
-def Int_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
-    Value = Field.get()
-
-    if Value != "":
-        try:
-            int(Value)
-        except:
-            Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not whole number.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-            Field.delete(first_index=0, last_index=100)
-    else:
-        pass
-
-def Float_Validate(Settings: dict, Configuration: dict, Field: CTkEntry) -> None:
-    Value = Field.get()
-
-    if Value != "":
-        try:
-            float(Value)
-        except:
-            Get_MessageBox(Configuration=Configuration, title="Error", message=f"Value: {Value} in not float number.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-            Field.delete(first_index=0, last_index=100)
-    else:
-        pass
-
-
 def lighten_hex_color(hex_color, percentage):
     # Remove the hash symbol if present
     hex_color = hex_color.lstrip('#')
@@ -143,7 +92,7 @@ def Get_Font(Configuration:dict, Font_Size: str) -> CTkFont:
     return Font_Text_Main
 
 # ---------------------------------------------- Text ----------------------------------------------# 
-def Get_Label(Configuration:dict, Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
+def Get_Label(Configuration:dict, Frame: CTkFrame, Label_Size: str, Font_Size: str) -> CTkLabel:
     Configuration_Text_Main = Configuration["Labels"][f"{Label_Size}"]
     Text_Main = CTkLabel(
         master = Frame,
@@ -157,14 +106,14 @@ def Get_Label(Configuration:dict, Frame: CTk|CTkFrame, Label_Size: str, Font_Siz
         wraplength = Configuration_Text_Main["wraplength"])
     return Text_Main
 
-def Get_Label_Icon(Configuration: dict, Frame: CTk|CTkFrame, Label_Size: str, Font_Size: str, Icon_Name: str, Icon_Size: str) -> CTkLabel:
+def Get_Label_Icon(Configuration: dict, Frame: CTkFrame, Label_Size: str, Font_Size: str, Icon_Name: str, Icon_Size: str) -> CTkLabel:
     Frame_Label = Get_Label(Configuration=Configuration, Frame=Frame, Label_Size=Label_Size, Font_Size=Font_Size)
     CTK_Image = Get_CTk_Icon(Configuration=Configuration, Icon_Name=Icon_Name, Icon_Size=Icon_Size)
     Frame_Label.configure(image=CTK_Image, text="", anchor="e")
     return Frame_Label
 
 # ---------------------------------------------- Buttons ----------------------------------------------# 
-def Get_Button_Text(Configuration:dict, Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
+def Get_Button_Text(Configuration:dict, Frame: CTkFrame, Button_Size: str) -> CTkButton:
     Configuration_Button_Normal = Configuration["Buttons"][f"{Button_Size}"]
 
     if Button_Size == "DatePicker_Days":
@@ -191,7 +140,7 @@ def Get_Button_Text(Configuration:dict, Frame: CTk|CTkFrame, Button_Size: str) -
         text_color = tuple(Configuration_Button_Normal["text_color"]))
     return Button_Normal
 
-def Get_Button_Icon(Configuration:dict, Frame: CTk|CTkFrame, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
+def Get_Button_Icon(Configuration:dict, Frame: CTkFrame, Icon_Name: str, Icon_Size: str, Button_Size: str) -> CTkFrame:
     Configuration_Button_Icon = Configuration["Buttons"][f"{Button_Size}"]
 
     if Button_Size == "Picture_Transparent":
@@ -218,7 +167,7 @@ def Get_Button_Icon(Configuration:dict, Frame: CTk|CTkFrame, Icon_Name: str, Ico
     Frame_Button.configure(image=CTK_Image, text="")
     return Frame_Button
 
-def Get_Button_Chart(Configuration:dict, Frame: CTk|CTkFrame, Button_Size: str) -> CTkButton:
+def Get_Button_Chart(Configuration:dict, Frame: CTkFrame, Button_Size: str) -> CTkButton:
     Configuration_Button_Chart = Configuration["Buttons"][f"{Button_Size}"]
 
     fg_color = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_Button_Chart["fg_color"])
@@ -241,7 +190,7 @@ def Get_Button_Chart(Configuration:dict, Frame: CTk|CTkFrame, Button_Size: str) 
     return Frame_Button
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
-def Get_Entry_Field(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
+def Get_Entry_Field(Settings: dict, Configuration:dict, Frame: CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
     Configuration_Field = Configuration["Fields"]["Entry"][f"{Field_Size}"]
 
     Field = CTkEntry(
@@ -257,18 +206,6 @@ def Get_Entry_Field(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Fie
         text_color = tuple(Configuration_Field["text_color"]),
         placeholder_text_color = tuple(Configuration_Field["placeholder_text_color"]),
         validate="focusout")
-    
-    if Validation == "Time":
-        Field.configure(validatecommand=lambda: Time_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
-    elif Validation == "Date":
-        Field.configure(validatecommand=lambda: Date_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
-    elif Validation == "Integer":
-        Field.configure(validatecommand=lambda: Int_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
-    elif Validation == "Float":
-        Field.configure(validatecommand=lambda: Float_Validate(Settings=Settings, Configuration=Configuration, Field=Field))
-    else:
-        pass
-
     return Field
 
 def Get_Password_Normal(Configuration:dict, Frame: CTk|CTkFrame) -> CTkEntry:
@@ -289,7 +226,7 @@ def Get_Password_Normal(Configuration:dict, Frame: CTk|CTkFrame) -> CTkEntry:
         show="*")
     return Password_Normal
 
-def Get_RadioButton_Normal(Configuration:dict, Frame: CTk|CTkFrame, Var_Value: int|str) -> CTkRadioButton:
+def Get_RadioButton_Normal(Configuration:dict, Frame: CTkFrame, Var_Value: int|str) -> CTkRadioButton:
     Configuration_RadioButton_Normal = Configuration["Fields"]["RadioButton"]["Normal"]
     
     fg_color = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_RadioButton_Normal["fg_color"])
@@ -410,7 +347,7 @@ def Get_CheckBox(Configuration:dict, Frame: CTk|CTkFrame) -> CTkCheckBox:
 
 # ---------------------------------------------- Frames ----------------------------------------------# 
 # NonScrollable
-def Get_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_Frame(Configuration:dict, Frame: CTkFrame, Frame_Size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     Configuration_NonScrollable = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
 
     if type(GUI_Level_ID) is int:
@@ -442,7 +379,7 @@ def Get_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: str, GUI_Leve
         fg_color = fg_color)
     return Frame_NonScrollable
 
-def Get_SideBar_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: str) -> CTkFrame:
+def Get_SideBar_Frame(Configuration:dict, Frame: CTkFrame, Frame_Size: str) -> CTkFrame:
     Configuration_SideBar = Configuration["Frames"]["Page_Frames"][f"{Frame_Size}"]
 
     fg_color = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_SideBar["fg_color"])
@@ -458,7 +395,7 @@ def Get_SideBar_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: str) 
         fg_color = fg_color)
     return Frame_NonScrollable
 
-def Get_Dashboards_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_Dashboards_Frame(Configuration:dict, Frame: CTkFrame, Frame_Size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     Configuration_Dashboard = Configuration["Frames"]["Dashboard"]["Background_Frames"][f"{Frame_Size}"]
 
     if type(GUI_Level_ID) is int:
@@ -492,7 +429,7 @@ def Get_Dashboards_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: st
 
 # ------------------------------------------------------------------------------------------------------------ Widgets  ------------------------------------------------------------------------------------------------------------ #
 # ------------------------------------------ Dashboards Widgets Frames ------------------------------------------#
-def Get_Dashboard_Widget_Frame_Body(Configuration:dict, Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_Dashboard_Widget_Frame_Body(Configuration:dict, Frame: CTkFrame, Widget_Line: str, Widget_size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     Configuration_Frame_Dash_Body = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Body"]
 
     if type(GUI_Level_ID) is int:
@@ -524,7 +461,7 @@ def Get_Dashboard_Widget_Frame_Body(Configuration:dict, Frame: CTk|CTkFrame, Wid
         fg_color = fg_color)
     return Frame_Body
 
-def Get_Dashboard_Widget_Frame_Body_Scrollable(Configuration:dict, Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str, GUI_Level_ID: int|None = None) -> CTkScrollableFrame:
+def Get_Dashboard_Widget_Frame_Body_Scrollable(Configuration:dict, Frame: CTkFrame, Widget_Line: str, Widget_size: str, GUI_Level_ID: int|None = None) -> CTkScrollableFrame:
     Configuration_Frame_Dash_Body_Scroll = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Body_Scrollable"]
     
     Accent_Color_help = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_Frame_Dash_Body_Scroll["Accent_Color_help"])
@@ -563,7 +500,7 @@ def Get_Dashboard_Widget_Frame_Body_Scrollable(Configuration:dict, Frame: CTk|CT
         scrollbar_button_hover_color = scrollbar_button_hover_color)
     return Frame_Body_Scroll
 
-def Get_Dashboard_Widget_Frame_Header(Configuration:dict, Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
+def Get_Dashboard_Widget_Frame_Header(Configuration:dict, Frame: CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Dash_Header = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Header"]
 
     Frame_Header = CTkFrame(
@@ -576,7 +513,7 @@ def Get_Dashboard_Widget_Frame_Header(Configuration:dict, Frame: CTk|CTkFrame, W
         fg_color = Configuration_Frame_Dash_Header["fg_color"])
     return Frame_Header
 
-def Get_Dashboard_Widget_Frame_Area(Configuration:dict, Frame: CTk|CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
+def Get_Dashboard_Widget_Frame_Area(Configuration:dict, Frame: CTkFrame, Widget_Line: str, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Dash_Data = Configuration["Frames"]["Dashboard"]["Widgets"][f"{Widget_Line}"][f"{Widget_size}"]["Data_Area"]
 
     Frame_Area = CTkFrame(
@@ -591,7 +528,7 @@ def Get_Dashboard_Widget_Frame_Area(Configuration:dict, Frame: CTk|CTkFrame, Wid
 
 # ------------------------------------------ Widget Frames ------------------------------------------#
 # Scrollable --> Frames For tables
-def Get_Widget_Scrollable_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_Size: str, GUI_Level_ID: int|None = None) -> CTkScrollableFrame:
+def Get_Widget_Scrollable_Frame(Configuration:dict, Frame: CTkFrame, Frame_Size: str, GUI_Level_ID: int|None = None) -> CTkScrollableFrame:
     Configuration_Scrollable = Configuration["Frames"]["Widgets"]["Widget_Frames"]["Scrollable_Frames"][f"{Frame_Size}"]
 
     Accent_Color_help = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_Scrollable["Accent_Color_help"])
@@ -628,7 +565,7 @@ def Get_Widget_Scrollable_Frame(Configuration:dict, Frame: CTk|CTkFrame, Frame_S
         scrollbar_button_hover_color = scrollbar_button_hover_color)
     return Frame_Scrollable
 
-def Get_Widget_Frame_Body(Configuration:dict, Frame: CTk|CTkFrame, Widget_size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_Widget_Frame_Body(Configuration:dict, Frame: CTkFrame, Widget_size: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     Configuration_Frame_Single_Column = Configuration["Frames"]["Widgets"]["Widget_Frames"][f"{Widget_size}"]["Body"]
 
     if type(GUI_Level_ID) is int:
@@ -659,7 +596,7 @@ def Get_Widget_Frame_Body(Configuration:dict, Frame: CTk|CTkFrame, Widget_size: 
         fg_color = fg_color)
     return Frame_Single_Column
 
-def Get_Widget_Frame_Header(Configuration:dict, Frame: CTk|CTkFrame, Widget_size: str) -> CTkFrame:
+def Get_Widget_Frame_Header(Configuration:dict, Frame: CTkFrame, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Single_Column_Header = Configuration["Frames"]["Widgets"]["Widget_Frames"][f"{Widget_size}"]["Header"]
 
     Frame_Single_Column_Header = CTkFrame(
@@ -672,7 +609,7 @@ def Get_Widget_Frame_Header(Configuration:dict, Frame: CTk|CTkFrame, Widget_size
         fg_color = Configuration_Frame_Single_Column_Header["fg_color"])
     return Frame_Single_Column_Header
 
-def Get_Widget_Frame_Area(Configuration:dict, Frame: CTk|CTkFrame, Widget_size: str) -> CTkFrame:
+def Get_Widget_Frame_Area(Configuration:dict, Frame: CTkFrame, Widget_size: str) -> CTkFrame:
     Configuration_Frame_Single_Column_Data_Area = Configuration["Frames"]["Widgets"]["Widget_Frames"][f"{Widget_size}"]["Data_Area"]
 
     Frame_Single_Column = CTkFrame(
@@ -685,7 +622,7 @@ def Get_Widget_Frame_Area(Configuration:dict, Frame: CTk|CTkFrame, Widget_size: 
     return Frame_Single_Column
 
 # ------------------------------------------ Widget Field Frames ------------------------------------------#
-def Get_Widget_Field_Frame_Area(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_Widget_Field_Frame_Area(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     Configuration_Field_Single_Area = Configuration["Frames"]["Widgets"]["Field_Frames"][f"{Field_Frame_Type}"]["Area"]
 
     if type(GUI_Level_ID) is int:
@@ -714,7 +651,7 @@ def Get_Widget_Field_Frame_Area(Configuration:dict, Frame: CTk|CTkFrame, Field_F
         fg_color = fg_color)
     return Frame_Field_Single_Area
 
-def Get_Widget_Field_Frame_Label(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str) -> CTkFrame:
+def Get_Widget_Field_Frame_Label(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str) -> CTkFrame:
     Configuration_Field_Single_Label = Configuration["Frames"]["Widgets"]["Field_Frames"][f"{Field_Frame_Type}"]["Label"]
 
     Frame_Field_Single_Label = CTkFrame(
@@ -727,7 +664,7 @@ def Get_Widget_Field_Frame_Label(Configuration:dict, Frame: CTk|CTkFrame, Field_
         fg_color = Configuration_Field_Single_Label["fg_color"])
     return Frame_Field_Single_Label
 
-def Get_Widget_Field_Frame_Space(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str) -> CTkFrame:
+def Get_Widget_Field_Frame_Space(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str) -> CTkFrame:
     Configuration_Field_Single_Space = Configuration["Frames"]["Widgets"]["Field_Frames"][f"{Field_Frame_Type}"]["Space"]
 
     Frame_Field_Single_Space = CTkFrame(
@@ -740,7 +677,7 @@ def Get_Widget_Field_Frame_Space(Configuration:dict, Frame: CTk|CTkFrame, Field_
         fg_color = Configuration_Field_Single_Space["fg_color"])
     return Frame_Field_Single_Space
 
-def Get_Widget_Field_Frame_Value(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str) -> CTkFrame:
+def Get_Widget_Field_Frame_Value(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str) -> CTkFrame:
     Configuration_Field_Single_Value = Configuration["Frames"]["Widgets"]["Field_Frames"][f"{Field_Frame_Type}"]["Value"]
 
     Frame_Field_Single_Value = CTkFrame(
@@ -754,7 +691,7 @@ def Get_Widget_Field_Frame_Value(Configuration:dict, Frame: CTk|CTkFrame, Field_
     return Frame_Field_Single_Value
 
 # ------------------------------------------ Tab View ------------------------------------------ 
-def Get_Tab_View(Configuration:dict, Frame: CTk|CTkFrame, Tab_size: str, GUI_Level_ID: int|None = None) -> CTkTabview:
+def Get_Tab_View(Configuration:dict, Frame: CTkFrame, Tab_size: str, GUI_Level_ID: int|None = None) -> CTkTabview:
     Configuration_TabView_Normal = Configuration["TabView"][f"{Tab_size}"]
     
     segmented_button_selected_color = Define_Accent_Color(Configuration=Configuration, Color_json=Configuration_TabView_Normal["segmented_button_selected_color"])
@@ -799,7 +736,7 @@ def Get_Tab_View(Configuration:dict, Frame: CTk|CTkFrame, Tab_size: str, GUI_Lev
     return TabView_Normal
 
 # ---------------------------------------------- Tables ----------------------------------------------# 
-def Get_Table(Configuration:dict, Frame: CTk|CTkFrame, Table_size: str, rows: int, columns: int, GUI_Level_ID: int|None = None) -> CTkTable:
+def Get_Table(Configuration:dict, Frame: CTkFrame, Table_size: str, rows: int, columns: int, GUI_Level_ID: int|None = None) -> CTkTable:
     def Colors_Theme_change(colors_rows: list) -> tuple:
         # Will be obsolete if Table will implement Light/Dark colors
         Current_Theme = get_appearance_mode()
@@ -867,7 +804,7 @@ def Get_CTk_Icon(Configuration:dict, Icon_Name: str, Icon_Size: str) -> CTkImage
         size = (Icon_Size_px, Icon_Size_px))
     return Picture
 
-def Get_Custom_Image(Configuration:dict, Frame: CTk|CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
+def Get_Custom_Image(Configuration:dict, Frame: CTkFrame, Image_Name: str, postfix: str, width: int, heigh: int) -> CTkLabel:
     Picture = CTkImage(
         light_image = Image.open(Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\{Image_Name}_Light.{postfix}")),
         dark_image = Image.open(Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\{Image_Name}_Dark.{postfix}")),
@@ -877,7 +814,7 @@ def Get_Custom_Image(Configuration:dict, Frame: CTk|CTkFrame, Image_Name: str, p
     return Background_Image_Label
 
 # ---------------------------------------------- Progress Bar ----------------------------------------------# 
-def Get_ProgressBar(Configuration:dict, Frame: CTk|CTkFrame, orientation: str, Progress_Size: str, GUI_Level_ID: int|None = None) -> CTkProgressBar:
+def Get_ProgressBar(Configuration:dict, Frame: CTkFrame, orientation: str, Progress_Size: str, GUI_Level_ID: int|None = None) -> CTkProgressBar:
     Configuration_ProgressBar = Configuration["ProgressBar"][f"{orientation}"][f"{Progress_Size}"]
 
     if type(GUI_Level_ID) is int:
@@ -925,11 +862,7 @@ def Get_DialogWindow(Configuration:dict, text: str, title: str, Dialog_Type: str
     return Dialog
 
 # ---------------------------------------------- Color_Picker ----------------------------------------------# 
-def Get_Color_Picker(Configuration:dict, Frame: CTk|CTkFrame, Color_Manual_Frame_Var: CTkEntry, GUI_Level_ID: int|None = None) -> CTkColorPicker:
-    def Change_Entry_Information(color: str) -> None:
-        Color_Manual_Frame_Var.delete(first_index=0, last_index=8)
-        Color_Manual_Frame_Var.insert(index=0, string=color)
-
+def Get_Color_Picker(Configuration:dict, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkColorPicker:
     def Color_Picker_fg_change(fg_color: list|str) -> str:
         # Will be obsolete if CTkColor_Picker will implement Light/Dark colors
         Current_Theme = get_appearance_mode()
@@ -960,7 +893,6 @@ def Get_Color_Picker(Configuration:dict, Frame: CTk|CTkFrame, Color_Manual_Frame
         fg_color = fg_color,
         slider_border = Configuration_Color_Picker["slider_border"],
         corner_radius = Configuration_Color_Picker["corner_radius"],
-        command = lambda color: Change_Entry_Information(color=color),
         orientation = Configuration_Color_Picker["orientation"])
     return Color_Picker
 

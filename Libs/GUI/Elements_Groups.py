@@ -11,7 +11,7 @@ import Libs.Data_Functions as Data_Functions
 import Libs.CustomTkinter_Functions as CustomTkinter_Functions
 
 
-def Get_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_Widget_Frame(Configuration:dict, Frame: CTkFrame, Name: str, Additional_Text: str, Widget_size: str, Widget_Label_Tooltip: str, GUI_Level_ID: int|None = None) -> CTkFrame:
     # Build base Frame for Widget
     Frame_Single_Body = Elements.Get_Widget_Frame_Body(Configuration=Configuration, Frame=Frame, Widget_size=Widget_size, GUI_Level_ID=GUI_Level_ID)
 
@@ -77,7 +77,7 @@ def Get_Widget_Scrollable_Frame(Configuration:dict, Frame: CTkFrame, Name: str, 
 
     return Frame_Single_Body
 
-def Get_DashBoard_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Icon_Name: str|None, Widget_Label_Tooltip: str, Scrollable: bool, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Get_DashBoard_Widget_Frame(Configuration:dict, Frame: CTkFrame, Label: str, Widget_Line:str, Widget_size: str, Icon_Name: str|None, Widget_Label_Tooltip: str, Scrollable: bool, GUI_Level_ID: int|None = None) -> CTkFrame:
     # Build base Frame for Widget
     if Scrollable == True:
         Frame_Single_Body = Elements.Get_Dashboard_Widget_Frame_Body_Scrollable(Configuration=Configuration, Frame=Frame, Widget_Line=Widget_Line, Widget_size=Widget_size, GUI_Level_ID=GUI_Level_ID)
@@ -109,7 +109,7 @@ def Get_DashBoard_Widget_Frame(Configuration:dict, Frame: CTk|CTkFrame, Label: s
 
     return Frame_Single_Body
 
-def Get_Widget_Section_row(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Label_Size: str, Font_Size: str) -> CTkFrame:
+def Get_Widget_Section_row(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, Label: str, Label_Size: str, Font_Size: str) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -121,7 +121,7 @@ def Get_Widget_Section_row(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_
 
     return Frame_Area
 
-def Get_Widget_Input_row(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str, Var_Value: int|str|None = None,  Validation: str|None = None, Field_ToolTip: list|None = None) -> CTkFrame:
+def Get_Widget_Input_row(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Field_Frame_Type: str, Label: str, Field_Type: str, Var_Value: int|str|None = None,  Validation: str|None = None, Field_ToolTip: list|None = None) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -180,11 +180,11 @@ def Get_Widget_Input_row(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame
         Field_Normal.pack(side="left", fill="x", expand=True)
         Button_Drop_Down.pack(side="left", fill="none", expand=True)
     else:
-        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Field type: {Field_Type} not supported.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Field type: {Field_Type} not supported.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
     return Frame_Area
 
-def Get_Widget_Button_row(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, Buttons_count: int, Button_Size: str) -> CTkFrame:
+def Get_Widget_Button_row(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, Buttons_count: int, Button_Size: str) -> CTkFrame:
     # Build one line for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -201,7 +201,7 @@ def Get_Widget_Button_row(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_T
 
     return Frame_Area
 
-def Get_Double_Field_Input(Settings: dict, Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
+def Get_Double_Field_Input(Settings: dict, Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -246,7 +246,7 @@ def Get_Double_Field_Input(Settings: dict, Configuration:dict, Frame: CTk|CTkFra
 
     return Frame_Area
 
-def Get_Double_Label(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
+def Get_Double_Label(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -275,7 +275,7 @@ def Get_Double_Label(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: 
 
     return Frame_Area
 
-def Get_Vertical_Field_Input(Configuration:dict, Frame: CTk|CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
+def Get_Vertical_Field_Input(Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one column for one input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack(side="top", fill="none", expand=True, padx=0, pady=0)
@@ -301,7 +301,7 @@ def Get_Vertical_Field_Input(Configuration:dict, Frame: CTk|CTkFrame, Field_Fram
 
     return Frame_Area
 
-def Get_Table_Frame(Configuration:dict, Frame: CTk|CTkFrame, Table_Size: str, Table_Values: list|None, Table_Columns: int, Table_Rows: int, GUI_Level_ID: int|None = None) -> CTkScrollableFrame:
+def Get_Table_Frame(Configuration:dict, Frame: CTkFrame, Table_Size: str, Table_Values: list|None, Table_Columns: int, Table_Rows: int, GUI_Level_ID: int|None = None) -> CTkScrollableFrame:
     # Build only one frame which contain whole Table
     Frame_Scrollable_Area = Elements.Get_Widget_Scrollable_Frame(Configuration=Configuration, Frame=Frame, Frame_Size=Table_Size, GUI_Level_ID=GUI_Level_ID)
     Frame_Scrollable_Area.pack(side="top", fill="y", expand=True, padx=10, pady=(0,5))

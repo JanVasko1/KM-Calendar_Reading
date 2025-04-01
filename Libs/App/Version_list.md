@@ -4,10 +4,14 @@
 **Mobile**: +420 601 383 301<br>
 
 ### Version List
+#### 1.3.0
+- GUI optimization
+- Pop-Up message box shows always in the middle of main window
+
 ##### 1.2.1
 - SideBar as Class
 
-##### 1.2.0
+#### 1.2.0
 - Python upgrade to 3.13.2
 - significant space reduce
 

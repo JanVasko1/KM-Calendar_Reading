@@ -46,59 +46,59 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Frame_Tab_Gen_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_Gen_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    General_AppearanceWidget = W_Settings.Settings_General_Appearance(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
-    Program_User_Type_Widget = W_Settings.Settings_User_Widget(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
-    Sharepoint_Widget = W_Settings.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
-    Exchange_Widget = W_Settings.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
-    Formats_Widget = W_Settings.Settings_General_Formats(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Gen_Column_C, GUI_Level_ID=2)
+    General_AppearanceWidget = W_Settings.Settings_General_Appearance(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
+    Program_User_Type_Widget = W_Settings.Settings_User_Widget(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
+    Sharepoint_Widget = W_Settings.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
+    Exchange_Widget = W_Settings.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
+    Formats_Widget = W_Settings.Settings_General_Formats(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_C, GUI_Level_ID=2)
 
     # ---------- Calendar Page ---------- #
     Frame_Tab_Cal_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_Cal_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_Cal_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    Calendar_Working_Widget = W_Settings.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Cal_Column_A, GUI_Level_ID=2)
-    Calendar_Vacation_Widget = W_Settings.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Cal_Column_B, GUI_Level_ID=2)
-    Calendar_Start_End_Widget = W_Settings.Settings_Calendar_Start_End_Time(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Cal_Column_C, GUI_Level_ID=2)
+    Calendar_Working_Widget = W_Settings.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_A, GUI_Level_ID=2)
+    Calendar_Vacation_Widget = W_Settings.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_B, GUI_Level_ID=2)
+    Calendar_Start_End_Widget = W_Settings.Settings_Calendar_Start_End_Time(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_C, GUI_Level_ID=2)
 
     # ---------- Event-General Page ---------- #
     Frame_Tab_E_G_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_G, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_E_G_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_G, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_E_G_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_G, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    Event_Skip_Widget = W_Settings.Settings_Events_General_Skip(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_A, GUI_Level_ID=2)
-    Event_Join_Widget = W_Settings.Settings_Join_events(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_B, GUI_Level_ID=2)
-    Event_Split_Widget = W_Settings.Settings_Events_Split(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_B, GUI_Level_ID=2)
-    Event_Parallel_Widget = W_Settings.Settings_Parallel_events(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_G_Column_C, GUI_Level_ID=2)
+    Event_Skip_Widget = W_Settings.Settings_Events_General_Skip(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_G_Column_A, GUI_Level_ID=2)
+    Event_Join_Widget = W_Settings.Settings_Join_events(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_G_Column_B, GUI_Level_ID=2)
+    Event_Split_Widget = W_Settings.Settings_Events_Split(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_G_Column_B, GUI_Level_ID=2)
+    Event_Parallel_Widget = W_Settings.Settings_Parallel_events(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_G_Column_C, GUI_Level_ID=2)
 
     # ---------- Event-Special Page ---------- #
     Frame_Tab_E_Spec_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_Spec, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_E_Spec_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_Spec, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
     Frame_Tab_E_Spec_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_Spec, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    Event_Lunch_Widget = W_Settings.Settings_Events_General_Lunch(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_A, GUI_Level_ID=2)
-    Event_Vacation_Widget = W_Settings.Settings_Events_General_Vacation(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_A, GUI_Level_ID=2)
-    Event_SickDay_Widget = W_Settings.Settings_Events_General_SickDay(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_B, GUI_Level_ID=2)
-    Event_HomeOffice_Widget = W_Settings.Settings_Events_General_HomeOffice(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_B, GUI_Level_ID=2)
-    Event_Private_Widget = W_Settings.Settings_Events_General_Private(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_Spec_Column_C, GUI_Level_ID=2)
+    Event_Lunch_Widget = W_Settings.Settings_Events_General_Lunch(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_Spec_Column_A, GUI_Level_ID=2)
+    Event_Vacation_Widget = W_Settings.Settings_Events_General_Vacation(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_Spec_Column_A, GUI_Level_ID=2)
+    Event_SickDay_Widget = W_Settings.Settings_Events_General_SickDay(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_Spec_Column_B, GUI_Level_ID=2)
+    Event_HomeOffice_Widget = W_Settings.Settings_Events_General_HomeOffice(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_Spec_Column_B, GUI_Level_ID=2)
+    Event_Private_Widget = W_Settings.Settings_Events_General_Private(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_Spec_Column_C, GUI_Level_ID=2)
 
     # ---------- Event-Empty Page ---------- #
     Frame_Tab_E_E_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_E, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    Event_Empty_General_Widget = W_Settings.Settings_Events_Empty_Generally(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_E_Column_A, GUI_Level_ID=2)
-    Event_Scheduler_Widget = W_Settings.Settings_Events_Empty_Schedule(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_E_Column_A, GUI_Level_ID=2)
+    Event_Empty_General_Widget = W_Settings.Settings_Events_Empty_Generally(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_E_Column_A, GUI_Level_ID=2)
+    Event_Scheduler_Widget = W_Settings.Settings_Events_Empty_Schedule(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_E_Column_A, GUI_Level_ID=2)
 
     # ---------- Event-AutoFill Page ---------- #
     Frame_Tab_E_A_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_E_A, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-    Event_AutoFiller_Widget = W_Settings.Settings_Events_AutoFill(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_A_Column_A, GUI_Level_ID=2)
-    Event_Activity_Correction_Widget = W_Settings.Settings_Events_Activity_Correction(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_E_A_Column_A, GUI_Level_ID=2)
+    Event_AutoFiller_Widget = W_Settings.Settings_Events_AutoFill(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_A_Column_A, GUI_Level_ID=2)
+    Event_Activity_Correction_Widget = W_Settings.Settings_Events_Activity_Correction(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_E_A_Column_A, GUI_Level_ID=2)
 
     if User_Type == "Manager":
         # ---------- Managed Team ---------- #
         Frame_Tab_Team_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Team, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
 
-        Managed_Team_Widget = W_Settings.Settings_My_Team(Settings=Settings, Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2)
+        Managed_Team_Widget = W_Settings.Settings_My_Team(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2)
     else:
         pass
     

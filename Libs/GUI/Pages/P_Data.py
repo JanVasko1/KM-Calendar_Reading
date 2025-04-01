@@ -9,7 +9,7 @@ import Libs.GUI.Elements as Elements
 import Libs.Data_Functions as Data_Functions
 import Libs.CustomTkinter_Functions as CustomTkinter_Functions
 
-def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFrame):
+def Page_Data(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTk|CTkFrame):
     # ------------------------- Local Functions -------------------------#
     global Info_current_row, Info_Table_Rows, Events_List_Header
     Info_current_row = 0
@@ -82,11 +82,11 @@ def Page_Data(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|CTkFr
     def Data_Upload(Events: DataFrame):
         SP_Password = CustomTkinter_Functions.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         if SP_Password == None:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Cannot upload, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
-            Sharepoint.Upload(Events=Events, SP_Password=SP_Password)
-            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Successfully uploaded to Sharepoint.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+            Sharepoint.Upload(Settings=Settings, Configuration=Configuration, window=window, Events=Events, SP_Password=SP_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Successfully uploaded to Sharepoint.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
     # ------------------------- Main Functions -------------------------#
     # Divide Working Page into 2 parts

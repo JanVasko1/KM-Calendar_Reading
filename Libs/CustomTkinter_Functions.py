@@ -1,6 +1,6 @@
 # Import Libraries
 import pyautogui
-from customtkinter import CTkButton, get_appearance_mode
+from customtkinter import CTk, CTkButton, get_appearance_mode
 from CTkTable import CTkTable
 import Libs.GUI.Elements as Elements
 import Libs.Defaults_Lists as Defaults_Lists
@@ -34,7 +34,7 @@ def Count_coordinate_for_new_window(Clicked_on: CTkButton, New_Window_width: int
     # Top middle coordinate for new window
     return [Window_X + Clicked_On_X_difference, Window_Y + Clicked_on_Y_difference + 5]
 
-def Insert_Data_to_Table(Settings: dict, Configuration: dict, Table: CTkTable, JSON_path: list) -> None:
+def Insert_Data_to_Table(Settings: dict, Configuration: dict|None, window: CTk|None, Table: CTkTable, JSON_path: list) -> None:
     # Delete data in table just keep header
     Table_rows = Table.cget("row")
 
@@ -60,4 +60,11 @@ def Insert_Data_to_Table(Settings: dict, Configuration: dict, Table: CTkTable, J
             Table.add_row(index=row_index, values=[data])
             row_index += 1
     else:
-        Elements.Get_MessageBox(Configuration=Configuration, title=f"It is not possible to insert data to table. Data are uploaded, just restart application.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title=f"It is not possible to insert data to table. Data are uploaded, just restart application.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+
+# ------------------ Blocking Fields Functions ------------------ #
+def OptionMenu_Blocking(Values: list, Freeze_fields: list) -> dict:
+    Field_Blocking_dict = dict()
+    for Value_index, Value in enumerate(Values):
+        Field_Blocking_dict[Value] = Freeze_fields[Value_index]      
+    return Field_Blocking_dict

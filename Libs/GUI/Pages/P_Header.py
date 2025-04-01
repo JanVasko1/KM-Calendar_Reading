@@ -4,7 +4,7 @@ import json
 from glob import glob
 
 import pywinstyles
-from customtkinter import CTkFrame, CTkButton, IntVar, set_appearance_mode
+from customtkinter import CTk, CTkFrame, CTkButton, IntVar, set_appearance_mode
 from Libs.GUI.CTk.ctk_scrollable_dropdown import CTkScrollableDropdown as CTkScrollableDropdown 
 from tkhtmlview import HTMLLabel
 from markdown import markdown
@@ -19,7 +19,7 @@ import Libs.Data_Functions as Data_Functions
 from Libs.Download.Exchange import Exchange_OAuth_Test
 
 # ------------------------------------------------------------------------------------------------------------------------------------ Header ------------------------------------------------------------------------------------------------------------------------------------ #
-def Get_Header(Settings: dict, Configuration: dict, Frame: CTkFrame) -> CTkFrame:
+def Get_Header(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame) -> CTkFrame:
     User_Name = Settings["0"]["General"]["User"]["Name"]
     User_ID = Settings["0"]["General"]["User"]["Code"]
     User_Email = Settings["0"]["General"]["User"]["Email"]
@@ -83,22 +83,22 @@ def Get_Header(Settings: dict, Configuration: dict, Frame: CTkFrame) -> CTkFrame
         SP_Password = CustomTkinter_Functions.Dialog_Window_Request(Configuration=Configuration, title="Sharepoint Login", text="Write your password", Dialog_Type="Password")
         
         if SP_Password == None:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             import Libs.Sharepoint.Sharepoint as Sharepoint
-            Sharepoint.Get_Project_and_Activity(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
-            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+            Sharepoint.Get_Project_and_Activity(Settings=Settings, Configuration=Configuration, window=window, SP_Password=SP_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Project and Activity downloaded from Sharepoint.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
     def Upload_Project_Activities():
         Exchange_Password = CustomTkinter_Functions.Dialog_Window_Request(Configuration=Configuration, title="Exchange Login", text="Write your password", Dialog_Type="Password")
         
         if Exchange_Password == None:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Cannot download, because of missing Password", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         else:
             import Libs.Download.Exchange as Exchange
-            Exchange.Push_Project(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
-            Exchange.Push_Activity(Settings=Settings, Configuration=Configuration, Exchange_Password=Exchange_Password)
-            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+            Exchange.Push_Project(Settings=Settings, Configuration=Configuration, window=window, Exchange_Password=Exchange_Password)
+            Exchange.Push_Activity(Settings=Settings, Configuration=Configuration, window=window, Exchange_Password=Exchange_Password)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Project and Activity uploaded to Exchange. Give MS time to upload changes and restart Outlook.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
     def Save_Settings():
         # Export Settings into Downloads Folder - backup
@@ -108,13 +108,13 @@ def Get_Header(Settings: dict, Configuration: dict, Frame: CTkFrame) -> CTkFrame
         Save_Path = File_Manipulation.Get_Downloads_File_Path(File_Name="TimeSheets_Settings", File_postfix="json")
         with open(file=Save_Path, mode="w") as file: 
             json.dump(Export_dict, file)
-        Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Your settings file has been exported to your downloads folder.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
     def Load_Settings(Button_Load_Settings: CTkButton):
         def drop_func(file):
-            Data_Functions.Import_Data(Settings=Settings, Configuration=Configuration, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
+            Data_Functions.Import_Data(Settings=Settings, Configuration=Configuration, window=window, import_file_path=file, Import_Type="Settings", JSON_path=["0"], Method="Overwrite")
             Import_window.destroy()
-            Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Your settings file has been imported. You can close Window and restart app.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Your settings file has been imported. You can close Window and restart app.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
         
         Import_window_geometry = (200, 200)
         Top_middle_point = CustomTkinter_Functions.Count_coordinate_for_new_window(Clicked_on=Button_Load_Settings, New_Window_width=Import_window_geometry[0])

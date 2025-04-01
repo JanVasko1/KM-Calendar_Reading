@@ -8,9 +8,9 @@ from  warnings import filterwarnings
 filterwarnings('ignore')
 
 import Libs.Pandas_Functions as Pandas_Functions
-import Libs.Defaults_Lists as Defaults_Lists
-
 import Libs.GUI.Elements as Elements
+
+from customtkinter import CTk
 
 # ---------------------------------------------------------- Local Functions ---------------------------------------------------------- #
 def Get_General_Event(Settings: json, Gen_Event_Counter: int) -> str:
@@ -319,7 +319,7 @@ def Fill_Events(Settings: dict, Events: DataFrame) -> DataFrame:
 
     return Cumulated_Events
 
-def Fill_Events_Coverage(Settings: dict, Configuration: dict, Events: DataFrame) -> DataFrame:
+def Fill_Events_Coverage(Settings: dict, Configuration: dict, window: CTk|None, Events: DataFrame) -> DataFrame:
     # Get Coverage for setup event 2 list 
     Fill_Event_desc_list = []
     Fill_Event_project_list = []
@@ -423,5 +423,5 @@ def Fill_Events_Coverage(Settings: dict, Configuration: dict, Events: DataFrame)
 
         return Events
     else:
-        Elements.Get_MessageBox(Configuration=Configuration, title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Sum of all Coverage is not 100%, please re-setup them in Setup / Events - Empty/Scheduler.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
         return Events

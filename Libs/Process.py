@@ -38,14 +38,14 @@ def Progress_Bar_set(window: CTk, Progress_Bar: CTkProgressBar, Progress_text: C
     Progress_text.configure(text=f"{Label}")
     window.update_idletasks()
 
-def Events_Summary_Save(Settings: dict, Events_df: DataFrame, Events_Registered_df: DataFrame) -> DataFrame:
+def Events_Summary_Save(Settings: dict, Configuration: dict, window: CTk|None, Events_df: DataFrame, Events_Registered_df: DataFrame) -> DataFrame:
     Sharepoint_Time_Format = Settings["0"]["General"]["Formats"]["Sharepoint_Time"]
     Sharepoint_Time_Format1 = Settings["0"]["General"]["Formats"]["Sharepoint_Time1"]
     Time_Format = Settings["0"]["General"]["Formats"]["Time"]
     User_ID = Settings["0"]["General"]["User"]["Code"]
 
     # Delete File before generation
-    File_Manipulation.Delete_File(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"))
+    File_Manipulation.Delete_File(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\Downloads\\Events.csv"))
 
     # Calculation
     Events_df["Personnel number"] = User_ID
@@ -78,14 +78,14 @@ def Download_and_Process(Settings: dict, Configuration: dict, window: CTk, Progr
     
     # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
-    Events, Events_Registered_df, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Download_canceled = Downloader.Download_Events(Settings=Settings, Configuration=Configuration, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
+    Events, Events_Registered_df, Report_Period_Active_Days, Report_Period_Start, Report_Period_End, Download_canceled = Downloader.Download_Events(Settings=Settings, Configuration=Configuration, window=window, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, SP_Date_From_Method=SP_Date_From_Method, SP_Date_To_Method=SP_Date_To_Method, SP_Man_Date_To=SP_Man_Date_To, SP_Password=SP_Password, Exchange_Password=Exchange_Password, Input_Start_Date=Input_Start_Date, Input_End_Date=Input_End_Date)
     
     if Download_canceled == False:
         Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         # ----------------------- Process Events ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Overnight Events") 
-        Events = Divide_Events.OverMidnight_Events(Settings=Settings, Configuration=Configuration, Events=Events)
+        Events = Divide_Events.OverMidnight_Events(Settings=Settings, Configuration=Configuration, window=window, Events=Events)
         Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Skip Events") 
@@ -97,11 +97,11 @@ def Download_and_Process(Settings: dict, Configuration: dict, window: CTk, Progr
         Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Too long Empty Events") 
-        Events = Divide_Events.Empty_Split_Events(Settings=Settings, Configuration=Configuration, Events=Events)
+        Events = Divide_Events.Empty_Split_Events(Settings=Settings, Configuration=Configuration, window=window, Events=Events)
         Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Fill Empty Coverage") 
-        Events = Fill_Empty_Place.Fill_Events_Coverage(Settings=Settings, Configuration=Configuration, Events=Events)
+        Events = Fill_Empty_Place.Fill_Events_Coverage(Settings=Settings, Configuration=Configuration, window=window, Events=Events)
         Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True])
 
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Location set") 
@@ -148,14 +148,14 @@ def Download_and_Process(Settings: dict, Configuration: dict, window: CTk, Progr
         Events = Join_Events.Join_Events(Settings=Settings, Events=Events)
         Events = Pandas_Functions.Dataframe_sort(Sort_Dataframe=Events, Columns_list=["Start_Date", "Start_Time"], Accenting_list=[True, True]) 
 
-        Cumulated_Events = Events_Summary_Save(Settings=Settings, Events_df=Events, Events_Registered_df=Events_Registered_df)
+        Cumulated_Events = Events_Summary_Save(Settings=Settings, Configuration=Configuration, window=window, Events_df=Events, Events_Registered_df=Events_Registered_df)
 
         # ----------------------- Summary Dataframe ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-        Summary.Generate_Summary(Settings=Settings, Configuration=Configuration, Calculation_source="Current", Events=Cumulated_Events,  Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Team_Member_ID=None)
+        Summary.Generate_Summary(Settings=Settings, Configuration=Configuration, window=window, Calculation_source="Current", Events=Cumulated_Events,  Report_Period_Active_Days=Report_Period_Active_Days, Report_Period_Start=Report_Period_Start, Report_Period_End=Report_Period_End, Team_Member_ID=None)
 
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Done", value=1) 
-        Elements.Get_MessageBox(Configuration=Configuration, title="Success", message=f"Successfully downloaded and processed new data.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message=f"Successfully downloaded and processed new data.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
     else:
         Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Canceled", value=0) 
 
@@ -174,7 +174,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
     Events_History_df = DataFrame()
 
     # Delete previous files 
-    File_Manipulation.Delete_All_Files(file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\History\\"), include_hidden=True)
+    File_Manipulation.Delete_All_Files(Configuration=Configuration, window=window, file_path=Data_Functions.Absolute_path(relative_path=f"Operational\\History\\"), include_hidden=True)
 
     # Progress bar
     Download_Periods_Count = len(Download_Periods)
@@ -182,7 +182,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
 
     # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
-    s_aut = Authentication.Authentication(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
+    s_aut = Authentication.Authentication(Settings=Settings, Configuration=Configuration, window=window, SP_Password=SP_Password)
     for period in Download_Periods:
         History_Year = str(period[0])
         History_month = f"0{period[1]}" if period[1] < 10 else str(period[1])
@@ -210,7 +210,7 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
             Events_Month_df = DataFrame(Events_Month_df[mask1 & mask2])
             Events_History_df = concat(objs=[Events_History_df, Events_Month_df], axis=0)
         else:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Cannot download history period {History_Year}-{History_month} from Sharepoint.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
     
     # Dates/Time correct
     # Date
@@ -239,8 +239,8 @@ def Pre_Periods_Download_and_Process(Settings: dict, Configuration: dict, window
 
     # ----------------------- Summary Dataframe ----------------------- #
     Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-    Summary.Generate_Summary(Settings=Settings, Configuration=Configuration, Calculation_source="History", Events=Events_History_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=None)
-    Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Successfully downloaded and processed your history.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+    Summary.Generate_Summary(Settings=Settings, Configuration=Configuration, window=window, Calculation_source="History", Events=Events_History_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=None)
+    Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Successfully downloaded and processed your history.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
 
 def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CTk, Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, SP_Password: str) -> None:
@@ -265,7 +265,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
 
     # ----------------------- Download Events ----------------------- #
     Progress_Bar_set(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Downloading", value=0) 
-    s_aut = Authentication.Authentication(Settings=Settings, Configuration=Configuration, SP_Password=SP_Password)
+    s_aut = Authentication.Authentication(Settings=Settings, Configuration=Configuration, window=window, SP_Password=SP_Password)
 
     # Downloader of Time Sheet of each team
     for team in Teams_list:
@@ -288,7 +288,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
             mask2 = Events_Member_df["Personnel number"] != "None"
             Events_Member_df = DataFrame(Events_Member_df[mask1 & mask2])
         else:
-            Elements.Get_MessageBox(Configuration=Configuration, title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"Not possible to download TimeSheets from Sharepoint for {team}.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
         # Dates/Time correct
         # Date
@@ -330,7 +330,7 @@ def My_Team_Download_and_Process(Settings: dict, Configuration: dict, window: CT
 
         # ----------------------- Summary Dataframe ----------------------- #
         Progress_Bar_step(window=window, Progress_Bar=Progress_Bar, Progress_text=Progress_text, Label="Summary") 
-        Summary.Generate_Summary(Settings=Settings, Configuration=Configuration, Calculation_source="Team", Events=Member_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=Team_Member_ID)
-        Elements.Get_MessageBox(Configuration=Configuration, title="Success", message="Successfully downloaded and processed all team members.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
+        Summary.Generate_Summary(Settings=Settings, Configuration=Configuration, window=window, Calculation_source="Team", Events=Member_df, Report_Period_Active_Days=None, Report_Period_Start=None, Report_Period_End=None, Team_Member_ID=Team_Member_ID)
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message="Successfully downloaded and processed all team members.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
         

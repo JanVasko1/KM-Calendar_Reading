@@ -173,11 +173,11 @@ class SidebarApp:
 
     def Show_Dashboard_Page(self) -> None:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
-        P_DashBoard.Page_Dashboard(Settings=self.Settings, Configuration=self.Configuration, Frame=self.Frame_Work_Area_Main)
+        P_DashBoard.Page_Dashboard(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
         
     def Show_Team_Dashboard_Page(self) -> None:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
-        P_My_Team.Page_User_Dashboard(Settings=self.Settings, Configuration=self.Configuration, Frame=self.Frame_Work_Area_Main)
+        P_My_Team.Page_User_Dashboard(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
         
     def Show_Data_Page(self) -> None:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
@@ -185,7 +185,7 @@ class SidebarApp:
         
     def Show_Information_Page(self) -> None:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
-        P_Information.Page_Information(Settings=self.Settings, Configuration=self.Configuration, Frame=self.Frame_Work_Area_Main)
+        P_Information.Page_Information(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
         
     def Show_Settings_Page(self) -> None:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)

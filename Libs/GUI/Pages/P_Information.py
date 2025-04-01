@@ -8,7 +8,7 @@ import Libs.GUI.Elements as Elements
 import Libs.CustomTkinter_Functions as CustomTkinter_Functions
 import Libs.Data_Functions as Data_Functions
 
-def Page_Information(Settings: dict, Configuration: dict, Frame: CTk|CTkFrame):
+def Page_Information(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTk|CTkFrame):
     Work_Area_Detail_Font = Configuration["Labels"]["Main"]["text_color"]
     Work_Area_Detail_Background = list(Configuration["Global_Appearance"]["GUI_Level_ID"]["1"]["fg_color"])
 
