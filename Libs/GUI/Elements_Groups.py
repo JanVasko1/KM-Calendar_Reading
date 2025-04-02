@@ -150,13 +150,13 @@ def Get_Widget_Input_row(Settings: dict, Configuration:dict, window: CTk|None, F
     Frame_Value.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
     if Field_Type == "Input_Normal":
-        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Value, Field_Size="Normal", Validation=Validation)
+        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Value, Field_Size="Normal", Validation=Validation)
         Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Password_Normal":
         Field_Normal = Elements.Get_Password_Normal(Configuration=Configuration, Frame=Frame_Value)
         Field_Normal.pack(side="left", fill="x", expand=True)
     elif Field_Type == "Input_Small":
-        Field_Small = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Value, Field_Size="Small", Validation=Validation)
+        Field_Small = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Value, Field_Size="Small", Validation=Validation)
         Frame_Area.configure(width=300)
         Field_Small.pack(side="left", fill="none")
     elif Field_Type == "Input_RadioButton":
@@ -169,7 +169,7 @@ def Get_Widget_Input_row(Settings: dict, Configuration:dict, window: CTk|None, F
         Input_Check_Box = Elements.Get_CheckBox(Configuration=Configuration, Frame=Frame_Value)
         Input_Check_Box.pack(side="left", fill="x", expand=True)
     elif (Field_Type == "Date_Picker") or (Field_Type == "Color_Picker"):
-        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Value, Field_Size="Normal", Validation=Validation)
+        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Value, Field_Size="Normal", Validation=Validation)
         if Field_Type == "Date_Picker":
             Button_Drop_Down = Elements.Get_Button_Icon(Configuration=Configuration, Frame=Frame_Value, Icon_Name="calendar-days", Icon_Size="Entry_DropDown", Button_Size="Tiny")
         elif Field_Type == "Color_Picker":
@@ -201,7 +201,7 @@ def Get_Widget_Button_row(Configuration:dict, Frame: CTkFrame, Field_Frame_Type:
 
     return Frame_Area
 
-def Get_Double_Field_Input(Settings: dict, Configuration:dict, Frame: CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
+def Get_Double_Field_Input(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Field_Frame_Type: str, Label: str,  Validation: str|None = None) -> CTkFrame:
     # Build one line for two input field
     Frame_Area = Elements.Get_Widget_Field_Frame_Area(Configuration=Configuration, Frame=Frame, Field_Frame_Type=Field_Frame_Type)
     Frame_Area.pack_propagate(flag=False)
@@ -225,7 +225,7 @@ def Get_Double_Field_Input(Settings: dict, Configuration:dict, Frame: CTkFrame, 
     Frame_Value1.pack_propagate(flag=False)
     Frame_Value1.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
-    Field_Small1 = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Value1, Field_Size="Small", Validation=Validation)
+    Field_Small1 = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Value1, Field_Size="Small", Validation=Validation)
     Field_Small1.pack(side="right", fill="none")
 
     # Frame Space between Label and Value
@@ -241,7 +241,7 @@ def Get_Double_Field_Input(Settings: dict, Configuration:dict, Frame: CTkFrame, 
     Frame_Value2.pack_propagate(flag=False)
     Frame_Value2.pack(side="left", fill="x", expand=True, padx=0, pady=0)
 
-    Field_Small2 = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Value2, Field_Size="Small", Validation=Validation)
+    Field_Small2 = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Value2, Field_Size="Small", Validation=Validation)
     Field_Small2.pack(side="left", fill="none")
 
     return Frame_Area
@@ -354,7 +354,7 @@ def Get_Pop_up_window(Configuration:dict, title: str, max_width: int, max_height
 
     return Pop_Up_Window
 
-def My_Dialog_Window(Settings: dict, Configuration:dict, Clicked_on_Button: CTkButton, title: str, tooltip: str, width: int, height: int, text: str, Password: bool, Fixed: bool, GUI_Level_ID: int|None = None) -> CTkFrame:
+def My_Dialog_Window(Settings: dict, Configuration:dict, window: CTk|None, Clicked_on_Button: CTkButton, title: str, tooltip: str, width: int, height: int, text: str, Password: bool, Fixed: bool, GUI_Level_ID: int|None = None) -> CTkFrame:
     # TODO --> must be finished to be used instead of Elements.Get_DialogWindow
     def Confirm_Choice(Field_Normal: CTkEntry):
         return Field_Normal.get()
@@ -376,7 +376,7 @@ def My_Dialog_Window(Settings: dict, Configuration:dict, Clicked_on_Button: CTkB
     Label_text.pack(side="top", fill="none", expand=True, padx=10, pady=5)
 
     if Password == False:
-        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, Frame=Frame_Body, Field_Size="Normal")
+        Field_Normal = Elements.Get_Entry_Field(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Size="Normal")
         Field_Normal.pack(side="top", fill="none", expand=True, padx=10, pady=5)
     elif Password == True:
         Field_Normal = Elements.Get_Password_Normal(Configuration=Configuration, Frame=Frame_Body)

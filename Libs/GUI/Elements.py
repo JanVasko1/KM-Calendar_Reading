@@ -190,7 +190,7 @@ def Get_Button_Chart(Configuration:dict, Frame: CTkFrame, Button_Size: str) -> C
     return Frame_Button
 
 # ---------------------------------------------- Fields ----------------------------------------------# 
-def Get_Entry_Field(Settings: dict, Configuration:dict, Frame: CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
+def Get_Entry_Field(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Field_Size: str, Validation: str|None = None) -> CTkEntry:
     Configuration_Field = Configuration["Fields"]["Entry"][f"{Field_Size}"]
 
     Field = CTkEntry(

@@ -9,7 +9,7 @@
             "Colors": {
                 "Accent": {
                     "Accent_Color_Mode": "App Default",
-                    "Accent_Color_Manual": "#446b80",
+                    "Accent_Color_Manual": "",
                     "Accent_Color_List": [
                         "Windows",
                         "Manual",
@@ -18,7 +18,7 @@
                 },
                 "Hover": {
                     "Hover_Color_Mode": "Accent Lighter",
-                    "Hover_Color_Manual": "#446b80",
+                    "Hover_Color_Manual": "",
                     "Hover_Color_List": [
                         "Accent Lighter",
                         "Manual",
@@ -1810,8 +1810,8 @@
             "icon_size": 30,
             "font_size": 30,
             "font_color": [
-                "#A7A7A7",
-                "#A7A7A7"
+                "#949A9F",
+                "#949A9F"
             ],
             "outline_width": 0,
             "outline_color": [

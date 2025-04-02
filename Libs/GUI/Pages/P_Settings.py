@@ -43,22 +43,28 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
 
     # ---------- General ---------- #
     Frame_Tab_Gen_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Gen_Column_A.pack_propagate(flag=False)
     Frame_Tab_Gen_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Gen_Column_B.pack_propagate(flag=False)
     Frame_Tab_Gen_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Gen, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Gen_Column_C.pack_propagate(flag=False)
 
-    General_AppearanceWidget = W_Settings.Settings_General_Appearance(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
-    Program_User_Type_Widget = W_Settings.Settings_User_Widget(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
+    Appearance_Widget = W_Settings.Settings_General_Appearance(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
+    User_Widget = W_Settings.Settings_User_Widget(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_A, GUI_Level_ID=2)
     Sharepoint_Widget = W_Settings.Settings_General_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
     Exchange_Widget = W_Settings.Settings_General_Exchange(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_B, GUI_Level_ID=2)
     Formats_Widget = W_Settings.Settings_General_Formats(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Gen_Column_C, GUI_Level_ID=2)
 
     # ---------- Calendar Page ---------- #
     Frame_Tab_Cal_Column_A = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Cal_Column_A.pack_propagate(flag=False)
     Frame_Tab_Cal_Column_B = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Cal_Column_B.pack_propagate(flag=False)
     Frame_Tab_Cal_Column_C = Elements.Get_Frame(Configuration=Configuration, Frame=Tab_Cal, Frame_Size="Work_Area_Columns", GUI_Level_ID=1)
+    Frame_Tab_Cal_Column_C.pack_propagate(flag=False)
 
-    Calendar_Working_Widget = W_Settings.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_A, GUI_Level_ID=2)
-    Calendar_Vacation_Widget = W_Settings.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_B, GUI_Level_ID=2)
+    My_Calendar_Widget = W_Settings.Settings_Calendar_Working_Hours(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_A, GUI_Level_ID=2)
+    KM_Calendar_Widget = W_Settings.Settings_Calendar_Vacation(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_B, GUI_Level_ID=2)
     Calendar_Start_End_Widget = W_Settings.Settings_Calendar_Start_End_Time(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Cal_Column_C, GUI_Level_ID=2)
 
     # ---------- Event-General Page ---------- #
@@ -108,18 +114,18 @@ def Page_Settings(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Frame_Tab_Gen_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
     Frame_Tab_Gen_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
     Frame_Tab_Gen_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
-    General_AppearanceWidget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Program_User_Type_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Exchange_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Formats_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Appearance_Widget.Show()
+    User_Widget.Show()
+    Sharepoint_Widget.Show()
+    Exchange_Widget.Show()
+    Formats_Widget.Show()
 
     Frame_Tab_Cal_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
     Frame_Tab_Cal_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
     Frame_Tab_Cal_Column_C.pack(side="left", fill="both", expand=True, padx=5, pady=5)
-    Calendar_Working_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Calendar_Vacation_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Calendar_Start_End_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    My_Calendar_Widget.Show()
+    KM_Calendar_Widget.Show()
+    Calendar_Start_End_Widget.Show()
 
     Frame_Tab_E_G_Column_A.pack(side="left", fill="both", expand=True, padx=5, pady=5)
     Frame_Tab_E_G_Column_B.pack(side="left", fill="both", expand=True, padx=5, pady=5)
