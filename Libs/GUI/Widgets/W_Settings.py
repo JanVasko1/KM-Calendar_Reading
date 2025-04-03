@@ -9,7 +9,7 @@ import Libs.File_Manipulation as File_Manipulation
 
 import Libs.GUI.Elements_Groups as Elements_Groups
 import Libs.GUI.Elements as Elements
-from Libs.GUI.Widgets.Widgets_Class import WidgetFrame, WidgetRow_CheckBox, WidgetRow_Input_Entry, WidgetRow_Double_Input_Entry, WidgetRow_OptionMenu, Widget_Section_Row, WidgetRow_Color_Picker, Widget_Buttons_Row
+from Libs.GUI.Widgets.Widgets_Class import WidgetFrame, WidgetTableFrame, WidgetRow_CheckBox, WidgetRow_Input_Entry, WidgetRow_Double_Input_Entry, WidgetRow_OptionMenu, Widget_Section_Row, WidgetRow_Color_Picker, Widget_Buttons_Row
 
 import pywinstyles
 
@@ -69,7 +69,16 @@ def Retrieve_Activity_based_on_Type(Settings: dict, Configuration:dict, Project_
     Activity_Option_Var.set(value="")
     Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Activity_Option_Var, values=Activity_List, command=None, GUI_Level_ID=GUI_Level_ID)
 
-def Calculate_duration(Settings: dict, Configuration: dict, window: CTk|None, Entry_Field: CTkEntry, Lunch_Brake_Duration: int, Calendar_Type: str, Monday_Start: CTkEntry, Monday_End: CTkEntry, Tuesday_Start: CTkEntry, Tuesday_End: CTkEntry, Wednesday_Start: CTkEntry, Wednesday_End: CTkEntry, Thursday_Start: CTkEntry, Thursday_End: CTkEntry, Friday_Start: CTkEntry, Friday_End: CTkEntry, Saturday_Start: CTkEntry, Saturday_End: CTkEntry, Sunday_Start: CTkEntry, Sunday_End: CTkEntry) -> None:
+def Check_Time_Continuation(Settings: dict, Configuration: dict, window: CTk|None, Format_Time: str, Start_Time: str, End_Time: str, Week_Day: str, Type: str) -> bool:
+    Start_Time_dt = datetime.strptime(Start_Time, Format_Time)
+    End_Time_dt = datetime.strptime(End_Time, Format_Time)
+    if Start_Time_dt >= End_Time_dt:
+        Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"You entered same or sooner time as Start time, this is not compatible, please correct it. This value is not to be saved.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
+    else:
+        Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "General", "Calendar", f"{Week_Day}", f"{Type}", "End_Time"], Information=End_Time)
+
+
+def Calculate_duration(Settings: dict, Configuration: dict, window: CTk|None, Entry_Field: CTkEntry, Lunch_Brake_Duration: int, Calendar_Type: str, Monday_Start: str, Monday_End: str, Tuesday_Start: str, Tuesday_End: str, Wednesday_Start: str, Wednesday_End: str, Thursday_Start: str, Thursday_End: str, Friday_Start: str, Friday_End: str, Saturday_Start: str, Saturday_End: str, Sunday_Start: str, Sunday_End: str) -> None:
     Format_Time = Settings["0"]["General"]["Formats"]["Time"]
     Monday_Working_day = Settings["0"]["General"]["Calendar"]["Monday"]["Working_Day"]
     Tuesday_Working_day = Settings["0"]["General"]["Calendar"]["Tuesday"]["Working_Day"]
@@ -99,13 +108,13 @@ def Calculate_duration(Settings: dict, Configuration: dict, window: CTk|None, En
         return Duration
     
     Cumulated_Duration = 0
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Monday_Start.get(), End_Time=Monday_End.get(), Week_Day="Monday", Calendar_Type=Calendar_Type, Working_Day=Monday_Working_day)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Tuesday_Start.get(), End_Time=Tuesday_End.get(), Week_Day="Tuesday", Calendar_Type=Calendar_Type, Working_Day=Tuesday_Working_day)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Wednesday_Start.get(), End_Time=Wednesday_End.get(), Week_Day="Wednesday", Calendar_Type=Calendar_Type, Working_Day=Wednesday_Working_day)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Thursday_Start.get(), End_Time=Thursday_End.get(), Week_Day="Thursday", Calendar_Type=Calendar_Type, Working_Day=Thursday_Working_day)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Friday_Start.get(), End_Time=Friday_End.get(), Week_Day="Friday", Calendar_Type=Calendar_Type, Working_Day=Friday_Working_day)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Saturday_Start.get(), End_Time=Saturday_End.get(), Week_Day="Saturday", Calendar_Type=Calendar_Type, Working_Day=Saturday_Working_day)
-    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Sunday_Start.get(), End_Time=Sunday_End.get(), Week_Day="Sunday", Calendar_Type=Calendar_Type, Working_Day=Sunday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Monday_Start, End_Time=Monday_End, Week_Day="Monday", Calendar_Type=Calendar_Type, Working_Day=Monday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Tuesday_Start, End_Time=Tuesday_End, Week_Day="Tuesday", Calendar_Type=Calendar_Type, Working_Day=Tuesday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Wednesday_Start, End_Time=Wednesday_End, Week_Day="Wednesday", Calendar_Type=Calendar_Type, Working_Day=Wednesday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Thursday_Start, End_Time=Thursday_End, Week_Day="Thursday", Calendar_Type=Calendar_Type, Working_Day=Thursday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Friday_Start, End_Time=Friday_End, Week_Day="Friday", Calendar_Type=Calendar_Type, Working_Day=Friday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Saturday_Start, End_Time=Saturday_End, Week_Day="Saturday", Calendar_Type=Calendar_Type, Working_Day=Saturday_Working_day)
+    Cumulated_Duration = Cumulated_Duration + Calculate_day_duration(Start_Time=Sunday_Start, End_Time=Sunday_End, Week_Day="Sunday", Calendar_Type=Calendar_Type, Working_Day=Sunday_Working_day)
 
     Hours = Cumulated_Duration // 60
     Minutes = Cumulated_Duration - (Hours * 60) 
@@ -351,32 +360,31 @@ def Settings_Calendar_Working_Hours(Settings: dict, Configuration: dict, window:
     Total_Work_Duration =  Settings["0"]["General"]["Calendar"]["Totals"]["Work"]
 
     # ------------------------- Local Functions ------------------------#
-    def Check_Time_Continuation(Settings: dict, Configuration: dict, window: CTk|None, Format_Time: str, Start_Time: CTkEntry, End_Time: CTkEntry, Week_Day: str, Type: str) -> bool:
-        Start_Time_dt = datetime.strptime(Start_Time.get(), Format_Time)
-        End_Time_dt = datetime.strptime(End_Time.get(), Format_Time)
-        if Start_Time_dt >= End_Time_dt:
-            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"You entered same or sooner time as Start time, this is not compatible, please correct it. This value is not to be saved.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-        else:
-            pass
-
     # ------------------------- Main Functions -------------------------#
     # Widget
     My_Calendar_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Calendar - My own calendar", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Setup of my general working hours I usually have. Used for Utilization forecast. Lunch brake automatically subtracted.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    # TODO --> Finish to call local function Check_Time_Continuation --> udělat podle Check_Same_Values 
-    Monday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Monday", Value1=Monday_Work_Start, Value2=Monday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Monday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Monday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
-    Tuesday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Tuesday", Value1=Tuesday_Work_Start, Value2=Tuesday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Tuesday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Tuesday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
-    Wednesday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Wednesday", Value1=Wednesday_Work_Start, Value2=Wednesday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Wednesday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Wednesday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
-    Thursday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Thursday", Value1=Thursday_Work_Start, Value2=Thursday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Thursday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Thursday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
-    Friday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Friday", Value1=Friday_Work_Start, Value2=Friday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Friday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Friday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
-    Saturday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Saturday", Value1=Saturday_Work_Start, Value2=Saturday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Saturday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Saturday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
-    Sunday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Sunday", Value1=Sunday_Work_Start, Value2=Sunday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Sunday", "Work_Hours", "Start_Time"], Save_path2=["0", "General", "Calendar", "Sunday", "Work_Hours", "End_Time"], Validation1="Time", Validation2="Time")
+    Monday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Monday", Value1=Monday_Work_Start, Value2=Monday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Monday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Monday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Monday_Row.Get_Value1(), End_Time=Monday_Row.Get_Value2(), Week_Day="Monday", Type="Work_Hours")]
+    Tuesday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Tuesday", Value1=Tuesday_Work_Start, Value2=Tuesday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Tuesday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Tuesday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Tuesday_Row.Get_Value1(), End_Time=Tuesday_Row.Get_Value2(), Week_Day="Tuesday", Type="Work_Hours")]
+    Wednesday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Wednesday", Value1=Wednesday_Work_Start, Value2=Wednesday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Wednesday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Wednesday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Wednesday_Row.Get_Value1(), End_Time=Wednesday_Row.Get_Value2(), Week_Day="Wednesday", Type="Work_Hours")]
+    Thursday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Thursday", Value1=Thursday_Work_Start, Value2=Thursday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Thursday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Thursday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Thursday_Row.Get_Value1(), End_Time=Thursday_Row.Get_Value2(), Week_Day="Thursday", Type="Work_Hours")]
+    Friday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Friday", Value1=Friday_Work_Start, Value2=Friday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Friday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Friday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Friday_Row.Get_Value1(), End_Time=Friday_Row.Get_Value2(), Week_Day="Friday", Type="Work_Hours")]
+    Saturday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Saturday", Value1=Saturday_Work_Start, Value2=Saturday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Saturday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Saturday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Saturday_Row.Get_Value1(), End_Time=Saturday_Row.Get_Value2(), Week_Day="Saturday", Type="Work_Hours")]
+    Sunday_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Sunday", Value1=Sunday_Work_Start, Value2=Sunday_Work_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Sunday", "Work_Hours", "Start_Time"], Validation1="Time", Validation2="Time")
+    Sunday_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Sunday_Row.Get_Value1(), End_Time=Sunday_Row.Get_Value2(), Week_Day="Sunday", Type="Work_Hours")]
     Lunch_Brake_Duration_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Lunch brake duration", Value=Lunch_Brake_Duration, Save_To="Settings", Save_path=["0", "General", "Calendar", "Lunch_Brake_Dur"], Validation="Integer")
     Work_Calendar_Total_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Total Time", placeholder_text=Total_Work_Duration, placeholder_text_color="#949A9F", Save_To="Settings", Save_path=["0", "General", "Calendar", "Lunch_Brake_Dur"], Validation="Time")
     Work_Calendar_Total_Row.Freeze()
-    Button_Row = Widget_Buttons_Row(Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, Field_Frame_Type="Single_Column", Buttons_count=1, Button_Size="Small", Button_Text=["Calculate"], Button_ToolTips=["Calculate total week duration."], Button_Functions=[], GUI_Level_ID=GUI_Level_ID)
-    Button_Row.Button_Functions = [lambda: Calculate_duration(Settings=Settings, Configuration=Configuration, window=window, Entry_Field=Work_Calendar_Total_Row.Input_Entry, Lunch_Brake_Duration=Lunch_Brake_Duration_Row.Get_Value(), Calendar_Type="Work_Hours", Monday_Start=Monday_Row.Get_Value1(), Monday_End=Monday_Row.Get_Value2(), Tuesday_Start=Tuesday_Row.Get_Value1(), Tuesday_End=Tuesday_Row.Get_Value2(), Wednesday_Start=Wednesday_Row.Get_Value1(), Wednesday_End=Wednesday_Row.Get_Value2(), Thursday_Start=Thursday_Row.Get_Value1(), Thursday_End=Thursday_Row.Get_Value2(), Friday_Start=Friday_Row.Get_Value1(), Friday_End=Friday_Row.Get_Value2(), Saturday_Start=Saturday_Row.Get_Value1(), Saturday_End=Saturday_Row.Get_Value2(), Sunday_Start=Sunday_Row.Get_Value1(), Sunday_End=Sunday_Row.Get_Value2())]
+    Button_Functions = [lambda: Calculate_duration(Settings=Settings, Configuration=Configuration, window=window, Entry_Field=Work_Calendar_Total_Row.Input_Entry, Lunch_Brake_Duration=int(Lunch_Brake_Duration_Row.Get_Value()), Calendar_Type="Work_Hours", Monday_Start=Monday_Row.Get_Value1(), Monday_End=Monday_Row.Get_Value2(), Tuesday_Start=Tuesday_Row.Get_Value1(), Tuesday_End=Tuesday_Row.Get_Value2(), Wednesday_Start=Wednesday_Row.Get_Value1(), Wednesday_End=Wednesday_Row.Get_Value2(), Thursday_Start=Thursday_Row.Get_Value1(), Thursday_End=Thursday_Row.Get_Value2(), Friday_Start=Friday_Row.Get_Value1(), Friday_End=Friday_Row.Get_Value2(), Saturday_Start=Saturday_Row.Get_Value1(), Saturday_End=Saturday_Row.Get_Value2(), Sunday_Start=Sunday_Row.Get_Value1(), Sunday_End=Sunday_Row.Get_Value2())]
+    Button_Row = Widget_Buttons_Row(Configuration=Configuration, master=My_Calendar_Widget.Body_Frame, Field_Frame_Type="Single_Column", Buttons_count=1, Button_Size="Small", Button_Text=["Calculate"], Button_ToolTips=["Calculate total week duration."], Button_Functions=Button_Functions, GUI_Level_ID=GUI_Level_ID)
+    
 
     # Add Fields to Widget Body
     My_Calendar_Widget.Add_row(Rows=[Monday_Row, Tuesday_Row, Wednesday_Row, Thursday_Row, Friday_Row, Saturday_Row, Sunday_Row, Lunch_Brake_Duration_Row, Work_Calendar_Total_Row, Button_Row])
@@ -404,31 +412,30 @@ def Settings_Calendar_Vacation(Settings: dict, Configuration: dict, window: CTk|
     Total_Vacation_Duration =  Settings["0"]["General"]["Calendar"]["Totals"]["Vacation"]
 
     # ------------------------- Local Functions ------------------------#
-    def Check_Time_Continuation(Settings: dict, Configuration: dict, window: CTk|None, Format_Time: str, Start_Time: CTkEntry, End_Time: CTkEntry, Week_Day: str, Type: str) -> bool:
-        Start_Time_dt = datetime.strptime(Start_Time.get(), Format_Time)
-        End_Time_dt = datetime.strptime(End_Time.get(), Format_Time)
-        if Start_Time_dt >= End_Time_dt:
-            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message=f"You entered same or sooner time as Start time, this is not compatible, please correct it. This value is not to be saved.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-        else:
-            pass
-
     # ------------------------- Main Functions -------------------------#¨
     # Widget
     KM_Calendar_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Calendar - KM Working/Vacation/SickDay Hours", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="These hours be used in case of whole day vacation/SickDay and for KM Utilization charts and information.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    # TODO --> Finish to call local function Check_Time_Continuation --> udělat podle Check_Same_Values 
-    Monday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Monday", Value1=Monday_Vacation_Start, Value2=Monday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Monday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Monday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
-    Tuesday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Tuesday", Value1=Tuesday_Vacation_Start, Value2=Tuesday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Tuesday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Tuesday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
-    Wednesday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Wednesday", Value1=Wednesday_Vacation_Start, Value2=Wednesday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Wednesday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Wednesday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
-    Thursday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Thursday", Value1=Thursday_Vacation_Start, Value2=Thursday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Thursday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Thursday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
-    Friday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Friday", Value1=Friday_Vacation_Start, Value2=Friday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Friday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Friday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
-    Saturday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Saturday", Value1=Saturday_Vacation_Start, Value2=Saturday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Saturday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Saturday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
-    Sunday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Sunday", Value1=Sunday_Vacation_Start, Value2=Sunday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Sunday", "Vacation", "Start_Time"], Save_path2=["0", "General", "Calendar", "Sunday", "Vacation", "End_Time"], Validation1="Time", Validation2="Time")
+    Monday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Monday", Value1=Monday_Vacation_Start, Value2=Monday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Monday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Monday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Monday_Vac_Row.Get_Value1(), End_Time=Monday_Vac_Row.Get_Value2(), Week_Day="Monday", Type="Vacation")]
+    Tuesday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Tuesday", Value1=Tuesday_Vacation_Start, Value2=Tuesday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Tuesday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Tuesday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Tuesday_Vac_Row.Get_Value1(), End_Time=Tuesday_Vac_Row.Get_Value2(), Week_Day="Tuesday", Type="Vacation")]
+    Wednesday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Wednesday", Value1=Wednesday_Vacation_Start, Value2=Wednesday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Wednesday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Wednesday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Wednesday_Vac_Row.Get_Value1(), End_Time=Wednesday_Vac_Row.Get_Value2(), Week_Day="Wednesday", Type="Vacation")]
+    Thursday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Thursday", Value1=Thursday_Vacation_Start, Value2=Thursday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Thursday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Thursday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Thursday_Vac_Row.Get_Value1(), End_Time=Thursday_Vac_Row.Get_Value2(), Week_Day="Thursday", Type="Vacation")]
+    Friday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Friday", Value1=Friday_Vacation_Start, Value2=Friday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Friday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Friday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Friday_Vac_Row.Get_Value1(), End_Time=Friday_Vac_Row.Get_Value2(), Week_Day="Friday", Type="Vacation")]
+    Saturday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Saturday", Value1=Saturday_Vacation_Start, Value2=Saturday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Saturday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Saturday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Saturday_Vac_Row.Get_Value1(), End_Time=Saturday_Vac_Row.Get_Value2(), Week_Day="Saturday", Type="Vacation")]
+    Sunday_Vac_Row = WidgetRow_Double_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Sunday", Value1=Sunday_Vacation_Start, Value2=Sunday_Vacation_End, placeholder_text1="Day start time.", placeholder_text2="Day end time.", Save_To="Settings", Save_path1=["0", "General", "Calendar", "Sunday", "Vacation", "Start_Time"], Validation1="Time", Validation2="Time")
+    Sunday_Vac_Row.Local_function2_list = [lambda: Check_Time_Continuation(Settings=Settings, Configuration=Configuration, window=window, Format_Time=Format_Time, Start_Time=Sunday_Vac_Row.Get_Value1(), End_Time=Sunday_Vac_Row.Get_Value2(), Week_Day="Sunday", Type="Vacation")]
     Work_Calendar_Total_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Total Time", placeholder_text=Total_Vacation_Duration, placeholder_text_color="#949A9F", Save_To="Settings", Save_path=["0", "General", "Calendar", "Lunch_Brake_Dur"], Validation="Time")
     Work_Calendar_Total_Row.Freeze()
-    Button_Row = Widget_Buttons_Row(Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, Field_Frame_Type="Single_Column", Buttons_count=1, Button_Size="Small", Button_Text=["Calculate"], Button_ToolTips=["Calculate total week duration."], Button_Functions=[], GUI_Level_ID=GUI_Level_ID)
-    Button_Row.Button_Functions = [lambda: Calculate_duration(Settings=Settings, Configuration=Configuration, window=window, Entry_Field=Work_Calendar_Total_Row.Input_Entry, Lunch_Brake_Duration=0, Calendar_Type="Work_Hours", Monday_Start=Monday_Vac_Row.Get_Value1(), Monday_End=Monday_Vac_Row.Get_Value2(), Tuesday_Start=Tuesday_Vac_Row.Get_Value1(), Tuesday_End=Tuesday_Vac_Row.Get_Value2(), Wednesday_Start=Wednesday_Vac_Row.Get_Value1(), Wednesday_End=Wednesday_Vac_Row.Get_Value2(), Thursday_Start=Thursday_Vac_Row.Get_Value1(), Thursday_End=Thursday_Vac_Row.Get_Value2(), Friday_Start=Friday_Vac_Row.Get_Value1(), Friday_End=Friday_Vac_Row.Get_Value2(), Saturday_Start=Saturday_Vac_Row.Get_Value1(), Saturday_End=Saturday_Vac_Row.Get_Value2(), Sunday_Start=Sunday_Vac_Row.Get_Value1(), Sunday_End=Sunday_Vac_Row.Get_Value2())]
+    Button_Functions = [lambda: Calculate_duration(Settings=Settings, Configuration=Configuration, window=window, Entry_Field=Work_Calendar_Total_Row.Input_Entry, Lunch_Brake_Duration=0, Calendar_Type="Work_Hours", Monday_Start=Monday_Vac_Row.Get_Value1(), Monday_End=Monday_Vac_Row.Get_Value2(), Tuesday_Start=Tuesday_Vac_Row.Get_Value1(), Tuesday_End=Tuesday_Vac_Row.Get_Value2(), Wednesday_Start=Wednesday_Vac_Row.Get_Value1(), Wednesday_End=Wednesday_Vac_Row.Get_Value2(), Thursday_Start=Thursday_Vac_Row.Get_Value1(), Thursday_End=Thursday_Vac_Row.Get_Value2(), Friday_Start=Friday_Vac_Row.Get_Value1(), Friday_End=Friday_Vac_Row.Get_Value2(), Saturday_Start=Saturday_Vac_Row.Get_Value1(), Saturday_End=Saturday_Vac_Row.Get_Value2(), Sunday_Start=Sunday_Vac_Row.Get_Value1(), Sunday_End=Sunday_Vac_Row.Get_Value2())]
+    Button_Row = Widget_Buttons_Row(Configuration=Configuration, master=KM_Calendar_Widget.Body_Frame, Field_Frame_Type="Single_Column", Buttons_count=1, Button_Size="Small", Button_Text=["Calculate"], Button_ToolTips=["Calculate total week duration."], Button_Functions=Button_Functions, GUI_Level_ID=GUI_Level_ID)
+    
 
     # Add Fields to Widget Body
     KM_Calendar_Widget.Add_row(Rows=[Monday_Vac_Row, Tuesday_Vac_Row, Wednesday_Vac_Row, Thursday_Vac_Row, Friday_Vac_Row, Saturday_Vac_Row, Sunday_Vac_Row, Work_Calendar_Total_Row, Button_Row])
@@ -466,7 +473,7 @@ def Settings_Calendar_Start_End_Time(Settings: dict, Configuration: dict, window
 
 
 # -------------------------------------------------------------------------- Tab Events - General --------------------------------------------------------------------------#
-def Settings_Parallel_events(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Settings_Parallel_events(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     # ---------------------------- Defaults ----------------------------#
     Parallel_Enabled = Settings["0"]["Event_Handler"]["Events"]["Parallel_Events"]["Use"]
     Start_Method = Settings["0"]["Event_Handler"]["Events"]["Parallel_Events"]["Start_Method"]
@@ -477,27 +484,19 @@ def Settings_Parallel_events(Settings: dict, Configuration: dict, window: CTk|No
     
     # ------------------------- Local Functions ------------------------#
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Parallel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Events when program found that they are parallel.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Parallel_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Parallel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Events when program found that they are parallel.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Parallel_Events = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Parallel_Events_Var = Use_Parallel_Events.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Parallel_Events_Var.configure(variable=Parallel_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Parallel_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Parallel_Events", "Use"], Information=Parallel_Use_Variable))
+    # Fields
+    Use_Parallel_Events_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Parallel_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Parallel_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Parallel_Events", "Use"])
+    Start_Method_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Parallel_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Same Start Time", Variable=Start_Method_Variable, Values=Start_Method_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Parallel_Events", "Start_Method"], GUI_Level_ID=GUI_Level_ID) 
 
-    # Field - Start Method
-    Start_Method_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Same Start Time", Field_Type="Input_OptionMenu") 
-    Start_Method_Frame_Var = Start_Method_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Start_Method_Frame_Var.configure(variable=Start_Method_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Start_Method_Frame_Var, values=Start_Method_List, command=lambda Start_Method_Frame_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Start_Method_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Parallel_Events", "Start_Method"], Information=Start_Method_Frame_Var), GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Parallel_Widget.Add_row(Rows=[Use_Parallel_Events_Row, Start_Method_Row])
 
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
+    return Parallel_Widget
 
-    return Frame_Main
-
-def Settings_Join_events(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Settings_Join_events(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     # ---------------------------- Defaults ----------------------------#
     Join_Events_Enabled = Settings["0"]["Event_Handler"]["Events"]["Join_method"]["Use"]
     Join_Methods_List = list(Settings["0"]["Event_Handler"]["Events"]["Join_method"]["Methods_List"])
@@ -506,7 +505,6 @@ def Settings_Join_events(Settings: dict, Configuration: dict, window: CTk|None, 
     Join_Busy = Settings["0"]["Event_Handler"]["Events"]["Join_method"]["Busy"]
     Join_OutOfOffice = Settings["0"]["Event_Handler"]["Events"]["Join_method"]["Out of Office"]
     Join_Work_Else = Settings["0"]["Event_Handler"]["Events"]["Join_method"]["Working elsewhere"]
-
     Join_Use_Variable = BooleanVar(master=Frame, value=Join_Events_Enabled)
     Join_Free_Variable = StringVar(master=Frame, value=Join_Free)
     Join_Tentative_Variable = StringVar(master=Frame, value=Join_Tentative)
@@ -516,316 +514,62 @@ def Settings_Join_events(Settings: dict, Configuration: dict, window: CTk|None, 
 
     # ------------------------- Local Functions ------------------------#
     # ------------------------- Main Functions -------------------------#
-    
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Joining Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Joining Events belonging to same Visibility group.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Join_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Joining Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Joining Events belonging to same Visibility group.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Events_Joining = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Events_Joining_Var = Use_Events_Joining.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Events_Joining_Var.configure(variable=Join_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Join_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Join_method", "Use"], Information=Join_Use_Variable))
+    # Fields
+    Use_Events_Joining_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Join_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Use"])
+    Join_Free_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Free", Variable=Join_Free_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Free"], GUI_Level_ID=GUI_Level_ID) 
+    Join_Tentative_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Tentative", Variable=Join_Tentative_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Tentative"], GUI_Level_ID=GUI_Level_ID) 
+    Join_Busy_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Busy", Variable=Join_Busy_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Busy"], GUI_Level_ID=GUI_Level_ID) 
+    Join_OutOfOffice_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Out of Office", Variable=Join_OutOfOffice_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Out of Office"], GUI_Level_ID=GUI_Level_ID) 
+    Join_Work_ElseWhere_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Working ElseWhere", Variable=Join_Work_Else_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Working elsewhere"], GUI_Level_ID=GUI_Level_ID) 
 
-    # Field - Join Free Events
-    Join_Free_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Free", Field_Type="Input_OptionMenu") 
-    Join_Free_Frame_Var = Join_Free_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Join_Free_Frame_Var.configure(variable=Join_Free_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Join_Free_Frame_Var, values=Join_Methods_List, command=lambda Join_Free_Frame_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Join_Free_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Join_method", "Free"], Information=Join_Free_Frame_Var), GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Join_Widget.Add_row(Rows=[Use_Events_Joining_Row, Join_Free_Row, Join_Tentative_Row, Join_Busy_Row, Join_OutOfOffice_Row, Join_Work_ElseWhere_Row])
 
-    # Field - Join Tentative Events
-    Join_Tentative_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Tentative", Field_Type="Input_OptionMenu") 
-    Join_Tentative_Frame_Var = Join_Tentative_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Join_Tentative_Frame_Var.configure(variable=Join_Tentative_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Join_Tentative_Frame_Var, values=Join_Methods_List, command=lambda Join_Tentative_Frame_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Join_Tentative_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Join_method", "Tentative"], Information=Join_Tentative_Frame_Var), GUI_Level_ID=GUI_Level_ID)
+    return Join_Widget
 
-    # Field - Join Busy Events
-    Join_Busy_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Busy", Field_Type="Input_OptionMenu") 
-    Join_Busy_Frame_Var = Join_Busy_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Join_Busy_Frame_Var.configure(variable=Join_Busy_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Join_Busy_Frame_Var, values=Join_Methods_List, command=lambda Join_Busy_Frame_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Join_Busy_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Join_method", "Busy"], Information=Join_Busy_Frame_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Join Out of Office Events
-    Join_OutOfOffice_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Out of Office", Field_Type="Input_OptionMenu") 
-    Join_OutOfOffice_Frame_Var = Join_OutOfOffice_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Join_OutOfOffice_Frame_Var.configure(variable=Join_OutOfOffice_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Join_OutOfOffice_Frame_Var, values=Join_Methods_List, command=lambda Join_OutOfOffice_Frame_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Join_OutOfOffice_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Join_method", "Out of Office"], Information=Join_OutOfOffice_Frame_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Join Working ElseWhere Events
-    Join_Work_ElseWhere_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Working ElseWhere", Field_Type="Input_OptionMenu") 
-    Join_Work_ElseWhere_Frame_Var = Join_Work_ElseWhere_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Join_Work_ElseWhere_Frame_Var.configure(variable=Join_Work_Else_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Join_Work_ElseWhere_Frame_Var, values=Join_Methods_List, command=lambda Join_Work_ElseWhere_Frame_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Join_Work_Else_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Join_method", "Working elsewhere"], Information=Join_Work_ElseWhere_Frame_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-
-def Settings_Events_General_Lunch(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Settings_Events_Split(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     # ---------------------------- Defaults ----------------------------#
-    Lunch_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
-    Lunch_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
-    Lunch_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["All_Day"]
-    Lunch_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
-    Lunch_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Lunch_Option_List"]
-
-    Lunch_Use_Variable = BooleanVar(master=Frame, value=Lunch_Enabled)
-    Lunch_All_Variable = StringVar(master=Frame, value=Lunch_All_Day)
-    Lunch_Part_Variable = StringVar(master=Frame, value=Lunch_Part_Day)
+    Events_Empty_Split_Enabled = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
+    Events_Empty_Split_Duration = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
+    Events_Empty_Split_Minimal_Time = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
+    Events_Empty_Split_Method = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
+    Events_Empty_Split_list = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Methods_List"]
+    Empty_Split_Use_Variable = BooleanVar(master=Frame, value=Events_Empty_Split_Enabled)
+    Events_Empty_Split_list_Variable = StringVar(master=Frame, value=Events_Empty_Split_Method, name="Events_Empty_Split_list_Variable")
 
     # ------------------------- Local Functions -------------------------#
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it. \n Lunch break will always break Parallel Events.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Splitting_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Events Splitting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for splitting automatically filled events by program longer than defined duration. \nEffect of the split can be suppress partially / fully by Joining Events, depends on setup.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Lunch = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Lunch_Var = Use_Lunch.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Lunch_Var.configure(variable=Lunch_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Lunch_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Use"], Information=Lunch_Use_Variable))
+    # Fields
+    Use_Empty_Split_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Empty_Split_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Use"])
+    Split_Duration_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Duration", Value=Events_Empty_Split_Duration, placeholder_text="Empty space duration which will be splitted.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Validation="Integer")
+    Split_Min_Duration_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Minimal Time", placeholder_text=Events_Empty_Split_Minimal_Time, placeholder_text_color="#949A9F", Validation="Integer")
+    Split_Min_Duration_Row.Freeze()
 
-    # Field - Search Text
-    Search_Text_Lunch = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_Lunch_Var = Search_Text_Lunch.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Lunch_Var.configure(placeholder_text="Event Subject which defines lunch")
-    Search_Text_Lunch_Var.bind("<FocusOut>", lambda Entry_value: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Search_Text"], Information=Search_Text_Lunch_Var.get()))
-    Entry_field_Insert(Field=Search_Text_Lunch_Var, Value=Lunch_Search_Text)
+    Option_Menu_Blocking_dict = CustomTkinter_Functions.OptionMenu_Blocking(Values=["Equal Split", "Random Split"], Freeze_fields=[[Split_Duration_Row],[]])
+    Split_Method_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Method", Variable=Events_Empty_Split_list_Variable, Values=Events_Empty_Split_list, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Method"], Field_list=[Split_Duration_Row], Field_Blocking_dict=Option_Menu_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
 
-    # Field - All Day
-    All_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
-    All_Day_Lunch_Var = All_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
-    All_Day_Lunch_Var.configure(variable=Lunch_All_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=All_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda All_Day_Lunch_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Lunch_All_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "All_Day"], Information=All_Day_Lunch_Var), GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Splitting_Widget.Add_row(Rows=[Use_Empty_Split_Row, Split_Method_Row, Split_Duration_Row, Split_Min_Duration_Row])
 
-    # Field - Part Day
-    Part_Day_Lunch = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
-    Part_Day_Lunch_Var = Part_Day_Lunch.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Part_Day_Lunch_Var.configure(variable=Lunch_Part_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Part_Day_Lunch_Var, values=Lunch_Day_Option_List, command=lambda Part_Day_Lunch_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Lunch_Part_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Part_Day"], Information=Part_Day_Lunch_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
+    return Splitting_Widget
 
 
 
-def Settings_Events_General_Vacation(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
-    # ---------------------------- Defaults ----------------------------#
-    Vacation_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
-    Vacation_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Search_Text"]
-    Vacation_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["All_Day"]
-    Vacation_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Part_Day"]
-    Vacation_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Vacation_Option_List"]
-    Vacation_Delete_Events = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Delete_Events_w_KM_Calendar"]
-
-    Vacation_Use_Variable = BooleanVar(master=Frame, value=Vacation_Enabled)
-    Vacation_All_Variable = StringVar(master=Frame, value=Vacation_All_Day)
-    Vacation_Part_Variable = StringVar(master=Frame, value=Vacation_Part_Day)
-    Vacation_Delete_Events_Variable = BooleanVar(master=Frame, value=Vacation_Delete_Events)
-
-    # ------------------------- Local Functions -------------------------#
-    # ------------------------- Main Functions -------------------------#    
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Vacation", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Use
-    Use_Vacation = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Vacation_Var = Use_Vacation.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Vacation_Var.configure(variable=Vacation_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Vacation_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Use"], Information=Vacation_Use_Variable))
-
-    # Field - Search Text
-    Search_Text_Vacation = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_Vacation_Var = Search_Text_Vacation.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Vacation_Var.configure(placeholder_text="Event Subject which defines vacation")
-    Search_Text_Vacation_Var.bind("<FocusOut>", lambda Entry_value: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Search_Text"], Information=Search_Text_Vacation_Var.get()))
-    Entry_field_Insert(Field=Search_Text_Vacation_Var, Value=Vacation_Search_Text)
-
-    # Field - All Day
-    All_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
-    All_Day_Vacation_Var = All_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
-    All_Day_Vacation_Var.configure(variable=Vacation_All_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=All_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda All_Day_Vacation_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Vacation_All_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "All_Day"], Information=All_Day_Vacation_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Part Day
-    Part_Day_Vacation = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
-    Part_Day_Vacation_Var = Part_Day_Vacation.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Part_Day_Vacation_Var.configure(variable=Vacation_Part_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Part_Day_Vacation_Var, values=Vacation_Day_Option_List, command=lambda Part_Day_Vacation_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Vacation_Part_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Part_Day"], Information=Part_Day_Vacation_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Use
-    Delete_Events_Vacation = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Delete Events w Working H.", Field_Type="Input_CheckBox") 
-    Delete_Events_Vacation_Var = Delete_Events_Vacation.children["!ctkframe3"].children["!ctkcheckbox"]
-    Delete_Events_Vacation_Var.configure(variable=Vacation_Delete_Events_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Vacation_Delete_Events_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Delete_Events_w_Working_Hours"], Information=Vacation_Delete_Events_Variable))
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-
-
-def Settings_Events_General_SickDay(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
-    # ---------------------------- Defaults ----------------------------#
-    SickDay_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Use"]
-    SickDay_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Search_Text"]
-    SickDay_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["All_Day"]
-    SickDay_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Part_Day"]
-    SickDay_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["SickDay_Option_List"]
-    SickDay_Delete_Events = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Delete_Events_w_KM_Calendar"]
-
-    SickDay_Use_Variable = BooleanVar(master=Frame, value=SickDay_Enabled)
-    SickDay_All_Variable = StringVar(master=Frame, value=SickDay_All_Day)
-    SickDay_Part_Variable = StringVar(master=Frame, value=SickDay_Part_Day)
-    SickDay_Delete_Events_Variable = BooleanVar(master=Frame, value=SickDay_Delete_Events)
-
-    # ------------------------- Local Functions -------------------------#
-    # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Special - SickDay", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of SickDay", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Use
-    Use_SickDay = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_SickDay_Var = Use_SickDay.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_SickDay_Var.configure(variable=SickDay_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=SickDay_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Use"], Information=SickDay_Use_Variable))
-
-    # Field - Search Text
-    Search_Text_SickDay = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_SickDay_Var = Search_Text_SickDay.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_SickDay_Var.configure(placeholder_text="Event Subject which defines SickDay")
-    Search_Text_SickDay_Var.bind("<FocusOut>", lambda Entry_value: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Search_Text"], Information=Search_Text_SickDay_Var.get()))
-    Entry_field_Insert(Field=Search_Text_SickDay_Var, Value=SickDay_Search_Text)
-
-    # Field - All Day
-    All_Day_SickDay = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
-    All_Day_SickDay_Var = All_Day_SickDay.children["!ctkframe3"].children["!ctkoptionmenu"]
-    All_Day_SickDay_Var.configure(variable=SickDay_All_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=All_Day_SickDay_Var, values=SickDay_Day_Option_List, command=lambda All_Day_SickDay_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=SickDay_All_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "All_Day"], Information=All_Day_SickDay_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Part Day
-    Part_Day_SickDay = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
-    Part_Day_SickDay_Var = Part_Day_SickDay.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Part_Day_SickDay_Var.configure(variable=SickDay_Part_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Part_Day_SickDay_Var, values=SickDay_Day_Option_List, command=lambda Part_Day_SickDay_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=SickDay_Part_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Part_Day"], Information=Part_Day_SickDay_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Use
-    Delete_Events_SickDay = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Delete Events w Working H.", Field_Type="Input_CheckBox") 
-    Delete_Events_SickDay_Var = Delete_Events_SickDay.children["!ctkframe3"].children["!ctkcheckbox"]
-    Delete_Events_SickDay_Var.configure(variable=SickDay_Delete_Events_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=SickDay_Delete_Events_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Delete_Events_w_Working_Hours"], Information=SickDay_Delete_Events_Variable))
-
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-
-
-def Settings_Events_General_HomeOffice(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
-    # ---------------------------- Defaults ----------------------------#
-    HomeOffice_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
-    HomeOffice_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Search_Text"]
-    HomeOffice_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["All_Day"]
-    HomeOffice_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Part_Day"]
-    HomeOffice_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["HomeOffice_Option_List"]
-
-    HomeOffice_Use_Variable = BooleanVar(master=Frame, value=HomeOffice_Enabled)
-    HomeOffice_All_Variable = StringVar(master=Frame, value=HomeOffice_All_Day)
-    HomeOffice_Part_Variable = StringVar(master=Frame, value=HomeOffice_Part_Day)
-
-    # ------------------------- Local Functions -------------------------#
-    # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Special - HomeOffice", Additional_Text="In the development", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of HomeOffice", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Use
-    Use_HomeOffice = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_HomeOffice_Var = Use_HomeOffice.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_HomeOffice_Var.configure(variable=HomeOffice_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=HomeOffice_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Use"], Information=HomeOffice_Use_Variable))
-
-
-    # Field - Search Text
-    Search_Text_HomeOffice = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_HomeOffice_Var = Search_Text_HomeOffice.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_HomeOffice_Var.configure(placeholder_text="Event Subject which defines home office")
-    Search_Text_HomeOffice_Var.bind("<FocusOut>", lambda Entry_value: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Search_Text"], Information=Search_Text_HomeOffice_Var.get()))
-    Entry_field_Insert(Field=Search_Text_HomeOffice_Var, Value=HomeOffice_Search_Text)
-
-    # Field - All Day
-    All_Day_HomeOffice = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
-    All_Day_HomeOffice_Var = All_Day_HomeOffice.children["!ctkframe3"].children["!ctkoptionmenu"]
-    All_Day_HomeOffice_Var.configure(variable=HomeOffice_All_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=All_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda All_Day_HomeOffice_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=HomeOffice_All_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "All_Day"], Information=All_Day_HomeOffice_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Field - Part Day
-    Part_Day = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Part Day", Field_Type="Input_OptionMenu") 
-    Part_Day_HomeOffice_Var = Part_Day.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Part_Day_HomeOffice_Var.configure(variable=HomeOffice_Part_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Part_Day_HomeOffice_Var, values=HomeOffice_Day_Option_List, command=lambda Part_Day_HomeOffice_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=HomeOffice_Part_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Part_Day"], Information=Part_Day_HomeOffice_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-
-
-def Settings_Events_General_Private(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
-    # ---------------------------- Defaults ----------------------------#
-    Private_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
-    Private_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Search_Text"]
-    Private_Method = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Method"]
-    Private_Method_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Private_Option_List"]
-
-    Private_Use_Variable = BooleanVar(master=Frame, value=Private_Enabled)
-    Private_Method_Variable = StringVar(master=Frame, value=Private_Method)
-
-    # ------------------------- Local Functions -------------------------#
-    # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Special - Private", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Special Event Private, \n Split --> Special Event will split parallel events, like Lunch \n Do nothing --> This event will not do anything to parallel events", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Use
-    Use_Private = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Private_Var = Use_Private.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Private_Var.configure(variable=Private_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Private_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Use"], Information=Private_Use_Variable))
-
-    # Field - Search Text
-    Search_Text_Private = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Search text", Field_Type="Input_Normal") 
-    Search_Text_Private_Var = Search_Text_Private.children["!ctkframe3"].children["!ctkentry"]
-    Search_Text_Private_Var.configure(placeholder_text="Event Subject which defines private special event.")
-    Search_Text_Private_Var.bind("<FocusOut>", lambda Entry_value: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Search_Text"], Information=Search_Text_Private_Var.get()))
-    Entry_field_Insert(Field=Search_Text_Private_Var, Value=Private_Search_Text)
-
-    # Field - Method used
-    Method_Private = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="All Day", Field_Type="Input_OptionMenu") 
-    Method_Private_Var = Method_Private.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Method_Private_Var.configure(variable=Private_Method_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Method_Private_Var, values=Private_Method_List, command=lambda Method_Private_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Private_Method_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Method"], Information=Method_Private_Var), GUI_Level_ID=GUI_Level_ID)
-
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-
-
-def Settings_Events_General_Skip(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Settings_Events_General_Skip(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     # ---------------------------- Defaults ----------------------------#
     Skip_Enabled = Settings["0"]["Event_Handler"]["Events"]["Skip"]["Use"]
     Events_Skip_list = Settings["0"]["Event_Handler"]["Events"]["Skip"]["Skip_List"]
     Skip_Use_Variable = BooleanVar(master=Frame, value=Skip_Enabled)
 
     # ------------------------- Local Functions -------------------------#
-    def Add_Skip_Event(Header_List: list, Subject_Text_Text_Var: CTkEntry, Frame_Skip_Table_Var: CTkTable) -> None:
+    def Add_Skip_Event(Header_List: list, Add_text: str, Frame_Skip_Table_Var: CTkTable) -> None:
         Add_flag = True
-        Add_text = Subject_Text_Text_Var.get()
 
         Check_List = [element for innerList in Frame_Skip_Table_Var.values for element in innerList]
         Header_List = Header_List[0]
@@ -851,15 +595,14 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, window: CT
         else:
             Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Subject is already within list of skip Events.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
-    def Del_Skip_Event_one(Subject_Text_Text_Var: CTkEntry, Frame_Skip_Table_Var: CTkTable) -> None:
+    def Del_Skip_Event_one(Del_text: str, Frame_Skip_Table_Var: CTkTable) -> None:
         # Find Index
         Deleted_flag = False
-        Search_text = Subject_Text_Text_Var.get()
-        if Search_text != "Skip Events":
+        if Del_text != "Skip Events":
             Table_len = len(Frame_Skip_Table_Var.values)
             for Table_index in range(0, Table_len):
                 Table_row_value = Frame_Skip_Table_Var.values[Table_index][0]
-                if Search_text == Table_row_value:
+                if Del_text == Table_row_value:
                     Frame_Skip_Table_Var.delete_row(index=Table_index)
                     Deleted_flag = True
                     break
@@ -892,11 +635,11 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, window: CT
             json.dump(Export_dict, file)
         Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message=f"Skip Events has been exported to your downloads folder.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
 
-    def Load_Skip(Button_Load_Skip: CTkButton):
+    def Load_Skip(Button_Load_Skip: CTkButton, Table: CTkTable):
         def Skip_drop_func(file):
             response = Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Question", message=f"Do you want to overwrite data or add them?", icon="question", fade_in_duration=1, option_1="Overwrite", option_2="Add", GUI_Level_ID=1)
             Data_Functions.Import_Data(Settings=Settings, Configuration=Configuration, window=window, import_file_path=file, Import_Type="TimeSheets_Skip_Events", JSON_path=["0", "Event_Handler", "Events", "Skip", "Skip_List"], Method=response)
-            CustomTkinter_Functions.Insert_Data_to_Table(Settings=Settings, Configuration=Configuration, window=window, Table=Frame_Skip_Table_Var, JSON_path=["0", "Event_Handler", "Events", "Skip", "Skip_List"])
+            CustomTkinter_Functions.Insert_Data_to_Table(Settings=Settings, Configuration=Configuration, window=window, Table=Table, JSON_path=["0", "Event_Handler", "Events", "Skip", "Skip_List"])
             Import_window.destroy()
             Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Success", message=f"Your settings file has been imported. You can close Window.", icon="check", fade_in_duration=1, GUI_Level_ID=1)
         
@@ -916,58 +659,174 @@ def Settings_Events_General_Skip(Settings: dict, Configuration: dict, window: CT
         Icon_Theme.pack(side="top", padx=50, pady=50)
 
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="List of text be skipped as TimeSheet Entry in the case that part of text is found in Event Subject.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Skip_General_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Skip Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="List of text be skipped as TimeSheet Entry in the case that part of text is found in Event Subject.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Skip_Event = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Skip_Event_Var = Use_Skip_Event.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Skip_Event_Var.configure(variable=Skip_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Skip_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Skip", "Use"], Information=Skip_Use_Variable))
-
-    # Field - Subject
-    Subject_Text = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Subject", Field_Type="Input_Normal") 
-    Subject_Text_Text_Var = Subject_Text.children["!ctkframe3"].children["!ctkentry"]
-    Subject_Text_Text_Var.configure(placeholder_text="Add new text")
-
+    # Fields
+    Use_Skip_Event_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Skip_General_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Skip_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Skip", "Use"])
+    Subject_Text_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Skip_General_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Subject", placeholder_text="Add new text", placeholder_text_color="#949A9F")
+    
     # Skip Events Table
     Header_List = ["Skip Events"]
     Show_Events_Skip_list = [Header_List]
     for skip_Subject in Events_Skip_list:
         Show_Events_Skip_list.append([skip_Subject])
-        
-    Frame_Skip_Table = Elements_Groups.Get_Table_Frame(Configuration=Configuration, Frame=Frame_Body, Table_Size="Single_size", Table_Values=Show_Events_Skip_list, Table_Columns=len(Header_List), Table_Rows=len(Events_Skip_list) + 1, GUI_Level_ID=GUI_Level_ID + 1)
-    Frame_Skip_Table_Var = Frame_Skip_Table.children["!ctktable"]
-    Frame_Skip_Table_Var.configure(wraplength=440)
 
-    # Buttons
-    Button_Frame = Elements_Groups.Get_Widget_Button_row(Configuration=Configuration, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Buttons_count=5, Button_Size="Small") 
-    Button_Skip_Add_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton"]
-    Button_Skip_Add_Var.configure(text="Add", command = lambda:Add_Skip_Event(Header_List=Header_List, Subject_Text_Text_Var=Subject_Text_Text_Var, Frame_Skip_Table_Var=Frame_Skip_Table_Var))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Skip_Add_Var, message="Add selected subject to skip list", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+    Frame_Skip_Table_Widget = WidgetTableFrame(Configuration=Configuration, Frame=Skip_General_Widget.Body_Frame, Table_Size="Single_size", Table_Values=Show_Events_Skip_list, Table_Columns=len(Header_List), Table_Rows=len(Events_Skip_list) + 1, wraplength=440, GUI_Level_ID=GUI_Level_ID + 1)
 
-    Button_Skip_Del_One_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton2"]
-    Button_Skip_Del_One_Var.configure(text="Del", command = lambda:Del_Skip_Event_one(Subject_Text_Text_Var=Subject_Text_Text_Var, Frame_Skip_Table_Var=Frame_Skip_Table_Var))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Skip_Del_One_Var, message="Delete row from table based on input text.", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+    Buttons_texts = ["Add", "Del", "Del All", "Export", "Import"]
+    Buttons_ToolTips = ["Add selected subject to skip list.", "Delete row from table based on input text.", "Delete all rows from table.", "Save table content.", "Load and add new records to table."]
+    Buttons_Functions = [lambda: Add_Skip_Event(Header_List=Header_List, Add_text=Subject_Text_Row.Get_Value(), Frame_Skip_Table_Var=Frame_Skip_Table_Widget.Table),
+                         lambda: Del_Skip_Event_one(Del_text=Subject_Text_Row.Get_Value(), Frame_Skip_Table_Var=Frame_Skip_Table_Widget.Table),
+                         lambda: Del_Skip_Event_all(Frame_Skip_Table_Var=Frame_Skip_Table_Widget.Table),
+                         lambda: Save_Skip(),
+                         lambda: Load_Skip(Button_Load_Skip=Button_Row.Frame_Buttons.children["!ctkbutton5"], Table=Frame_Skip_Table_Widget.Table)]
+    Button_Row = Widget_Buttons_Row(Configuration=Configuration, master=Skip_General_Widget.Body_Frame, Field_Frame_Type="Single_Column", Buttons_count=5, Button_Size="Small", Button_Text=Buttons_texts, Button_ToolTips=Buttons_ToolTips, Button_Functions=Buttons_Functions, GUI_Level_ID=GUI_Level_ID)
 
-    Button_Skip_Del_all_Var = Button_Frame.children["!ctkframe"].children["!ctkbutton3"]
-    Button_Skip_Del_all_Var.configure(text="Del all", command = lambda:Del_Skip_Event_all(Frame_Skip_Table_Var=Frame_Skip_Table_Var))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Skip_Del_all_Var, message="Delete all rows from table.", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Skip_General_Widget.Add_row(Rows=[Use_Skip_Event_Row, Subject_Text_Row, Frame_Skip_Table_Widget, Button_Row])
 
-    Button_Save_Skip = Button_Frame.children["!ctkframe"].children["!ctkbutton4"]
-    Button_Save_Skip.configure(text="Export", command = lambda:Save_Skip())
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Save_Skip, message="Save table content.", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
-
-    Button_Load_Skip = Button_Frame.children["!ctkframe"].children["!ctkbutton5"]
-    Button_Load_Skip.configure(text="Import", command = lambda:Load_Skip(Button_Load_Skip=Button_Load_Skip))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Load_Skip, message="Load and add new records to table.", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
+    return Skip_General_Widget
 
 
+def Settings_Events_General_Lunch(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    # ---------------------------- Defaults ----------------------------#
+    Lunch_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Use"]
+    Lunch_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Search_Text"]
+    Lunch_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["All_Day"]
+    Lunch_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Part_Day"]
+    Lunch_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Lunch"]["Lunch_Option_List"]
+    Lunch_Use_Variable = BooleanVar(master=Frame, value=Lunch_Enabled)
+    Lunch_All_Variable = StringVar(master=Frame, value=Lunch_All_Day)
+    Lunch_Part_Variable = StringVar(master=Frame, value=Lunch_Part_Day)
+
+    # ------------------------- Local Functions -------------------------#
+    # ------------------------- Main Functions -------------------------#
+    # Widget
+    Lunch_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it. \n Lunch break will always break Parallel Events.", GUI_Level_ID=GUI_Level_ID)
+
+    # Fields
+    Use_Lunch_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Lunch_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Use"])
+    Search_Text_Lunch_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=Lunch_Search_Text, placeholder_text="Event Subject which defines lunch", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Search_Text"])
+    All_Day_Lunch_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=Lunch_All_Variable, Values=Lunch_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
+    Part_Day_Lunch_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=Lunch_Part_Variable, Values=Lunch_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
+
+    # Add Fields to Widget Body
+    Lunch_Widget.Add_row(Rows=[Use_Lunch_Row, Search_Text_Lunch_Row, All_Day_Lunch_Row, Part_Day_Lunch_Row])
+
+    return Lunch_Widget
+
+
+def Settings_Events_General_Vacation(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    # ---------------------------- Defaults ----------------------------#
+    Vacation_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Use"]
+    Vacation_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Search_Text"]
+    Vacation_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["All_Day"]
+    Vacation_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Part_Day"]
+    Vacation_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Vacation_Option_List"]
+    Vacation_Delete_Events = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Vacation"]["Delete_Events_w_KM_Calendar"]
+    Vacation_Use_Variable = BooleanVar(master=Frame, value=Vacation_Enabled)
+    Vacation_All_Variable = StringVar(master=Frame, value=Vacation_All_Day)
+    Vacation_Part_Variable = StringVar(master=Frame, value=Vacation_Part_Day)
+    Vacation_Delete_Events_Variable = BooleanVar(master=Frame, value=Vacation_Delete_Events)
+
+    # ------------------------- Local Functions -------------------------#
+    # ------------------------- Main Functions -------------------------#    
+    # Widget
+    Vacation_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Vacation.", GUI_Level_ID=GUI_Level_ID)
+
+    # Fields
+    Use_Vacation_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Vacation_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Use"])
+    Search_Text_Vacation_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=Vacation_Search_Text, placeholder_text="Event Subject which defines vacation", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Search_Text"])
+    All_Day_Vacation_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=Vacation_All_Variable, Values=Vacation_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
+    Part_Day_Vacation_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=Vacation_Part_Variable, Values=Vacation_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
+    Delete_Events_Vacation_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Delete Events w Working H.", Variable=Vacation_Delete_Events_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Delete_Events_w_KM_Calendar"])
+
+    # Add Fields to Widget Body
+    Vacation_Widget.Add_row(Rows=[Use_Vacation_Row, Delete_Events_Vacation_Row, Search_Text_Vacation_Row, All_Day_Vacation_Row, Part_Day_Vacation_Row])
+
+    return Vacation_Widget
+
+def Settings_Events_General_SickDay(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    # ---------------------------- Defaults ----------------------------#
+    SickDay_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Use"]
+    SickDay_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Search_Text"]
+    SickDay_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["All_Day"]
+    SickDay_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Part_Day"]
+    SickDay_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["SickDay_Option_List"]
+    SickDay_Delete_Events = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["SickDay"]["Delete_Events_w_KM_Calendar"]
+    SickDay_Use_Variable = BooleanVar(master=Frame, value=SickDay_Enabled)
+    SickDay_All_Variable = StringVar(master=Frame, value=SickDay_All_Day)
+    SickDay_Part_Variable = StringVar(master=Frame, value=SickDay_Part_Day)
+    SickDay_Delete_Events_Variable = BooleanVar(master=Frame, value=SickDay_Delete_Events)
+
+    # ------------------------- Local Functions -------------------------#
+    # ------------------------- Main Functions -------------------------#
+    # Widget
+    SickDay_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - SickDay", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of SickDay", GUI_Level_ID=GUI_Level_ID)
+
+    # Fields
+    Use_SickDay_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=SickDay_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Use"])
+    Search_Text_SickDay_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=SickDay_Search_Text, placeholder_text="Event Subject which defines SickDay.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Search_Text"])
+    All_Day_SickDay_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=SickDay_All_Variable, Values=SickDay_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
+    Part_Day_SickDay_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=SickDay_Part_Variable, Values=SickDay_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
+    Delete_Events_SickDay_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Delete Events w Working H.", Variable=SickDay_Delete_Events_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Delete_Events_w_KM_Calendar"])
+
+    # Add Fields to Widget Body
+    SickDay_Widget.Add_row(Rows=[Use_SickDay_Row, Delete_Events_SickDay_Row, Search_Text_SickDay_Row, All_Day_SickDay_Row, Part_Day_SickDay_Row])
+
+    return SickDay_Widget
+
+def Settings_Events_General_HomeOffice(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    # ---------------------------- Defaults ----------------------------#
+    HomeOffice_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Use"]
+    HomeOffice_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Search_Text"]
+    HomeOffice_All_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["All_Day"]
+    HomeOffice_Part_Day = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["Part_Day"]
+    HomeOffice_Day_Option_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["HomeOffice"]["HomeOffice_Option_List"]
+    HomeOffice_Use_Variable = BooleanVar(master=Frame, value=HomeOffice_Enabled)
+    HomeOffice_All_Variable = StringVar(master=Frame, value=HomeOffice_All_Day)
+    HomeOffice_Part_Variable = StringVar(master=Frame, value=HomeOffice_Part_Day)
+
+    # ------------------------- Local Functions -------------------------#
+    # ------------------------- Main Functions -------------------------#
+    # Widget
+    HomeOffice_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - HomeOffice", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of HomeOffice.", GUI_Level_ID=GUI_Level_ID)
+
+    # Fields
+    Use_HomeOffice_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=HomeOffice_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Use"])
+    Search_Text_HomeOffice_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=HomeOffice_Search_Text, placeholder_text="Event Subject which defines home office.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Search_Text"])
+    All_Day_HomeOffice_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=HomeOffice_All_Variable, Values=HomeOffice_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
+    Part_Day_HomeOffice_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=HomeOffice_Part_Variable, Values=HomeOffice_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
+
+    # Add Fields to Widget Body
+    HomeOffice_Widget.Add_row(Rows=[Use_HomeOffice_Row, Search_Text_HomeOffice_Row, All_Day_HomeOffice_Row, Part_Day_HomeOffice_Row])
+
+    return HomeOffice_Widget
+
+def Settings_Events_General_Private(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    # ---------------------------- Defaults ----------------------------#
+    Private_Enabled = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Use"]
+    Private_Search_Text = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Search_Text"]
+    Private_Method = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Method"]
+    Private_Method_List = Settings["0"]["Event_Handler"]["Events"]["Special_Events"]["Private"]["Private_Option_List"]
+    Private_Use_Variable = BooleanVar(master=Frame, value=Private_Enabled)
+    Private_Method_Variable = StringVar(master=Frame, value=Private_Method)
+
+    # ------------------------- Local Functions -------------------------#
+    # ------------------------- Main Functions -------------------------#
+    # Widget
+    Private_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - Private", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Special Event Private, \n Split --> Special Event will split parallel events, like Lunch \n Do nothing --> This event will not do anything to parallel events.", GUI_Level_ID=GUI_Level_ID)
+
+    # Fields
+    Use_Private_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Private_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Use"])
+    Search_Text_Private_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=Private_Search_Text, placeholder_text="Event Subject which defines private special event.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Search_Text"])
+    Method_Private_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Method", Variable=Private_Method_Variable, Values=Private_Method_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Method"], GUI_Level_ID=GUI_Level_ID) 
+
+    # Add Fields to Widget Body
+    Private_Widget.Add_row(Rows=[Use_Private_Row, Search_Text_Private_Row, Method_Private_Row])
+
+    return Private_Widget
 
 # -------------------------------------------------------------------------- Tab Events - Empty --------------------------------------------------------------------------#
 def Settings_Events_Empty_Generally(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
@@ -1704,54 +1563,6 @@ def Settings_Events_Empty_Schedule(Settings: dict, Configuration: dict, window: 
     Friday_Check_Frame.pack(side="left", padx=5, pady=5)
     Saturday_Check_Frame.pack(side="left", padx=5, pady=5)
     Sunday_Check_Frame.pack(side="left", padx=5, pady=5)
-
-    return Frame_Main
-
-
-
-def Settings_Events_Split(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
-    # ---------------------------- Defaults ----------------------------#
-    Events_Empty_Split_Enabled = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Use"]
-    Events_Empty_Split_Duration = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Duration"]
-    Events_Empty_Split_Minimal_Time = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Minimal_Time"]
-    Events_Empty_Split_Method = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Split_Method"]
-    Events_Empty_Split_list = Settings["0"]["Event_Handler"]["Events"]["Empty"]["Split"]["Methods_List"]
-
-    Empty_Split_Use_Variable = BooleanVar(master=Frame, value=Events_Empty_Split_Enabled)
-    Events_Empty_Split_list_Variable = StringVar(master=Frame, value=Events_Empty_Split_Method, name="Events_Empty_Split_list_Variable")
-
-    # ------------------------- Local Functions -------------------------#
-    # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Events Splitting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for splitting automatically filled events by program longer than defined duration. \nEffect of the split can be suppress partially / fully by Joining Events, depends on setup.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
-
-    # Field - Use
-    Use_Empty_Split = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_CheckBox") 
-    Use_Empty_Split_Var = Use_Empty_Split.children["!ctkframe3"].children["!ctkcheckbox"]
-    Use_Empty_Split_Var.configure(variable=Empty_Split_Use_Variable, text="", command=lambda : Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Empty_Split_Use_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Empty", "Split", "Use"], Information=Empty_Split_Use_Variable))
-
-    # Field - Duration
-    Split_Duration_Text = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Duration", Field_Type="Input_Normal", Validation="Integer") 
-    Split_Duration_Text_Var = Split_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
-    Split_Duration_Text_Var.configure(placeholder_text="Empty space duration which will be splitted.")
-    Split_Duration_Text_Var.bind("<FocusOut>", lambda Entry_value: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=None, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Information=int(Split_Duration_Text_Var.get())))
-    Entry_field_Insert(Field=Split_Duration_Text_Var, Value=Events_Empty_Split_Duration)
-
-    # Field - Minimal Time
-    Split_Min_Duration_Text = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Minimal Time", Field_Type="Input_Normal") 
-    Split_Min_Duration_Text_Var = Split_Min_Duration_Text.children["!ctkframe3"].children["!ctkentry"]
-    Split_Min_Duration_Text_Var.configure(placeholder_text=Events_Empty_Split_Minimal_Time, placeholder_text_color="#949A9F")
-    Split_Min_Duration_Text_Var.configure(state="disabled")
-
-    # Field - All Day
-    Split_Method = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Method", Field_Type="Input_OptionMenu") 
-    Split_Method_Var = Split_Method.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Split_Method_Var.configure(variable=Events_Empty_Split_list_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Split_Method_Var, values=Events_Empty_Split_list, command=lambda Split_Method_Var: Data_Functions.Save_Value(Settings=Settings, Configuration=None, window=window, Variable=Events_Empty_Split_list_Variable, File_Name="Settings", JSON_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Method"], Information=Split_Method_Var), GUI_Level_ID=GUI_Level_ID)
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
 
     return Frame_Main
 
