@@ -6,6 +6,7 @@ from customtkinter import CTk, CTkFrame, StringVar, CTkEntry, CTkProgressBar, CT
 
 import Libs.GUI.Widgets.W_Download as W_Download
 import Libs.GUI.Elements as Elements
+from Libs.GUI.Widgets.Widgets_Class import WidgetFrame, WidgetTableFrame, WidgetRow_CheckBox, WidgetRow_RadioButton, WidgetRow_Input_Entry, WidgetRow_Double_Input_Entry, WidgetRow_OptionMenu, Widget_Section_Row, WidgetRow_Color_Picker, Widget_Buttons_Row, WidgetRow_Date_Picker
 import Libs.Process as Process
 
 import Libs.Data_Functions as Data_Functions
@@ -22,64 +23,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Today = datetime.now()
     Today_str = Today.strftime(Date_format)
     # ------------------------- Local Functions -------------------------#
-    def Change_Download_Data_Source(Download_Data_Source: StringVar, Exchange_Password_Var: CTkEntry):
-        if Download_Data_Source.get() == "Exchange":
-            Exchange_Password_Var.focus()
-            Exchange_Password_Var.configure(state="normal")
-        elif Download_Data_Source.get() == "Outlook_Client":
-            Exchange_Password_Var.delete(first_index=0, last_index=1000)
-            Exchange_Password_Var.configure(state="disabled")
-        else:
-            pass
-
-    def Change_Download_Date_Range_Source(Download_Date_Range_Source: StringVar,  Manual_Widget: CTkFrame, Sharepoint_Widget: CTkFrame) -> None:
-        Sharepoint_Date_From_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"]
-        Sharepoint_Date_To_Option_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"]
-        Sharepoint_Man_Date_To_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"]
-        Sharepoint_Man_Date_Picker_Var =Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkbutton"]
-        Sharepoint_Password_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"]
-
-        Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
-        Manual_Date_From_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkbutton"]
-        Manual_Date_To_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
-        Manual_Date_To_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkbutton"]
-
-        if Download_Date_Range_Source.get() == "Manual":
-            Manual_Date_From_Entry_Var.focus()
-            Manual_Date_From_Entry_Var.configure(state="normal")
-            Manual_Date_From_Picker_Var.configure(state="normal")
-            Manual_Date_To_Entry_Var.configure(state="normal")
-            Manual_Date_To_Picker_Var.configure(state="normal")
-
-            Sharepoint_Password_Var.delete(first_index=0, last_index=1000)
-            Sharepoint_Password_Var.configure(state="disabled")
-            Sharepoint_Date_From_Option_Var.configure(state="disabled")
-            Sharepoint_Date_To_Option_Var.configure(state="disabled")
-            Sharepoint_Man_Date_To_Var.configure(state="disabled")
-            Sharepoint_Man_Date_Picker_Var.configure(state="disabled")
-        elif Download_Date_Range_Source.get() == "Sharepoint":
-            Sharepoint_Password_Var.focus()
-            Sharepoint_Password_Var.configure(state="normal")
-            Sharepoint_Date_From_Option_Var.configure(state="normal")
-            Sharepoint_Date_To_Option_Var.configure(state="normal")
-            Sharepoint_Man_Date_To_Var.configure(state="normal")
-            if Sharepoint_Date_To_Option_Var == "Manual":
-                Sharepoint_Man_Date_Picker_Var.configure(state="normal")
-            else:
-                Sharepoint_Man_Date_Picker_Var.configure(state="disabled")
-
-            Manual_Date_From_Entry_Var.delete(first_index=0, last_index=1000)
-            Manual_Date_From_Entry_Var.configure(placeholder_text="Date From")
-            Manual_Date_From_Entry_Var.configure(state="disabled")
-            Manual_Date_From_Picker_Var.configure(state="disabled")
-            Manual_Date_To_Entry_Var.delete(first_index=0, last_index=1000)
-            Manual_Date_To_Entry_Var.configure(placeholder_text="Date To")
-            Manual_Date_To_Entry_Var.configure(state="disabled")
-            Manual_Date_To_Picker_Var.configure(state="disabled")
-        else:
-            pass
-
-    def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: CTkFrame, Manual_Widget: CTkFrame, Exchange_Widget: CTkFrame):
+    def Download_Data(Progress_Bar: CTkProgressBar, Progress_text: CTkLabel, Download_Date_Range_Source: StringVar, Download_Data_Source: StringVar, Sharepoint_Widget: WidgetFrame, Manual_Widget: WidgetFrame, Exchange_Widget: WidgetFrame):
         Format_Date = Settings["0"]["General"]["Formats"]["Date"]
         Can_Download = True
 
@@ -88,19 +32,19 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Download_Data_Source = Download_Data_Source.get()
 
         # Sharepoint
-        SP_Date_From_Method = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
-        SP_Date_To_Method = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
-        SP_Man_Date_To = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"].get()
-        SP_Password = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe7"].children["!ctkframe3"].children["!ctkentry"].get()
+        SP_Date_From_Method = Sharepoint_Widget.Body_Frame.children["!ctkframe3"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        SP_Date_To_Method = Sharepoint_Widget.Body_Frame.children["!ctkframe5"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        SP_Man_Date_To = Sharepoint_Widget.Body_Frame.children["!ctkframe4"].children["!ctkframe3"].children["!ctkentry"].get()
+        SP_Password = Sharepoint_Widget.Body_Frame.children["!ctkframe6"].children["!ctkframe3"].children["!ctkentry"].get()
 
         # Manual
-        Input_Start_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
-        Input_End_Date = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        Input_Start_Date = Manual_Widget.Body_Frame.children["!ctkframe"].children["!ctkframe3"].children["!ctkentry"].get()
+        Input_End_Date = Manual_Widget.Body_Frame.children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
         Input_Start_Date = Input_Start_Date.upper()
         Input_End_Date = Input_End_Date.upper()
         
         # Exchange
-        Exchange_Password = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        Exchange_Password = Exchange_Widget.Body_Frame.children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"].get()
 
         # -------------- Missing Data handler  -------------- #
         # Date Range Source
@@ -151,7 +95,7 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         else:
             Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Not possible to download and process data", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
-    def Pre_Download_Data(Previous_Period_Def_Widget: CTkFrame, Previous_Sharepoint_Widget: CTkFrame) -> None:
+    def Pre_Download_Data(Previous_Period_Def_Widget: WidgetFrame, Previous_Sharepoint_Widget: WidgetFrame) -> None:
         def get_year_month_list(start_date: datetime, end_date: datetime):
             year_month_list = []
             current = start_date
@@ -167,14 +111,14 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Can_Download = True
 
         # Sharepoint
-        SP_Password = Previous_Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        SP_Password = Previous_Sharepoint_Widget.Body_Frame.children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
 
         # History Period definition and checks
-        From_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
-        From_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        From_Month = Previous_Period_Def_Widget.Body_Frame.children["!ctkframe"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        From_Year = Previous_Period_Def_Widget.Body_Frame.children["!ctkframe2"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
         From_DateTime =datetime(year=From_Year, month=From_Month, day=1)
-        To_Month = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
-        To_Year = Previous_Period_Def_Widget.children["!ctkframe2"].children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        To_Month = Previous_Period_Def_Widget.Body_Frame.children["!ctkframe3"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
+        To_Year = Previous_Period_Def_Widget.Body_Frame.children["!ctkframe4"].children["!ctkframe3"].children["!ctkoptionmenu"].get()
         To_DateTime =datetime(year=To_Year, month=To_Month, day=1)
 
         # Check filled password
@@ -257,44 +201,21 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Method_Text.configure(text="Step 1 - Date Range Source")
     Method_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
-    Sharepoint_Usage_Var = Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    
-    Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
-    Manual_Usage_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    Manual_Date_From_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkentry"]
-    Manual_Date_From_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe2"].children["!ctkframe3"].children["!ctkbutton"]
-    Manual_Date_To_Entry_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
-    Manual_Date_To_Picker_Var = Manual_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkbutton"]
-    Manual_Date_From_Entry_Var.configure(state="disabled")
-    Manual_Date_From_Picker_Var.configure(state="disabled")
-    Manual_Date_To_Entry_Var.configure(state="disabled")
-    Manual_Date_To_Picker_Var.configure(state="disabled")
-
-    # Disabling fields --> Download_Date_Range_Source
-    Sharepoint_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Widget=Manual_Widget, Sharepoint_Widget=Sharepoint_Widget))
-    Manual_Usage_Var.configure(command = lambda:Change_Download_Date_Range_Source(Download_Date_Range_Source=Download_Date_Range_Source, Manual_Widget=Manual_Widget, Sharepoint_Widget=Sharepoint_Widget))
-    
+    Download_Sharepoint_Widget = W_Download.Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
+    Download_Manual_Widget = W_Download.Download_Manual(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_A, Download_Date_Range_Source=Download_Date_Range_Source, GUI_Level_ID=2)
+    Download_Sharepoint_Widget.Show()
+    Download_Manual_Widget.Show()
 
     # Download Source
     Source_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Label_Size="H1", Font_Size="H1")
     Source_Text.configure(text="Step 2 - Download Data Source")
     Source_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Exchange_Widget = W_Download.Download_Exchange(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
-    Exchange_Usage_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe"].children["!ctkframe3"].children["!ctkradiobutton"]
-    Exchange_Password_Var = Exchange_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"]
-
-    # Disabling fields --> Download_Data_Source
-    Exchange_Usage_Var.configure(command = lambda:Change_Download_Data_Source(Download_Data_Source=Download_Data_Source, Exchange_Password_Var=Exchange_Password_Var))
-
-    # Download button
-    Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Label_Size="H1", Font_Size="H1")
-    Download_Text.configure(text="Step 3 - Download and process")
-    Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Download_Exchange_Widget = W_Download.Download_Exchange(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_New_Column_B, Download_Data_Source=Download_Data_Source, GUI_Level_ID=2)
+    Download_Exchange_Widget.Show()
 
     Button_Download = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Tab_New_Column_B, Button_Size="Normal")
-    Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Sharepoint_Widget, Manual_Widget=Manual_Widget, Exchange_Widget=Exchange_Widget))
+    Button_Download.configure(text="Download", command = lambda:Download_Data(Progress_Bar=Progress_Bar, Progress_text=Progress_text, Download_Date_Range_Source=Download_Date_Range_Source, Download_Data_Source=Download_Data_Source, Sharepoint_Widget=Download_Sharepoint_Widget, Manual_Widget=Download_Manual_Widget, Exchange_Widget=Download_Exchange_Widget))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Download, message="Initiate Download and Process data.", ToolTip_Size="Normal", GUI_Level_ID=2)
     
     # ---------- Previous periods ---------- #
@@ -316,21 +237,18 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     Previous_Text.configure(text="Step 1 - Define previous periods")
     Previous_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Previous_Period_Def_Widget = W_Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
+    Previous_Periods_Widget = W_Download.Per_Period_Selection(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
+    Previous_Periods_Widget.Show()
 
     Pre_Sharepoint_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
     Pre_Sharepoint_Text.configure(text="Step 2 - Sharepoint credential")
     Pre_Sharepoint_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-    Previous_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
-
-    # Download button
-    Pre_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Label_Size="H1", Font_Size="H1")
-    Pre_Download_Text.configure(text="Step 3 - Download and process")
-    Pre_Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    Pre_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Pre_Column_A, GUI_Level_ID=2)
+    Pre_Sharepoint_Widget.Show()
 
     Pre_Button_Download = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Tab_Pre_Column_A, Button_Size="Normal")
-    Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Period_Def_Widget, Previous_Sharepoint_Widget=Previous_Sharepoint_Widget))
+    Pre_Button_Download.configure(text="Download", command = lambda:Pre_Download_Data(Previous_Period_Def_Widget=Previous_Periods_Widget, Previous_Sharepoint_Widget=Pre_Sharepoint_Widget))
     Elements.Get_ToolTip(Configuration=Configuration, widget=Pre_Button_Download, message="Initiate Download, then check Dashboard.", ToolTip_Size="Normal", GUI_Level_ID=2)
     
     # ---------- My Team ---------- #
@@ -340,15 +258,11 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
         Team_Sharepoint_Text.configure(text="Step 1 - Sharepoint credential")
         Team_Sharepoint_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
-        My_Team_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2) # Can most probably by identical as downloads needs to connect same ways as in Pre
-
-        # Download button
-        Team_Download_Text = Elements.Get_Label(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Label_Size="H1", Font_Size="H1")
-        Team_Download_Text.configure(text="Step 2 - Download and process")
-        Team_Download_Text.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+        Team_Sharepoint_Widget = W_Download.Pre_Download_Sharepoint(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Tab_Team_Column_A, GUI_Level_ID=2) # Can most probably by identical as downloads needs to connect same ways as in Pre
+        Team_Sharepoint_Widget.Show()
 
         Team_Button_Download = Elements.Get_Button_Text(Configuration=Configuration, Frame=Frame_Tab_Team_Column_A, Button_Size="Normal")
-        Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data(My_Team_Sharepoint_Widget=My_Team_Sharepoint_Widget))
+        Team_Button_Download.configure(text="Download", command = lambda:My_Team_Download_Data(My_Team_Sharepoint_Widget=Team_Sharepoint_Widget))
         Elements.Get_ToolTip(Configuration=Configuration, widget=Team_Button_Download, message="Initiate Download, then check My Team Dashboard.", ToolTip_Size="Normal", GUI_Level_ID=2)
     else:
         pass
@@ -362,20 +276,15 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
     TabView_New.pack(side="left", fill="y", expand=False, padx=10, pady=10)
     Frame_Tab_New_Column_A.pack(side="left", fill="y", expand=False, padx=5, pady=5)
     Frame_Tab_New_Column_B.pack(side="left", fill="y", expand=False, padx=5, pady=5)
-    Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Manual_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Exchange_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
+    
     Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     
     TabView_Past.pack(side="left", fill="y", expand=False, padx=10, pady=10)
     Frame_Tab_Pre_Column_A.pack(side="left", fill="y", expand=False, padx=5, pady=5)
-    Previous_Period_Def_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
-    Previous_Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     Pre_Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
 
     if User_Type == "Manager":
         Frame_Tab_Team_Column_A.pack(side="left", fill="y", expand=False, padx=5, pady=5)
-        My_Team_Sharepoint_Widget.pack(side="top", fill="none", expand=False, padx=5, pady=5)
         Team_Button_Download.pack(side="top", fill="none", expand=False, padx=5, pady=5)
     else:
         pass

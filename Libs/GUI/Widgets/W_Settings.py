@@ -171,13 +171,13 @@ def Settings_General_Appearance(Settings: dict, Configuration: dict|None, window
 
     Accent_Section_Row = Widget_Section_Row(Configuration=Configuration, master=Appearance_Widget.Body_Frame, Field_Frame_Type="Single_Column", Label="Accent color", Label_Size="Field_Label", Font_Size="Section_Separator")
     Accent_Color_Manual_Row = WidgetRow_Color_Picker(Settings=Settings, Configuration=Configuration, master=Appearance_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Accent Color Manual", Value=Accent_Color_Manual, placeholder_text_color="#949A9F", Save_To="Configuration", Save_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Manual"], Button_ToolTip="Color Picker.", Picker_Always_on_Top=True, Picker_Fixed_position=True, GUI_Level_ID=GUI_Level_ID + 1)
-    Accent_Option_Menu_Blocking_dict = CustomTkinter_Functions.OptionMenu_Blocking(Values=["App Default", "Windows", "Manual"], Freeze_fields=[[Accent_Color_Manual_Row],[Accent_Color_Manual_Row],[]])
-    Accent_Color_Mode_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Appearance_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Accent Color Mode", Variable=Accent_Color_Mode_Variable, Values=Accent_Color_Mode_List, Save_To="Configuration", Save_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Field_list=[Accent_Color_Manual_Row], Field_Blocking_dict=Accent_Option_Menu_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
+    Accent_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=["App Default", "Windows", "Manual"], Freeze_fields=[[Accent_Color_Manual_Row],[Accent_Color_Manual_Row],[]])
+    Accent_Color_Mode_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Appearance_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Accent Color Mode", Variable=Accent_Color_Mode_Variable, Values=Accent_Color_Mode_List, Save_To="Configuration", Save_path=["Global_Appearance", "Window", "Colors", "Accent", "Accent_Color_Mode"], Field_list=[Accent_Color_Manual_Row], Field_Blocking_dict=Accent_Fields_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
 
     Hover_Section_Row = Widget_Section_Row(Configuration=Configuration, master=Appearance_Widget.Body_Frame, Field_Frame_Type="Single_Column", Label="Hover color", Label_Size="Field_Label", Font_Size="Section_Separator")
     Hover_Color_Manual_Row = WidgetRow_Color_Picker(Settings=Settings, Configuration=Configuration, master=Appearance_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Hover Color Manual", Value=Hover_Color_Manual, placeholder_text_color="#949A9F", Save_To="Configuration", Save_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Manual"], Button_ToolTip="Color Picker.", Picker_Always_on_Top=True, Picker_Fixed_position=True, GUI_Level_ID=GUI_Level_ID + 1)
-    Hover_Option_Menu_Blocking_dict = CustomTkinter_Functions.OptionMenu_Blocking(Values=["App Default", "Accent Lighter", "Manual"], Freeze_fields=[[Hover_Color_Manual_Row],[Hover_Color_Manual_Row],[]])
-    Hover_Color_Mode_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Appearance_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Hover Color Mode", Variable=Hover_Color_Mode_Variable, Values=Hover_Color_Mode_List, Save_To="Configuration", Save_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Field_list=[Hover_Color_Manual_Row], Field_Blocking_dict=Hover_Option_Menu_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
+    Hover_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=["App Default", "Accent Lighter", "Manual"], Freeze_fields=[[Hover_Color_Manual_Row],[Hover_Color_Manual_Row],[]])
+    Hover_Color_Mode_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Appearance_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Hover Color Mode", Variable=Hover_Color_Mode_Variable, Values=Hover_Color_Mode_List, Save_To="Configuration", Save_path=["Global_Appearance", "Window", "Colors", "Hover", "Hover_Color_Mode"], Field_list=[Hover_Color_Manual_Row], Field_Blocking_dict=Hover_Fields_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
 
     # Add Fields to Widget Body
     Appearance_Widget.Add_row(Rows=[Theme_Row, Accent_Section_Row, Accent_Color_Mode_Row, Accent_Color_Manual_Row, Hover_Section_Row, Hover_Color_Mode_Row, Hover_Color_Manual_Row])
@@ -488,8 +488,9 @@ def Settings_Parallel_events(Settings: dict, Configuration: dict, window: CTk|No
     Parallel_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Parallel Events Handler", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Definitions of behavior of processing Events when program found that they are parallel.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_Parallel_Events_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Parallel_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Parallel_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Parallel_Events", "Use"])
     Start_Method_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Parallel_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Same Start Time", Variable=Start_Method_Variable, Values=Start_Method_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Parallel_Events", "Start_Method"], GUI_Level_ID=GUI_Level_ID) 
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Start_Method_Row]])
+    Use_Parallel_Events_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Parallel_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Parallel_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Parallel_Events", "Use"], Field_list=[Start_Method_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     Parallel_Widget.Add_row(Rows=[Use_Parallel_Events_Row, Start_Method_Row])
@@ -518,12 +519,13 @@ def Settings_Join_events(Settings: dict, Configuration: dict, window: CTk|None, 
     Join_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Joining Events", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Joining Events belonging to same Visibility group.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_Events_Joining_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Join_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Use"])
     Join_Free_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Free", Variable=Join_Free_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Free"], GUI_Level_ID=GUI_Level_ID) 
     Join_Tentative_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Tentative", Variable=Join_Tentative_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Tentative"], GUI_Level_ID=GUI_Level_ID) 
     Join_Busy_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Busy", Variable=Join_Busy_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Busy"], GUI_Level_ID=GUI_Level_ID) 
     Join_OutOfOffice_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Out of Office", Variable=Join_OutOfOffice_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Out of Office"], GUI_Level_ID=GUI_Level_ID) 
     Join_Work_ElseWhere_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Working ElseWhere", Variable=Join_Work_Else_Variable, Values=Join_Methods_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Working elsewhere"], GUI_Level_ID=GUI_Level_ID) 
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Join_Free_Row, Join_Tentative_Row, Join_Busy_Row, Join_OutOfOffice_Row, Join_Work_ElseWhere_Row]])
+    Use_Events_Joining_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Join_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Join_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Join_method", "Use"], Field_list=[Join_Free_Row, Join_Tentative_Row, Join_Busy_Row, Join_OutOfOffice_Row, Join_Work_ElseWhere_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     Join_Widget.Add_row(Rows=[Use_Events_Joining_Row, Join_Free_Row, Join_Tentative_Row, Join_Busy_Row, Join_OutOfOffice_Row, Join_Work_ElseWhere_Row])
@@ -546,20 +548,20 @@ def Settings_Events_Split(Settings: dict, Configuration: dict, window: CTk|None,
     Splitting_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Events Splitting", Additional_Text="Pay attention to Join Setup.", Widget_size="Single_size", Widget_Label_Tooltip="Use for splitting automatically filled events by program longer than defined duration. \nEffect of the split can be suppress partially / fully by Joining Events, depends on setup.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_Empty_Split_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Empty_Split_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Use"])
     Split_Duration_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Duration", Value=Events_Empty_Split_Duration, placeholder_text="Empty space duration which will be splitted.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Duration"], Validation="Integer")
     Split_Min_Duration_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Minimal Time", placeholder_text=Events_Empty_Split_Minimal_Time, placeholder_text_color="#949A9F", Validation="Integer")
     Split_Min_Duration_Row.Freeze()
 
-    Option_Menu_Blocking_dict = CustomTkinter_Functions.OptionMenu_Blocking(Values=["Equal Split", "Random Split"], Freeze_fields=[[Split_Duration_Row],[]])
-    Split_Method_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Method", Variable=Events_Empty_Split_list_Variable, Values=Events_Empty_Split_list, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Method"], Field_list=[Split_Duration_Row], Field_Blocking_dict=Option_Menu_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
+    Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=["Equal Split", "Random Split"], Freeze_fields=[[Split_Duration_Row],[]])
+    Split_Method_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Method", Variable=Events_Empty_Split_list_Variable, Values=Events_Empty_Split_list, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Split_Method"], Field_list=[Split_Duration_Row], Field_Blocking_dict=Fields_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
+
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[Split_Min_Duration_Row],[Split_Duration_Row, Split_Min_Duration_Row, Split_Method_Row]])
+    Use_Empty_Split_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Splitting_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Empty_Split_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Empty", "Split", "Use"], Field_list=[Split_Duration_Row, Split_Min_Duration_Row, Split_Method_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     Splitting_Widget.Add_row(Rows=[Use_Empty_Split_Row, Split_Method_Row, Split_Duration_Row, Split_Min_Duration_Row])
 
     return Splitting_Widget
-
-
 
 def Settings_Events_General_Skip(Settings: dict, Configuration: dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     # ---------------------------- Defaults ----------------------------#
@@ -706,10 +708,12 @@ def Settings_Events_General_Lunch(Settings: dict, Configuration: dict, window: C
     Lunch_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - Lunch", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Lunch brake -> always skip it. \n Lunch break will always break Parallel Events.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_Lunch_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Lunch_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Use"])
     Search_Text_Lunch_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=Lunch_Search_Text, placeholder_text="Event Subject which defines lunch", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Search_Text"])
     All_Day_Lunch_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=Lunch_All_Variable, Values=Lunch_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
     Part_Day_Lunch_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=Lunch_Part_Variable, Values=Lunch_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
+
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Search_Text_Lunch_Row, All_Day_Lunch_Row, Part_Day_Lunch_Row]])
+    Use_Lunch_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Lunch_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Lunch_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Lunch", "Use"], Field_list=[Search_Text_Lunch_Row, All_Day_Lunch_Row, Part_Day_Lunch_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     Lunch_Widget.Add_row(Rows=[Use_Lunch_Row, Search_Text_Lunch_Row, All_Day_Lunch_Row, Part_Day_Lunch_Row])
@@ -736,11 +740,13 @@ def Settings_Events_General_Vacation(Settings: dict, Configuration: dict, window
     Vacation_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - Vacation", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Vacation.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_Vacation_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Vacation_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Use"])
     Search_Text_Vacation_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=Vacation_Search_Text, placeholder_text="Event Subject which defines vacation", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Search_Text"])
     All_Day_Vacation_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=Vacation_All_Variable, Values=Vacation_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
     Part_Day_Vacation_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=Vacation_Part_Variable, Values=Vacation_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
     Delete_Events_Vacation_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Delete Events w Working H.", Variable=Vacation_Delete_Events_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Delete_Events_w_KM_Calendar"])
+
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Search_Text_Vacation_Row, All_Day_Vacation_Row, Part_Day_Vacation_Row, Delete_Events_Vacation_Row]])
+    Use_Vacation_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Vacation_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Vacation_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Vacation", "Use"], Field_list=[Search_Text_Vacation_Row, All_Day_Vacation_Row, Part_Day_Vacation_Row, Delete_Events_Vacation_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     Vacation_Widget.Add_row(Rows=[Use_Vacation_Row, Delete_Events_Vacation_Row, Search_Text_Vacation_Row, All_Day_Vacation_Row, Part_Day_Vacation_Row])
@@ -766,11 +772,13 @@ def Settings_Events_General_SickDay(Settings: dict, Configuration: dict, window:
     SickDay_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - SickDay", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of SickDay", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_SickDay_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=SickDay_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Use"])
     Search_Text_SickDay_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=SickDay_Search_Text, placeholder_text="Event Subject which defines SickDay.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Search_Text"])
     All_Day_SickDay_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=SickDay_All_Variable, Values=SickDay_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
     Part_Day_SickDay_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=SickDay_Part_Variable, Values=SickDay_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
     Delete_Events_SickDay_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Delete Events w Working H.", Variable=SickDay_Delete_Events_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Delete_Events_w_KM_Calendar"])
+
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Search_Text_SickDay_Row, All_Day_SickDay_Row, Part_Day_SickDay_Row, Delete_Events_SickDay_Row]])
+    Use_SickDay_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=SickDay_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=SickDay_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "SickDay", "Use"], Field_list=[Search_Text_SickDay_Row, All_Day_SickDay_Row, Part_Day_SickDay_Row, Delete_Events_SickDay_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     SickDay_Widget.Add_row(Rows=[Use_SickDay_Row, Delete_Events_SickDay_Row, Search_Text_SickDay_Row, All_Day_SickDay_Row, Part_Day_SickDay_Row])
@@ -794,10 +802,12 @@ def Settings_Events_General_HomeOffice(Settings: dict, Configuration: dict, wind
     HomeOffice_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - HomeOffice", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of HomeOffice.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_HomeOffice_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=HomeOffice_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Use"])
     Search_Text_HomeOffice_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=HomeOffice_Search_Text, placeholder_text="Event Subject which defines home office.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Search_Text"])
     All_Day_HomeOffice_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="All Day", Variable=HomeOffice_All_Variable, Values=HomeOffice_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "All_Day"], GUI_Level_ID=GUI_Level_ID) 
     Part_Day_HomeOffice_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Part Day", Variable=HomeOffice_Part_Variable, Values=HomeOffice_Day_Option_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Part_Day"], GUI_Level_ID=GUI_Level_ID) 
+
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Search_Text_HomeOffice_Row, All_Day_HomeOffice_Row, Part_Day_HomeOffice_Row]])
+    Use_HomeOffice_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=HomeOffice_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=HomeOffice_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "HomeOffice", "Use"], Field_list=[Search_Text_HomeOffice_Row, All_Day_HomeOffice_Row, Part_Day_HomeOffice_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     HomeOffice_Widget.Add_row(Rows=[Use_HomeOffice_Row, Search_Text_HomeOffice_Row, All_Day_HomeOffice_Row, Part_Day_HomeOffice_Row])
@@ -819,9 +829,11 @@ def Settings_Events_General_Private(Settings: dict, Configuration: dict, window:
     Private_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Special - Private", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Settings what program will do in case of Special Event Private, \n Split --> Special Event will split parallel events, like Lunch \n Do nothing --> This event will not do anything to parallel events.", GUI_Level_ID=GUI_Level_ID)
 
     # Fields
-    Use_Private_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Private_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Use"])
     Search_Text_Private_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Search text", Value=Private_Search_Text, placeholder_text="Event Subject which defines private special event.", Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Search_Text"])
     Method_Private_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Method", Variable=Private_Method_Variable, Values=Private_Method_List, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Method"], GUI_Level_ID=GUI_Level_ID) 
+
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=[True, False], Freeze_fields=[[],[Search_Text_Private_Row, Method_Private_Row]])
+    Use_Private_Row = WidgetRow_CheckBox(Settings=Settings, Configuration=Configuration, master=Private_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Private_Use_Variable, Save_To="Settings", Save_path=["0", "Event_Handler", "Events", "Special_Events", "Private", "Use"], Field_list=[Search_Text_Private_Row, Method_Private_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
     # Add Fields to Widget Body
     Private_Widget.Add_row(Rows=[Use_Private_Row, Search_Text_Private_Row, Method_Private_Row])

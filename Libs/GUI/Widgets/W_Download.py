@@ -1,230 +1,126 @@
 # Import Libraries
 from datetime import datetime
-import Libs.GUI.Elements_Groups as Elements_Groups
-import Libs.GUI.Elements as Elements
+import Libs.CustomTkinter_Functions as CustomTkinter_Functions
+from Libs.GUI.Widgets.Widgets_Class import WidgetFrame, WidgetRow_RadioButton, WidgetRow_Input_Entry, WidgetRow_OptionMenu, WidgetRow_Date_Picker
 
-from customtkinter import CTk, CTkFrame, CTkEntry, CTkButton, StringVar, IntVar
+from customtkinter import CTk, CTkFrame, StringVar, IntVar
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------- Download Page Widgets -------------------------------------------------------------------------------------------------------------------------------------------------- #
-def Download_Sharepoint(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Download_Date_Range_Source: StringVar, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Download_Sharepoint(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Download_Date_Range_Source: StringVar, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
     User_Email = Settings["0"]["General"]["User"]["Email"]
     User_ID = Settings["0"]["General"]["User"]["Code"]
     SP_Date_From_Method = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method"]
     SP_Date_From_Method_list = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_From"]["Date_From_Method_List"]
     SP_Date_To_Method = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method"]
     SP_Date_To_Method_list = Settings["0"]["General"]["Downloader"]["Sharepoint"]["Download_Options"]["Date_To"]["Date_To_Method_List"]
-
-    def Sharepoint_Disabling_Man_Date_To(Selected_Value: str, Entry_Field: CTkEntry, Drop_Down_But: CTkButton, Variable: StringVar) -> None:
-        Variable.set(value=Selected_Value)
-        if (Selected_Value == "Today") or (Selected_Value == "Last Report Day"):
-            Entry_Field.delete(first_index=0, last_index=1000)
-            Entry_Field.configure(placeholder_text="")
-            Entry_Field.configure(state="disabled")
-            Drop_Down_But.configure(state="disabled")
-        elif Selected_Value == "Manual":
-            Entry_Field.configure(state="normal")
-            Entry_Field.configure(placeholder_text="YYYY-MM-DD")
-            Drop_Down_But.configure(state="normal")
-        else:
-            Elements.Get_MessageBox(Configuration=Configuration, window=window, title="Error", message="Download To Method not allowed.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
-
     SP_Date_From_Variable = StringVar(master=Frame, value=SP_Date_From_Method)
     SP_Date_To_Variable = StringVar(master=Frame, value=SP_Date_To_Method)
 
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Sharepoint - missing dates", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Time-sheets for download process.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Download_Sharepoint_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Sharepoint", Additional_Text="Must be on Local network or VPN.", Widget_size="Single_size", Widget_Label_Tooltip="Get Date-From and Date-To directly from Sharepoint Time-sheets for download process.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Sharepoint_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Sharepoint") 
-    Use_Sharepoint_Frame_Var = Use_Sharepoint_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Sharepoint_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
+    # Fields
+    SP_User_ID_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="User ID", placeholder_text=User_ID, placeholder_text_color="#949A9F")
+    SP_User_ID_Row.Freeze()
+    SP_Email_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Email", placeholder_text=User_Email, placeholder_text_color="#949A9F")
+    SP_Email_Row.Freeze()
+    SP_Date_From_Option_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Date From", Variable=SP_Date_From_Variable, Values=SP_Date_From_Method_list, GUI_Level_ID=GUI_Level_ID) 
 
-    # Field - User ID
-    SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
-    SP_User_ID_Text_Frame_Var = SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_User_ID_Text_Frame_Var.configure(placeholder_text=User_ID, placeholder_text_color="#949A9F")
-    SP_User_ID_Text_Frame_Var.configure(state="disabled")
+    SM_Man_Date_To_Row = WidgetRow_Date_Picker(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Manual Date To", Date_format=Date_Format, Value="", placeholder_text_color="#949A9F", Button_ToolTip="Date Picker.", Save_To=None, Picker_Always_on_Top=True, Validation="Date", GUI_Level_ID=GUI_Level_ID + 1)
 
-    # Field - User Email
-    SP_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    SP_Email_Text_Frame_Var = SP_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Email_Text_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
-    SP_Email_Text_Frame_Var.configure(state="disabled")
+    Date_To_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=["Today", "Manual", "Last Report Day"], Freeze_fields=[[SM_Man_Date_To_Row],[],[SM_Man_Date_To_Row]])
+    SP_Date_To_Option_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Date To", Variable=SP_Date_To_Variable, Values=SP_Date_To_Method_list, Field_list=[SM_Man_Date_To_Row], Field_Blocking_dict=Date_To_Fields_Blocking_dict, GUI_Level_ID=GUI_Level_ID) 
 
-    # Field - Date From Method
-    SP_Date_From_Option = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Input_OptionMenu") 
-    SP_Date_From_Option_Var = SP_Date_From_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
-    SP_Date_From_Option_Var.configure(variable=SP_Date_From_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=SP_Date_From_Option_Var, values=SP_Date_From_Method_list, command=None, GUI_Level_ID=GUI_Level_ID)
+    SP_Password_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Password", Label="Password", placeholder_text="Fill your password.")
 
-    # Field - Date To Method
-    SP_Date_To_Option = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Input_OptionMenu") 
-    SP_Date_To_Option_Var = SP_Date_To_Option.children["!ctkframe3"].children["!ctkoptionmenu"]
-    SP_Date_To_Option_Var.configure(variable=SP_Date_To_Variable)
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=["Sharepoint", "Manual"], Freeze_fields=[[],[SP_Password_Row]])
+    Use_Sharepoint_Row = WidgetRow_RadioButton(Settings=Settings, Configuration=Configuration, master=Download_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Download_Date_Range_Source, ON_Value="Sharepoint", Field_list=[SP_Password_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
-    # Field - Manual Date To
-    SM_Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Manual Date To", Field_Type="Date_Picker", Validation="Date") 
-    SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Button_SM_Man_Date_To_Frame_Var = SM_Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
-    SM_Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
-    Button_SM_Man_Date_To_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=SM_Man_Date_To_Frame_Var, Clicked_on_Button=Button_SM_Man_Date_To_Frame_Var, width=200, height=230, Fixed=True, GUI_Level_ID=GUI_Level_ID))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_SM_Man_Date_To_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Download_Sharepoint_Widget.Add_row(Rows=[Use_Sharepoint_Row, SP_User_ID_Row, SP_Email_Row, SP_Date_From_Option_Row, SP_Date_To_Option_Row, SM_Man_Date_To_Row, SP_Password_Row])
 
-    # Disabling fields --> Manual Date To 
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=SP_Date_To_Option_Var, values=SP_Date_To_Method_list, command = lambda SP_Date_To_Option_Var: Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Option_Var, Entry_Field=SM_Man_Date_To_Frame_Var, Drop_Down_But=Button_SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable), GUI_Level_ID=GUI_Level_ID)
-    Sharepoint_Disabling_Man_Date_To(Selected_Value=SP_Date_To_Method, Entry_Field=SM_Man_Date_To_Frame_Var, Drop_Down_But=Button_SM_Man_Date_To_Frame_Var, Variable=SP_Date_To_Variable)    # Must be here because of initial value
-    
-    # Field - Password
-    SP_Password_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
-    SP_Password_Frame_Var = SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
-    SP_Password_Frame_Var.configure(placeholder_text="Fill your password.")
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
+    return Download_Sharepoint_Widget
 
 
+def Download_Manual(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Download_Date_Range_Source: StringVar, GUI_Level_ID: int|None = None) -> WidgetFrame:
+    Date_Format = Settings["0"]["General"]["Formats"]["Date"]
 
-def Download_Manual(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Download_Date_Range_Source: StringVar, GUI_Level_ID: int|None = None) -> CTkFrame:
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for download process.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Download_Manual_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Manual", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define manual dates for download process.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Manual_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Manual") 
-    Use_Manual_Frame_Var = Use_Manual_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Manual_Frame_Var.configure(text="", variable=Download_Date_Range_Source)
+    # Fields
+    Man_Date_From_Row = WidgetRow_Date_Picker(Settings=Settings, Configuration=Configuration, master=Download_Manual_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Date From", Date_format=Date_Format, Value="", placeholder_text_color="#949A9F", Button_ToolTip="Date Picker.", Save_To=None, Picker_Always_on_Top=True, Validation="Date", GUI_Level_ID=GUI_Level_ID + 1)
+    Man_Date_To_Row = WidgetRow_Date_Picker(Settings=Settings, Configuration=Configuration, master=Download_Manual_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Date To", Date_format=Date_Format, Value="", placeholder_text_color="#949A9F", Button_ToolTip="Date Picker.", Save_To=None, Picker_Always_on_Top=True, Validation="Date", GUI_Level_ID=GUI_Level_ID + 1)
 
-    # Field - Date From
-    Man_Date_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date From", Field_Type="Date_Picker", Validation="Date") 
-    Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Button_Man_Date_From_Frame_Var = Man_Date_From_Frame.children["!ctkframe3"].children["!ctkbutton"]
-    Man_Date_From_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
-    Button_Man_Date_From_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=Man_Date_From_Frame_Var, Clicked_on_Button=Button_Man_Date_From_Frame_Var, width=200, height=230, Fixed=True, GUI_Level_ID=GUI_Level_ID))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Man_Date_From_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+    Use_Fields_Blocking_dict = CustomTkinter_Functions.Fields_Blocking(Values=["Sharepoint", "Manual"], Freeze_fields=[[Man_Date_From_Row, Man_Date_To_Row],[]])
+    Use_Manual_Row = WidgetRow_RadioButton(Settings=Settings, Configuration=Configuration, master=Download_Manual_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="Use", Variable=Download_Date_Range_Source, ON_Value="Manual", Field_list=[Man_Date_From_Row, Man_Date_To_Row], Field_Blocking_dict=Use_Fields_Blocking_dict)
 
-    # Field - Date To
-    Man_Date_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Date To", Field_Type="Date_Picker", Validation="Date")
-    Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Button_Man_Date_To_Frame_Var = Man_Date_To_Frame.children["!ctkframe3"].children["!ctkbutton"]
-    Man_Date_To_Frame_Var.configure(placeholder_text="YYYY-MM-DD")
-    Button_Man_Date_To_Frame_Var.configure(command = lambda: Elements_Groups.My_Date_Picker(Settings=Settings, Configuration=Configuration, date_entry=Man_Date_To_Frame_Var, Clicked_on_Button=Button_Man_Date_To_Frame_Var, width=200, height=230, Fixed=True, GUI_Level_ID=GUI_Level_ID))
-    Elements.Get_ToolTip(Configuration=Configuration, widget=Button_Man_Date_To_Frame_Var, message="Entry_DropDown", ToolTip_Size="Normal", GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Download_Manual_Widget.Add_row(Rows=[Use_Manual_Row, Man_Date_From_Row, Man_Date_To_Row])
 
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
+    return Download_Manual_Widget
 
-    return Frame_Main
-
-
-
-def Download_Exchange(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Download_Data_Source: StringVar, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Download_Exchange(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, Download_Data_Source: StringVar, GUI_Level_ID: int|None = None) -> WidgetFrame:
     User_Email = Settings["0"]["General"]["User"]["Email"]
 
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Exchange Server", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Konica Minolta Exchange server directly.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Download_Exchange_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Exchange Server", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Data source is Konica Minolta Exchange server directly.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Use
-    Use_Exchange_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Use", Field_Type="Input_RadioButton", Var_Value="Exchange") 
-    Use_Exchange_Frame_Var = Use_Exchange_Frame.children["!ctkframe3"].children["!ctkradiobutton"]
-    Use_Exchange_Frame_Var.configure(text="", variable=Download_Data_Source)
+    # Fields
+    Ex_Email_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Download_Exchange_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Email", placeholder_text=User_Email, placeholder_text_color="#949A9F")
+    Ex_Email_Row.Freeze()
+    Ex_Password_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Download_Exchange_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Password", Label="Password", placeholder_text="Fill your password.")
 
-    # Field - User ID
-    Ex_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Ex_Email_Frame_Var = Ex_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Ex_Email_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
-    Ex_Email_Frame_Var.configure(state="disabled")
+    # Add Fields to Widget Body
+    Download_Exchange_Widget.Add_row(Rows=[Ex_Email_Row, Ex_Password_Row])
 
-    # Field - Password
-    Ex_Password_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
-    Ex_Password_Frame_Var = Ex_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Ex_Password_Frame_Var.configure(placeholder_text="Fill your password.")
+    return Download_Exchange_Widget
 
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-def Per_Period_Selection(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Per_Period_Selection(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     Today = datetime.now()
     Current_year = Today.year
     Current_month = Today.month
     Year_list = [Current_year - x for x in range(0, 5)]
     Month_list = [x for x in range(1, 13)]
-
     Year_From_Variable = IntVar(master=Frame, value=Current_year)
     Month_From_Variable = IntVar(master=Frame, value=Current_month)
     Year_To_Variable = IntVar(master=Frame, value=Current_year)
     Month_To_Variable = IntVar(master=Frame, value=Current_month)
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Previous Periods range", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define Which periods should be downloaded from TimeSheet History. Included.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Previous_Periods_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Previous Periods range", Additional_Text="", Widget_size="Single_size", Widget_Label_Tooltip="Define Which periods should be downloaded from TimeSheet History. Included.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - Month From
-    Past_Month_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Month", Field_Type="Input_OptionMenu") 
-    Past_Month_From_Frame_Var = Past_Month_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Past_Month_From_Frame_Var.configure(variable=Month_From_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Month_From_Frame_Var, values=Month_list, command=None, GUI_Level_ID=GUI_Level_ID)
+    # Fields
+    Past_Month_From_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Previous_Periods_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="From Month", Variable=Month_From_Variable, Values=Month_list, GUI_Level_ID=GUI_Level_ID) 
+    Past_Year_From_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Previous_Periods_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="From Year", Variable=Year_From_Variable, Values=Year_list, GUI_Level_ID=GUI_Level_ID) 
+    Past_Month_To_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Previous_Periods_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="To Month", Variable=Month_To_Variable, Values=Month_list, GUI_Level_ID=GUI_Level_ID) 
+    Past_Year_To_Row = WidgetRow_OptionMenu(Settings=Settings, Configuration=Configuration, master=Previous_Periods_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Label="To Year", Variable=Year_To_Variable, Values=Year_list, GUI_Level_ID=GUI_Level_ID) 
 
-    # Field - Year From
-    Past_Year_From_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="From Year", Field_Type="Input_OptionMenu") 
-    Past_Year_From_Frame_Var = Past_Year_From_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Past_Year_From_Frame_Var.configure(variable=Year_From_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Year_From_Frame_Var, values=Year_list, command=None, GUI_Level_ID=GUI_Level_ID)
+    # Add Fields to Widget Body
+    Previous_Periods_Widget.Add_row(Rows=[Past_Month_From_Row, Past_Year_From_Row, Past_Month_To_Row, Past_Year_To_Row])
 
-    # Field - Month To
-    Past_Month_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Month", Field_Type="Input_OptionMenu") 
-    Past_Month_To_Frame_Var = Past_Month_To_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Past_Month_To_Frame_Var.configure(variable=Month_To_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Month_To_Frame_Var, values=Month_list, command=None, GUI_Level_ID=GUI_Level_ID)
+    return Previous_Periods_Widget
 
-    # Field - Year To
-    Past_Year_To_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="To Year", Field_Type="Input_OptionMenu") 
-    Past_Year_To_Frame_Var = Past_Year_To_Frame.children["!ctkframe3"].children["!ctkoptionmenu"]
-    Past_Year_To_Frame_Var.configure(variable=Year_To_Variable)
-    Elements.Get_Option_Menu_Advance(Configuration=Configuration, attach=Past_Year_To_Frame_Var, values=Year_list, command=None, GUI_Level_ID=GUI_Level_ID)
-
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
-
-
-def Pre_Download_Sharepoint(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> CTkFrame:
+def Pre_Download_Sharepoint(Settings: dict, Configuration:dict, window: CTk|None, Frame: CTkFrame, GUI_Level_ID: int|None = None) -> WidgetFrame:
     User_Email = Settings["0"]["General"]["User"]["Email"]
     User_ID = Settings["0"]["General"]["User"]["Code"]
 
     # ------------------------- Main Functions -------------------------#
-    # Frame - General
-    Frame_Main = Elements_Groups.Get_Widget_Frame(Configuration=Configuration, Frame=Frame, Name="Sharepoint - authenticate", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Used for Sharepoint authentication to download data.", GUI_Level_ID=GUI_Level_ID)
-    Frame_Body = Frame_Main.children["!ctkframe2"]
+    # Widget
+    Pre_Sharepoint_Widget = WidgetFrame(Configuration=Configuration, Frame=Frame, Name="Sharepoint - authenticate", Additional_Text="Must be on Local network or VPN", Widget_size="Single_size", Widget_Label_Tooltip="Used for Sharepoint authentication to download data.", GUI_Level_ID=GUI_Level_ID)
 
-    # Field - User ID
-    Past_SP_User_ID_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="User ID", Field_Type="Input_Normal") 
-    Past_SP_User_ID_Text_Frame_Var = Past_SP_User_ID_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Past_SP_User_ID_Text_Frame_Var.configure(placeholder_text=User_ID, placeholder_text_color="#949A9F")
-    Past_SP_User_ID_Text_Frame_Var.configure(state="disabled")
+    # Fields
+    SP_User_ID_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Pre_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="User ID", placeholder_text=User_ID, placeholder_text_color="#949A9F")
+    SP_User_ID_Row.Freeze()
+    SP_Email_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Pre_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Normal", Label="Email", placeholder_text=User_Email, placeholder_text_color="#949A9F")
+    SP_Email_Row.Freeze()
+    SP_Pre_Password_Row = WidgetRow_Input_Entry(Settings=Settings, Configuration=Configuration, master=Pre_Sharepoint_Widget.Body_Frame, window=window, Field_Frame_Type="Single_Column", Field_Size="Password", Label="Password", placeholder_text="Fill your password.")
 
-    # Field - User Email
-    Past_SP_Email_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Email", Field_Type="Input_Normal")
-    Past_SP_Email_Text_Frame_Var = Past_SP_Email_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Past_SP_Email_Text_Frame_Var.configure(placeholder_text=User_Email, placeholder_text_color="#949A9F")
-    Past_SP_Email_Text_Frame_Var.configure(state="disabled")
+    # Add Fields to Widget Body
+    Pre_Sharepoint_Widget.Add_row(Rows=[SP_User_ID_Row, SP_Email_Row, SP_Pre_Password_Row])
 
-    # Field - Password
-    Past_SP_Password_Frame = Elements_Groups.Get_Widget_Input_row(Settings=Settings, Configuration=Configuration, window=window, Frame=Frame_Body, Field_Frame_Type="Single_Column" , Label="Password", Field_Type="Password_Normal") 
-    Past_SP_Password_Frame_Var = Past_SP_Password_Frame.children["!ctkframe3"].children["!ctkentry"]
-    Past_SP_Password_Frame_Var.configure(placeholder_text="Fill your password.")
-
-    # Build look of Widget
-    Frame_Main.pack(side="top", padx=15, pady=15)
-
-    return Frame_Main
+    return Pre_Sharepoint_Widget

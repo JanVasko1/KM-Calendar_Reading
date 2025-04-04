@@ -63,7 +63,7 @@ def Insert_Data_to_Table(Settings: dict, Configuration: dict|None, window: CTk|N
         Elements.Get_MessageBox(Configuration=Configuration, window=window, title=f"It is not possible to insert data to table. Data are uploaded, just restart application.", icon="cancel", fade_in_duration=1, GUI_Level_ID=1)
 
 # ------------------ Blocking Fields Functions ------------------ #
-def OptionMenu_Blocking(Values: list, Freeze_fields: list) -> dict:
+def Fields_Blocking(Values: list, Freeze_fields: list) -> dict:
     Field_Blocking_dict = dict()
     for Value_index, Value in enumerate(Values):
         Field_Blocking_dict[Value] = Freeze_fields[Value_index]      

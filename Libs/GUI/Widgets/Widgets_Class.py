@@ -541,7 +541,7 @@ class WidgetRow_OptionMenu:
         return self.Input_OptionMenu.get()
 
     def Save(self):
-        if self.Save_To == None:
+        if (self.Save_To == None) or (self.Save_path == None):
             pass
         else:
             Data_Functions.Save_Value(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Variable=None, File_Name=self.Save_To, JSON_path=self.Save_path, Information=self.Get_Value())
@@ -549,7 +549,7 @@ class WidgetRow_OptionMenu:
 
 # -------------------------------------------------------------------------------- WidgetRow_CheckBox -------------------------------------------------------------------------------- #
 class WidgetRow_CheckBox:
-    __slots__ = "Settings", "Configuration", "master", "window", "Field_Frame_Type", "Label", "Variable", "Documents", "Label_ToolTip", "Save_To", "Save_path", "Row_Frame", "Frame_Label", "Label_text", "Frame_Space", "Frame_Value", "Input_Check_Box"
+    __slots__ = "Settings", "Configuration", "master", "window", "Field_Frame_Type", "Label", "Variable", "Documents", "Label_ToolTip", "Save_To", "Save_path", "Row_Frame", "Frame_Label", "Label_text", "Frame_Space", "Frame_Value", "Input_Check_Box", "Field_list", "Field_Blocking_dict", "Block_Fields_list"
     """
     Field row for Check Box
     """
@@ -564,7 +564,9 @@ class WidgetRow_CheckBox:
                  Documents: dict|None = None,
                  Label_ToolTip: list|None = None, 
                  Save_To: str|None = None,
-                 Save_path: list|None = None):
+                 Save_path: list|None = None,
+                 Field_list: list|None = None,
+                 Field_Blocking_dict: dict|None = None):
         self.Settings = Settings
         self.Configuration = Configuration
         self.Documents = Documents
@@ -576,6 +578,8 @@ class WidgetRow_CheckBox:
         self.Variable = Variable
         self.Save_To = Save_To
         self.Save_path = Save_path 
+        self.Field_list = Field_list
+        self.Field_Blocking_dict = Field_Blocking_dict
 
         # Whole Row Frame
         self.Row_Frame = Elements.Get_Widget_Field_Frame_Area(Configuration=self.Configuration, Frame=self.master, Field_Frame_Type=self.Field_Frame_Type)
@@ -601,8 +605,9 @@ class WidgetRow_CheckBox:
         self.Frame_Value.pack_propagate(flag=False)
         
         self.Input_Check_Box = Elements.Get_CheckBox(Configuration=self.Configuration, Frame=self.Frame_Value)
-        self.Input_Check_Box.configure(variable=self.Variable, text="", command=lambda: self.Save())
+        self.Input_Check_Box.configure(variable=self.Variable, text="", command=lambda: self.Change_Value())
         self.Set_Value()
+        self.Change_Value()
 
     def Freeze(self):
         self.Input_Check_Box.configure(state="disabled")
@@ -618,11 +623,32 @@ class WidgetRow_CheckBox:
         self.Frame_Value.pack(side="left", fill="x", expand=False, padx=0, pady=0)
         self.Input_Check_Box.pack(side="left", fill="none", expand=False, padx=0, pady=0)
 
+    def Change_Value(self):
+        # Save
+        self.Save()
+
+        # Unfreeze all fields belonging to Field
+        if self.Field_list != None:
+            for UnFreeze_Field in self.Field_list:
+                UnFreeze_Field.UnFreeze()
+        else:
+            pass
+
+        # Freeze only selected
+        if self.Field_Blocking_dict != None:
+            # Filter Dictionary
+            self.Block_Fields_list = self.Field_Blocking_dict[self.Variable.get()]
+            for Freeze_Field in self.Block_Fields_list:
+                Freeze_Field.Freeze()
+                # TODO --> try to change look of freezed to help to identify freezed ones
+        else:
+            pass
+
     def Set_Value(self):
         self.Input_Check_Box.configure(variable=self.Variable)
 
     def Save(self):
-        if self.Save_To == None:
+        if (self.Save_To == None) or (self.Save_path == None):
             pass
         else:
             Data_Functions.Save_Value(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Variable=None, File_Name=self.Save_To, JSON_path=self.Save_path, Information=self.Variable.get())
@@ -630,7 +656,7 @@ class WidgetRow_CheckBox:
 
 # -------------------------------------------------------------------------------- WidgetRow_RadioButton -------------------------------------------------------------------------------- #
 class WidgetRow_RadioButton:
-    __slots__ = "Settings", "Configuration", "master", "window", "Field_Frame_Type", "Label", "Variable", "Var_Value", "Documents", "Label_ToolTip", "Save_To", "Save_path", "Row_Frame", "Frame_Label", "Label_text", "Frame_Space", "Frame_Value", "Input_RadioButton"
+    __slots__ = "Settings", "Configuration", "master", "window", "Field_Frame_Type", "Label", "Variable", "ON_Value", "Documents", "Label_ToolTip", "Save_To", "Save_path", "Row_Frame", "Frame_Label", "Label_text", "Frame_Space", "Frame_Value", "Input_RadioButton", "Field_list", "Field_Blocking_dict", "Block_Fields_list"
     """
     Field row for Check Box
     """
@@ -642,11 +668,13 @@ class WidgetRow_RadioButton:
                  Field_Frame_Type: str, 
                  Label: str, 
                  Variable: BooleanVar, 
-                 Var_Value: int|str,
+                 ON_Value: int|str,
                  Documents: dict|None = None,
                  Label_ToolTip: list|None = None, 
                  Save_To: str|None = None,
-                 Save_path: list|None = None):
+                 Save_path: list|None = None,
+                 Field_list: list|None = None,
+                 Field_Blocking_dict: dict|None = None):
         self.Settings = Settings
         self.Configuration = Configuration
         self.Documents = Documents
@@ -656,9 +684,11 @@ class WidgetRow_RadioButton:
         self.Label = Label
         self.Label_ToolTip = Label_ToolTip
         self.Variable = Variable
-        self.Var_Value = Var_Value
+        self.ON_Value = ON_Value
         self.Save_To = Save_To
         self.Save_path = Save_path 
+        self.Field_list = Field_list
+        self.Field_Blocking_dict = Field_Blocking_dict
 
         # Whole Row Frame
         self.Row_Frame = Elements.Get_Widget_Field_Frame_Area(Configuration=self.Configuration, Frame=self.master, Field_Frame_Type=self.Field_Frame_Type)
@@ -683,10 +713,9 @@ class WidgetRow_RadioButton:
         self.Frame_Value = Elements.Get_Widget_Field_Frame_Value(Configuration=self.Configuration, Frame=self.Row_Frame, Field_Frame_Type=self.Field_Frame_Type)
         self.Frame_Value.pack_propagate(flag=False)
         
-        self.Input_RadioButton = Elements.Get_RadioButton_Normal(Configuration=self.Configuration, Frame=self.Frame_Value, Var_Value=self.Var_Value)
-        self.Input_RadioButton.configure(text="")
-        self.Input_RadioButton.bind("<FocusOut>", self.Save())
-        self.Set_Value()
+        self.Input_RadioButton = Elements.Get_RadioButton_Normal(Configuration=self.Configuration, Frame=self.Frame_Value, Var_Value=self.ON_Value)
+        self.Input_RadioButton.configure(variable=self.Variable, text="", command=lambda: self.Change_Value())
+        self.Change_Value()
 
     def Freeze(self):
         self.Input_RadioButton.configure(state="disabled")
@@ -702,16 +731,35 @@ class WidgetRow_RadioButton:
         self.Frame_Value.pack(side="left", fill="x", expand=False, padx=0, pady=0)
         self.Input_RadioButton.pack(side="left", fill="none", expand=False, padx=0, pady=0)
 
+    def Change_Value(self):
+        # Save
+        self.Save()
+
+        # Unfreeze all fields belonging to Field
+        if self.Field_list != None:
+            for UnFreeze_Field in self.Field_list:
+                UnFreeze_Field.UnFreeze()
+        else:
+            pass
+
+        # Freeze only selected
+        if self.Field_Blocking_dict != None:
+            # Filter Dictionary
+            self.Block_Fields_list = self.Field_Blocking_dict[self.Variable.get()]
+            for Freeze_Field in self.Block_Fields_list:
+                Freeze_Field.Freeze()
+                # TODO --> try to change look of freezed to help to identify freezed ones
+        else:
+            pass
+
     def Set_Value(self):
-        self.Input_RadioButton.configure(variable=self.Variable)
+        self.Variable=self.Variable.set(value=self.ON_Value)
 
     def Save(self):
-        if self.Save_To == None:
+        if (self.Save_To == None) or (self.Save_path == None):
             pass
         else:
             Data_Functions.Save_Value(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Variable=None, File_Name=self.Save_To, JSON_path=self.Save_path, Information=self.Variable.get())
-
-
 
 # -------------------------------------------------------------------------------- WidgetRow_Date_Picker -------------------------------------------------------------------------------- #
 class WidgetRow_Date_Picker:
@@ -928,7 +976,7 @@ class WidgetRow_Date_Picker:
             pass
 
         # Save
-        if self.Save_To == None:
+        if (self.Save_To == None) or (self.Save_path == None):
             pass
         else:
             Data_Functions.Save_Value(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Variable=None, File_Name=self.Save_To, JSON_path=self.Save_path, Information=self.Get_Value())
@@ -1064,7 +1112,7 @@ class WidgetRow_Color_Picker:
         self.Color_Entry.insert(index=0, string=self.Color_Picker.get())
 
     def Save(self):
-        if self.Save_To == None:
+        if (self.Save_To == None) or (self.Save_path == None):
             pass
         else:
             Data_Functions.Save_Value(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Variable=None, File_Name=self.Save_To, JSON_path=self.Save_path, Information=self.Get_Value())
@@ -1286,7 +1334,7 @@ class PopUp_window:
         else:
             pass
         self.Pop_Up_Window.overrideredirect(boolean=True)
-        self.Pop_Up_Window.iconbitmap(bitmap=Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\HQ_Data_Generator.ico"))
+        self.Pop_Up_Window.iconbitmap(bitmap=Data_Functions.Absolute_path(relative_path=f"Libs\\GUI\\Icons\\TimeSheet.ico"))
         self.Pop_Up_Window.resizable(width=False, height=False)
 
         # Rounded corners 
