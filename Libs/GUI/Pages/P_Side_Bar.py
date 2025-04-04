@@ -7,7 +7,8 @@ import Libs.GUI.Pages.P_DashBoard as P_DashBoard
 import Libs.GUI.Pages.P_My_Team as P_My_Team
 import Libs.GUI.Pages.P_Data as P_Data
 import Libs.GUI.Pages.P_Information as P_Information
-import Libs.GUI.Pages.P_Settings as P_Settings
+import Libs.GUI.Pages.P_Settings_App as P_Settings_App
+import Libs.GUI.Pages.P_Settings_Event as P_Settings_Event
 
 import Libs.GUI.Elements as Elements
 class SidebarApp:
@@ -31,34 +32,38 @@ class SidebarApp:
                             "Dashboard", 
                             "Data", 
                             "Information", 
-                            "Settings",
+                            "Gen_Settings",
+                            "Event_Settings",
                             "Close"]
             
             self.icons = ["download", 
                         "layout-dashboard", 
                         "file-spreadsheet", 
                         "info", 
-                        "settings",
+                        "monitor-cog",
+                        "calendar-cog",
                         "power"]
             
             self.messages = ["Download new data.", 
                             "My dashboard page.", 
                             "Data to export page.", 
                             "Application information page.",
-                            "Application settings page.", 
+                            "General application settings page.", 
+                            "Events relation application settings page.", 
                             "Close application."]
             
             # Icons
             self.Icon_Default_pady = 10
-            self.Side_Bar_Top_pady = 225
-            self.Side_Bar_Bottom_pady = 260
+            self.Side_Bar_Top_pady = 195
+            self.Side_Bar_Bottom_pady = 235
         elif User_Type == "Manager":
             self.names = ["Download", 
                             "Dashboard", 
                             "Team_Dashboard", 
                             "Data", 
                             "Information", 
-                            "Settings",
+                            "Gen_Settings",
+                            "Event_Settings",
                             "Close"]
             
             self.icons = ["download", 
@@ -66,7 +71,8 @@ class SidebarApp:
                         "users", 
                         "file-spreadsheet", 
                         "info", 
-                        "settings",
+                        "monitor-cog",
+                        "calendar-cog",
                         "power"]
             
             self.messages = ["Download new data.", 
@@ -74,13 +80,14 @@ class SidebarApp:
                             "My Team page.", 
                             "Data to export page.", 
                             "Application information page.",
-                            "Application settings page.", 
+                            "General application settings page.", 
+                            "Events relation application settings page.", 
                             "Close application."]
             
             # Icons
             self.Icon_Default_pady = 10
-            self.Side_Bar_Top_pady = 200
-            self.Side_Bar_Bottom_pady = 230
+            self.Side_Bar_Top_pady = 165
+            self.Side_Bar_Bottom_pady = 210
 
         self.Icon_count = len(self.names)
 
@@ -126,7 +133,7 @@ class SidebarApp:
 
     def create_Application_version(self):
         Program_Version_text = Elements.Get_Label(Configuration=self.Configuration, Frame=self.Side_Bar_Frame, Label_Size="Field_Label", Font_Size="Field_Label")
-        Program_Version_text.configure(text=f"{self.Program_Version}")
+        Program_Version_text.configure(text=f"{self.Program_Version}", text_color = "#efefef")
         Program_Version_text.pack(side="top", fill="none", expand=False, padx=5, pady=(0, 10))
 
     def create_command(self, button_index, button_name):
@@ -155,8 +162,10 @@ class SidebarApp:
             self.Show_Data_Page()
         elif button_name == "Information":
             self.Show_Information_Page()
-        elif button_name == "Settings":
-            self.Show_Settings_Page()
+        elif button_name == "Gen_Settings":
+            self.Show_App_Settings_Page()
+        elif button_name == "Event_Settings":
+            self.Show_Event_Settings_Page()
         elif button_name == "Close":
             self.Show_Close_Page()
         else:
@@ -187,10 +196,14 @@ class SidebarApp:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
         P_Information.Page_Information(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
         
-    def Show_Settings_Page(self) -> None:
+    def Show_App_Settings_Page(self) -> None:
         self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
-        P_Settings.Page_Settings(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
+        P_Settings_App.Page_App_Settings(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
         
+    def Show_Event_Settings_Page(self) -> None:
+        self.Clear_Frame(Pre_Working_Frame=self.Frame_Work_Area_Main)
+        P_Settings_Event.Page_Event_Settings(Settings=self.Settings, Configuration=self.Configuration, window=self.window, Frame=self.Frame_Work_Area_Main)
+    
     def Show_Close_Page(self) -> None:
         # Delete Operational data from Settings
         self.window.quit()

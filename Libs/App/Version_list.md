@@ -7,6 +7,7 @@
 #### 1.3.0
 - GUI optimization
 - Pop-Up message box shows always in the middle of main window
+- Settings split to 2 pages for app speed up
 
 ##### 1.2.1
 - SideBar as Class

@@ -44,7 +44,7 @@
                     "#222229"
                 ],
                 "border_color": [
-                    "#",
+                    "#4d4d55",
                     "#363641"
                 ]
             },
@@ -54,7 +54,7 @@
                     "#28282F"
                 ],
                 "border_color": [
-                    "#cecece",
+                    "#4d4d55",
                     "#3b3b46"
                 ]
             },
@@ -64,7 +64,7 @@
                     "#2F2F35"
                 ],
                 "border_color": [
-                    "#dadada",
+                    "#4d4d55",
                     "#42424b"
                 ]
             },
@@ -74,7 +74,7 @@
                     "#35353B"
                 ],
                 "border_color": [
-                    "#e7e7e7",
+                    "#4d4d55",
                     "#484850"
                 ]
             },
@@ -84,7 +84,7 @@
                     "#3B3B41"
                 ],
                 "border_color": [
-                    "#e7e7e7",
+                    "#4d4d55",
                     "#4d4d55"
                 ]
             }
@@ -1688,7 +1688,7 @@
                 "corner_radius": 10,
                 "bg_color": "transparent",
                 "fg_color": [
-                    "#D0D0D0",
+                    "#efefef",
                     "#111219"
                 ],
                 "progress_color": [

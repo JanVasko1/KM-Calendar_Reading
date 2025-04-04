@@ -148,11 +148,11 @@ def Page_Download(Settings: dict, Configuration: dict, window: CTk, Frame: CTk|C
             pass
 
 
-    def My_Team_Download_Data(My_Team_Sharepoint_Widget: CTkFrame) -> None:
+    def My_Team_Download_Data(My_Team_Sharepoint_Widget: WidgetFrame) -> None:
         Can_Download = True
 
         # Sharepoint
-        SP_Password = My_Team_Sharepoint_Widget.children["!ctkframe2"].children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
+        SP_Password = My_Team_Sharepoint_Widget.Body_Frame.children["!ctkframe3"].children["!ctkframe3"].children["!ctkentry"].get()
 
         # Check filled password
         if SP_Password == "":

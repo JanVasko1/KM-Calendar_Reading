@@ -1,4 +1,3 @@
-# BUG --> Outlook Client
 # TODO --> Forecast according Calendar only when Start / End date is missing in CAlendar
 # TODO --> Show project list and Activity list somewhere
 
